@@ -1,13 +1,14 @@
 #!/bin/bash -e
 rm -fR sireum-v3
-git clone https://github.com/sireum/v3 sireum-v3
+git clone --depth 1 https://github.com/sireum/v3 sireum-v3
 cd sireum-v3
-rm -fR tools
-ln -s .. tools
+rm -fR runtime slang tools
+git clone --depth 1 https://github.com/sireum/tools
+git clone --depth 1 https://github.com/sireum/runtime
+git clone --depth 1 https://github.com/sireum/slang
 cd tools
-rm -fR mill runtime slang
+ln -s ../runtime
+ln -s ../slang
 wget -q http://files.sireum.org/mill
 chmod +x mill
-git clone https://github.com/sireum/runtime runtime
-git clone https://github.com/sireum/slang slang
-TERM=xterm-color SIREUM_HOME="sireum-v3" ./mill tools.jvm.tests.test
+TERM=xterm-color SIREUM_HOME=".." ./mill tools.jvm.tests.test
