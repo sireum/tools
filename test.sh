@@ -10,4 +10,4 @@ wget -q http://files.sireum.org/mill
 chmod +x mill
 git clone https://github.com/sireum/runtime runtime
 git clone https://github.com/sireum/slang slang
-TERM=xterm-color SIREUM_HOME=".." ./mill tools.jvm.tests.test
+TERM=xterm-color SIREUM_HOME="sireum-v3" ./mill tools.jvm.tests.test
