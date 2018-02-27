@@ -1,5 +1,7 @@
 # Sireum Utility Tools
 
+[![Build Status](https://travis-ci.org/sireum/tools.svg?branch=master)](https://travis-ci.org/sireum/tools)
+
 This repository holds various Sireum utility tools:
 
 * **Sergen**: JSON and MessagePack de/serializer generator from Slang datatype definitions
