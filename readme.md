@@ -30,7 +30,7 @@ This repository holds various Sireum utility tools:
   
   * Generated [CLI](https://github.com/sireum/v3/blob/master/cli/jvm/src/main/scala/org/sireum/cli/Cli.scala)
 
-Note that the generated code are in [Slang](https://github.com/sireum/slang).
+Note that the generators and the generated code are [Slang](https://github.com/sireum/slang) programs.
 
 
 ## Testing
