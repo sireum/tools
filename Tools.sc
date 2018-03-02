@@ -53,7 +53,7 @@ trait Module extends CrossJvmJs {
   final override def ivyDeps =
     Agg(ivy"org.scala-lang:scala-reflect:$scalaVersion", ivy"org.scala-lang:scala-compiler:$scalaVersion")
 
-  final override def deps = Seq(tipeObject)
+  final override def deps = Seq(frontEndObject)
 
-  def tipeObject: CrossJvmJs
+  def frontEndObject: CrossJvmJs
 }

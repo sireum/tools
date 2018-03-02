@@ -54,9 +54,18 @@ object slang extends mill.Module {
 
   }
 
+
   object tipe extends Slang.Module.Tipe {
 
-    final override val parserObject = parser
+    final override def astObject = ast
+
+  }
+
+  object frontend extends Slang.Module.FrontEnd {
+
+    final override def parserObject = parser
+
+    final override def tipeObject = tipe
 
   }
 
@@ -64,6 +73,6 @@ object slang extends mill.Module {
 
 object tools extends Tools.Module {
 
-  override val tipeObject = slang.tipe
+  override val frontEndObject = slang.frontend
 
 }

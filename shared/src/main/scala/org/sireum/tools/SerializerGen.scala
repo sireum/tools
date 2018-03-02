@@ -29,6 +29,7 @@ package org.sireum.tools
 import org.sireum._
 import org.sireum.message._
 import org.sireum.ops._
+import org.sireum.lang._
 import org.sireum.lang.{ast => AST}
 import org.sireum.lang.symbol._
 import org.sireum.lang.symbol.Resolver._
@@ -609,7 +610,7 @@ object SerializerGen {
       }
     }
     val (rep, programs, globalNameMap, globalTypeMap) =
-      Resolver.parseProgramAndGloballyResolve(sources, HashMap.empty, HashMap.empty)
+      FrontEnd.parseProgramAndGloballyResolve(sources, HashMap.empty, HashMap.empty)
     if (rep.hasError) {
       reporter.reports(rep.messages)
       return st""
