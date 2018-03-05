@@ -30,8 +30,6 @@ import org.sireum.mill.SireumModule._
 
 trait Module extends CrossJvmJs {
 
-  final override def millSourcePath = super.millSourcePath / up
-
   final override def jvmDeps = Seq()
 
   final override def jsDeps = Seq()

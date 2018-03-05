@@ -73,6 +73,8 @@ object slang extends mill.Module {
 
 object tools extends Tools.Module {
 
+  final override def millSourcePath = super.millSourcePath / up
+
   override val frontEndObject = slang.frontend
 
 }
