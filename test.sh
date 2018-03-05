@@ -9,6 +9,6 @@ git clone --depth 1 https://github.com/sireum/slang
 cd tools
 ln -s ../runtime
 ln -s ../slang
-wget -q http://files.sireum.org/mill
-chmod +x mill
-TERM=xterm-color SIREUM_HOME=".." ./mill tools.jvm.tests.test
+wget -q http://files.sireum.org/mill-standalone
+chmod +x mill-standalone
+SIREUM_HOME=".." ./mill-standalone tools.jvm.tests.test
