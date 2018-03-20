@@ -101,8 +101,8 @@ object cli {
 
   val group: Group = Group(
     name = "tools",
-    description = "tools",
-    header = "Sireum Tools",
+    description = "Utility tools",
+    header = "Sireum Utility Tools",
     unlisted = F,
     subs = ISZ(cliGenTool, serializerGenTool, transformerGenTool)
   )
