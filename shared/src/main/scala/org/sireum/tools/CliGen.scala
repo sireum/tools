@@ -27,78 +27,7 @@
 package org.sireum.tools
 
 import org.sireum._
-
-object CliGen {
-
-  @datatype trait CliOpt {
-    @pure def name: String
-
-    @pure def command: String
-
-    @pure def description: String
-
-    @pure def header: String
-
-    @pure def unlisted: B
-  }
-
-  object CliOpt {
-
-    val tqs: String = "\"\"\""
-
-    @datatype class Group(
-      val name: String,
-      val description: String,
-      val header: String,
-      val unlisted: B,
-      subs: ISZ[CliOpt]
-    ) extends CliOpt {
-      @pure def command: String = {
-        return name
-      }
-    }
-
-    @datatype class Tool(
-      val name: String,
-      val command: String,
-      val description: String,
-      val header: String,
-      usage: String,
-      opts: ISZ[Opt],
-      groups: ISZ[OptGroup]
-    ) extends CliOpt {
-      override def unlisted: B = {
-        return F
-      }
-    }
-
-    @datatype class OptGroup(name: String, opts: ISZ[Opt])
-
-    @datatype class Opt(name: String, longKey: String, shortKey: Option[C], tpe: Type, description: String)
-
-    @datatype trait Type
-
-    object Type {
-
-      @datatype class Flag(default: B) extends Type
-
-      @datatype class Num(sep: Option[C], default: Z, min: Option[Z], max: Option[Z]) extends Type
-
-      @datatype class NumChoice(sep: Option[C], choices: ISZ[Z]) extends Type
-
-      @datatype class Str(sep: Option[C], default: Option[String]) extends Type
-
-      @datatype class Choice(name: String, sep: Option[C], elements: ISZ[String]) extends Type
-
-      @datatype class Path(multiple: B, default: Option[String]) extends Type
-
-    }
-
-  }
-
-}
-
-import CliGen.CliOpt._
+import org.sireum.cli.CliOpt._
 
 @record class CliGen(firstColumnLimit: Z, secondColumnLimit: Z) {
   var decls: ISZ[ST] = ISZ()
