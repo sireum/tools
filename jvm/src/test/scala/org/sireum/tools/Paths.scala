@@ -28,18 +28,13 @@ package org.sireum.tools
 import java.io.File
 
 object Paths {
-  val rootDir: File = {
-    var f = new File(getClass.getResource(".").getPath, "../../..").getCanonicalFile.getAbsoluteFile
-    while (!(f.getName == "tools" && f.getParentFile.getName != "out")) {
-      f = f.getParentFile
-    }
-    f.getParentFile.getCanonicalFile
+  val rootDir: File = new File(System.getProperty("user.dir"))
+  val licensePath = {
+    val f = new File(rootDir, "license.txt")
+    if (f.exists) f.getCanonicalFile else new File(rootDir, "../license.txt").getCanonicalFile
   }
-
-  val licensePath = new File(rootDir, "license.txt")
-
-  val cliConfigPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/cli/CliConfig.sc")
-  val cliPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/cli/Cli.scala")
+  val cliConfigPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/cli.sc")
+  val cliPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/Cli.scala")
   val slangAstPackagePath = new File(rootDir, "slang/ast/shared/src/main/scala/org/sireum/lang/ast")
   val slangAstPath = new File(slangAstPackagePath, "AST.scala")
   val slangMTransformerPath = new File(slangAstPackagePath, "MTransformer.scala")

@@ -37,9 +37,9 @@ class CliGenJvmTest extends SireumSpec {
 
   *(gen(cliConfigPath, cliPath))
 
-  def gen(src: File, dest: File): Boolean = {
+  def gen(src: File, dest: File): Boolean = if (!src.exists) true else {
     val r = CliGenJvm(
-      Some(licensePath), src, dest, ISZ("org", "sireum", "cli"), SNone(), 25, 55)
+      Some(licensePath), src, dest, ISZ("org", "sireum"), SNone(), 25, 55)
     scala.util.Try(FileUtil.readFile(dest)) match {
       case scala.util.Success(expected) =>
         val result = r
