@@ -1,9 +1,9 @@
-/runtime
-/slang
-/out
-target
 /.idea
 /.idea_modules
-/versions.properties
+/out
+target
 /mill-standalone
-/sireum-v3
+/versions.properties
+/runtime
+/slang
+/cli
