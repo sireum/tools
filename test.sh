@@ -1,14 +1,9 @@
 #!/bin/bash -e
-rm -fR sireum-v3
-git clone --depth 1 https://github.com/sireum/v3 sireum-v3
-cd sireum-v3
-rm -fR runtime slang tools
-git clone --depth 1 https://github.com/sireum/tools
+rm -fR runtime slang cli mill-standalone versions.properties out
+curl -Lo mill-standalone http://files.sireum.org/mill-standalone
+chmod +x mill-standalone
+curl -Lo versions.properties https://raw.githubusercontent.com/sireum/kekinian/master/versions.properties
 git clone --depth 1 https://github.com/sireum/runtime
 git clone --depth 1 https://github.com/sireum/slang
-cd tools
-ln -s ../runtime
-ln -s ../slang
-wget -q http://files.sireum.org/mill-standalone
-chmod +x mill-standalone
-SIREUM_HOME=".." ./mill-standalone tools.jvm.tests.test
+git clone --depth 1 https://github.com/sireum/cli
+./mill-standalone tools.jvm.tests.test
