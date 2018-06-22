@@ -169,12 +169,23 @@ object PrePostTransformerGen {
       }
       preMethods = preMethods :+ template.preMethod(adTypeName, adTypeString, superTypeString)
       postMethods = postMethods :+ template.postMethod(adTypeName, adTypeString, superTypeString)
-      if (poset.parentsOf(ti.name).isEmpty) {
+      if (hasNoAdtParent(ti.name)) {
         val ac = genAdtChild(ti)
         transformMethods = transformMethods :+
           template.transformMethod(adTypeName, adTypeString, template.transformMethodMatchSimple(ac), None(), None())
       }
     }
+  }
+
+  @pure def hasNoAdtParent(name: QName): B = {
+    val parents = poset.parentsOf(name)
+    for (parent <- parents.elements) {
+      globalTypeMap.get(parent) match {
+        case Some(_: TypeInfo.AbstractDatatype) => return F
+        case _ =>
+      }
+    }
+    return T
   }
 
   def genAdtChild(ti: TypeInfo.AbstractDatatype): AdtChild = {
