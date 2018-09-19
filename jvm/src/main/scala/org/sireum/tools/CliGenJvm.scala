@@ -43,7 +43,7 @@ object CliGenJvm {
     secondColumnLimit: Z
   ): String = {
     val srcText = FileUtil.readFile(src)
-    val config = ReflectUtil.eval[CliOpt.Group](srcText)
+    val config = ReflectUtil.eval[CliOpt](srcText)
     val lOpt = licenseOpt match {
       case Some(f) => SSome(SString(FileUtil.readFile(f).trim))
       case _ => SNone[SString]()

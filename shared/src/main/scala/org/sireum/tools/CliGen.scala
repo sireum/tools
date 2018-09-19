@@ -27,6 +27,7 @@
 package org.sireum.tools
 
 import org.sireum._
+import org.sireum.cli.CliOpt
 import org.sireum.cli.CliOpt._
 
 @record class CliGen(firstColumnLimit: Z, secondColumnLimit: Z) {
@@ -39,11 +40,14 @@ import org.sireum.cli.CliOpt._
     fileUriOpt: Option[String],
     packageNames: ISZ[String],
     name: String,
-    config: Group
+    config: CliOpt
   ): ST = {
-    val topName = s"${ops.StringOps(config.name).firstToUpper}Option"
+    val topName = s"${ops.StringOps(config.name).firstToUpper}TopOption"
 
-    group(topName, config)
+    config match {
+      case config: Group => group(topName, config)
+      case config: Tool => tool(topName, config)
+    }
 
     val license: Option[ST] = licenseOpt.map((text: String) => st"""/*
     | $text
@@ -269,7 +273,7 @@ import org.sireum.cli.CliOpt._
       |  ${(params, ",\n")}
       |) extends $topName"""
 
-    val optss = ("|Available Options:", c.opts) +:
+    val optss = (("|Available Options:", c.opts)) +:
       c.groups.map[(String, ISZ[Opt])]((g: OptGroup) => (s"|${g.name} Options:", g.opts))
 
     var options = ISZ[ST]()
