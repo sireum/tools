@@ -4,6 +4,8 @@
 target
 /mill-standalone
 /versions.properties
+/license.txt
 /runtime
 /slang
 /cli
+/sireum
