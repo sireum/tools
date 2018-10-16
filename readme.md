@@ -1,6 +1,6 @@
 # Sireum Utility Tools
 
-[![Build Status](https://travis-ci.org/sireum/tools.svg?branch=master)](https://travis-ci.org/sireum/tools)
+[![Build Status](https://travis-ci.org/sireum/tools.svg?branch=master)](https://travis-ci.org/sireum/tools) [![](https://jitpack.io/v/org.sireum/tools.svg)](https://jitpack.io/#org.sireum/tools)
 
 This repository holds various Sireum utility tools:
 

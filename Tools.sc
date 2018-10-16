@@ -25,18 +25,32 @@
 
 import mill._
 import mill.scalalib._
-import ammonite.ops.up
 import org.sireum.mill.SireumModule._
 
-trait Module extends CrossJvmJs {
+trait Module extends CrossJvmJsJitPack {
+
+  final override def subUrl: String = "tools"
+
+  final override def developers = Seq(Developers.robby)
+
+  final override def description: String = "Sireum Tools"
+
+  final override def artifactName = "tools"
 
   final override def jvmDeps = Seq()
 
   final override def jsDeps = Seq()
 
-  final override def scalacPluginIvyDeps = Agg(ivy"org.sireum::scalac-plugin:$scalacPluginVersion")
+  final override def scalacPluginIvyDeps = Agg(
+    ivy"org.sireum::scalac-plugin:$scalacPluginVersion"
+  )
 
-  final override def testIvyDeps = Agg(ivy"org.scalatest::scalatest::$scalaTestVersion")
+  final override def testDeps =
+    if (isSourceDep) Seq(testObject.shared) else Seq()
+
+  final override def testIvyDeps =
+    if (isSourceDep) Agg.empty
+    else Agg(jpLatest(isCross = true, "sireum", "runtime", "test"))
 
   final override def jvmTestIvyDeps = Agg(ivy"com.sksamuel.diff:diff:$diffVersion")
 
@@ -48,10 +62,17 @@ trait Module extends CrossJvmJs {
 
   final override def jsTestFrameworks = jvmTestFrameworks
 
-  final override def ivyDeps =
-    Agg(ivy"org.scala-lang:scala-reflect:$scalaVersion", ivy"org.scala-lang:scala-compiler:$scalaVersion")
+  final override def ivyDeps = {
+    val ds = Seq(ivy"org.scala-lang:scala-reflect:$scalaVersion", ivy"org.scala-lang:scala-compiler:$scalaVersion")
+    if (isSourceDep) Agg(ds: _*)
+    else Agg(ds :+
+      jpLatest(isCross = true, "sireum", "slang", "frontend"): _*)
+  }
 
-  final override def deps = Seq(frontEndObject)
+  final override def deps =
+    if (isSourceDep) Seq(frontEndObject) else Seq()
 
-  def frontEndObject: CrossJvmJs
+  def frontEndObject: CrossJvmJsPublish
+
+  def testObject: CrossJvmJsPublish
 }
