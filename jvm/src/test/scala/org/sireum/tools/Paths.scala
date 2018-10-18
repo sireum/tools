@@ -29,12 +29,12 @@ import java.io.File
 
 object Paths {
   val rootDir: File = new File(System.getProperty("user.dir"))
-  val licensePath = {
+  val licensePath: File = {
     val f = new File(rootDir, "license.txt")
     if (f.exists) f.getCanonicalFile else new File(rootDir, "../license.txt").getCanonicalFile
   }
-  val cliConfigPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/cli.sc")
-  val cliPath = new File(rootDir, "cli/jvm/src/main/scala/org/sireum/Cli.scala")
+  val cliConfigPath = new File(rootDir, "kekinian/cli/jvm/src/main/scala/org/sireum/cli.sc")
+  val cliPath = new File(rootDir, "kekinian/cli/jvm/src/main/scala/org/sireum/Cli.scala")
   val slangAstPackagePath = new File(rootDir, "slang/ast/shared/src/main/scala/org/sireum/lang/ast")
   val slangAstPath = new File(slangAstPackagePath, "AST.scala")
   val slangMTransformerPath = new File(slangAstPackagePath, "MTransformer.scala")

@@ -9,13 +9,13 @@ if [ ! -f sireum ]; then
   curl -Lo sireum http://files.sireum.org/sireum
   chmod +x sireum
 fi
-if [ ! -e versions.properties ]; then
-  curl -Lo versions.properties https://raw.githubusercontent.com/sireum/kekinian/master/versions.properties
-fi
-if [ ! -e license.txt ]; then
-  curl -Lo license.txt https://raw.githubusercontent.com/sireum/kekinian/master/license.txt
-fi
-rm -fR runtime slang cli
+rm -fR runtime slang kekinian
 git clone --depth=1 https://github.com/sireum/runtime
 git clone --depth=1 https://github.com/sireum/slang
-git clone --depth=1 https://github.com/sireum/cli
+git clone --depth=1 https://github.com/sireum/kekinian
+if [ ! -e versions.properties ]; then
+  cp kekinian/versions.properties .
+fi
+if [ ! -e license.txt ]; then
+  cp kekinian/license.txt
+fi
