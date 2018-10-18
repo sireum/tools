@@ -17,5 +17,5 @@ if [ ! -e versions.properties ]; then
   cp kekinian/versions.properties .
 fi
 if [ ! -e license.txt ]; then
-  cp kekinian/license.txt
+  cp kekinian/license.txt .
 fi
