@@ -30,6 +30,27 @@ import org.sireum._
 import org.sireum.cli.CliOpt._
 
 object cli {
+
+  val iveGenTool: Tool = Tool(
+    name = "ivegen",
+    command = "ivegen",
+    description = "Sireum IVE project generator",
+    header = "Sireum IVE Project Generator",
+    usage = "<option>* <project-parent-directory>",
+    opts = ISZ(
+      Opt(name = "jdk", longKey = "jdk", shortKey = Some('j'),
+        tpe = Type.Str(sep = None(), default = Some("Java")),
+        description = "JDK name"),
+      Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
+        tpe = Type.Choice(name = "IveMode", sep = None(), elements = ISZ("idea", "mill")),
+        description = "Project format (use idea for Slang script project and mill for full Slang development)"),
+      Opt(name = "name", longKey = "name", shortKey = Some('n'),
+        tpe = Type.Str(sep = None(), default = Some("hello")),
+        description = "Project name"),
+    ),
+    groups = ISZ()
+  )
+
   val cliGenTool: Tool = Tool(
     name = "cligen",
     command = "cligen",
@@ -104,6 +125,6 @@ object cli {
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(cliGenTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
   )
 }
