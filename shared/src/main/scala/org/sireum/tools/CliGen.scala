@@ -303,7 +303,9 @@ import org.sireum.cli.CliOpt._
               else s"""${opt.description} (expects a path; default is "${t.default.get}")"""
             }
           case t: Type.Str =>
-            if (t.sep.isEmpty) s"${opt.description} (expects a string)"
+            if (t.sep.isEmpty)
+              if (t.default.isEmpty) s"${opt.description} (expects a string)"
+              else s"""${opt.description} (expects a string; default is "${t.default.get}")"""
             else if (t.default.isEmpty) s"""${opt.description} (expects a string separated by "${t.sep.get}")"""
             else s"""${opt.description} (expects a string separated by "${t.sep.get}"; default is "${t.default.get}")"""
         }
