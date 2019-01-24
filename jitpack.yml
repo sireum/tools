@@ -1,7 +1,5 @@
 jdk:
   - oraclejdk8
-before_install:
-  - ./test.sh
 install:
   - ./mill-standalone all tools.shared.m2 tools.jvm.m2 tools.js.m2
   - mkdir -p ~/.m2/repository
