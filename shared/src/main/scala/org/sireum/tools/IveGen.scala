@@ -227,39 +227,6 @@ object IveGen {
     scalacPluginVer: String
   ): Map[ISZ[String], ST] = {
     val sep: String = if (isWin) "\\" else "/"
-    def scalaLib: ST = {
-      val scalaLibDir: ST = st"$sireumHome/bin/scala/lib"
-      return st"""<component name="libraryTable">
-      |  <library name="Scala" type="Scala">
-      |    <properties>
-      |      <compiler-classpath>
-      |        <root url="file://$scalaLibDir/scala-compiler.jar" />
-      |        <root url="file://$scalaLibDir/scala-library.jar" />
-      |        <root url="file://$scalaLibDir/scala-reflect.jar" />
-      |      </compiler-classpath>
-      |    </properties>
-      |    <CLASSES>
-      |      <root url="jar://$scalaLibDir/scala-library.jar!/" />
-      |      <root url="jar://$scalaLibDir/scala-reflect.jar!/" />
-      |    </CLASSES>
-      |    <JAVADOC>
-      |      <root url="http://www.scala-lang.org/api/$scalaVer/" />
-      |    </JAVADOC>
-      |    <SOURCES />
-      |  </library>
-      |</component>"""
-    }
-    def sireumLib: ST = {
-      return st"""<component name="libraryTable">
-      |  <library name="Sireum">
-      |    <CLASSES>
-      |      <root url="jar://$sireumHome/bin/sireum.jar!/" />
-      |    </CLASSES>
-      |    <JAVADOC />
-      |    <SOURCES />
-      |  </library>
-      |</component>"""
-    }
     def scriptRunner: ST = {
       return st"""<component name="ProjectRunConfigurationManager">
       |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
@@ -340,15 +307,13 @@ object IveGen {
       |    </content>
       |    <orderEntry type="inheritedJdk" />
       |    <orderEntry type="sourceFolder" forTests="false" />
-      |    <orderEntry type="library" name="Scala" level="project" />
-      |    <orderEntry type="library" name="Sireum" level="project" />
+      |    <orderEntry type="library" name="Scala" level="application" />
+      |    <orderEntry type="library" name="Sireum" level="application" />
       |  </component>
       |</module>"""
     }
     return Map ++ ISZ[(ISZ[String], ST)](
       ISZ[String](".idea", "inspectionProfiles", "Project_Default.xml") ~> Internal.inspection,
-      ISZ[String](".idea", "libraries", "Scala.xml") ~> scalaLib,
-      ISZ[String](".idea", "libraries", "Sireum.xml") ~> sireumLib,
       ISZ[String](".idea", "runConfigurations", "Slang_Script_Runner.xml") ~> scriptRunner,
       ISZ[String](".idea", "misc.xml") ~> Internal.misc(jdkName),
       ISZ[String](".idea", "modules.xml") ~> modules,
