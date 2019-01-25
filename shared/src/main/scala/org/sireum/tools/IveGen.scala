@@ -75,6 +75,7 @@ object IveGen {
   }
 
   def mill(
+    alreadyExists: B,
     name: String,
     projectPath: String,
     jdkName: String,
@@ -190,8 +191,7 @@ object IveGen {
       |  import ammonite.ops._
       |  def ghLatestCommit(owner: String, repo: String, branch: String): String = {
       |    val out = %%('git, "ls-remote", s"https://github.com/$$owner/$$repo.git")(pwd).out
-      |    for (line <- out.lines if line.contains(s"refs/heads/$$branch"))
-      |      return line.substring(0, line.indexWhere(_.isWhitespace))
+      |    for (line <- out.lines if line.contains(s"refs/heads/$$branch")) return line.substring(0, 10)
       |    throw new RuntimeException(s"Could not determine latest commit for https://github.com/$$owner/$$repo.git branch $$branch!")
       |  }
       |  val hash = branchOrHash match {
@@ -207,7 +207,7 @@ object IveGen {
       |
       |"""
     }
-    return Map ++ ISZ[(ISZ[String], ST)](
+    var r = Map ++ ISZ[(ISZ[String], ST)](
       ISZ[String](".idea", "inspectionProfiles", "Project_Default.xml") ~> Internal.inspection,
       ISZ[String](".idea", "misc.xml") ~> Internal.misc(jdkName),
       ISZ[String](".idea", "scala_settings.xml") ~> Internal.scalaSettings,
@@ -215,6 +215,10 @@ object IveGen {
       ISZ[String](s"$name", "src", s"app.scala") ~> app,
       ISZ[String](s"build.sc") ~> build
     )
+    if (!alreadyExists) {
+      r = r + ISZ[String](s"$name", "src", s"app.scala") ~> app + ISZ[String](s"build.sc") ~> build
+    }
+    return r
   }
 
   def idea(
