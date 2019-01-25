@@ -47,6 +47,9 @@ object cli {
       Opt(name = "name", longKey = "name", shortKey = Some('n'),
         tpe = Type.Str(sep = None(), default = Some("hello")),
         description = "Project name"),
+      Opt(name = "millPath", longKey = "mill-path", shortKey = Some('p'),
+        tpe = Type.Flag(default = F),
+        description = "Use mill available in the PATH environment variable (only in mill mode)"),
     ),
     groups = ISZ()
   )
