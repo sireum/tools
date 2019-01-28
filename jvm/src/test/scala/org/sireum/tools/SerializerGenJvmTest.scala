@@ -59,7 +59,7 @@ class SerializerGenJvmTest extends SireumSpec {
         scala.util.Try(FileUtil.readFile(dest)) match {
           case scala.util.Success(expected) =>
             val result = r
-            if (result != expected) {
+            if (!(result =~= expected)) {
               val dmp = new DiffMatchPatch()
               Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
               Console.err.flush()

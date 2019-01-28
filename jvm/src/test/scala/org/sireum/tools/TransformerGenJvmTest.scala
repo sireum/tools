@@ -49,7 +49,7 @@ class TransformerGenJvmTest extends SireumSpec {
       case SSome(r) =>
         val expected = FileUtil.readFile(dest)
         val result = r
-        if (result != expected) {
+        if (!(result =~= expected)) {
           val dmp = new DiffMatchPatch()
           Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
           Console.err.flush()
