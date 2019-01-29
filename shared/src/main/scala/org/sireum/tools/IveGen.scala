@@ -222,6 +222,7 @@ object IveGen {
   }
 
   def idea(
+    alreadyExists: B,
     isWin: B,
     sireumHome: String,
     name: String,
@@ -231,26 +232,6 @@ object IveGen {
     scalacPluginVer: String
   ): Map[ISZ[String], ST] = {
     val sep: String = if (isWin) "\\" else "/"
-    def scriptRunner: ST = {
-      return st"""<component name="ProjectRunConfigurationManager">
-      |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
-      |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
-      |    <module name="$name" />
-      |    <option name="PROGRAM_PARAMETERS" value="slang run $$FilePath$$" />
-      |    <method v="2" />
-      |  </configuration>
-      |</component>"""
-    }
-    def modules: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="ProjectModuleManager">
-      |    <modules>
-      |      <module fileurl="file://$$PROJECT_DIR$$/$name.iml" filepath="$$PROJECT_DIR$$/$name.iml" />
-      |    </modules>
-      |  </component>
-      |</project>"""
-    }
     def scalaCompiler: ST = {
       return st"""<?xml version="1.0" encoding="UTF-8"?>
       |<project version="4">
@@ -266,17 +247,45 @@ object IveGen {
       |  </component>
       |</project>"""
     }
+    def modules: ST = {
+      return st"""<?xml version="1.0" encoding="UTF-8"?>
+                 |<project version="4">
+                 |  <component name="ProjectModuleManager">
+                 |    <modules>
+                 |      <module fileurl="file://$$PROJECT_DIR$$/$name.iml" filepath="$$PROJECT_DIR$$/$name.iml" />
+                 |    </modules>
+                 |  </component>
+                 |</project>"""
+    }
+    def scriptRunner: ST = {
+      return st"""<component name="ProjectRunConfigurationManager">
+                 |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
+                 |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
+                 |    <module name="$name" />
+                 |    <option name="PROGRAM_PARAMETERS" value="slang run $$FilePath$$" />
+                 |    <method v="2" />
+                 |  </configuration>
+                 |</component>"""
+    }
     def workspace: ST = {
       val slangRun = st"$sireumHome${sep}bin${sep}slang-run.${if (isWin) "bat" else "sh"}"
+      val (runScript, listItem, recent): (ST, ST, ST) =
+        if (alreadyExists) (st"", st"", st"")
+        else
+          (st"""<configuration name="Run script.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
+          |      <setting name="execName" value="$slangRun" />
+          |      <setting name="fileName" value="$projectPath${sep}src${sep}script.sc" />
+          |      <setting name="scriptParameters" value="" />
+          |      <method v="2" />
+          |    </configuration>""", st"""<item itemvalue="Ammonite.Run script.sc" />""", st"""<recent_temporary>
+          |      <list>
+          |        <item itemvalue="Ammonite.Run script.sc" />
+          |      </list>
+          |    </recent_temporary>""")
       return st"""<?xml version="1.0" encoding="UTF-8"?>
       |<project version="4">
       |  <component name="RunManager" selected="Ammonite.Run script.sc">
-      |    <configuration name="Run script.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
-      |      <setting name="execName" value="$slangRun" />
-      |      <setting name="fileName" value="$projectPath${sep}src${sep}script.sc" />
-      |      <setting name="scriptParameters" value="" />
-      |      <method v="2" />
-      |    </configuration>
+      |    $runScript
       |    <configuration default="true" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false">
       |      <setting name="execName" value="$slangRun" />
       |      <setting name="fileName" value="" />
@@ -284,14 +293,10 @@ object IveGen {
       |      <method v="2" />
       |    </configuration>
       |    <list>
-      |      <item itemvalue="Ammonite.Run script.sc" />
+      |      $listItem
       |      <item itemvalue="Application.Slang Script Runner" />
       |    </list>
-      |    <recent_temporary>
-      |      <list>
-      |        <item itemvalue="Ammonite.Run script.sc" />
-      |      </list>
-      |    </recent_temporary>
+      |    $recent
       |  </component>
       |</project>"""
     }
@@ -316,16 +321,19 @@ object IveGen {
       |  </component>
       |</module>"""
     }
-    return Map ++ ISZ[(ISZ[String], ST)](
+    var r = Map ++ ISZ[(ISZ[String], ST)](
       ISZ[String](".idea", "inspectionProfiles", "Project_Default.xml") ~> Internal.inspection,
-      ISZ[String](".idea", "runConfigurations", "Slang_Script_Runner.xml") ~> scriptRunner,
       ISZ[String](".idea", "misc.xml") ~> Internal.misc(jdkName),
-      ISZ[String](".idea", "modules.xml") ~> modules,
       ISZ[String](".idea", "scala_compiler.xml") ~> scalaCompiler,
       ISZ[String](".idea", "scala_settings.xml") ~> Internal.scalaSettings,
       ISZ[String](".idea", "workspace.xml") ~> workspace,
-      ISZ[String]("src", "script.sc") ~> script,
+      ISZ[String](".idea", "runConfigurations", "Slang_Script_Runner.xml") ~> scriptRunner,
+      ISZ[String](".idea", "modules.xml") ~> modules,
       ISZ[String](s"$name.iml") ~> iml
     )
+    if (!alreadyExists) {
+      r = r + ISZ[String]("src", "script.sc") ~> script
+    }
+    return r
   }
 }
