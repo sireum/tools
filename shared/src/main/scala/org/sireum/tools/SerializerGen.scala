@@ -649,7 +649,7 @@ object SerializerGen {
     def gen(licenseOpt: Option[String], fileUriOpt: Option[String], name: Option[String]): ST = {
       for (ti <- sortedGlobalTypes) {
         ti match {
-          case ti: TypeInfo.AbstractDatatype => genAdt(ti)
+          case ti: TypeInfo.Adt => genAdt(ti)
           case ti: TypeInfo.Sig => genRoot(ti.name)
           case ti: TypeInfo.Enum => genEnum(ti)
           case _ =>
@@ -677,7 +677,7 @@ object SerializerGen {
         )
     }
 
-    def genAdt(ti: TypeInfo.AbstractDatatype): Unit = {
+    def genAdt(ti: TypeInfo.Adt): Unit = {
       if (ti.ast.isRoot) {
         genRoot(ti.name)
       } else {
@@ -730,7 +730,7 @@ object SerializerGen {
       var firstChildTypeName = st"?"
       for (child <- sortedDescendants) {
         child match {
-          case childTI: TypeInfo.AbstractDatatype if !childTI.ast.isRoot =>
+          case childTI: TypeInfo.Adt if !childTI.ast.isRoot =>
             val childIds = childTI.name
             val childTypeString = typeNameString(packageName, childIds)
             val childTypeName = typeName(packageName, childIds)
@@ -747,12 +747,12 @@ object SerializerGen {
       fromsTos = fromsTos :+ template.from(rootTypeName, rootTypeString) :+ template.to(rootTypeName, rootTypeString)
     }
 
-    def printField(ti: TypeInfo.AbstractDatatype, fieldName: String, tipe: AST.Type.Named): ST = {
+    def printField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val v = printValue(ti, fieldName, tipe)
       return template.printField(fieldName, v)
     }
 
-    def printValue(ti: TypeInfo.AbstractDatatype, fieldName: String, tipe: AST.Type.Named): ST = {
+    def printValue(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val sOpt = s(ti, tipe)
       sOpt match {
         case Some((isImmutable, indexType, (isBuiltIn, isSimple, elementName))) =>
@@ -775,12 +775,12 @@ object SerializerGen {
       template.printValue(t._3, fieldName, t._1)
     }
 
-    def parseField(ti: TypeInfo.AbstractDatatype, fieldName: String, tipe: AST.Type.Named): ST = {
+    def parseField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val v = parseValue(ti, tipe)
       return template.parseField(fieldName, v)
     }
 
-    def parseValue(ti: TypeInfo.AbstractDatatype, tipe: AST.Type.Named): ST = {
+    def parseValue(ti: TypeInfo.Adt, tipe: AST.Type.Named): ST = {
       val sOpt = s(ti, tipe)
       sOpt match {
         case Some((isImmutable, indexType, (isBuiltIn, _, elementName))) =>
@@ -803,7 +803,7 @@ object SerializerGen {
       return template.parseValue(ISZ(t._3, st"()"), t._1)
     }
 
-    def nameTwo(ti: TypeInfo.AbstractDatatype, tipe: AST.Type.Named): Option[(String, (B, B, ST), (B, B, ST))] = {
+    def nameTwo(ti: TypeInfo.Adt, tipe: AST.Type.Named): Option[(String, (B, B, ST), (B, B, ST))] = {
       if (!(tipe.name.ids.size == 1 && tipe.typeArgs.size == 2)) {
         return None()
       }
@@ -820,7 +820,7 @@ object SerializerGen {
       return Some((name, btn0, btn1))
     }
 
-    def nameOne(ti: TypeInfo.AbstractDatatype, tipe: AST.Type.Named): Option[(String, (B, B, ST))] = {
+    def nameOne(ti: TypeInfo.Adt, tipe: AST.Type.Named): Option[(String, (B, B, ST))] = {
       if (!(tipe.name.ids.size == 1 && tipe.typeArgs.size == 1)) {
         return None()
       }
@@ -841,7 +841,7 @@ object SerializerGen {
       return Some((name, btn))
     }
 
-    def s(ti: TypeInfo.AbstractDatatype, tipe: AST.Type.Named): Option[(B, String, (B, B, ST))] = {
+    def s(ti: TypeInfo.Adt, tipe: AST.Type.Named): Option[(B, String, (B, B, ST))] = {
       if (!(tipe.name.ids.size == 1 && (tipe.typeArgs.size == 1 || tipe.typeArgs.size == 2))) {
         return None()
       }
@@ -863,7 +863,7 @@ object SerializerGen {
       }
     }
 
-    def basicOrTypeName(ti: TypeInfo.AbstractDatatype, tipe: AST.Type): (B /* isBuiltIn */, B /* isSimple */, ST) = {
+    def basicOrTypeName(ti: TypeInfo.Adt, tipe: AST.Type): (B /* isBuiltIn */, B /* isSimple */, ST) = {
       basic(tipe) match {
         case Some((simple, typeName)) => return (T, simple, st"$typeName")
         case _ =>

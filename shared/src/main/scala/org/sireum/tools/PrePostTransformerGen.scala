@@ -86,7 +86,7 @@ object PrePostTransformerGen {
   def gen(licenseOpt: Option[String], fileUriOpt: Option[String], name: String): ST = {
     for (ti <- globalTypes) {
       ti match {
-        case ti: TypeInfo.AbstractDatatype => genAdt(ti)
+        case ti: TypeInfo.Adt => genAdt(ti)
         case ti: TypeInfo.Sig => genRoot(ti.name, T)
         case _ =>
       }
@@ -125,7 +125,7 @@ object PrePostTransformerGen {
       else (None[ST](), None[ST]())
     for (child <- sortedDescendants) {
       child match {
-        case childTI: TypeInfo.AbstractDatatype if !childTI.ast.isRoot =>
+        case childTI: TypeInfo.Adt if !childTI.ast.isRoot =>
           val childIds = childTI.name
           val childTypeString = typeNameString(packageName, childIds)
           val childTypeName = typeName(packageName, childIds)
@@ -145,7 +145,7 @@ object PrePostTransformerGen {
       template.transformMethod(rootTypeName, rootTypeString, transformMethodMatchST, None(), None())
   }
 
-  def genAdt(ti: TypeInfo.AbstractDatatype): Unit = {
+  def genAdt(ti: TypeInfo.Adt): Unit = {
     if (!ti.ast.isDatatype && isImmutable) {
       reporter.error(
         ti.ast.id.attr.posOpt,
@@ -181,14 +181,14 @@ object PrePostTransformerGen {
     val parents = poset.parentsOf(name)
     for (parent <- parents.elements) {
       globalTypeMap.get(parent) match {
-        case Some(_: TypeInfo.AbstractDatatype) => return F
+        case Some(_: TypeInfo.Adt) => return F
         case _ =>
       }
     }
     return T
   }
 
-  def genAdtChild(ti: TypeInfo.AbstractDatatype): AdtChild = {
+  def genAdtChild(ti: TypeInfo.Adt): AdtChild = {
     var methodCaseMembers = ISZ[ST]()
     var methodCaseChanges = ISZ[ST]()
     var methodCaseUpdates = ISZ[ST]()
@@ -227,7 +227,7 @@ object PrePostTransformerGen {
 
     var i = 0
 
-    def genS(isImmutableCollection: B, indexType: ST, elementType: AST.Type, p: AST.AbstractDatatypeParam): Unit = {
+    def genS(isImmutableCollection: B, indexType: ST, elementType: AST.Type, p: AST.AdtParam): Unit = {
       if (isImmutable && !isImmutableCollection) {
         reporter.error(
           p.id.attr.posOpt,
@@ -244,7 +244,7 @@ object PrePostTransformerGen {
       }
     }
 
-    def genOpt(isImmutableOpt: B, t: AST.Type, p: AST.AbstractDatatypeParam): Unit = {
+    def genOpt(isImmutableOpt: B, t: AST.Type, p: AST.AdtParam): Unit = {
       if (isImmutable && !isImmutableOpt) {
         reporter.error(
           p.id.attr.posOpt,
@@ -315,7 +315,7 @@ object PrePostTransformerGen {
 
   def transformSpecific(name: QName): Unit = {
     globalTypeMap.get(name) match {
-      case Some(ti: TypeInfo.AbstractDatatype) if !ti.ast.isRoot && adtParent(ti.name).nonEmpty =>
+      case Some(ti: TypeInfo.Adt) if !ti.ast.isRoot && adtParent(ti.name).nonEmpty =>
         val adTypeString = typeNameString(packageName, name)
         val adts = adTypeString.render
         if (specificAdded.contains(adts)) {
@@ -340,21 +340,21 @@ object PrePostTransformerGen {
     var r: QName = ISZ()
     for (name <- poset.parentsOf(n).elements if r.isEmpty) {
       globalTypeMap.get(name) match {
-        case Some(_: TypeInfo.AbstractDatatype) => r = name
+        case Some(_: TypeInfo.Adt) => r = name
         case _ =>
       }
     }
     return if (r.isEmpty) None() else Some(r)
   }
 
-  def adtTypeNameOpt(ti: TypeInfo.AbstractDatatype, tipe: AST.Type): Option[QName] = {
+  def adtTypeNameOpt(ti: TypeInfo.Adt, tipe: AST.Type): Option[QName] = {
     tipe match {
       case tipe: AST.Type.Named => adtNameOpt(ti, AST.Util.ids2strings(tipe.name.ids), tipe.attr.posOpt)
       case _ => return None()
     }
   }
 
-  def adtNameOpt(ti: TypeInfo.AbstractDatatype, ids: QName, posOpt: Option[Position]): Option[QName] = {
+  def adtNameOpt(ti: TypeInfo.Adt, ids: QName, posOpt: Option[Position]): Option[QName] = {
     if (ids.size == 1) {
       ids(0).native match {
         case "B" => return None[QName]()
@@ -390,7 +390,7 @@ object PrePostTransformerGen {
       }
     }
     ti.scope.resolveType(globalTypeMap, ids) match {
-      case Some(ti: TypeInfo.AbstractDatatype) => return Some(ti.name)
+      case Some(ti: TypeInfo.Adt) => return Some(ti.name)
       case Some(ti: TypeInfo.Sig) => return Some(ti.name)
       case Some(_) => return None()
       case _ =>
