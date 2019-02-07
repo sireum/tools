@@ -3,6 +3,7 @@ jdk:
 before_install:
   - ./prelude.sh
 install:
+  - export SIREUM_SOURCE_BUILD=false
   - ./mill-standalone all tools.shared.m2 tools.jvm.m2 tools.js.m2
   - mkdir -p ~/.m2/repository
   - cp -Rv out/tools/shared/m2/dest/* ~/.m2/repository/
