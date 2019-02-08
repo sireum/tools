@@ -33,187 +33,198 @@ object IveGen {
   object Internal {
 
     def inspection: ST = {
-      return st"""<component name="InspectionProjectProfileManager">
-      |  <profile version="1.0">
-      |    <option name="myName" value="Project Default" />
-      |    <inspection_tool class="ComparingUnrelatedTypes" enabled="false" level="WARNING" enabled_by_default="false" />
-      |    <inspection_tool class="RemoveRedundantReturn" enabled="false" level="WARNING" enabled_by_default="false" />
-      |  </profile>
-      |</component>"""
+      val r =
+        st"""<component name="InspectionProjectProfileManager">
+            |  <profile version="1.0">
+            |    <option name="myName" value="Project Default" />
+            |    <inspection_tool class="ComparingUnrelatedTypes" enabled="false" level="WARNING" enabled_by_default="false" />
+            |    <inspection_tool class="RemoveRedundantReturn" enabled="false" level="WARNING" enabled_by_default="false" />
+            |  </profile>
+            |</component>"""
+      return r
     }
 
     def misc(jdkName: String): ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="$jdkName" project-jdk-type="JavaSDK">
-      |    <output url="file://$$PROJECT_DIR$$/out" />
-      |  </component>
-      |</project>"""
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="$jdkName" project-jdk-type="JavaSDK">
+            |    <output url="file://$$PROJECT_DIR$$/out" />
+            |  </component>
+            |</project>"""
+      return r
     }
 
     def scalaSettings: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="ScalaProjectSettings">
-      |    <option name="autoRunDelay" value="3000" />
-      |    <option name="dontCacheCompoundTypes" value="true" />
-      |    <option name="inProcessMode" value="false" />
-      |    <option name="intInjectionMapping">
-      |      <map>
-      |        <entry key="xml" value="XML" />
-      |      </map>
-      |    </option>
-      |    <option name="metaTrimMethodBodies" value="false" />
-      |    <option name="scFileMode" value="Ammonite" />
-      |    <option name="scalaMetaMode" value="Disabled" />
-      |    <option name="showNotFoundImplicitArguments" value="false" />
-      |    <option name="treatDocCommentAsBlockComment" value="true" />
-      |    <option name="treatScratchFilesAsWorksheet" value="false" />
-      |  </component>
-      |</project>"""
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="ScalaProjectSettings">
+            |    <option name="autoRunDelay" value="3000" />
+            |    <option name="dontCacheCompoundTypes" value="true" />
+            |    <option name="inProcessMode" value="false" />
+            |    <option name="intInjectionMapping">
+            |      <map>
+            |        <entry key="xml" value="XML" />
+            |      </map>
+            |    </option>
+            |    <option name="metaTrimMethodBodies" value="false" />
+            |    <option name="scFileMode" value="Ammonite" />
+            |    <option name="scalaMetaMode" value="Disabled" />
+            |    <option name="showNotFoundImplicitArguments" value="false" />
+            |    <option name="treatDocCommentAsBlockComment" value="true" />
+            |    <option name="treatScratchFilesAsWorksheet" value="false" />
+            |  </component>
+            |</project>"""
+      return r
     }
   }
 
   def mill(
-    alreadyExists: B,
-    name: String,
-    projectPath: String,
-    jdkName: String,
-    scalaVer: String,
-    scalacPluginVer: String
-  ): Map[ISZ[String], ST] = {
+            alreadyExists: B,
+            name: String,
+            projectPath: String,
+            jdkName: String,
+            scalaVer: String,
+            scalacPluginVer: String
+          ): Map[ISZ[String], ST] = {
     def workspace: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="RunManager">
-      |    <configuration default="true" type="Application" factoryName="Application">
-      |      <method v="2" />
-      |    </configuration>
-      |    <configuration default="true" type="JUnit" factoryName="JUnit">
-      |      <option name="MAIN_CLASS_NAME" value="" />
-      |      <option name="METHOD_NAME" value="" />
-      |      <option name="TEST_OBJECT" value="class" />
-      |      <option name="PARAMETERS" value="" />
-      |      <method v="2" />
-      |    </configuration>
-      |    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
-      |      <setting name="path" value="" />
-      |      <setting name="vmparams" value="" />
-      |      <setting name="params" value="" />
-      |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
-      |      <setting name="searchForTest" value="Across module dependencies" />
-      |      <setting name="showProgressMessages" value="true" />
-      |      <setting name="useSbt" value="false" />
-      |      <setting name="useUiWithSbt" value="false" />
-      |      <envs />
-      |      <setting name="testKind" value="Class" />
-      |      <setting name="path" value="" />
-      |      <method v="2" />
-      |    </configuration>
-      |    <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
-      |      <setting name="path" value="" />
-      |      <setting name="vmparams" value="" />
-      |      <setting name="params" value="" />
-      |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
-      |      <setting name="searchForTest" value="Across module dependencies" />
-      |      <setting name="showProgressMessages" value="true" />
-      |      <setting name="useSbt" value="false" />
-      |      <setting name="useUiWithSbt" value="false" />
-      |      <envs />
-      |      <setting name="testKind" value="Class" />
-      |      <setting name="path" value="" />
-      |      <method v="2" />
-      |    </configuration>
-      |    <configuration default="true" type="TestNG">
-      |      <option name="SUITE_NAME" value="" />
-      |      <option name="MAIN_CLASS_NAME" value="" />
-      |      <option name="GROUP_NAME" value="" />
-      |      <option name="PARAMETERS" value="" />
-      |      <option name="OUTPUT_DIRECTORY" value="" />
-      |      <option name="TEST_SEARCH_SCOPE">
-      |        <value defaultName="moduleWithDependencies" />
-      |      </option>
-      |      <option name="PROPERTIES_FILE" value="" />
-      |      <properties />
-      |      <listeners />
-      |      <method v="2" />
-      |    </configuration>
-      |    <configuration default="true" type="uTestRunConfiguration" factoryName="utest">
-      |      <setting name="path" value="" />
-      |      <setting name="vmparams" value="" />
-      |      <setting name="params" value="" />
-      |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
-      |      <setting name="searchForTest" value="Across module dependencies" />
-      |      <setting name="showProgressMessages" value="true" />
-      |      <setting name="useSbt" value="false" />
-      |      <setting name="useUiWithSbt" value="false" />
-      |      <envs />
-      |      <setting name="testKind" value="Class" />
-      |      <setting name="path" value="" />
-      |      <method v="2" />
-      |    </configuration>
-      |  </component>
-      |</project>"""
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="RunManager">
+            |    <configuration default="true" type="Application" factoryName="Application">
+            |      <method v="2" />
+            |    </configuration>
+            |    <configuration default="true" type="JUnit" factoryName="JUnit">
+            |      <option name="MAIN_CLASS_NAME" value="" />
+            |      <option name="METHOD_NAME" value="" />
+            |      <option name="TEST_OBJECT" value="class" />
+            |      <option name="PARAMETERS" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+            |      <setting name="path" value="" />
+            |      <setting name="vmparams" value="" />
+            |      <setting name="params" value="" />
+            |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
+            |      <setting name="searchForTest" value="Across module dependencies" />
+            |      <setting name="showProgressMessages" value="true" />
+            |      <setting name="useSbt" value="false" />
+            |      <setting name="useUiWithSbt" value="false" />
+            |      <envs />
+            |      <setting name="testKind" value="Class" />
+            |      <setting name="path" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |    <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
+            |      <setting name="path" value="" />
+            |      <setting name="vmparams" value="" />
+            |      <setting name="params" value="" />
+            |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
+            |      <setting name="searchForTest" value="Across module dependencies" />
+            |      <setting name="showProgressMessages" value="true" />
+            |      <setting name="useSbt" value="false" />
+            |      <setting name="useUiWithSbt" value="false" />
+            |      <envs />
+            |      <setting name="testKind" value="Class" />
+            |      <setting name="path" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |    <configuration default="true" type="TestNG">
+            |      <option name="SUITE_NAME" value="" />
+            |      <option name="MAIN_CLASS_NAME" value="" />
+            |      <option name="GROUP_NAME" value="" />
+            |      <option name="PARAMETERS" value="" />
+            |      <option name="OUTPUT_DIRECTORY" value="" />
+            |      <option name="TEST_SEARCH_SCOPE">
+            |        <value defaultName="moduleWithDependencies" />
+            |      </option>
+            |      <option name="PROPERTIES_FILE" value="" />
+            |      <properties />
+            |      <listeners />
+            |      <method v="2" />
+            |    </configuration>
+            |    <configuration default="true" type="uTestRunConfiguration" factoryName="utest">
+            |      <setting name="path" value="" />
+            |      <setting name="vmparams" value="" />
+            |      <setting name="params" value="" />
+            |      <setting name="workingDirectory" value="file://$$PROJECT_DIR$$" />
+            |      <setting name="searchForTest" value="Across module dependencies" />
+            |      <setting name="showProgressMessages" value="true" />
+            |      <setting name="useSbt" value="false" />
+            |      <setting name="useUiWithSbt" value="false" />
+            |      <envs />
+            |      <setting name="testKind" value="Class" />
+            |      <setting name="path" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |  </component>
+            |</project>"""
+      return r
     }
+
     def app: ST = {
-      return st"""// #Sireum
-      |import org.sireum._
-      |
-      |// Note: Run "mill -w $name.compile" in $projectPath in order for
-      |// mill to recompile upon code modification
-      |
-      |object app extends App {
-      |  def main(args: ISZ[String]): Z = {
-      |    println("Hello World!")
-      |    return 0
-      |  }
-      |}"""
+      val r =
+        st"""// #Sireum
+            |import org.sireum._
+            |
+            |// Note: Run "mill -w $name.compile" in $projectPath in order for
+            |// mill to recompile upon code modification
+            |
+            |object app extends App {
+            |  def main(args: ISZ[String]): Z = {
+            |    println("Hello World!")
+            |    return 0
+            |  }
+            |}"""
+      return r
     }
+
     def build: ST = {
-      return st"""import mill._, scalalib._
-      |
-      |object `$name` extends ScalaModule {
-      |  override def scalaVersion = "$scalaVer"
-      |  override def ivyDeps = super.ivyDeps() ++ Agg(
-      |    jpLatest(isCross = false, owner = "sireum", repo = "runtime", lib = "library")
-      |  )
-      |  override def scalacPluginIvyDeps = super.scalacPluginIvyDeps() ++ Agg(
-      |    ivy"org.sireum::scalac-plugin:$scalacPluginVer"
-      |  )
-      |  override def repositories = super.repositories ++ Seq(
-      |    coursier.maven.MavenRepository("https://jitpack.io")
-      |  )
-      |}
-      |
-      |
-      |private def jpLatest(isCross: Boolean, owner: String, repo: String, lib: String = "",
-      |             branchOrHash: Either[String, String] = Left("master")): Dep = {
-      |  import ammonite.ops._
-      |  def ghLatestCommit(owner: String, repo: String, branch: String): String = {
-      |    val out = %%('git, "ls-remote", s"https://github.com/$$owner/$$repo.git")(pwd).out
-      |    for (line <- out.lines if line.contains(s"refs/heads/$$branch")) return line.substring(0, 10)
-      |    throw new RuntimeException(s"Could not determine latest commit for https://github.com/$$owner/$$repo.git branch $$branch!")
-      |  }
-      |  val hash = branchOrHash match {
-      |    case Left(branch) => ghLatestCommit(owner, repo, branch)
-      |    case Right(h) => h
-      |  }
-      |  val l = if ("" == lib) repo else lib
-      |  owner match {
-      |    case "sireum" => if (isCross) ivy"org.sireum.$$repo::$$l::$$hash" else ivy"org.sireum.$$repo::$$l:$$hash"
-      |    case _ => if (isCross) ivy"com.github.$$owner.$$repo::$$l::$$hash" else ivy"com.github.$$owner.$$repo::$$l:$$hash"
-      |  }
-      |}
-      |
-      |"""
+      val r =
+        st"""import mill._, scalalib._
+            |
+            |object `$name` extends ScalaModule {
+            |  override def scalaVersion = "$scalaVer"
+            |  override def ivyDeps = super.ivyDeps() ++ Agg(
+            |    jpLatest(isCross = false, owner = "sireum", repo = "runtime", lib = "library")
+            |  )
+            |  override def scalacPluginIvyDeps = super.scalacPluginIvyDeps() ++ Agg(
+            |    ivy"org.sireum::scalac-plugin:$scalacPluginVer"
+            |  )
+            |  override def repositories = super.repositories ++ Seq(
+            |    coursier.maven.MavenRepository("https://jitpack.io")
+            |  )
+            |}
+            |
+            |
+            |private def jpLatest(isCross: Boolean, owner: String, repo: String, lib: String = "",
+            |             branchOrHash: Either[String, String] = Left("master")): Dep = {
+            |  import ammonite.ops._
+            |  def ghLatestCommit(owner: String, repo: String, branch: String): String = {
+            |    val out = %%('git, "ls-remote", s"https://github.com/$$owner/$$repo.git")(pwd).out
+            |    for (line <- out.lines if line.contains(s"refs/heads/$$branch")) return line.substring(0, 10)
+            |    throw new RuntimeException(s"Could not determine latest commit for https://github.com/$$owner/$$repo.git branch $$branch!")
+            |  }
+            |  val hash = branchOrHash match {
+            |    case Left(branch) => ghLatestCommit(owner, repo, branch)
+            |    case Right(h) => h
+            |  }
+            |  val l = if ("" == lib) repo else lib
+            |  owner match {
+            |    case "sireum" => if (isCross) ivy"org.sireum.$$repo::$$l::$$hash" else ivy"org.sireum.$$repo::$$l:$$hash"
+            |    case _ => if (isCross) ivy"com.github.$$owner.$$repo::$$l::$$hash" else ivy"com.github.$$owner.$$repo::$$l:$$hash"
+            |  }
+            |}"""
+      return r
     }
+
     var r = Map ++ ISZ[(ISZ[String], ST)](
       ISZ[String](".idea", "inspectionProfiles", "Project_Default.xml") ~> Internal.inspection,
       ISZ[String](".idea", "misc.xml") ~> Internal.misc(jdkName),
       ISZ[String](".idea", "scala_settings.xml") ~> Internal.scalaSettings,
       ISZ[String](".idea", "workspace.xml") ~> workspace,
-      ISZ[String](s"$name", "src", s"app.scala") ~> app,
-      ISZ[String](s"build.sc") ~> build
     )
     if (!alreadyExists) {
       r = r + ISZ[String](s"$name", "src", s"app.scala") ~> app + ISZ[String](s"build.sc") ~> build
@@ -222,105 +233,126 @@ object IveGen {
   }
 
   def idea(
-    alreadyExists: B,
-    isWin: B,
-    sireumHome: String,
-    name: String,
-    projectPath: String,
-    jdkName: String,
-    scalaVer: String,
-    scalacPluginVer: String
-  ): Map[ISZ[String], ST] = {
-    val sep: String = if (isWin) "\\" else "/"
+            alreadyExists: B,
+            isWin: B,
+            sireumHome: String,
+            name: String,
+            projectPath: String,
+            jdkName: String,
+            scalaVer: String,
+            scalacPluginVer: String
+          ): Map[ISZ[String], ST] = {
     def scalaCompiler: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="ScalaCompilerConfiguration">
-      |    <option name="deprecationWarnings" value="true" />
-      |    <option name="uncheckedWarnings" value="true" />
-      |    <option name="featureWarnings" value="true" />
-      |    <option name="explainTypeErrors" value="true" />
-      |    <option name="specialization" value="false" />
-      |    <plugins>
-      |      <plugin path="file://$sireumHome/lib/scalac-plugin-$scalacPluginVer.jar" />
-      |    </plugins>
-      |  </component>
-      |</project>"""
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="ScalaCompilerConfiguration">
+            |    <option name="deprecationWarnings" value="true" />
+            |    <option name="uncheckedWarnings" value="true" />
+            |    <option name="featureWarnings" value="true" />
+            |    <option name="explainTypeErrors" value="true" />
+            |    <option name="specialization" value="false" />
+            |    <plugins>
+            |      <plugin path="file://$sireumHome/lib/scalac-plugin-$scalacPluginVer.jar" />
+            |    </plugins>
+            |  </component>
+            |</project>"""
+      return r
     }
+
     def modules: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-                 |<project version="4">
-                 |  <component name="ProjectModuleManager">
-                 |    <modules>
-                 |      <module fileurl="file://$$PROJECT_DIR$$/$name.iml" filepath="$$PROJECT_DIR$$/$name.iml" />
-                 |    </modules>
-                 |  </component>
-                 |</project>"""
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="ProjectModuleManager">
+            |    <modules>
+            |      <module fileurl="file://$$PROJECT_DIR$$/$name.iml" filepath="$$PROJECT_DIR$$/$name.iml" />
+            |    </modules>
+            |  </component>
+            |</project>"""
+      return r
     }
+
     def scriptRunner: ST = {
-      return st"""<component name="ProjectRunConfigurationManager">
-                 |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
-                 |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
-                 |    <module name="$name" />
-                 |    <option name="PROGRAM_PARAMETERS" value="slang run $$FilePath$$" />
-                 |    <method v="2" />
-                 |  </configuration>
-                 |</component>"""
+      val r =
+        st"""<component name="ProjectRunConfigurationManager">
+            |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
+            |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
+            |    <module name="$name" />
+            |    <option name="PROGRAM_PARAMETERS" value="slang run -s $$FilePath$$" />
+            |    <method v="2" />
+            |  </configuration>
+            |</component>"""
+      return r
     }
+
+    def script: ST = {
+      val r =
+        st"""// #Sireum
+            |import org.sireum._
+            |
+            |println("Hello World!")"""
+      return r
+    }
+
+    def iml: ST = {
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<module type="JAVA_MODULE" version="4">
+            |  <component name="NewModuleRootManager" inherit-compiler-output="true">
+            |    <exclude-output />
+            |    <content url="file://$$MODULE_DIR$$">
+            |      <sourceFolder url="file://$$MODULE_DIR$$/src" isTestSource="false" />
+            |    </content>
+            |    <orderEntry type="inheritedJdk" />
+            |    <orderEntry type="sourceFolder" forTests="false" />
+            |    <orderEntry type="library" name="Scala" level="application" />
+            |    <orderEntry type="library" name="Sireum" level="application" />
+            |  </component>
+            |</module>"""
+      return r
+    }
+
     def workspace: ST = {
+      val sep: String = if (isWin) "\\" else "/"
       val slangRun = st"$sireumHome${sep}bin${sep}slang-run.${if (isWin) "bat" else "sh"}"
       val (runScript, listItem, recent): (ST, ST, ST) =
         if (alreadyExists) (st"", st"", st"")
         else
-          (st"""<configuration name="Run script.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
-          |      <setting name="execName" value="$slangRun" />
-          |      <setting name="fileName" value="$projectPath${sep}src${sep}script.sc" />
-          |      <setting name="scriptParameters" value="" />
-          |      <method v="2" />
-          |    </configuration>""", st"""<item itemvalue="Ammonite.Run script.sc" />""", st"""<recent_temporary>
-          |      <list>
-          |        <item itemvalue="Ammonite.Run script.sc" />
-          |      </list>
-          |    </recent_temporary>""")
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<project version="4">
-      |  <component name="RunManager" selected="Ammonite.Run script.sc">
-      |    $runScript
-      |    <configuration default="true" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false">
-      |      <setting name="execName" value="$slangRun" />
-      |      <setting name="fileName" value="" />
-      |      <setting name="scriptParameters" value="" />
-      |      <method v="2" />
-      |    </configuration>
-      |    <list>
-      |      $listItem
-      |      <item itemvalue="Application.Slang Script Runner" />
-      |    </list>
-      |    $recent
-      |  </component>
-      |</project>"""
+          (
+            st"""<configuration name="Run script.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
+                |      <setting name="execName" value="$slangRun" />
+                |      <setting name="fileName" value="$projectPath${sep}src${sep}script.sc" />
+                |      <setting name="scriptParameters" value="" />
+                |      <method v="2" />
+                |    </configuration>""",
+            st"""<item itemvalue="Ammonite.Run script.sc" />""",
+            st"""<recent_temporary>
+                |      <list>
+                |        <item itemvalue="Ammonite.Run script.sc" />
+                |      </list>
+                |    </recent_temporary>""")
+      val r =
+        st"""<?xml version="1.0" encoding="UTF-8"?>
+            |<project version="4">
+            |  <component name="RunManager" selected="Ammonite.Run script.sc">
+            |    $runScript
+            |    <configuration default="true" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false">
+            |      <setting name="execName" value="$slangRun" />
+            |      <setting name="fileName" value="" />
+            |      <setting name="scriptParameters" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |    <list>
+            |      $listItem
+            |      <item itemvalue="Application.Slang Script Runner" />
+            |    </list>
+            |    $recent
+            |  </component>
+            |</project>"""
+      return r
     }
-    def script: ST = {
-      return st"""// #Sireum
-      |import org.sireum._
-      |
-      |println("Hello World!")"""
-    }
-    def iml: ST = {
-      return st"""<?xml version="1.0" encoding="UTF-8"?>
-      |<module type="JAVA_MODULE" version="4">
-      |  <component name="NewModuleRootManager" inherit-compiler-output="true">
-      |    <exclude-output />
-      |    <content url="file://$$MODULE_DIR$$">
-      |      <sourceFolder url="file://$$MODULE_DIR$$/src" isTestSource="false" />
-      |    </content>
-      |    <orderEntry type="inheritedJdk" />
-      |    <orderEntry type="sourceFolder" forTests="false" />
-      |    <orderEntry type="library" name="Scala" level="application" />
-      |    <orderEntry type="library" name="Sireum" level="application" />
-      |  </component>
-      |</module>"""
-    }
+
     var r = Map ++ ISZ[(ISZ[String], ST)](
       ISZ[String](".idea", "inspectionProfiles", "Project_Default.xml") ~> Internal.inspection,
       ISZ[String](".idea", "misc.xml") ~> Internal.misc(jdkName),
