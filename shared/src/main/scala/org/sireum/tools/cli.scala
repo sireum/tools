@@ -50,6 +50,9 @@ object cli {
       Opt(name = "millPath", longKey = "mill-path", shortKey = Some('p'),
         tpe = Type.Flag(default = F),
         description = "Use mill available in the PATH environment variable (only in mill mode)"),
+      Opt(name = "force", longKey = "force", shortKey = Some('f'),
+        tpe = Type.Flag(default = F),
+        description = "Force regeneration of JDK and library tables"),
     ),
     groups = ISZ()
   )
