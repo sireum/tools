@@ -27,7 +27,7 @@ package org.sireum.tools
 
 import java.io.File
 
-import org.sireum.util.{FileUtil, ReflectUtil}
+import org.sireum.util.FileUtil
 import org.sireum.{ISZ, Z, None => SNone, Option => SOption, Some => SSome, String => SString}
 import org.sireum.cli.CliOpt
 
@@ -35,6 +35,7 @@ object CliGenJvm {
 
   def apply(
     licenseOpt: Option[File],
+    config: CliOpt,
     src: File,
     dest: File,
     packageName: ISZ[SString],
@@ -42,8 +43,6 @@ object CliGenJvm {
     firstColumnLimit: Z,
     secondColumnLimit: Z
   ): String = {
-    val srcText = FileUtil.readFile(src)
-    val config = ReflectUtil.eval[CliOpt](srcText)
     val lOpt = licenseOpt match {
       case Some(f) => SSome(SString(FileUtil.readFile(f).trim))
       case _ => SNone[SString]()
