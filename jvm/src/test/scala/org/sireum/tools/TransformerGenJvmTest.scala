@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Robby, Kansas State University
+ Copyright (c) 2019, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,11 @@
 
 package org.sireum.tools
 
-import java.io.File
-
 import org.sireum.message._
 import org.sireum.test.SireumSpec
 import Paths._
 import com.sksamuel.diffpatch.DiffMatchPatch
-import org.sireum.util.FileUtil
-import org.sireum.{Some => SSome, None => SNone}
+import org.sireum.{Os, Some => SSome, None => SNone}
 
 class TransformerGenJvmTest extends SireumSpec {
 
@@ -40,20 +37,20 @@ class TransformerGenJvmTest extends SireumSpec {
 
   *(gen(slangAstPath, slangTransformerPath, isImmutable = true))
 
-  def gen(src: File, dest: File, isImmutable: Boolean): Boolean = {
+  def gen(src: Os.Path, dest: Os.Path, isImmutable: Boolean): Boolean = {
     val reporter = Reporter.create
     val rOpt =
       TransformerGenJvm(allowSireumPackage = true, isImmutable, Some(licensePath), src, dest, SNone(), reporter)
     reporter.printMessages()
     rOpt match {
       case SSome(r) =>
-        val expected = FileUtil.readFile(dest)
+        val expected = dest.read.value
         val result = r
         if (!(result =~= expected)) {
           val dmp = new DiffMatchPatch()
           Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
           Console.err.flush()
-          //FileUtil.writeFile(dest, r)
+          //dest.writeOver(r)
           //Console.err.println(r)
           //Console.err.flush()
           false

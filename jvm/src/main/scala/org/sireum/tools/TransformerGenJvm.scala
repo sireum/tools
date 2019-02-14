@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Robby, Kansas State University
+ Copyright (c) 2019, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,10 @@
 
 package org.sireum.tools
 
-import java.io.File
-
 import org.sireum.message._
 import org.sireum.lang.ast._
 import org.sireum.lang.parser.SlangParser
-import org.sireum.util.FileUtil
-import org.sireum.{None => SNone, Option => SOption, Some => SSome, String => SString}
+import org.sireum.{Os, None => SNone, Option => SOption, Some => SSome, String => SString}
 
 object TransformerGenJvm {
   val messageKind = "TransformerGen"
@@ -39,22 +36,21 @@ object TransformerGenJvm {
   def apply(
     allowSireumPackage: Boolean,
     isImmutable: Boolean,
-    licenseOpt: Option[File],
-    src: File,
-    dest: File,
+    licenseOpt: Option[Os.Path],
+    src: Os.Path,
+    dest: Os.Path,
     nameOpt: SOption[SString],
     reporter: Reporter
   ): SOption[String] = {
-    val srcText = FileUtil.readFile(src)
-    val srcUri = FileUtil.toUri(src)
-    val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, SSome(srcUri), srcText, reporter)
+    val srcText = src.read
+    val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, SSome(src.toUri), srcText.value, reporter)
     r.unitOpt match {
       case SSome(p: TopUnit.Program) =>
         val lOpt = licenseOpt match {
-          case Some(f) => SSome(SString(FileUtil.readFile(f).trim))
+          case Some(f) => SSome(SString(f.read.value.trim))
           case _ => SNone[SString]()
         }
-        val fOpt = SSome(SString(src.getName))
+        val fOpt = SSome(src.name)
         SSome(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
       case _ =>
         reporter.error(SNone(), "TransformerGen", "Expecting program input.")

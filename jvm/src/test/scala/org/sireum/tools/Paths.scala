@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Robby, Kansas State University
+ Copyright (c) 2019, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,22 @@
 
 package org.sireum.tools
 
-import java.io.File
+import org.sireum.Os
 
 object Paths {
-  val rootDir: File = new File(System.getProperty("user.dir"))
-  val licensePath: File = {
-    val f = new File(rootDir, "license.txt")
-    if (f.exists) f.getCanonicalFile else new File(rootDir, "../license.txt").getCanonicalFile
+  val rootDir: Os.Path = Os.cwd
+  val licensePath: Os.Path = {
+    val f = rootDir / "license.txt"
+    if (f.exists) f else rootDir.up / "license.txt"
   }
-  val cliConfigPath = new File(rootDir, "kekinian/cli/jvm/src/main/scala/org/sireum/cli.sc")
-  val cliPath = new File(rootDir, "kekinian/cli/jvm/src/main/scala/org/sireum/Cli.scala")
-  val slangAstPackagePath = new File(rootDir, "slang/ast/shared/src/main/scala/org/sireum/lang/ast")
-  val slangAstPath = new File(slangAstPackagePath, "AST.scala")
-  val slangMTransformerPath = new File(slangAstPackagePath, "MTransformer.scala")
-  val slangTransformerPath = new File(slangAstPackagePath, "Transformer.scala")
-  val slangTipePath = new File(rootDir, "slang/tipe/shared/src/main/scala/org/sireum/lang/")
-  val slangInfoPath = new File(slangTipePath, "symbol/Info.scala")
-  val slangJSONPath = new File(slangTipePath, "tipe/JSON.scala")
-  val slangMsgPackPath = new File(slangTipePath, "tipe/MsgPack.scala")
+  val cliConfigPath = rootDir / "kekinian" / "cli" / "jvm" / "src" / "main" / "scala" / "org" / "sireum" / "cli.sc"
+  val cliPath = rootDir / "kekinian" / "cli" / "jvm" / "src" / "main" / "scala" / "org" / "sireum" / "Cli.scala"
+  val slangAstPackagePath = rootDir / "slang" / "ast" / "shared" / "src" / "main" / "scala" / "org" / "sireum" / "lang" / "ast"
+  val slangAstPath = slangAstPackagePath / "AST.scala"
+  val slangMTransformerPath = slangAstPackagePath / "MTransformer.scala"
+  val slangTransformerPath = slangAstPackagePath / "Transformer.scala"
+  val slangTipePath = rootDir / "slang" / "tipe" / "shared" / "src" / "main" / "scala" / "org" / "sireum" / "lang"
+  val slangInfoPath = slangTipePath / "symbol" / "Info.scala"
+  val slangJSONPath = slangTipePath / "tipe" / "JSON.scala"
+  val slangMsgPackPath = slangTipePath / "tipe" / "MsgPack.scala"
 }

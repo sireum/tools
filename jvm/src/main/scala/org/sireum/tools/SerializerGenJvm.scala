@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Robby, Kansas State University
+ Copyright (c) 2019, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,8 @@
 
 package org.sireum.tools
 
-import java.io.File
-
 import org.sireum.message._
-import org.sireum.lang.ast._
-import org.sireum.lang.parser.SlangParser
-import org.sireum.util.FileUtil
-import org.sireum.{ISZ, None => SNone, Option => SOption, Some => SSome, String => SString}
-import org.sireum.U32._
+import org.sireum.{Os, ISZ, None => SNone, Option => SOption, Some => SSome, String => SString}
 
 object SerializerGenJvm {
   val messageKind = "JsonGen"
@@ -40,24 +34,23 @@ object SerializerGenJvm {
   def apply(
     allowSireumPackage: Boolean,
     mode: SerializerGen.Mode.Type,
-    licenseOpt: Option[File],
-    srcs: Seq[File],
-    dest: File,
+    licenseOpt: Option[Os.Path],
+    srcs: Seq[Os.Path],
+    dest: Os.Path,
     packageNameOpt: SOption[ISZ[SString]],
     nameOpt: SOption[SString],
     reporter: Reporter
   ): SOption[String] = {
     val lOpt = licenseOpt match {
-      case Some(f) => SSome(SString(FileUtil.readFile(f).trim))
+      case Some(f) => SSome(SString(f.read.value.trim))
       case _ => SNone[SString]()
     }
-    var uris = Vector[String]()
+    var uris = Vector[SString]()
     var sources = ISZ[(SOption[SString], SString)]()
     for (src <- srcs) {
-      val srcText = FileUtil.readFile(src)
-      val srcUri = FileUtil.toUri(src)
-      uris = uris :+ src.getName
-      sources = sources :+ ((SSome(SString(srcUri)), SString(srcText)))
+      val srcText = src.read
+      uris = uris :+ src.name
+      sources = sources :+ ((SSome(src.toUri), srcText))
     }
     val fOpt = {
       import org.sireum._

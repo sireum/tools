@@ -25,14 +25,11 @@
 
 package org.sireum.tools
 
-import java.io.File
-
 import org.sireum.message._
 import com.sksamuel.diffpatch.DiffMatchPatch
-import org.sireum.{None => SNone, Some => SSome, String => SString, ISZ}
+import org.sireum.{Os, None => SNone, Some => SSome, String => SString, ISZ}
 import Paths._
 import org.sireum.test.SireumSpec
-import org.sireum.util.FileUtil
 
 class SerializerGenJvmTest extends SireumSpec {
 
@@ -40,7 +37,7 @@ class SerializerGenJvmTest extends SireumSpec {
 
   *(gen(Seq(slangInfoPath, slangAstPath), slangJSONPath, SerializerGen.Mode.JSON))
 
-  def gen(srcs: Seq[File], dest: File, mode: SerializerGen.Mode.Type): Boolean = {
+  def gen(srcs: Seq[Os.Path], dest: Os.Path, mode: SerializerGen.Mode.Type): Boolean = {
     val reporter = Reporter.create
     val rOpt =
       SerializerGenJvm(
@@ -56,23 +53,23 @@ class SerializerGenJvmTest extends SireumSpec {
     reporter.printMessages()
     rOpt match {
       case SSome(r) =>
-        scala.util.Try(FileUtil.readFile(dest)) match {
-          case scala.util.Success(expected) =>
-            val result = r
-            if (!(result =~= expected)) {
-              val dmp = new DiffMatchPatch()
-              Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
-              Console.err.flush()
-              //FileUtil.writeFile(dest, r)
-              //Console.err.println(r)
-              //Console.err.flush()
-              false
-            } else !reporter.hasIssue
-          case _ =>
-            FileUtil.writeFile(dest, r)
-            Console.err.println(r)
+        if (dest.exists) {
+          val expected = dest.read.value
+          val result = r
+          if (!(result =~= expected)) {
+            val dmp = new DiffMatchPatch()
+            Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
             Console.err.flush()
+            //dest.writeOver(r)
+            //Console.err.println(r)
+            //Console.err.flush()
             false
+          } else !reporter.hasIssue
+        } else {
+          dest.writeOver(r)
+          Console.err.println(r)
+          Console.err.flush()
+          false
         }
       case _ => false
     }
