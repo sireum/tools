@@ -35,9 +35,18 @@ Note that the generators and the generated code are [Slang](https://github.com/s
 
 ## Testing
 
-```bash
-./test.sh
-```
+
+* **macOS/Linux**
+
+  ```bash
+  bin/build.cmd test
+  ```
+  
+* **Windows**
+
+  ```cmd
+  bin\build.cmd test
+  ```
 
 The test run checks generated code such as the ones mentioned above do not change
 when re-generated.
