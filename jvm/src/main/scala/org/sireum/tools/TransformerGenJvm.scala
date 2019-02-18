@@ -36,7 +36,7 @@ object TransformerGenJvm {
   def apply(
     allowSireumPackage: Boolean,
     isImmutable: Boolean,
-    licenseOpt: Option[Os.Path],
+    licenseOpt: SOption[Os.Path],
     src: Os.Path,
     dest: Os.Path,
     nameOpt: SOption[SString],
@@ -47,7 +47,7 @@ object TransformerGenJvm {
     r.unitOpt match {
       case SSome(p: TopUnit.Program) =>
         val lOpt = licenseOpt match {
-          case Some(f) => SSome(SString(f.read.value.trim))
+          case SSome(f) => SSome(SString(f.read.value.trim))
           case _ => SNone[SString]()
         }
         val fOpt = SSome(src.name)

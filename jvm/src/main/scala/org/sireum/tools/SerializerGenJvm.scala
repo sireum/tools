@@ -34,7 +34,7 @@ object SerializerGenJvm {
   def apply(
     allowSireumPackage: Boolean,
     mode: SerializerGen.Mode.Type,
-    licenseOpt: Option[Os.Path],
+    licenseOpt: SOption[Os.Path],
     srcs: Seq[Os.Path],
     dest: Os.Path,
     packageNameOpt: SOption[ISZ[SString]],
@@ -42,7 +42,7 @@ object SerializerGenJvm {
     reporter: Reporter
   ): SOption[String] = {
     val lOpt = licenseOpt match {
-      case Some(f) => SSome(SString(f.read.value.trim))
+      case SSome(f) => SSome(SString(f.read.value.trim))
       case _ => SNone[SString]()
     }
     var uris = Vector[SString]()

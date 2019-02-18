@@ -31,7 +31,7 @@ import org.sireum.cli.CliOpt
 object CliGenJvm {
 
   def apply(
-    licenseOpt: Option[Os.Path],
+    licenseOpt: SOption[Os.Path],
     config: CliOpt,
     src: Os.Path,
     dest: Os.Path,
@@ -41,7 +41,7 @@ object CliGenJvm {
     secondColumnLimit: Z
   ): String = {
     val lOpt = licenseOpt match {
-      case Some(f) => SSome(SString(f.read.value.trim))
+      case SSome(f) => SSome(SString(f.read.value.trim))
       case _ => SNone[SString]()
     }
     val fOpt = SSome(src.name)
