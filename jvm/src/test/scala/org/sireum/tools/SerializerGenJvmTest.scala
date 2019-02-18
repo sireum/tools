@@ -43,7 +43,7 @@ class SerializerGenJvmTest extends SireumSpec {
       SerializerGenJvm(
         allowSireumPackage = true,
         mode,
-        Some(licensePath),
+        SSome(licensePath),
         srcs,
         dest,
         SSome(ISZ[SString]("org", "sireum", "lang", "tipe")),
