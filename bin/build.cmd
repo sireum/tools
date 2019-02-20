@@ -52,13 +52,13 @@ def usage(): Unit = {
 }
 
 
-if (Os.cliArgs.size < 2) {
+if (Os.cliArgs.isEmpty) {
   usage()
   Os.exit(0)
 }
 
 
-val homeBin = Os.path(Os.cliArgs(0))
+val homeBin = Os.slashDir
 val home = homeBin.up
 val sireumJar = homeBin / "sireum.jar"
 val mill = homeBin / "mill.bat"
@@ -189,7 +189,7 @@ for (m <- ISZ("runtime", "slang")) {
   clone(m)
 }
 
-for (i <- 1 until Os.cliArgs.size) {
+for (i <- 0 until Os.cliArgs.size) {
   Os.cliArgs(i) match {
     case string"compile" => compile()
     case string"test" => test()
