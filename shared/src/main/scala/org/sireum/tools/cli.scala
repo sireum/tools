@@ -53,6 +53,9 @@ object cli {
       Opt(name = "force", longKey = "force", shortKey = Some('f'),
         tpe = Type.Flag(default = F),
         description = "Force regeneration of JDK and library tables"),
+      Opt(name = "compile", longKey = "no-compile", shortKey = Some('c'),
+        tpe = Type.Flag(default = T),
+        description = "Only generate mill project without code compilation"),
     ),
     groups = ISZ()
   )
