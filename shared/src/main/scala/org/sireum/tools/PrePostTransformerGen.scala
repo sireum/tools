@@ -120,12 +120,13 @@ object PrePostTransformerGen {
       }
       ISZOps(r).sortWith(ltTypeInfo(uriLt _))
     }
-    val p: (Option[ST], Option[ST]) =
-      if (isSig) (Some(template.preAdapt(rootTypeString)), Some(template.postAdapt(rootTypeString)))
-      else (None[ST](), None[ST]())
     for (child <- sortedDescendants) {
       child match {
         case childTI: TypeInfo.Adt if !childTI.ast.isRoot =>
+          val p: (Option[ST], Option[ST]) =
+            if (isSig || !poset.isChildOf(name, childTI.name))
+              (Some(template.preAdapt(rootTypeString)), Some(template.postAdapt(rootTypeString)))
+            else (None[ST](), None[ST]())
           val childIds = childTI.name
           val childTypeString = typeNameString(packageName, childIds)
           val childTypeName = typeName(packageName, childIds)
