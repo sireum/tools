@@ -282,7 +282,7 @@ object TransformerGen {
 
       @pure def transformMethodMatchSimple(ac: AdtChild): ST = {
         val i = ac.i
-        val ctx: ST = if (i < z"0") st"ctx" else st"r$i.ctx"
+        val ctx: ST = if (i < z"0") st"preR.ctx" else st"r$i.ctx"
         val updates: ST =
           if (ac.transformMethodCaseUpdates.isEmpty) empty
           else st"(${(ac.transformMethodCaseUpdates, ", ")})"
@@ -295,7 +295,7 @@ object TransformerGen {
 
       @pure def transformMethodCase(tpe: ST, ac: AdtChild): ST = {
         val i = ac.i
-        val ctx: ST = if (i < z"0") st"ctx" else st"r$i.ctx"
+        val ctx: ST = if (i < z"0") st"preR.ctx" else st"r$i.ctx"
         val updates: ST =
           if (ac.transformMethodCaseUpdates.isEmpty) empty
           else st"(${(ac.transformMethodCaseUpdates, ", ")})"
@@ -308,22 +308,22 @@ object TransformerGen {
       }
 
       @pure def transformMethodCaseMember(i: Z, j: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
-        val ctx: ST = if (j < z"0") st"ctx" else st"r$j.ctx"
+        val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
         return st"val r$i: Result[Context, $tpe] = transform$typeName($ctx, o2.$fieldName)"
       }
 
       @pure def transformMethodCaseMemberIS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
-        val ctx: ST = if (j < z"0") st"ctx" else st"r$j.ctx"
+        val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
         return st"val r$i: Result[Context, IS[$indexType, $tpe]] = transformIS$indexType($ctx, o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseMemberMS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
-        val ctx: ST = if (j < z"0") st"ctx" else st"r$j.ctx"
+        val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
         return st"val r$i: Result[Context, MS[$indexType, $tpe]] = transformMS$indexType($ctx, o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseMemberOption(i: Z, j: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
-        val ctx: ST = if (j < z"0") st"ctx" else st"r$j.ctx"
+        val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
         return st"val r$i: Result[Context, Option[$tpe]] = transformOption($ctx, o2.$fieldName, transform$typeName _)"
       }
 
