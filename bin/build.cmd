@@ -103,7 +103,7 @@ def clone(repo: String): Unit = {
 
 def jitpack(): Unit = {
   println("Triggering jitpack ...")
-  val r = Os.proc(ISZ(mill.string, "jitPack", "--owner", "sireum", "--repo", "tools")).at(home).console.run()
+  val r = mill.call(ISZ("jitPack", "--owner", "sireum", "--repo", "tools")).at(home).console.run()
   r match {
     case r: Os.Proc.Result.Normal =>
       println(r.out)
@@ -141,7 +141,7 @@ def compile(): Unit = {
     }
     tipe()
     println("Compiling ...")
-    Os.proc(ISZ(mill.string, "tools.jvm.tests.compile")).at(home).console.runCheck()
+    mill.call(ISZ("tools.jvm.tests.compile")).at(home).console.runCheck()
     println()
   }
 }
@@ -150,7 +150,7 @@ def compile(): Unit = {
 def test(): Unit = {
   compile()
   println("Running jvm tests ...")
-  Os.proc(ISZ(mill.string, "tools.jvm.tests")).at(home).console.runCheck()
+  mill.call(ISZ("tools.jvm.tests")).at(home).console.runCheck()
   println()
 }
 
