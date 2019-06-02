@@ -95,7 +95,7 @@ def clone(repo: String): Unit = {
   if (!(home / repo).exists) {
     Os.proc(ISZ("git", "clone", "--depth=1", s"https://github.com/sireum/$repo")).at(home).console.runCheck()
   } else {
-    Os.proc(ISZ("git", "pull", "--recurse-submodules")).at(home / repo).console.runCheck()
+    Os.proc(ISZ("git", "pull")).at(home / repo).console.runCheck()
   }
   println()
 }
