@@ -89,7 +89,7 @@ object cli {
     command = "transgen",
     description = "Transformer (visitor/rewriter) generator",
     header = "Sireum Transformer Generator",
-    usage = "<option>* <slang-file>",
+    usage = "<option>* <slang-file>+",
     opts = ISZ(
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
         tpe = Type.Choice(name = "TransformerMode", sep = Some(','), elements = ISZ("immutable", "mutable")),
@@ -117,7 +117,7 @@ object cli {
         description = "De/serializer mode"),
       Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
         tpe = Type.Str(sep = Some('.'), default = None()),
-        description = "Type simple name for the de/serializers (default: \"Json\" or \"MsgPack\")"),
+        description = "Package name for the de/serializers"),
       Opt(name = "name", longKey = "name", shortKey = Some('n'),
         tpe = Type.Str(sep = None(), default = None()),
         description = "Type simple name for the de/serializers (default: \"Json\" or \"MsgPack\")"),
@@ -129,11 +129,35 @@ object cli {
     groups = ISZ()
   )
 
+  val bcGenTool: Tool = Tool(
+    name = "bcgen",
+    command = "bcgen",
+    description = "Bit encoder/decoder generator",
+    header = "Sireum BitCodec Generator",
+    usage = "<option>* <spec-file>",
+    opts = ISZ(
+      Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
+        tpe = Type.Choice(name = "BitCodecMode", sep = None(), elements = ISZ("program", "script")),
+        description = "Generated codec unit mode"),
+      Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
+        tpe = Type.Str(sep = Some('.'), default = None()),
+        description = "Package name for the codec"),
+      Opt(name = "name", longKey = "name", shortKey = Some('n'),
+        tpe = Type.Str(sep = None(), default = Some("BitCodec")),
+        description = "Object simple name for the codec"),
+      Opt(name = "license", longKey = "license", shortKey = Some('l'),
+        tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
+      Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated codec files")
+    ),
+    groups = ISZ()
+  )
+
   val group: Group = Group(
     name = "tools",
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(bcGenTool, cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
   )
 }
