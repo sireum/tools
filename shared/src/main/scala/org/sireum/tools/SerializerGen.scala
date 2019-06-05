@@ -44,15 +44,15 @@ object SerializerGen {
   @datatype trait Template {
 
     @pure def main(
-      licenseOpt: Option[String],
-      fileUriOpt: Option[String],
-      packageNames: ISZ[String],
-      name: Option[String],
-      constants: ISZ[ST],
-      printers: ISZ[ST],
-      parsers: ISZ[ST],
-      fromsTos: ISZ[ST]
-    ): ST
+                    licenseOpt: Option[String],
+                    fileUriOpt: Option[String],
+                    packageNames: ISZ[String],
+                    name: Option[String],
+                    constants: ISZ[ST],
+                    printers: ISZ[ST],
+                    parsers: ISZ[ST],
+                    fromsTos: ISZ[ST]
+                  ): ST
 
     @pure def from(name: ST, tpe: ST): ST
 
@@ -68,6 +68,8 @@ object SerializerGen {
 
     @pure def printValue(name: ST, fieldName: String, isBuiltIn: B): ST
 
+    @pure def printFun(fieldName: String, size: Z, isPure: B): ST
+
     @pure def printEnum(name: ST, tpe: ST, printEnumCases: ISZ[ST]): ST
 
     @pure def printEnumCase(elementName: String, tpe: ST): ST
@@ -77,14 +79,14 @@ object SerializerGen {
     @pure def printNameOne(isSimple: B, nameOne: String, name: ST, fieldName: String, isBuiltIn: B): ST
 
     @pure def printNameTwo(
-      isSimple: B,
-      nameTwo: String,
-      name1: ST,
-      name2: ST,
-      fieldName: String,
-      isBuiltIn1: B,
-      isBuiltIn2: B
-    ): ST
+                            isSimple: B,
+                            nameTwo: String,
+                            name1: ST,
+                            name2: ST,
+                            fieldName: String,
+                            isBuiltIn1: B,
+                            isBuiltIn2: B
+                          ): ST
 
     @pure def parseRoot(name: ST, tpe: ST, childrenTpes: ISZ[ST], parseRootCases: ISZ[ST], defaultName: ST): ST
 
@@ -95,6 +97,8 @@ object SerializerGen {
     @pure def parseField(fieldName: String, parseValue: ST): ST
 
     @pure def parseValue(suffixes: ISZ[ST], isBuiltIn: B): ST
+
+    @pure def parseFun(size: Z, isPure: B): ST
 
     @pure def parseEnum(name: ST, tpe: ST, parseEnumCases: ISZ[ST]): ST
 
@@ -110,100 +114,111 @@ object SerializerGen {
   @datatype class JsonTemplate extends Template {
 
     @pure def main(
-      licenseOpt: Option[String],
-      fileUriOpt: Option[String],
-      packageNames: ISZ[String],
-      name: Option[String],
-      constants: ISZ[ST],
-      printers: ISZ[ST],
-      parsers: ISZ[ST],
-      fromsTos: ISZ[ST]
-    ): ST = {
-      val license: Option[ST] = licenseOpt.map((text: String) => st"""/*
-      | $text
-      | */
-      |""")
-      val fileUri: Option[ST] = fileUriOpt.map((text: String) => st"""// This file is auto-generated from $text
-      |""")
+                    licenseOpt: Option[String],
+                    fileUriOpt: Option[String],
+                    packageNames: ISZ[String],
+                    name: Option[String],
+                    constants: ISZ[ST],
+                    printers: ISZ[ST],
+                    parsers: ISZ[ST],
+                    fromsTos: ISZ[ST]
+                  ): ST = {
+      val license: Option[ST] = licenseOpt.map((text: String) =>
+        st"""/*
+            | $text
+            | */
+            |""")
+      val fileUri: Option[ST] = fileUriOpt.map((text: String) =>
+        st"""// This file is auto-generated from $text
+            |""")
       val packageName: Option[ST] =
-        if (packageNames.nonEmpty) Some(st"""package ${(packageNames, ".")}
-        |""") else None[ST]()
-      return st"""// #Sireum
-      |// @formatter:off
-      |
-      |$license
-      |$fileUri
-      |$packageName
-      |import org.sireum._
-      |import org.sireum.Json.Printer._
-      |
-      |object ${name.getOrElse("JSON")} {
-      |
-      |  object Printer {
-      |
-      |    ${(printers, "\n\n")}
-      |
-      |  }
-      |
-      |  @record class Parser(input: String) {
-      |    val parser: Json.Parser = Json.Parser.create(input)
-      |
-      |    def errorOpt: Option[Json.ErrorMsg] = {
-      |      return parser.errorOpt
-      |    }
-      |
-      |    ${(parsers, "\n\n")}
-      |
-      |    def eof(): B = {
-      |      val r = parser.eof()
-      |      return r
-      |    }
-      |
-      |  }
-      |
-      |  def to[T](s: String, f: Parser => T): Either[T, Json.ErrorMsg] = {
-      |    val parser = Parser(s)
-      |    val r = f(parser)
-      |    parser.eof()
-      |    parser.errorOpt match {
-      |      case Some(e) => return Either.Right(e)
-      |      case _ => return Either.Left(r)
-      |    }
-      |  }
-      |
-      |  ${(fromsTos, "\n\n")}
-      |
-      |}"""
+        if (packageNames.nonEmpty) Some(
+          st"""package ${(packageNames, ".")}
+              |""") else None[ST]()
+      val r =
+        st"""// #Sireum
+            |// @formatter:off
+            |
+            |$license
+            |$fileUri
+            |$packageName
+            |import org.sireum._
+            |import org.sireum.Json.Printer._
+            |
+            |object ${name.getOrElse("JSON")} {
+            |
+            |  object Printer {
+            |
+            |    ${(printers, "\n\n")}
+            |
+            |  }
+            |
+            |  @record class Parser(input: String) {
+            |    val parser: Json.Parser = Json.Parser.create(input)
+            |
+            |    def errorOpt: Option[Json.ErrorMsg] = {
+            |      return parser.errorOpt
+            |    }
+            |
+            |    ${(parsers, "\n\n")}
+            |
+            |    def eof(): B = {
+            |      val r = parser.eof()
+            |      return r
+            |    }
+            |
+            |  }
+            |
+            |  def to[T](s: String, f: Parser => T): Either[T, Json.ErrorMsg] = {
+            |    val parser = Parser(s)
+            |    val r = f(parser)
+            |    parser.eof()
+            |    parser.errorOpt match {
+            |      case Some(e) => return Either.Right(e)
+            |      case _ => return Either.Left(r)
+            |    }
+            |  }
+            |
+            |  ${(fromsTos, "\n\n")}
+            |
+            |}"""
+      return r
     }
 
     @pure def from(name: ST, tpe: ST): ST = {
-      return st"""def from$name(o: $tpe, isCompact: B): String = {
-      |  val st = Printer.print$name(o)
-      |  if (isCompact) {
-      |    return st.renderCompact
-      |  } else {
-      |    return st.render
-      |  }
-      |}"""
+      val r =
+        st"""def from$name(o: $tpe, isCompact: B): String = {
+            |  val st = Printer.print$name(o)
+            |  if (isCompact) {
+            |    return st.renderCompact
+            |  } else {
+            |    return st.render
+            |  }
+            |}"""
+      return r
     }
 
     @pure def to(name: ST, tpe: ST): ST = {
-      return st"""def to$name(s: String): Either[$tpe, Json.ErrorMsg] = {
-      |  def f$name(parser: Parser): $tpe = {
-      |    val r = parser.parse$name()
-      |    return r
-      |  }
-      |  val r = to(s, f$name _)
-      |  return r
-      |}"""
+      val r =
+        st"""def to$name(s: String): Either[$tpe, Json.ErrorMsg] = {
+            |  def f$name(parser: Parser): $tpe = {
+            |    val r = parser.parse$name()
+            |    return r
+            |  }
+            |  val r = to(s, f$name _)
+            |  return r
+            |}"""
+      return r
     }
 
     @pure def printRoot(name: ST, tpe: ST, printRootCases: ISZ[ST]): ST = {
-      return st"""@pure def print$name(o: $tpe): ST = {
-      |  o match {
-      |    ${(printRootCases, "\n")}
-      |  }
-      |}"""
+      val r =
+        st"""@pure def print$name(o: $tpe): ST = {
+            |  o match {
+            |    ${(printRootCases, "\n")}
+            |  }
+            |}"""
+      return r
     }
 
     @pure def printRootCase(name: ST, tpe: ST): ST = {
@@ -212,11 +227,13 @@ object SerializerGen {
 
     @pure def printObject(name: ST, tpe: ST, printFields: ISZ[ST]): ST = {
       val fqs = "\"\"\"\""
-      return st"""@pure def print$name(o: $tpe): ST = {
-      |  return printObject(ISZ(
-      |    ${(printField("type", st"st$fqs$tpe$fqs") +: printFields, ",\n")}
-      |  ))
-      |}"""
+      val r =
+        st"""@pure def print$name(o: $tpe): ST = {
+            |  return printObject(ISZ(
+            |    ${(printField("type", st"st$fqs$tpe$fqs") +: printFields, ",\n")}
+            |  ))
+            |}"""
+      return r
     }
 
     @pure def printField(fieldName: String, fieldValue: ST): ST = {
@@ -227,16 +244,22 @@ object SerializerGen {
       return st"print$name(o.$fieldName)"
     }
 
+    @pure def printFun(fieldName: String, size: Z, isPure: B): ST = {
+      return st"printString(Json.Fun.print${if (isPure) "Pure" else ""}$size(o.$fieldName))"
+    }
+
     @pure def printEnum(name: ST, tpe: ST, printEnumCases: ISZ[ST]): ST = {
-      return st"""@pure def print${name}Type(o: $tpe.Type): ST = {
-      |  val value: String = o match {
-      |    ${(printEnumCases, "\n")}
-      |  }
-      |  return printObject(ISZ(
-      |    ("type", printString("$tpe")),
-      |    ("value", printString(value))
-      |  ))
-      |}"""
+      val r =
+        st"""@pure def print${name}Type(o: $tpe.Type): ST = {
+            |  val value: String = o match {
+            |    ${(printEnumCases, "\n")}
+            |  }
+            |  return printObject(ISZ(
+            |    ("type", printString("$tpe")),
+            |    ("value", printString(value))
+            |  ))
+            |}"""
+      return r
     }
 
     @pure def printEnumCase(elementName: String, tpe: ST): ST = {
@@ -253,25 +276,27 @@ object SerializerGen {
     }
 
     @pure def printNameTwo(
-      isSimple: B,
-      nameTwo: String,
-      name1: ST,
-      name2: ST,
-      fieldName: String,
-      isBuiltIn1: B,
-      isBuiltIn2: B
-    ): ST = {
+                            isSimple: B,
+                            nameTwo: String,
+                            name1: ST,
+                            name2: ST,
+                            fieldName: String,
+                            isBuiltIn1: B,
+                            isBuiltIn2: B
+                          ): ST = {
       return st"print$nameTwo(${if (isSimple) "T" else "F"}, o.$fieldName, print$name1 _, print$name2 _)"
     }
 
     @pure def parseRoot(name: ST, tpe: ST, childrenTpes: ISZ[ST], parseRootCases: ISZ[ST], defaultName: ST): ST = {
-      return st"""def parse$name(): $tpe = {
-      |  val t = parser.parseObjectTypes(ISZ("${(childrenTpes, "\", \"")}"))
-      |  t.native match {
-      |    ${(parseRootCases, "\n")}
-      |    case _ => val r = parse${defaultName}T(T); return r
-      |  }
-      |}"""
+      val r =
+        st"""def parse$name(): $tpe = {
+            |  val t = parser.parseObjectTypes(ISZ("${(childrenTpes, "\", \"")}"))
+            |  t.native match {
+            |    ${(parseRootCases, "\n")}
+            |    case _ => val r = parse${defaultName}T(T); return r
+            |  }
+            |}"""
+      return r
     }
 
     @pure def parseRootCase(name: ST, tpe: ST): ST = {
@@ -279,24 +304,28 @@ object SerializerGen {
     }
 
     @pure def parseObject(name: ST, tpe: ST, parseFields: ISZ[ST], fieldNames: ISZ[String]): ST = {
-      return st"""def parse$name(): $tpe = {
-      |  val r = parse${name}T(F)
-      |  return r
-      |}
-      |
-      |def parse${name}T(typeParsed: B): $tpe = {
-      |  if (!typeParsed) {
-      |    parser.parseObjectType("$tpe")
-      |  }
-      |  ${(parseFields, "\n")}
-      |  return $tpe(${(fieldNames, ", ")})
-      |}"""
+      val r =
+        st"""def parse$name(): $tpe = {
+            |  val r = parse${name}T(F)
+            |  return r
+            |}
+            |
+            |def parse${name}T(typeParsed: B): $tpe = {
+            |  if (!typeParsed) {
+            |    parser.parseObjectType("$tpe")
+            |  }
+            |  ${(parseFields, "\n")}
+            |  return $tpe(${(fieldNames, ", ")})
+            |}"""
+      return r
     }
 
     @pure def parseField(fieldName: String, parseValue: ST): ST = {
-      return st"""parser.parseObjectKey("$fieldName")
-      |val $fieldName = $parseValue
-      |parser.parseObjectNext()"""
+      val r =
+        st"""parser.parseObjectKey("$fieldName")
+            |val $fieldName = $parseValue
+            |parser.parseObjectNext()"""
+      return r
     }
 
     @pure def parseValue(suffixes: ISZ[ST], isBuiltIn: B): ST = {
@@ -304,27 +333,33 @@ object SerializerGen {
       return st"${p}parse$suffixes"
     }
 
+    @pure def parseFun(size: Z, isPure: B): ST = {
+      return st"Json.Fun.parse${if (isPure) "Pure" else ""}$size(this.parser, parser.parseString())"
+    }
+
     @pure def parseEnum(name: ST, tpe: ST, parseEnumCases: ISZ[ST]): ST = {
-      return st"""def parse${name}Type(): $tpe.Type = {
-      |  val r = parse${name}T(F)
-      |  return r
-      |}
-      |
-      |def parse${name}T(typeParsed: B): $tpe.Type = {
-      |  if (!typeParsed) {
-      |    parser.parseObjectType("$tpe")
-      |  }
-      |  parser.parseObjectKey("value")
-      |  var i = parser.offset
-      |  val s = parser.parseString()
-      |  parser.parseObjectNext()
-      |  $tpe.byName(s) match {
-      |    case Some(r) => return r
-      |    case _ =>
-      |      parser.parseException(i, s"Invalid element name '$$s' for $tpe.")
-      |      return $tpe.byOrdinal(0).get
-      |  }
-      |}"""
+      val r =
+        st"""def parse${name}Type(): $tpe.Type = {
+            |  val r = parse${name}T(F)
+            |  return r
+            |}
+            |
+            |def parse${name}T(typeParsed: B): $tpe.Type = {
+            |  if (!typeParsed) {
+            |    parser.parseObjectType("$tpe")
+            |  }
+            |  parser.parseObjectKey("value")
+            |  var i = parser.offset
+            |  val s = parser.parseString()
+            |  parser.parseObjectNext()
+            |  $tpe.byName(s) match {
+            |    case Some(r) => return r
+            |    case _ =>
+            |      parser.parseException(i, s"Invalid element name '$$s' for $tpe.")
+            |      return $tpe.byOrdinal(0).get
+            |  }
+            |}"""
+      return r
     }
 
     @pure def parseEnumCase(elementName: String, tpe: ST): ST = {
@@ -352,116 +387,127 @@ object SerializerGen {
   @datatype class MessagePackTemplate extends Template {
 
     @pure def main(
-      licenseOpt: Option[String],
-      fileUriOpt: Option[String],
-      packageNames: ISZ[String],
-      name: Option[String],
-      constants: ISZ[ST],
-      writers: ISZ[ST],
-      readers: ISZ[ST],
-      fromsTos: ISZ[ST]
-    ): ST = {
-      val license: Option[ST] = licenseOpt.map((text: String) => st"""/*
-      | $text
-      | */
-      |""")
-      val fileUri: Option[ST] = fileUriOpt.map((text: String) => st"""// This file is auto-generated from $text
-      |""")
+                    licenseOpt: Option[String],
+                    fileUriOpt: Option[String],
+                    packageNames: ISZ[String],
+                    name: Option[String],
+                    constants: ISZ[ST],
+                    writers: ISZ[ST],
+                    readers: ISZ[ST],
+                    fromsTos: ISZ[ST]
+                  ): ST = {
+      val license: Option[ST] = licenseOpt.map((text: String) =>
+        st"""/*
+            | $text
+            | */
+            |""")
+      val fileUri: Option[ST] = fileUriOpt.map((text: String) =>
+        st"""// This file is auto-generated from $text
+            |""")
       val packageName: Option[ST] =
-        if (packageNames.nonEmpty) Some(st"""package ${(packageNames, ".")}
-        |""") else None[ST]()
-      return st"""// #Sireum
-      |// @formatter:off
-      |
-      |$license
-      |$fileUri
-      |$packageName
-      |import org.sireum._
-      |
-      |object ${name.getOrElse("MsgPack")} {
-      |
-      |  object Constants {
-      |
-      |    ${(constants, "\n\n")}
-      |
-      |  }
-      |
-      |  object Writer {
-      |
-      |    @record class Default(val writer: MessagePack.Writer.Impl) extends Writer
-      |
-      |  }
-      |
-      |  @msig trait Writer {
-      |
-      |    def writer: MessagePack.Writer
-      |
-      |    ${(writers, "\n\n")}
-      |
-      |    def result: ISZ[U8] = {
-      |      return writer.result
-      |    }
-      |
-      |  }
-      |
-      |  object Reader {
-      |
-      |    @record class Default(val reader: MessagePack.Reader.Impl) extends Reader {
-      |      def errorOpt: Option[MessagePack.ErrorMsg] = {
-      |        return reader.errorOpt
-      |      }
-      |    }
-
-      |  }
-      |
-      |  @msig trait Reader {
-      |
-      |    def reader: MessagePack.Reader
-      |
-      |    ${(readers, "\n\n")}
-      |
-      |  }
-      |
-      |  def to[T](data: ISZ[U8], f: Reader => T): Either[T, MessagePack.ErrorMsg] = {
-      |    val rd = Reader.Default(MessagePack.reader(data))
-      |    rd.reader.init()
-      |    val r = f(rd)
-      |    rd.errorOpt match {
-      |      case Some(e) => return Either.Right(e)
-      |      case _ => return Either.Left(r)
-      |    }
-      |  }
-      |
-      |  ${(fromsTos, "\n\n")}
-      |
-      |}"""
+        if (packageNames.nonEmpty) Some(
+          st"""package ${(packageNames, ".")}
+              |""") else None[ST]()
+      val r =
+        st"""// #Sireum
+            |// @formatter:off
+            |
+            |$license
+            |$fileUri
+            |$packageName
+            |import org.sireum._
+            |
+            |object ${name.getOrElse("MsgPack")} {
+            |
+            |  object Constants {
+            |
+            |    ${(constants, "\n\n")}
+            |
+            |  }
+            |
+            |  object Writer {
+            |
+            |    @record class Default(val writer: MessagePack.Writer.Impl) extends Writer
+            |
+            |  }
+            |
+            |  @msig trait Writer {
+            |
+            |    def writer: MessagePack.Writer
+            |
+            |    ${(writers, "\n\n")}
+            |
+            |    def result: ISZ[U8] = {
+            |      return writer.result
+            |    }
+            |
+            |  }
+            |
+            |  object Reader {
+            |
+            |    @record class Default(val reader: MessagePack.Reader.Impl) extends Reader {
+            |      def errorOpt: Option[MessagePack.ErrorMsg] = {
+            |        return reader.errorOpt
+            |      }
+            |    }
+            |
+            |  }
+            |
+            |  @msig trait Reader {
+            |
+            |    def reader: MessagePack.Reader
+            |
+            |    ${(readers, "\n\n")}
+            |
+            |  }
+            |
+            |  def to[T](data: ISZ[U8], f: Reader => T): Either[T, MessagePack.ErrorMsg] = {
+            |    val rd = Reader.Default(MessagePack.reader(data))
+            |    rd.reader.init()
+            |    val r = f(rd)
+            |    rd.errorOpt match {
+            |      case Some(e) => return Either.Right(e)
+            |      case _ => return Either.Left(r)
+            |    }
+            |  }
+            |
+            |  ${(fromsTos, "\n\n")}
+            |
+            |}"""
+      return r
     }
 
     @pure def from(name: ST, tpe: ST): ST = {
-      return st"""def from$name(o: $tpe, pooling: B): ISZ[U8] = {
-      |  val w = Writer.Default(MessagePack.writer(pooling))
-      |  w.write$name(o)
-      |  return w.result
-      |}"""
+      val r =
+        st"""def from$name(o: $tpe, pooling: B): ISZ[U8] = {
+            |  val w = Writer.Default(MessagePack.writer(pooling))
+            |  w.write$name(o)
+            |  return w.result
+            |}"""
+      return r
     }
 
     @pure def to(name: ST, tpe: ST): ST = {
-      return st"""def to$name(data: ISZ[U8]): Either[$tpe, MessagePack.ErrorMsg] = {
-      |  def f$name(reader: Reader): $tpe = {
-      |    val r = reader.read$name()
-      |    return r
-      |  }
-      |  val r = to(data, f$name _)
-      |  return r
-      |}"""
+      val r =
+        st"""def to$name(data: ISZ[U8]): Either[$tpe, MessagePack.ErrorMsg] = {
+            |  def f$name(reader: Reader): $tpe = {
+            |    val r = reader.read$name()
+            |    return r
+            |  }
+            |  val r = to(data, f$name _)
+            |  return r
+            |}"""
+      return r
     }
 
     @pure def printRoot(name: ST, tpe: ST, printRootCases: ISZ[ST]): ST = {
-      return st"""def write$name(o: $tpe): Unit = {
-      |  o match {
-      |    ${(printRootCases, "\n")}
-      |  }
-      |}"""
+      val r =
+        st"""def write$name(o: $tpe): Unit = {
+            |  o match {
+            |    ${(printRootCases, "\n")}
+            |  }
+            |}"""
+      return r
     }
 
     @pure def printRootCase(name: ST, tpe: ST): ST = {
@@ -469,10 +515,12 @@ object SerializerGen {
     }
 
     @pure def printObject(name: ST, tpe: ST, printFields: ISZ[ST]): ST = {
-      return st"""def write$name(o: $tpe): Unit = {
-      |  writer.writeZ(Constants.$name)
-      |  ${(printFields, "\n")}
-      |}"""
+      val r =
+        st"""def write$name(o: $tpe): Unit = {
+            |  writer.writeZ(Constants.$name)
+            |  ${(printFields, "\n")}
+            |}"""
+      return r
     }
 
     @pure def printField(fieldName: String, fieldValue: ST): ST = {
@@ -484,10 +532,16 @@ object SerializerGen {
       return st"${w}write$name(o.$fieldName)"
     }
 
+    @pure def printFun(fieldName: String, size: Z, isPure: B): ST = {
+      return st"writer.writeISZ(MessagePack.Fun.write${if (isPure) "Pure" else ""}$size(o.$fieldName), writer.writeU8 _)"
+    }
+
     @pure def printEnum(name: ST, tpe: ST, printEnumCases: ISZ[ST]): ST = {
-      return st"""def write${name}Type(o: $tpe.Type): Unit = {
-      |  writer.writeZ(o.ordinal)
-      |}"""
+      val r =
+        st"""def write${name}Type(o: $tpe.Type): Unit = {
+            |  writer.writeZ(o.ordinal)
+            |}"""
+      return r
     }
 
     @pure def printEnumCase(elementName: String, tpe: ST): ST = {
@@ -506,31 +560,33 @@ object SerializerGen {
     }
 
     @pure def printNameTwo(
-      isSImple: B,
-      nameTwo: String,
-      name1: ST,
-      name2: ST,
-      fieldName: String,
-      isBuiltIn1: B,
-      isBuiltIn2: B
-    ): ST = {
+                            isSImple: B,
+                            nameTwo: String,
+                            name1: ST,
+                            name2: ST,
+                            fieldName: String,
+                            isBuiltIn1: B,
+                            isBuiltIn2: B
+                          ): ST = {
       val w1: String = if (isBuiltIn1) "writer." else ""
       val w2: String = if (isBuiltIn2) "writer." else ""
       return st"writer.write$nameTwo(o.$fieldName, ${w1}write$name1 _, ${w2}write$name2 _)"
     }
 
     @pure def parseRoot(name: ST, tpe: ST, childrenTpes: ISZ[ST], parseRootCases: ISZ[ST], defaultName: ST): ST = {
-      return st"""def read$name(): $tpe = {
-      |  val i = reader.curr
-      |  val t = reader.readZ()
-      |  t match {
-      |    ${(parseRootCases, "\n")}
-      |    case _ =>
-      |      reader.error(i, s"$$t is not a valid type of $tpe.")
-      |      val r = read${defaultName}T(T)
-      |      return r
-      |  }
-      |}"""
+      val r =
+        st"""def read$name(): $tpe = {
+            |  val i = reader.curr
+            |  val t = reader.readZ()
+            |  t match {
+            |    ${(parseRootCases, "\n")}
+            |    case _ =>
+            |      reader.error(i, s"$$t is not a valid type of $tpe.")
+            |      val r = read${defaultName}T(T)
+            |      return r
+            |  }
+            |}"""
+      return r
     }
 
     @pure def parseRootCase(name: ST, tpe: ST): ST = {
@@ -538,18 +594,20 @@ object SerializerGen {
     }
 
     @pure def parseObject(name: ST, tpe: ST, parseFields: ISZ[ST], fieldNames: ISZ[String]): ST = {
-      return st"""def read$name(): $tpe = {
-      |  val r = read${name}T(F)
-      |  return r
-      |}
-      |
-      |def read${name}T(typeParsed: B): $tpe = {
-      |  if (!typeParsed) {
-      |    reader.expectZ(Constants.$name)
-      |  }
-      |  ${(parseFields, "\n")}
-      |  return $tpe(${(fieldNames, ", ")})
-      |}"""
+      val r =
+        st"""def read$name(): $tpe = {
+            |  val r = read${name}T(F)
+            |  return r
+            |}
+            |
+            |def read${name}T(typeParsed: B): $tpe = {
+            |  if (!typeParsed) {
+            |    reader.expectZ(Constants.$name)
+            |  }
+            |  ${(parseFields, "\n")}
+            |  return $tpe(${(fieldNames, ", ")})
+            |}"""
+      return r
     }
 
     @pure def parseField(fieldName: String, parseValue: ST): ST = {
@@ -561,11 +619,17 @@ object SerializerGen {
       return st"${p}read$suffixes"
     }
 
+    @pure def parseFun(size: Z, isPure: B): ST = {
+      return st"MessagePack.Fun.parse${if (isPure) "Pure" else ""}$size(this.reader, reader.readISZ(reader.readU8 _))"
+    }
+
     @pure def parseEnum(name: ST, tpe: ST, parseEnumCases: ISZ[ST]): ST = {
-      return st"""def read${name}Type(): $tpe.Type = {
-      |  val r = reader.readZ()
-      |  return $tpe.byOrdinal(r).get
-      |}"""
+      val r =
+        st"""def read${name}Type(): $tpe.Type = {
+            |  val r = reader.readZ()
+            |  return $tpe.byOrdinal(r).get
+            |}"""
+      return r
     }
 
     @pure def parseEnumCase(elementName: String, tpe: ST): ST = {
@@ -593,14 +657,14 @@ object SerializerGen {
   val jsonGenKind: String = "JsonGen"
 
   def gen(
-    mode: Mode.Type,
-    sources: ISZ[(Option[String], String)],
-    packageName: QName,
-    reporter: Reporter,
-    licenseOpt: Option[String],
-    fileUriOpt: Option[String],
-    name: Option[String]
-  ): ST = {
+           mode: Mode.Type,
+           sources: ISZ[(Option[String], String)],
+           packageName: QName,
+           reporter: Reporter,
+           licenseOpt: Option[String],
+           fileUriOpt: Option[String],
+           name: Option[String]
+         ): ST = {
     var uris = ISZ[String]()
     var missingUri = F
     for (p <- sources) {
@@ -626,13 +690,13 @@ object SerializerGen {
   }
 
   @record class Gen(
-    mode: Mode.Type,
-    globalNameMap: NameMap,
-    globalTypeMap: TypeMap,
-    sortedGlobalTypes: ISZ[TypeInfo],
-    packageName: QName,
-    reporter: Reporter
-  ) {
+                     mode: Mode.Type,
+                     globalNameMap: NameMap,
+                     globalTypeMap: TypeMap,
+                     sortedGlobalTypes: ISZ[TypeInfo],
+                     packageName: QName,
+                     reporter: Reporter
+                   ) {
 
     val poset: Poset[QName] = typePoset(globalTypeMap, sortedGlobalTypes, reporter)
 
@@ -693,11 +757,16 @@ object SerializerGen {
               fieldNames = fieldNames :+ fieldName
               printFields = printFields :+ printField(ti, fieldName, tipe)
               parseFields = parseFields :+ parseField(ti, fieldName, tipe)
+            case tipe: AST.Type.Fun if !tipe.isByName =>
+              val fieldName = param.id.value
+              fieldNames = fieldNames :+ fieldName
+              printFields = printFields :+ printFunField(ti, fieldName, tipe)
+              parseFields = parseFields :+ parseFunField(ti, fieldName, tipe)
             case _ =>
               reporter.error(
                 param.id.attr.posOpt,
                 jsonGenKind,
-                s"Only named types are supported for @datatype/@record fields."
+                s"Only named or fun types are supported for @datatype/@record fields."
               )
           }
         }
@@ -752,6 +821,15 @@ object SerializerGen {
       return template.printField(fieldName, v)
     }
 
+    def printFunField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Fun): ST = {
+      val v = printFunValue(ti, fieldName, tipe)
+      return template.printField(fieldName, v)
+    }
+
+    def printFunValue(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Fun): ST = {
+      template.printFun(fieldName, tipe.args.size, tipe.isPure)
+    }
+
     def printValue(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val sOpt = s(ti, tipe)
       sOpt match {
@@ -778,6 +856,15 @@ object SerializerGen {
     def parseField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val v = parseValue(ti, tipe)
       return template.parseField(fieldName, v)
+    }
+
+    def parseFunField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Fun): ST = {
+      val v = parseFunValue(ti, tipe)
+      return template.parseField(fieldName, v)
+    }
+
+    def parseFunValue(ti: TypeInfo.Adt, tipe: AST.Type.Fun): ST = {
+      return template.parseFun(tipe.args.size, tipe.isPure)
     }
 
     def parseValue(ti: TypeInfo.Adt, tipe: AST.Type.Named): ST = {
@@ -863,7 +950,7 @@ object SerializerGen {
       }
     }
 
-    def basicOrTypeName(ti: TypeInfo.Adt, tipe: AST.Type): (B /* isBuiltIn */, B /* isSimple */, ST) = {
+    def basicOrTypeName(ti: TypeInfo.Adt, tipe: AST.Type): (B /* isBuiltIn */ , B /* isSimple */ , ST) = {
       basic(tipe) match {
         case Some((simple, typeName)) => return (T, simple, st"$typeName")
         case _ =>
