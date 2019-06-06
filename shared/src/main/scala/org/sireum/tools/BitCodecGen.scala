@@ -40,8 +40,8 @@ object BitCodecGen {
   val repeatName: ISZ[String] = specName :+ "Repeat"
   val rawName: ISZ[String] = specName :+ "Raw"
 
-  val funOwners: HashSet[ISZ[String]] = HashSet.empty ++ ISZ(unionName, repeatName, rawName)
-  val funName: HashMap[ISZ[String], String] = HashMap.empty ++ ISZ(
+  val funOwners: HashSet[ISZ[String]] = HashSet.empty[ISZ[String]] ++ ISZ(unionName, repeatName, rawName)
+  val funName: HashMap[ISZ[String], String] = HashMap.empty[ISZ[String], String] ++ ISZ(
     unionName ~> "choice",
     repeatName ~> "size",
     rawName ~> "size"
@@ -70,7 +70,7 @@ object BitCodecGen {
 
     override def preExpInvoke(o: AST.Exp.Invoke): AST.MTransformer.PreResult[AST.Exp] = {
       o.attr.resOpt match {
-        case Some(res: AST.ResolvedInfo) =>
+        case Some(res) =>
           res match {
             case m: AST.ResolvedInfo.Method if m.mode == AST.MethodMode.Constructor =>
               val className = m.owner :+ m.id
