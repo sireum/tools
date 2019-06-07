@@ -169,7 +169,7 @@ import BitCodecGen._
     val packageOpt: Option[ST] =
       if (isProgram) if (packageNames.nonEmpty) Some(st"package ${(packageNames, ".")}") else None()
       else None()
-    val lOpt = licenseOpt.map(s =>
+    val lOpt = licenseOpt.map((s: String) =>
       st"""/*
           | ${ops.StringOps(s).trim}
           | */
