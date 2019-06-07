@@ -72,7 +72,7 @@ object BitCodecGen {
 
     if (!spec.isInstanceOf[Spec.Composite]) {
       reporter.error(None(), kind,
-        "Top-level Spec has to be a composite (i.e., Union, Repeat, Raw, GenUnion, GenRepeat, or GenRaw)")
+        "Top-level Spec has to be a composite (i.e., Concat, Union or GenUnion)")
     }
 
     if (reporter.hasIssue) {
