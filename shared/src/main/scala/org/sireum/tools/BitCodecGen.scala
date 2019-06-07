@@ -164,7 +164,7 @@ import BitCodecGen._
   def gen(spec: Spec, reporter: Reporter): ST = {
     val context = genSpec(Context.create, spec, reporter)
     if (reporter.hasIssue) {
-      return prevGen
+      return st"$prevGen"
     }
     val packageOpt: Option[ST] =
       if (isProgram) if (packageNames.nonEmpty) Some(st"package ${(packageNames, ".")}") else None()
