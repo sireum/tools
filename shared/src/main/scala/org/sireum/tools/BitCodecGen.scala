@@ -46,6 +46,7 @@ object BitCodecGen {
     repeatName ~> "size",
     rawName ~> "size"
   )
+  val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
   def gen(isProgram: B,
           isBigEndian: B,
@@ -67,9 +68,9 @@ object BitCodecGen {
 
     val codeSectionMap = ops.StringOps(ops.StringOps(ops.StringOps(prevGen).
       replaceAllLiterally("\r\n", "\n")).replaceAllLiterally("\n", " \n")).
-      collectCodeSections(kind, beginCodeMarker, endCodeMarker, reporter)
+      collectSections(kind, beginCodeMarker, endCodeMarker, reporter)
 
-    if (!spec.isComposite) {
+    if (!spec.isInstanceOf[Spec.Composite]) {
       reporter.error(None(), kind,
         "Top-level Spec has to be a composite (i.e., Union, Repeat, Raw, GenUnion, GenRepeat, or GenRaw)")
     }
@@ -123,7 +124,7 @@ object BitCodecGen {
   object Context {
     def create: Context = {
       return Context(ISZ(), 2, ISZ.create(65, F), ISZ(), ISZ(),
-        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), None())
+        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ())
     }
   }
 
@@ -139,8 +140,7 @@ object BitCodecGen {
                           wellFormed: ISZ[ST],
                           decoding: ISZ[ST],
                           encoding: ISZ[ST],
-                          members: ISZ[ST],
-                          accessOpt: Option[ST])
+                          members: ISZ[ST])
 
 }
 
@@ -174,7 +174,7 @@ import BitCodecGen._
       else Some(
         st"""
             |$beginCodeMarker Test
-            |${codeSectionMap.get("Test").getOrElse("")}
+            |${prevText("Test", "")}
             |$endCodeMarker Test""")
 
     val r =
@@ -183,13 +183,21 @@ import BitCodecGen._
           |$packageOpt
           |
           |import org.sireum._
-          |${(for (i <- 1 until 64 if context.imports(i)) yield st"import org.sireum.U$i._", "\n")}
+          |${(for (i <- 1 to 64 if context.imports(i)) yield st"import org.sireum.U$i._", "\n")}
           |import org.sireum.ops.Bits.{Context, Reader, Writer}
           |import org.sireum.bitcodec.Runtime
+          |
+          |$beginCodeMarker Imports
+          |${prevText("Imports", "")}
+          |$endCodeMarker Imports
           |
           |object ${if (isProgram) name else "BitCodec"} {
           |
           |  ${(context.mainDecl, "\n\n")}
+          |
+          |  $beginCodeMarker Members
+          |  ${prevText("Members", "")}
+          |  $endCodeMarker Members
           |
           |  ${(context.main, "\n\n")}
           |
@@ -212,8 +220,8 @@ import BitCodecGen._
       case o: Spec.GenRepeat => return genSpecGenRepeat(context, o, reporter)
       case o: Spec.GenRaw => return genSpecGenRaw(context, o, reporter)
       case o: Spec.Pads => return genSpecPads(context, o, reporter)
-      case _ =>
-        val p = o.polyDescOpt.get
+      case o: Spec.Poly =>
+        val p = o.polyDesc
         p.compName match {
           case string"Union" => return genSpecUnion(context, p.name, p.dependsOn, p.elementsOpt.get, reporter)
           case string"Repeat" => return genSpecRepeat(context, p.name, p.dependsOn, p.elementsOpt.get(0), reporter)
@@ -224,104 +232,105 @@ import BitCodecGen._
 
   def genSpecBoolean(context: BitCodecGen.Context, spec: Spec.Boolean, reporter: Reporter): Context = {
     val name = spec.name
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"B"
     return context(
-      fields = context.fields :+ st"var $name: B",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"F",
-      decoding = context.decoding :+ st"$access = Reader.MS.bleB(input, context)",
-      encoding = context.encoding :+ st"Writer.bleB(output, context, $access)")
+      decoding = context.decoding :+ st"$name = Reader.MS.bleB(input, context)",
+      encoding = context.encoding :+ st"Writer.bleB(output, context, $name)")
   }
 
   def genSpecBits(context: BitCodecGen.Context, spec: Spec.Bits, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
     val prefix: String = if (size == 1) "ble" else endianPrefix
-    val access = context.accessOpt.getOrElse(st"$name")
     if (size < 1) {
       reporter.error(None(), kind, st"Size must be >= 1 for Spec.Bits ${(context.path :+ name, ".")}".render)
       return context
     } else if (size <= 64) {
+      val tpe = st"U$size"
       return context(
         imports = context.imports(size ~> T),
-        fields = context.fields :+ st"var $name: U$size",
+        fields = context.fields :+ st"var $name: $tpe",
         inits = context.inits :+ st"""u$size"0"""",
-        decoding = context.decoding :+ st"$access = Reader.MS.${prefix}U$size(input, context)",
-        encoding = context.encoding :+ st"Writer.${prefix}U$size(output, context, $access)")
+        decoding = context.decoding :+ st"$name = Reader.MS.${prefix}U$size(input, context)",
+        encoding = context.encoding :+ st"Writer.${prefix}U$size(output, context, $name)")
     } else {
+      val tpe = st"MSZ[B]"
       return context(
-        fields = context.fields :+ st"var $name: MSZ[B]",
+        fields = context.fields :+ st"var $name: $tpe",
         inits = context.inits :+ st"MSZ.create($size, F)",
         wellFormed = context.wellFormed :+
-          st"""if ($access.size != $size) {
+          st"""if ($name.size != $size) {
               |  return ERROR_${context.owner}
               |}""",
-        decoding = context.decoding :+ st"Reader.MS.${prefix}BS(input, context, $access, $size)",
-        encoding = context.encoding :+ st"Writer.${prefix}BS(output, context, $access)")
+        decoding = context.decoding :+ st"Reader.MS.${prefix}BS(input, context, $name, $size)",
+        encoding = context.encoding :+ st"Writer.${prefix}BS(output, context, $name)")
     }
   }
 
   def genSpecBytes(context: BitCodecGen.Context, spec: Spec.Bytes, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"MSZ[U8]"
     return context(
       imports = context.imports(8 ~> T),
-      fields = context.fields :+ st"var $name: MSZ[U8]",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"""MSZ.create($size, u8"0")""",
       wellFormed = context.wellFormed :+
-        st"""if ($access.size != $size) {
+        st"""if ($name.size != $size) {
             |  return ERROR_${context.owner}
             |}""",
-      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U8S(input, context, $access, $size)",
-      encoding = context.encoding :+ st"Writer.${endianPrefix}U8S(output, context, $access)")
+      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U8S(input, context, $name, $size)",
+      encoding = context.encoding :+ st"Writer.${endianPrefix}U8S(output, context, $name)")
   }
 
   def genSpecShorts(context: BitCodecGen.Context, spec: Spec.Shorts, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"MSZ[U16]"
     return context(
       imports = context.imports(16 ~> T),
-      fields = context.fields :+ st"var $name: MSZ[U16]",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"""MSZ.create($size, u16"0")""",
       wellFormed = context.wellFormed :+
-        st"""if ($access.size != $size) {
+        st"""if ($name.size != $size) {
             |  return ERROR_${context.owner}
             |}""",
-      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U16S(input, context, $access, $size)",
-      encoding = context.encoding :+ st"Writer.${endianPrefix}U16S(output, context, $access)")
+      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U16S(input, context, $name, $size)",
+      encoding = context.encoding :+ st"Writer.${endianPrefix}U16S(output, context, $name)")
   }
 
   def genSpecInts(context: BitCodecGen.Context, spec: Spec.Ints, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"MSZ[U32]"
     return context(
       imports = context.imports(32 ~> T),
-      fields = context.fields :+ st"var $name: MSZ[U32]",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"""MSZ.create($size, u32"0")""",
       wellFormed = context.wellFormed :+
-        st"""if ($access.size != $size) {
+        st"""if ($name.size != $size) {
             |  return ERROR_${context.owner}
             |}""",
-      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U32S(input, context, $access, $size)",
-      encoding = context.encoding :+ st"Writer.${endianPrefix}U32S(output, context, $access)")
+      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U32S(input, context, $name, $size)",
+      encoding = context.encoding :+ st"Writer.${endianPrefix}U32S(output, context, $name)")
   }
 
   def genSpecLongs(context: BitCodecGen.Context, spec: Spec.Longs, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"MSZ[U64]"
     return context(
       imports = context.imports(64 ~> T),
-      fields = context.fields :+ st"var $name: MSZ[U64]",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"""MSZ.create($size, u64"0")""",
       wellFormed = context.wellFormed :+
-        st"""if ($access.size != $size) {
+        st"""if ($name.size != $size) {
             |  return ERROR_${context.owner}
             |}""",
-      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U64S(input, context, $access, $size)",
-      encoding = context.encoding :+ st"Writer.${endianPrefix}U64S(output, context, $access)")
+      decoding = context.decoding :+ st"Reader.MS.${endianPrefix}U64S(input, context, $name, $size)",
+      encoding = context.encoding :+ st"Writer.${endianPrefix}U64S(output, context, $name)")
   }
 
   def genSpecEnum(context: BitCodecGen.Context, spec: Spec.Enum, reporter: Reporter): Context = {
@@ -336,7 +345,7 @@ import BitCodecGen._
     }
     val size = bitWidth(enum.elements.size)
     val first = enum.elements(0).value
-    val access = context.accessOpt.getOrElse(st"$name")
+    val tpe = st"$objectName.Type"
     return context(
       imports = context.imports(size ~> T),
       errNum = context.errNum + 1,
@@ -346,14 +355,14 @@ import BitCodecGen._
             |  ${(for (element <- enum.elements) yield st"'${element.value}", "\n")}
             |}
             |
-            |def decode$objectName(input: MSZ[B], context: Context): $objectName.Type = {
+            |def decode$objectName(input: MSZ[B], context: Context): $tpe = {
             |  if (context.offset + $size > input.size) {
             |    context.signalError(ERROR_$objectName)
             |  }
             |  if (context.hasError) {
             |    return $objectName.$first
             |  }
-            |  val r: $objectName.Type = Reader.MS.beU$size(input, context) match {
+            |  val r: $tpe = Reader.MS.beU$size(input, context) match {
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
@@ -362,7 +371,7 @@ import BitCodecGen._
             |  return r
             |}
             |
-            |def encode$objectName(output: MSZ[B], context: Context, $name: $objectName.Type): Unit = {
+            |def encode$objectName(output: MSZ[B], context: Context, $name: $tpe): Unit = {
             |  if (context.offset + $size > output.size) {
             |    context.signalError(ERROR_$objectName)
             |  }
@@ -373,10 +382,10 @@ import BitCodecGen._
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.beU$size(output, context, u$size"$i")""", "\n")}
             |  }
             |}""",
-      fields = context.fields :+ st"var $name: $objectName.Type",
+      fields = context.fields :+ st"var $name: $tpe",
       inits = context.inits :+ st"""$objectName.$first""",
-      decoding = context.decoding :+ st"$access = decode$objectName(input, context)",
-      encoding = context.encoding :+ st"encode$objectName(output, context, $access)")
+      decoding = context.decoding :+ st"$name = decode$objectName(input, context)",
+      encoding = context.encoding :+ st"encode$objectName(output, context, $name)")
   }
 
   def genSpecConcat(context: BitCodecGen.Context, spec: Spec.Concat, reporter: Reporter): Context = {
@@ -387,7 +396,6 @@ import BitCodecGen._
     for (element <- spec.elements) {
       elementContext = genSpec(elementContext, element, reporter)
     }
-    val access = context.accessOpt.getOrElse(st"$fname")
     return Context(
       path = context.path,
       errNum = elementContext.errNum + 1,
@@ -409,7 +417,7 @@ import BitCodecGen._
             |    ${(elementContext.wellFormed, "\n\n")}
             |
             |    $beginCodeMarker $name.wellFormed
-            |    ${(prevs(s"$name.wellFormed"), "\n")}
+            |    ${prevText(s"$name.wellFormed", "")}
             |    $endCodeMarker $name.wellFormed
             |
             |    return 0
@@ -439,14 +447,13 @@ import BitCodecGen._
       fields = context.fields :+ st"var $fname: $name",
       inits = context.inits :+ st"$name.empty",
       wellFormed = context.wellFormed :+
-        st"""val wf$name = $access.wellFormed
+        st"""val wf$name = $fname.wellFormed
             |if (wf$name != 0) {
             |  return wf$name
             |}""",
-      decoding = context.decoding :+ st"$access.decode(input, context)",
-      encoding = context.encoding :+ st"$access.encode(output, context)",
-      members = context.members,
-      accessOpt = context.accessOpt)
+      decoding = context.decoding :+ st"$fname.decode(input, context)",
+      encoding = context.encoding :+ st"$fname.encode(output, context)",
+      members = context.members)
   }
 
   def genSpecUnion(context: BitCodecGen.Context,
@@ -454,8 +461,8 @@ import BitCodecGen._
                    dependsOn: ISZ[String],
                    subs: ISZ[Spec],
                    reporter: Reporter): Context = {
-    val normSubs: ISZ[Spec] =
-      for (sub <- subs) yield if (sub.isComposite) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
+    val normSubs: ISZ[Spec] = for (sub <- subs) yield
+      if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
     val (pName, pType, pBody): (String, String, String) =
       funNameTypeBody(context.path :+ name, dependsOn.size, name, "Spec.Union.choice", reporter) match {
         case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
@@ -467,7 +474,6 @@ import BitCodecGen._
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
     }
-    val access = context.accessOpt.getOrElse(st"$fname")
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
     return Context(
       path = context.path,
@@ -483,15 +489,16 @@ import BitCodecGen._
             |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.name}", "\n")}
+            |     'Error
             |  }
             |
-            |  def choose($pName: $pType, context: Context): Choice.Type = {
-            |    val r: Z = $pBody
+            |  def choose($pName: $pType): Choice.Type = {
+            |    val r: Z = {
+            |      $pBody
+            |    }
             |    r match {
             |      ${(for (i <- 0 until normSubs.size) yield st"""case z"$i" => return Choice.${normSubs(i).name}""", "\n")}
-            |      case _ =>
-            |        context.signalError(ERROR_HeaderAddress)
-            |        return Choice.${normSubs(0).name}
+            |      case _ => return Choice.Error
             |    }
             |  }
             |}""",
@@ -500,18 +507,24 @@ import BitCodecGen._
       fields = context.fields :+ st"var $fname: $name",
       inits = context.inits :+ st"$name.${normSubs(0).name}.empty",
       wellFormed = context.wellFormed :+
-        st"""val wf$name = $access.wellFormed
+        st"""($name.choose($deps), $fname) match {
+            |  ${(for (sub <- normSubs) yield st"case ($name.Choice.${sub.name}, _: $name.${sub.name}) =>", "\n")}
+            |  case _ => return ERROR_$name
+            |}
+            |
+            |
+            |val wf$name = $fname.wellFormed
             |if (wf$name != 0) {
             |  return wf$name
             |}""",
       decoding = context.decoding :+
-        st"""$name.choose($deps, context) match {
-            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $access = $name.${sub.name}.empty", "\n")}
+        st"""$name.choose($deps) match {
+            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = $name.${sub.name}.empty", "\n")}
+            |  case _ => context.signalError(ERROR_$name)
             |}
-            |$access.decode(input, context)""",
-      encoding = context.encoding :+ st"$access.encode(output, context)",
-      members = context.members,
-      accessOpt = context.accessOpt)
+            |$fname.decode(input, context)""",
+      encoding = context.encoding :+ st"$fname.encode(output, context)",
+      members = context.members)
   }
 
   def genSpecRepeat(context: BitCodecGen.Context,
@@ -519,7 +532,63 @@ import BitCodecGen._
                     dependsOn: ISZ[String],
                     element: Spec,
                     reporter: Reporter): Context = {
-    halt("TODO")
+    val normElement: Spec =
+      if (!element.isInstanceOf[Spec.Composite]) Spec.Concat(ops.StringOps(element.name).firstToUpper, ISZ(element))
+      else element
+    val (pName, pType, pBody): (String, String, String) =
+      funNameTypeBody(context.path :+ name, dependsOn.size, name, "Spec.Repeat.size", reporter) match {
+        case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
+        case _ => return context
+      }
+    val mname = ops.StringOps(name).firstToUpper
+    val owner = context.owner
+    val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
+    var elementContext = context(path = context.path :+ name, main = ISZ(), owner = st"${owner}_$name".render,
+      supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ())
+    elementContext = genSpec(elementContext, normElement, reporter)
+    val tpe = st"MSZ[${normElement.name}]"
+    return Context(
+      path = context.path,
+      errNum = elementContext.errNum + 1,
+      imports = elementContext.imports,
+      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      main = elementContext.main,
+      owner = context.owner,
+      supr = context.supr,
+      fields = context.fields :+ st"var $name: $tpe",
+      inits = context.inits :+ st"$tpe()",
+      wellFormed = context.wellFormed :+
+        st"""val ${name}Size = sizeOf$mname($deps)
+            |if ($name.size != ${name}Size) {
+            |  return ERROR_${owner}_$name
+            |}""",
+      decoding = context.decoding :+
+        st"""val ${name}Size = sizeOf$mname($deps)
+            |if (${name}Size >= 0) {
+            |  $name = MSZ.create(${name}Size, ${normElement.name}.empty)
+            |  for (i <- 0 until ${name}Size) {
+            |    $name(i).decode(input, context)
+            |  }
+            |} else {
+            |  context.signalError(ERROR_${owner}_$name)
+            |}""",
+      encoding = context.encoding :+
+        st"""val ${name}Size = sizeOf$mname($deps)
+            |if (${name}Size >= 0) {
+            |  for (i <- 0 until ${name}Size) {
+            |    $name(i).encode(output, context)
+            |  }
+            |} else {
+            |  context.signalError(ERROR_${owner}_$name)
+            |}""",
+      members = context.members :+
+        st"""def sizeOf$mname($pName: $pType): Z = {
+            |  val r: Z = {
+            |    $pBody
+            |  }
+            |  return r
+            |}""")
   }
 
   def genSpecRaw(context: BitCodecGen.Context, name: String, dependsOn: ISZ[String], reporter: Reporter): Context = {
@@ -528,15 +597,20 @@ import BitCodecGen._
       case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
       case _ => return context
     }
-    val access = context.accessOpt.getOrElse(st"$name")
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
-    return context(
+    val tpe = st"MSZ[B]"
+    return Context(
+      path = context.path,
       errNum = context.errNum + 1,
+      imports = context.imports,
       mainDecl = context.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
-      fields = context.fields :+ st"var $name: MSZ[B]",
-      inits = context.inits :+ st"MSZ[B]()",
+      main = context.main,
+      owner = context.owner,
+      supr = context.supr,
+      fields = context.fields :+ st"var $name: $tpe",
+      inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed :+
         st"""val ${name}Size = sizeOf$mname($deps)
             |if ($name.size != ${name}Size) {
@@ -544,30 +618,218 @@ import BitCodecGen._
             |}""",
       decoding = context.decoding :+
         st"""val ${name}Size = sizeOf$mname($deps)
-            |$access = MSZ.create(${name}Size, F)
-            |Reader.MS.bleRaw(input, context, $access, ${name}Size)""",
-      encoding = context.encoding :+ st"Writer.bleRaw(output, context, $name, $name.size)",
+            |if (${name}Size >= 0) {
+            |  $name = MSZ.create(${name}Size, F)
+            |  Reader.MS.bleRaw(input, context, $name, ${name}Size)
+            |} else {
+            |  context.signalError(ERROR_${owner}_$name)
+            |}""",
+      encoding = context.encoding :+
+        st"""val ${name}Size = sizeOf$mname($deps)
+            |if (${name}Size >= 0) {
+            |  Writer.bleRaw(output, context, $name, ${name}Size)
+            |} else {
+            |  context.signalError(ERROR_${owner}_$name)
+            |}""",
       members = context.members :+
         st"""def sizeOf$mname($pName: $pType): Z = {
-            |  val r: Z = $pBody
-            |  if (r >= 0) {
-            |    return r
-            |  } else {
-            |    return -1
+            |  val r: Z = {
+            |    $pBody
             |  }
+            |  return r
             |}""")
   }
 
   def genSpecGenUnion(context: BitCodecGen.Context, spec: Spec.GenUnion, reporter: Reporter): Context = {
-    halt("TODO")
+    val name = spec.name
+    val subs = spec.subs
+    val normSubs: ISZ[Spec] = for (sub <- subs) yield
+      if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
+    val fname = ops.StringOps(name).firstToLower
+    var subContext = context(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
+      fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
+    for (sub <- normSubs) {
+      subContext = genSpec(subContext, sub, reporter)
+    }
+    return Context(
+      path = context.path,
+      errNum = subContext.errNum + 1,
+      imports = subContext.imports,
+      mainDecl = subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
+      main = context.main :+
+        st"""@record trait $name extends ${context.supr}
+            |
+            |object $name {
+            |
+            |  object ChoiceContext {
+            |    def empty: ChoiceContext = {
+            |      // BEGIN USER CODE: $name.ChoiceContext.empty
+            |      ${prevText(s"$name.ChoiceContext.empty", notImplemented)}
+            |      // END USER CODE: $name.ChoiceContext.empty
+            |    }
+            |  }
+            |
+            |  @record class ChoiceContext(
+            |     // BEGIN USER CODE: $name.ChoiceContext
+            |     ${prevText(s"$name.ChoiceContext", "")}
+            |     // END USER CODE: $name.ChoiceContext
+            |  )
+            |
+            |  ${(subContext.main, "\n\n")}
+            |
+            |  @enum object Choice {
+            |     ${(for (sub <- normSubs) yield st"'${sub.name}", "\n")}
+            |     'Error
+            |  }
+            |
+            |  def choose(input: MSZ[B], context: Context, choiceContext: $name.ChoiceContext): Choice.Type = {
+            |    // BEGIN USER CODE: $name.choose
+            |    ${prevText(s"$name.choose", notImplemented)}
+            |    // END USER CODE: $name.choose
+            |  }
+            |}""",
+      owner = context.owner,
+      supr = context.supr,
+      fields = context.fields :+ st"var $fname: $name",
+      inits = context.inits :+ st"$name.${normSubs(0).name}.empty",
+      wellFormed = context.wellFormed :+
+        st"""val wf$name = $fname.wellFormed
+            |if (wf$name != 0) {
+            |  return wf$name
+            |}""",
+      decoding = context.decoding :+
+        st"""val ${fname}ChoiceContext = $name.ChoiceContext.empty
+            |// BEGIN USER CODE: $name.ChoiceContext.init
+            |${prevText(s"$name.ChoiceContext.init", "")}
+            |// END USER CODE: $name.ChoiceContext.init
+            |$name.choose(input, context, ${fname}ChoiceContext) match {
+            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = $name.${sub.name}.empty", "\n")}
+            |  case _ => context.signalError(ERROR_$name)
+            |}
+            |$fname.decode(input, context)""",
+      encoding = context.encoding :+ st"$fname.encode(output, context)",
+      members = context.members)
   }
 
   def genSpecGenRepeat(context: BitCodecGen.Context, spec: Spec.GenRepeat, reporter: Reporter): Context = {
-    halt("TODO")
+    val name = spec.name
+    val element = spec.element
+    val normElement: Spec =
+      if (!element.isInstanceOf[Spec.Composite]) Spec.Concat(ops.StringOps(element.name).firstToUpper, ISZ(element))
+      else element
+    val mname = ops.StringOps(name).firstToUpper
+    val owner = context.owner
+    var elementContext = context(path = context.path :+ name, main = ISZ(), owner = st"${owner}_$name".render,
+      supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ())
+    elementContext = genSpec(elementContext, normElement, reporter)
+    val tpe = st"MSZ[${normElement.name}]"
+    return Context(
+      path = context.path,
+      errNum = elementContext.errNum + 1,
+      imports = elementContext.imports,
+      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      main = elementContext.main :+
+        st"""object $owner${mname}Context {
+            |  def empty: $owner${mname}Context = {
+            |    // BEGIN USER CODE: $owner${mname}Context.empty
+            |    ${prevText(s"$owner${mname}Context.empty", notImplemented)}
+            |    // END USER CODE: $owner${mname}Context.empty
+            |  }
+            |}
+            |
+            |@record class $owner${mname}Context(
+            |  // BEGIN USER CODE: $owner${mname}Context
+            |  ${prevText(s"$owner${mname}Context", "")}
+            |  // END USER CODE: $owner${mname}Context
+            |)""",
+      owner = context.owner,
+      supr = context.supr,
+      fields = context.fields :+ st"var $name: $tpe",
+      inits = context.inits :+ st"$tpe()",
+      wellFormed = context.wellFormed,
+      decoding = context.decoding :+
+        st"""$name = MSZ()
+            |val ${name}Context = $owner${mname}Context.empty
+            |// BEGIN USER CODE: $owner${mname}Context.init
+            |${prevText(s"$owner${mname}Context.init", "")}
+            |// END USER CODE: $owner${mname}Context.init
+            |while (${name}Continue(input, context, ${name}Context)) {
+            |  val o = ${normElement.name}.empty
+            |  o.decode(input, context)
+            |  $name = $name :+ o
+            |  ${name}Update(input, context, ${name}Context)
+            |}""",
+      encoding = context.encoding :+
+        st"""for (i <- 0 until $name.size) {
+            |  $name(i).encode(output, context)
+            |}""",
+      members = context.members :+
+        st"""def ${name}Continue(input: MSZ[B], context: Context, ${name}Context: $owner${mname}Context): B = {
+            |  // BEGIN USER CODE: $owner.${name}Continue
+            |  ${prevText(s"$owner.${name}Continue", notImplemented)}
+            |  // END USER CODE: $owner.${name}Continue
+            |}
+            |
+            |def ${name}Update(input: MSZ[B], context: Context, ${name}Context: $owner${mname}Context): Unit = {
+            |  // BEGIN USER CODE: $owner.${name}Update
+            |  ${prevText(s"$owner.${name}Update", notImplemented)}
+            |  // END USER CODE: $owner.${name}Update
+            |}""")
   }
 
   def genSpecGenRaw(context: BitCodecGen.Context, spec: Spec.GenRaw, reporter: Reporter): Context = {
-    halt("TODO")
+    val name = spec.name
+    val mname = ops.StringOps(name).firstToUpper
+    val owner = context.owner
+    val tpe = st"MSZ[B]"
+    return Context(
+      path = context.path,
+      errNum = context.errNum + 1,
+      imports = context.imports,
+      mainDecl = context.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      main = context.main :+
+        st"""object $owner${mname}Context {
+            |  def empty: $owner${mname}Context = {
+            |    // BEGIN USER CODE: $owner${mname}Context.empty
+            |    ${prevText(s"$owner${mname}Context.empty", notImplemented)}
+            |    // END USER CODE: $owner${mname}Context.empty
+            |  }
+            |}
+            |
+            |@record class $owner${mname}Context(
+            |  // BEGIN USER CODE: $owner${mname}Context
+            |  ${prevText(s"$owner${mname}Context", "")}
+            |  // END USER CODE: $owner${mname}Context
+            |)""",
+      owner = context.owner,
+      supr = context.supr,
+      fields = context.fields :+ st"var $name: $tpe",
+      inits = context.inits :+ st"$tpe()",
+      wellFormed = context.wellFormed,
+      decoding = context.decoding :+
+        st"""$name = MSZ()
+            |val ${name}Context = $owner${mname}Context.empty
+            |// BEGIN USER CODE: $owner${mname}Context.init
+            |${prevText(s"$owner${mname}Context.init", "")}
+            |// END USER CODE: $owner${mname}Context.init
+            |while (${name}Continue(input, context, ${name}Context)) {
+            |  $name = $name :+ Reader.MS.bleB(input, context)
+            |  ${name}Update(input, context, ${name}Context)
+            |}""",
+      encoding = context.encoding :+ st"""Writer.bleRaw(output, context, $name, $name.size)""",
+      members = context.members :+
+        st"""def ${name}Continue(input: MSZ[B], context: Context, ${name}Context: $owner${mname}Context): B = {
+            |  // BEGIN USER CODE: $owner.${name}Continue
+            |  ${prevText(s"$owner.${name}Continue", notImplemented)}
+            |  // END USER CODE: $owner.${name}Continue
+            |}
+            |
+            |def ${name}Update(input: MSZ[B], context: Context, ${name}Context: $owner${mname}Context): Unit = {
+            |  // BEGIN USER CODE: $owner.${name}Update
+            |  ${prevText(s"$owner.${name}Update", notImplemented)}
+            |  // END USER CODE: $owner.${name}Update
+            |}""")
   }
 
   def genSpecPads(context: BitCodecGen.Context, spec: Spec.Pads, reporter: Reporter): Context = {
@@ -579,8 +841,8 @@ import BitCodecGen._
   }
 
   def bitWidth(size: Z): Z = {
-    var n = size
-    var r = -1
+    var n = size - 1
+    var r = 0
     while (n > 0) {
       n = n / 2
       r = r + 1
@@ -622,16 +884,55 @@ import BitCodecGen._
           return None()
         }
         val tpos = t.posOpt.get
+        val fpos = f.posOpt.get
         val epos = f.exp.asStmt.posOpt.get
         return Some((f.params(0).id.value, ops.StringOps(text).substring(tpos.offset, tpos.offset + tpos.length),
-          ops.StringOps(text).substring(epos.offset, epos.offset + epos.length)))
+          reorientLines(ops.StringOps(text).substring(epos.offset, epos.offset + epos.length),
+            if (fpos.beginLine == epos.beginLine) fpos.beginColumn - 1 else epos.beginColumn - 1)))
       case _ =>
         reporter.error(None(), kind, st"Could not find $spec function for ${(path, ".")}".render)
         return None()
     }
   }
 
-  def prevs(name: String): String = {
-    return codeSectionMap.get(name).getOrElse("")
+  def prevText(name: String, default: String): String = {
+    codeSectionMap.get(name) match {
+      case Some(t) => return reorientLines(t, -1)
+      case _ => return default
+    }
+  }
+
+  def reorientLines(text: String, column: Z): String = {
+    def removeFirstWhitespaces(line: String, size: Z): String = {
+      val cs = conversions.String.toCis(line)
+      var ok = T
+      var i = 0
+      while (i < size && i < line.size && ok) {
+        if (!cs(i).isWhitespace) {
+          ok = F
+        } else {
+          i = i + 1
+        }
+      }
+      return ops.StringOps(line).substring(if (ok) size else i, line.size)
+    }
+    val lines = ops.StringOps(text).split((c: C) => c == '\n')
+    var firstLineIndex: Z = -1
+    for (i <- 0 until lines.size if firstLineIndex < 0 && ops.StringOps(lines(i)).trim.size > 0) {
+      firstLineIndex = i
+    }
+    if (firstLineIndex < 0) {
+      return text
+    }
+    val firstLineChars = conversions.String.toCis(lines(firstLineIndex))
+    var offset: Z = 0
+    if (column >= 0) {
+      offset = column
+    } else {
+      while (offset < firstLineChars.size && firstLineChars(offset).isWhitespace) {
+        offset = offset + 1
+      }
+    }
+    return st"${(for (line <- lines) yield removeFirstWhitespaces(line, offset), "\n")}".render
   }
 }
