@@ -169,6 +169,11 @@ import BitCodecGen._
     val packageOpt: Option[ST] =
       if (isProgram) if (packageNames.nonEmpty) Some(st"package ${(packageNames, ".")}") else None()
       else None()
+    val lOpt = licenseOpt.map(s =>
+      st"""/*
+          | ${ops.StringOps(s).trim}
+          | */
+          |""")
     val testOpt: Option[ST] =
       if (isProgram) None()
       else Some(
@@ -179,7 +184,7 @@ import BitCodecGen._
 
     val r =
       st"""// #Sireum
-          |$licenseOpt
+          |$lOpt
           |$packageOpt
           |
           |import org.sireum._
