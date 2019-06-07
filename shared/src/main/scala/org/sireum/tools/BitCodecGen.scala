@@ -367,7 +367,7 @@ import BitCodecGen._
             |  if (context.hasError) {
             |    return $objectName.$first
             |  }
-            |  val r: $tpe = Reader.MS.beU$size(input, context) match {
+            |  val r: $tpe = Reader.MS.${endianPrefix}U$size(input, context) match {
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
@@ -384,7 +384,7 @@ import BitCodecGen._
             |    return
             |  }
             |  $name match {
-            |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.beU$size(output, context, u$size"$i")""", "\n")}
+            |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.${endianPrefix}U$size(output, context, u$size"$i")""", "\n")}
             |  }
             |}""",
       fields = context.fields :+ st"var $name: $tpe",
