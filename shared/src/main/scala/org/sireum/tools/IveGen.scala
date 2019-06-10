@@ -388,11 +388,11 @@ object IveGen {
     return r
   }
 
-  def isLetter(c: C): B = {
+  @pure def isLetter(c: C): B = {
     return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || c == '_' || c == '$'
   }
 
-  def isDigitOrLetter(c: C): B = {
+  @pure def isDigitOrLetter(c: C): B = {
     return '0' <= c && c <= '9' || isLetter(c)
   }
 }
