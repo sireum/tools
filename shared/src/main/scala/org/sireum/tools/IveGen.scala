@@ -83,7 +83,10 @@ object IveGen {
 
   def mill(
             alreadyExists: B,
-            name: String,
+            projectName: String,
+            moduleName: String,
+            packageName: ISZ[String],
+            appName: String,
             projectPath: String,
             jdkName: String,
             scalaVer: String,
@@ -166,14 +169,22 @@ object IveGen {
     }
 
     def app: ST = {
+      val normAppName: ST = {
+        val cs = conversions.String.toCis(appName)
+        if (cs.size > 0 && isLetter(cs(0)) && ops.ISZOps(ops.ISZOps(cs).tail).forall(isDigitOrLetter _)) st"$appName"
+        else st"`$appName`"
+      }
+      val packageOpt: Option[ST] = if (packageName.isEmpty) None() else Some(st"package ${(packageName, ".")}")
       val r =
         st"""// #Sireum
+            |$packageOpt
+            |
             |import org.sireum._
             |
-            |// Note: Run "mill -w $name.compile" in $projectPath in order for
+            |// Note: Run "mill -w $moduleName.compile" in $projectPath in order for
             |// mill to recompile upon code modification
             |
-            |object app extends App {
+            |object $normAppName extends App {
             |  def main(args: ISZ[String]): Z = {
             |    println("Hello World!")
             |    return 0
@@ -183,10 +194,15 @@ object IveGen {
     }
 
     def build: ST = {
+      val normModuleName: ST = {
+        val cs = conversions.String.toCis(moduleName)
+        if (cs.size > 0 && isLetter(cs(0)) && ops.ISZOps(ops.ISZOps(cs).tail).forall(isDigitOrLetter _)) st"$moduleName"
+        else st"`$moduleName`"
+      }
       val r =
         st"""import mill._, scalalib._
             |
-            |object `$name` extends ScalaModule {
+            |object $normModuleName extends ScalaModule {
             |  override def scalaVersion = "$scalaVer"
             |  override def ivyDeps = super.ivyDeps() ++ Agg(
             |    jpLatest(isCross = false, owner = "sireum", repo = "runtime", lib = "library")
@@ -198,7 +214,6 @@ object IveGen {
             |    coursier.maven.MavenRepository("https://jitpack.io")
             |  )
             |}
-            |
             |
             |private def jpLatest(isCross: Boolean, owner: String, repo: String, lib: String = "",
             |             branchOrHash: Either[String, String] = Left("master")): Dep = {
@@ -228,7 +243,8 @@ object IveGen {
       ISZ[String](".idea", "workspace.xml") ~> workspace,
     )
     if (!alreadyExists) {
-      r = r + ISZ[String](s"$name", "src", s"app.scala") ~> app + ISZ[String](s"build.sc") ~> build
+      val appPath = ISZ[String](s"$moduleName", "src") ++ packageName :+ s"$appName.scala"
+      r = r + appPath ~> app + ISZ[String](s"build.sc") ~> build
     }
     return r
   }
@@ -237,7 +253,9 @@ object IveGen {
             alreadyExists: B,
             isWin: B,
             sireumHome: String,
-            name: String,
+            projectName: String,
+            moduleName: String,
+            scriptName: String,
             projectPath: String,
             jdkName: String,
             scalaVer: String,
@@ -267,7 +285,7 @@ object IveGen {
             |<project version="4">
             |  <component name="ProjectModuleManager">
             |    <modules>
-            |      <module fileurl="file://$$PROJECT_DIR$$/$name.iml" filepath="$$PROJECT_DIR$$/$name.iml" />
+            |      <module fileurl="file://$$PROJECT_DIR$$/$moduleName.iml" filepath="$$PROJECT_DIR$$/$moduleName.iml" />
             |    </modules>
             |  </component>
             |</project>"""
@@ -279,7 +297,7 @@ object IveGen {
         st"""<component name="ProjectRunConfigurationManager">
             |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
             |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
-            |    <module name="$name" />
+            |    <module name="$moduleName" />
             |    <option name="PROGRAM_PARAMETERS" value="slang run -s $$FilePath$$" />
             |    <method v="2" />
             |  </configuration>
@@ -321,22 +339,22 @@ object IveGen {
         if (alreadyExists) (st"", st"", st"")
         else
           (
-            st"""<configuration name="Run script.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
+            st"""<configuration name="Run $scriptName.sc" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false" temporary="true">
                 |      <setting name="execName" value="$slangRun" />
-                |      <setting name="fileName" value="$projectPath${sep}src${sep}script.sc" />
+                |      <setting name="fileName" value="$projectPath${sep}src$sep$scriptName.sc" />
                 |      <setting name="scriptParameters" value="" />
                 |      <method v="2" />
                 |    </configuration>""",
             st"""<item itemvalue="Ammonite.Run script.sc" />""",
             st"""<recent_temporary>
                 |      <list>
-                |        <item itemvalue="Ammonite.Run script.sc" />
+                |        <item itemvalue="Ammonite.Run $scriptName.sc" />
                 |      </list>
                 |    </recent_temporary>""")
       val r =
         st"""<?xml version="1.0" encoding="UTF-8"?>
             |<project version="4">
-            |  <component name="RunManager" selected="Ammonite.Run script.sc">
+            |  <component name="RunManager" selected="Ammonite.Run $scriptName.sc">
             |    $runScript
             |    <configuration default="true" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false">
             |      <setting name="execName" value="$slangRun" />
@@ -362,11 +380,19 @@ object IveGen {
       ISZ[String](".idea", "workspace.xml") ~> workspace,
       ISZ[String](".idea", "runConfigurations", "Slang_Script_Runner.xml") ~> scriptRunner,
       ISZ[String](".idea", "modules.xml") ~> modules,
-      ISZ[String](s"$name.iml") ~> iml
+      ISZ[String](s"$moduleName.iml") ~> iml
     )
     if (!alreadyExists) {
-      r = r + ISZ[String]("src", "script.sc") ~> script
+      r = r + ISZ[String]("src", s"$scriptName.sc") ~> script
     }
     return r
+  }
+
+  def isLetter(c: C): B = {
+    return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || c == '_' || c == '$'
+  }
+
+  def isDigitOrLetter(c: C): B = {
+    return '0' <= c && c <= '9' || isLetter(c)
   }
 }
