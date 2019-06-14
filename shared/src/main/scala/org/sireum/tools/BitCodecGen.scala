@@ -503,8 +503,9 @@ import BitCodecGen._
             |    }
             |    r match {
             |      ${(for (i <- 0 until normSubs.size) yield st"""case z"$i" => return Choice.${normSubs(i).name}""", "\n")}
-            |      case _ => return Choice.Error
+            |      case _ =>
             |    }
+            |    return Choice.Error
             |  }
             |}""",
       owner = context.owner,
