@@ -927,7 +927,8 @@ import BitCodecGen._
       j = j + 1
       return ops.StringOps(line).substring(if (ok) size else i, j)
     }
-    val lines = ops.StringOps(text).split((c: C) => c == '\n')
+    val lines = ops.StringOps(ops.StringOps(text).replaceAllLiterally("\n", " \n")).
+      split((c: C) => c == '\n')
     var firstLineIndex: Z = -1
     for (i <- 0 until lines.size if firstLineIndex < 0 && ops.StringOps(lines(i)).trim.size > 0) {
       firstLineIndex = i
