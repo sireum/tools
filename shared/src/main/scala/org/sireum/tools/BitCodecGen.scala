@@ -908,7 +908,7 @@ import BitCodecGen._
   }
 
   def reorientLines(text: String, column: Z): String = {
-    def removeFirstWhitespaces(line: String, size: Z): String = {
+    def removeFirstLastWhitespaces(line: String, size: Z): String = {
       val cs = conversions.String.toCis(line)
       var ok = T
       var i = 0
@@ -919,7 +919,12 @@ import BitCodecGen._
           i = i + 1
         }
       }
-      return ops.StringOps(line).substring(if (ok) size else i, line.size)
+      var j = line.size - 1
+      while (j >= 0 && cs(j).isWhitespace) {
+        j = j - 1
+      }
+      j = j + 1
+      return ops.StringOps(line).substring(if (ok) size else i, j)
     }
     val lines = ops.StringOps(text).split((c: C) => c == '\n')
     var firstLineIndex: Z = -1
@@ -938,6 +943,6 @@ import BitCodecGen._
         offset = offset + 1
       }
     }
-    return st"${(for (line <- lines) yield removeFirstWhitespaces(line, offset), "\n")}".render
+    return st"${(for (line <- lines) yield removeFirstLastWhitespaces(line, offset), "\n")}".render
   }
 }
