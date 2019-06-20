@@ -29,9 +29,31 @@ package org.sireum.tools
 import org.sireum._
 import org.sireum.bitcodec.Spec
 import org.sireum.lang.{ast => AST}
+import org.sireum.lang.ast.{Exp, ResolvedInfo, Transformer}
+import org.sireum.lang.ast.Transformer.PreResult
 import org.sireum.message.Reporter
 
 object BitCodecGen {
+
+  @datatype class PosOptTransformer extends Transformer.PrePost[B] {
+    val emptyAttr: Option[AST.Attr] = Some(AST.Attr(None()))
+    @pure override def preAttr(ctx: B, o: AST.Attr): PreResult[B, AST.Attr] = {
+      return PreResult(ctx, F, emptyAttr)
+    }
+    @pure override def preTypedAttr(ctx: B, o: AST.TypedAttr): PreResult[B, AST.TypedAttr] = {
+      return PreResult(ctx, T, Some(o(posOpt = None())))
+    }
+    @pure override def preResolvedAttr(ctx: B, o: AST.ResolvedAttr): PreResult[B, AST.ResolvedAttr] = {
+      return PreResult(ctx, T, Some(o(posOpt = None())))
+    }
+    @pure override def preExpFun(ctx: B, o: Exp.Fun): PreResult[B, AST.Exp] = {
+      return PreResult(ctx, T, Some(o(context = ISZ())))
+    }
+    @pure override def preResolvedInfoLocalVar(ctx: B, o: ResolvedInfo.LocalVar): PreResult[B, ResolvedInfo] = {
+      return PreResult(ctx, T, Some(o(context = ISZ())))
+    }
+  }
+
   val kind: String = "bcgen"
   val beginCodeMarker: String = "// BEGIN USER CODE:"
   val endCodeMarker: String = "// END USER CODE:"
@@ -48,7 +70,8 @@ object BitCodecGen {
   )
   val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
-  def gen(isProgram: B,
+  def gen(isJson: B,
+          isProgram: B,
           isBigEndian: B,
           licenseOpt: Option[String],
           filename: String,
@@ -56,6 +79,7 @@ object BitCodecGen {
           name: String,
           text: String,
           spec: Spec,
+          specJson: ST,
           program: AST.TopUnit.Program,
           prevGen: String,
           reporter: Reporter): ST = {
@@ -79,14 +103,45 @@ object BitCodecGen {
       return st"$prevGen"
     }
 
+    if (isJson) {
+
+      var enumMap = Map.empty[String, ISZ[String]]
+      for (enum <- collector.enums.values) {
+        enumMap = enumMap + enum.id.value ~> enum.elements.map((id: AST.Id) => id.value)
+      }
+
+      var funMap = Map.empty[String, AST.Exp.Fun]
+      for (p <- collector.funs.entries) {
+        funMap = funMap + p._1 ~> p._2._1
+      }
+
+      val ft = Transformer(PosOptTransformer())
+
+      def printEnumElements(elements: ISZ[String]): ST = {
+        return Json.Printer.printISZ(F, elements, Json.Printer.printString _)
+      }
+
+      def printFun(o: AST.Exp.Fun): ST = {
+        org.sireum.lang.tipe.JSON.Printer.print_astExp(ft.transformExp(T, o).resultOpt.getOrElse(o))
+      }
+
+      return Json.Printer.printObject(ISZ(
+        "type" ~> Json.Printer.printString("BitCodecGenSpec"),
+        "spec" ~> specJson,
+        "enums" ~> Json.Printer.printMap(F, enumMap, Json.Printer.printString _, printEnumElements _),
+        "funs" ~> Json.Printer.printMap(F, funMap, Json.Printer.printString _, printFun _)
+      ))
+    }
+
     val bcGen = BitCodecGen(isProgram, isBigEndian, licenseOpt, filename, packageNames, name, normText, program,
       ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums, collector.funs, codeSectionMap)
+
     return bcGen.gen(spec, reporter)
   }
 
   @record class EnumFunCollector(reporter: Reporter) extends AST.MTransformer {
-    var enums: HashMap[String, AST.Stmt.Enum] = HashMap.empty
-    var funs: HashMap[String, (AST.Exp.Fun, AST.Type)] = HashMap.empty
+    var enums: HashSMap[String, AST.Stmt.Enum] = HashSMap.empty
+    var funs: HashSMap[String, (AST.Exp.Fun, AST.Type)] = HashSMap.empty
 
     override def preExpInvoke(o: AST.Exp.Invoke): AST.MTransformer.PreResult[AST.Exp] = {
       o.attr.resOpt match {
@@ -155,8 +210,8 @@ import BitCodecGen._
                             text: String,
                             program: AST.TopUnit.Program,
                             prevGen: String,
-                            enums: HashMap[String, AST.Stmt.Enum],
-                            funs: HashMap[String, (AST.Exp.Fun, AST.Type)],
+                            enums: HashSMap[String, AST.Stmt.Enum],
+                            funs: HashSMap[String, (AST.Exp.Fun, AST.Type)],
                             codeSectionMap: HashSMap[String, String]) {
 
   val endianPrefix: String = if (isBigEndian) "be" else "le"
