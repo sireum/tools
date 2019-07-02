@@ -146,7 +146,7 @@ object TransformerGen {
         |                                        continu: B,
         |                                        resultOpt: Option[T])
         |
-        |  @datatype class Result[Context, T](ctx: Context,
+        |  @datatype class TPostResult[Context, T](ctx: Context,
         |                                     resultOpt: Option[T])
         |
         |  @sig trait PrePost[Context] {
@@ -199,7 +199,7 @@ object TransformerGen {
       }
 
       @pure def postMethodRoot(typeName: ST, tpe: ST, postMethodRootCases: ISZ[ST]): ST = {
-        return st"""@pure def post$typeName(ctx: Context, o: $tpe): Result[Context, $tpe] = {
+        return st"""@pure def post$typeName(ctx: Context, o: $tpe): TPostResult[Context, $tpe] = {
         |  o match {
         |    ${(postMethodRootCases, "\n")}
         |  }
@@ -210,7 +210,7 @@ object TransformerGen {
         postAdaptOpt match {
           case Some(postAdapt) =>
             return st"""case o: $tpe =>
-            |  val r: Result[Context, $superType] = post$typeName(ctx, o)$postAdapt
+            |  val r: TPostResult[Context, $superType] = post$typeName(ctx, o)$postAdapt
             |  return r"""
           case _ => return st"case o: $tpe => return post$typeName(ctx, o)"
         }
@@ -221,8 +221,8 @@ object TransformerGen {
       }
 
       @pure def postMethod(typeName: ST, tpe: ST, superType: ST): ST = {
-        return st"""@pure def post$typeName(ctx: Context, o: $tpe): Result[Context, $superType] = {
-        |  return Result(ctx, None())
+        return st"""@pure def post$typeName(ctx: Context, o: $tpe): TPostResult[Context, $superType] = {
+        |  return TPostResult(ctx, None())
         |}"""
       }
 
@@ -233,26 +233,26 @@ object TransformerGen {
         preAdaptOpt: Option[ST],
         postAdaptOpt: Option[ST]
       ): ST = {
-        return st"""@pure def transform$typeName(ctx: Context, o: $tpe): Result[Context, $tpe] = {
+        return st"""@pure def transform$typeName(ctx: Context, o: $tpe): TPostResult[Context, $tpe] = {
         |  val preR: PreResult[Context, $tpe] = pp.pre$typeName(ctx, o)${opt(preAdaptOpt)}
-        |  val r: Result[Context, $tpe] = if (preR.continu) {
+        |  val r: TPostResult[Context, $tpe] = if (preR.continu) {
         |    val o2: $tpe = preR.resultOpt.getOrElse(o)
         |    val hasChanged: B = preR.resultOpt.nonEmpty
         |    $transformMethodMatch
         |  } else if (preR.resultOpt.nonEmpty) {
-        |    Result(preR.ctx, Some(preR.resultOpt.getOrElse(o)))
+        |    TPostResult(preR.ctx, Some(preR.resultOpt.getOrElse(o)))
         |  } else {
-        |    Result(preR.ctx, None())
+        |    TPostResult(preR.ctx, None())
         |  }
         |  val hasChanged: B = r.resultOpt.nonEmpty
         |  val o2: $tpe = r.resultOpt.getOrElse(o)
-        |  val postR: Result[Context, $tpe] = pp.post$typeName(r.ctx, o2)${opt(postAdaptOpt)}
+        |  val postR: TPostResult[Context, $tpe] = pp.post$typeName(r.ctx, o2)${opt(postAdaptOpt)}
         |  if (postR.resultOpt.nonEmpty) {
         |    return postR
         |  } else if (hasChanged) {
-        |    return Result(postR.ctx, Some(o2))
+        |    return TPostResult(postR.ctx, Some(o2))
         |  } else {
-        |    return Result(postR.ctx, None())
+        |    return TPostResult(postR.ctx, None())
         |  }
         |}"""
       }
@@ -267,14 +267,14 @@ object TransformerGen {
 
       @pure def postAdapt(tpe: ST): ST = {
         return st""" match {
-        |   case Result(postCtx, Some(result: $tpe)) => Result(postCtx, Some[$tpe](result))
-        |   case Result(_, Some(_)) => halt("Can only produce object of type $tpe")
-        |   case Result(postCtx, _) => Result(postCtx, None[$tpe]())
+        |   case TPostResult(postCtx, Some(result: $tpe)) => TPostResult(postCtx, Some[$tpe](result))
+        |   case TPostResult(_, Some(_)) => halt("Can only produce object of type $tpe")
+        |   case TPostResult(postCtx, _) => TPostResult(postCtx, None[$tpe]())
         |  }"""
       }
 
       @pure def transformMethodMatch(tpe: ST, transformMethodCases: ISZ[ST]): ST = {
-        return st"""val rOpt: Result[Context, $tpe] = o2 match {
+        return st"""val rOpt: TPostResult[Context, $tpe] = o2 match {
         |  ${(transformMethodCases, "\n")}
         |}
         |rOpt"""
@@ -288,9 +288,9 @@ object TransformerGen {
           else st"(${(ac.transformMethodCaseUpdates, ", ")})"
         return st"""${(ac.transformMethodCaseMembers, "\n")}
         |if (hasChanged${ac.transformMethodCaseChanges})
-        |  Result($ctx, Some(o2$updates))
+        |  TPostResult($ctx, Some(o2$updates))
         |else
-        |  Result($ctx, None())"""
+        |  TPostResult($ctx, None())"""
       }
 
       @pure def transformMethodCase(tpe: ST, ac: AdtChild): ST = {
@@ -302,29 +302,29 @@ object TransformerGen {
         return st"""case o2: $tpe =>
         |  ${(ac.transformMethodCaseMembers, "\n")}
         |  if (hasChanged${ac.transformMethodCaseChanges})
-        |    Result($ctx, Some(o2$updates))
+        |    TPostResult($ctx, Some(o2$updates))
         |  else
-        |    Result($ctx, None())"""
+        |    TPostResult($ctx, None())"""
       }
 
       @pure def transformMethodCaseMember(i: Z, j: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
         val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
-        return st"val r$i: Result[Context, $tpe] = transform$typeName($ctx, o2.$fieldName)"
+        return st"val r$i: TPostResult[Context, $tpe] = transform$typeName($ctx, o2.$fieldName)"
       }
 
       @pure def transformMethodCaseMemberIS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
         val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
-        return st"val r$i: Result[Context, IS[$indexType, $tpe]] = transformIS$indexType($ctx, o2.$fieldName, transform$typeName _)"
+        return st"val r$i: TPostResult[Context, IS[$indexType, $tpe]] = transformIS$indexType($ctx, o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseMemberMS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
         val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
-        return st"val r$i: Result[Context, MS[$indexType, $tpe]] = transformMS$indexType($ctx, o2.$fieldName, transform$typeName _)"
+        return st"val r$i: TPostResult[Context, MS[$indexType, $tpe]] = transformMS$indexType($ctx, o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseMemberOption(i: Z, j: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
         val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
-        return st"val r$i: Result[Context, Option[$tpe]] = transformOption($ctx, o2.$fieldName, transform$typeName _)"
+        return st"val r$i: TPostResult[Context, Option[$tpe]] = transformOption($ctx, o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseMemberMOption(i: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
@@ -340,15 +340,15 @@ object TransformerGen {
       }
 
       @pure def transformOption: ST = {
-        return st"""@pure def transformOption[Context, T](ctx: Context, option: Option[T], f: (Context, T) => Result[Context, T] @pure): Result[Context, Option[T]] = {
+        return st"""@pure def transformOption[Context, T](ctx: Context, option: Option[T], f: (Context, T) => TPostResult[Context, T] @pure): TPostResult[Context, Option[T]] = {
         |  option match {
         |    case Some(v) =>
         |      val r = f(ctx, v)
         |      r.resultOpt match {
-        |        case Some(_) => return Result(r.ctx, Some(r.resultOpt))
-        |        case _ => return Result[Context, Option[T]](r.ctx, None[Option[T]]())
+        |        case Some(_) => return TPostResult(r.ctx, Some(r.resultOpt))
+        |        case _ => return TPostResult[Context, Option[T]](r.ctx, None[Option[T]]())
         |      }
-        |    case _ => return Result[Context, Option[T]](ctx, None[Option[T]]())
+        |    case _ => return TPostResult[Context, Option[T]](ctx, None[Option[T]]())
         |  }
         |}"""
       }
@@ -358,21 +358,21 @@ object TransformerGen {
       }
 
       @pure def transformIS(indexType: ST): ST = {
-        return st"""@pure def transformIS$indexType[Context, T](ctx: Context, s: IS[$indexType, T], f: (Context, T) => Result[Context, T] @pure): Result[Context, IS[$indexType, T]] = {
+        return st"""@pure def transformIS$indexType[Context, T](ctx: Context, s: IS[$indexType, T], f: (Context, T) => TPostResult[Context, T] @pure): TPostResult[Context, IS[$indexType, T]] = {
         |  val s2: MS[$indexType, T] = s.toMS
         |  var changed: B = F
         |  var ctxi = ctx
         |  for (i <- s2.indices) {
         |    val e: T = s(i)
-        |    val r: Result[Context, T] = f(ctxi, e)
+        |    val r: TPostResult[Context, T] = f(ctxi, e)
         |    ctxi = r.ctx
         |    changed = changed || r.resultOpt.nonEmpty
         |    s2(i) = r.resultOpt.getOrElse(e)
         |  }
         |  if (changed) {
-        |    return Result(ctxi, Some(s2.toIS))
+        |    return TPostResult(ctxi, Some(s2.toIS))
         |  } else {
-        |    return Result[Context, IS[$indexType, T]](ctxi, None[IS[$indexType, T]]())
+        |    return TPostResult[Context, IS[$indexType, T]](ctxi, None[IS[$indexType, T]]())
         |  }
         |}"""
       }
