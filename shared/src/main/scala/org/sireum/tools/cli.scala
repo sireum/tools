@@ -146,7 +146,7 @@ object cli {
     usage = "<option>* <spec-file>",
     opts = ISZ(
       Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
-        tpe = Type.Choice(name = "BitCodecMode", sep = None(), elements = ISZ("program", "script", "json")),
+        tpe = Type.Choice(name = "BitCodecMode", sep = Some(','), elements = ISZ("program", "script", "json", "dot")),
         description = "Generated codec unit mode"),
       Opt(name = "isLittleEndian", longKey = "little", shortKey = None(),
         tpe = Type.Flag(F),

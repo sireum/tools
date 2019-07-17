@@ -35,6 +35,13 @@ import org.sireum.message.Reporter
 
 object BitCodecGen {
 
+  @enum object Output {
+    'Program
+    'Script
+    'Json
+    'Dot
+  }
+
   @datatype class PosOptTransformer extends Transformer.PrePost[B] {
     val emptyAttr: Option[AST.Attr] = Some(AST.Attr(None()))
     @pure override def preAttr(ctx: B, o: AST.Attr): PreResult[B, AST.Attr] = {
@@ -70,8 +77,7 @@ object BitCodecGen {
   )
   val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
-  def gen(isJson: B,
-          isProgram: B,
+  def gen(output: Output.Type,
           isBigEndian: B,
           licenseOpt: Option[String],
           filename: String,
@@ -103,40 +109,42 @@ object BitCodecGen {
       return st"$prevGen"
     }
 
-    if (isJson) {
+    output match {
+      case Output.Dot =>
+        return BitCodecGraphGen.specDot(spec, collector.enums)
+      case Output.Json =>
+        var enumMap = Map.empty[String, ISZ[String]]
+        for (enum <- collector.enums.values) {
+          enumMap = enumMap + enum.id.value ~> enum.elements.map((id: AST.Id) => id.value)
+        }
 
-      var enumMap = Map.empty[String, ISZ[String]]
-      for (enum <- collector.enums.values) {
-        enumMap = enumMap + enum.id.value ~> enum.elements.map((id: AST.Id) => id.value)
-      }
+        var funMap = Map.empty[String, AST.Exp.Fun]
+        for (p <- collector.funs.entries) {
+          funMap = funMap + p._1 ~> p._2._1
+        }
 
-      var funMap = Map.empty[String, AST.Exp.Fun]
-      for (p <- collector.funs.entries) {
-        funMap = funMap + p._1 ~> p._2._1
-      }
+        val ft = Transformer(PosOptTransformer())
 
-      val ft = Transformer(PosOptTransformer())
+        def printEnumElements(elements: ISZ[String]): ST = {
+          return Json.Printer.printISZ(F, elements, Json.Printer.printString _)
+        }
 
-      def printEnumElements(elements: ISZ[String]): ST = {
-        return Json.Printer.printISZ(F, elements, Json.Printer.printString _)
-      }
+        def printFun(o: AST.Exp.Fun): ST = {
+          org.sireum.lang.tipe.JSON.Printer.print_astExp(ft.transformExp(T, o).resultOpt.getOrElse(o))
+        }
 
-      def printFun(o: AST.Exp.Fun): ST = {
-        org.sireum.lang.tipe.JSON.Printer.print_astExp(ft.transformExp(T, o).resultOpt.getOrElse(o))
-      }
+        return Json.Printer.printObject(ISZ(
+          "type" ~> Json.Printer.printString("BitCodecGenSpec"),
+          "spec" ~> specJson,
+          "enums" ~> Json.Printer.printMap(F, enumMap, Json.Printer.printString _, printEnumElements _),
+          "funs" ~> Json.Printer.printMap(F, funMap, Json.Printer.printString _, printFun _)
+        ))
+      case _ =>
+        val bcGen = BitCodecGen(output == Output.Program, isBigEndian, licenseOpt, filename, packageNames, name, normText, program,
+          ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums, collector.funs, codeSectionMap)
 
-      return Json.Printer.printObject(ISZ(
-        "type" ~> Json.Printer.printString("BitCodecGenSpec"),
-        "spec" ~> specJson,
-        "enums" ~> Json.Printer.printMap(F, enumMap, Json.Printer.printString _, printEnumElements _),
-        "funs" ~> Json.Printer.printMap(F, funMap, Json.Printer.printString _, printFun _)
-      ))
+        return bcGen.gen(spec, reporter)
     }
-
-    val bcGen = BitCodecGen(isProgram, isBigEndian, licenseOpt, filename, packageNames, name, normText, program,
-      ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums, collector.funs, codeSectionMap)
-
-    return bcGen.gen(spec, reporter)
   }
 
   @record class EnumFunCollector(reporter: Reporter) extends AST.MTransformer {
@@ -179,7 +187,7 @@ object BitCodecGen {
   object Context {
     def create: Context = {
       return Context(ISZ(), 2, ISZ.create(65, F), ISZ(), ISZ(),
-        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), 0)
+        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0)
     }
   }
 
@@ -196,12 +204,31 @@ object BitCodecGen {
                           decoding: ISZ[ST],
                           encoding: ISZ[ST],
                           members: ISZ[ST],
+                          fieldMap: HashMap[ISZ[String], Z],
                           nextFound: Z) {
     def freshFound: String = {
       return if (nextFound == 0) "" else s"$nextFound"
     }
+
+    def fieldName(container: ISZ[String], name: String): (Context, String) = {
+      val fname = ops.StringOps(name).firstToLower
+      val key = container :+ fname
+      fieldMap.get(key) match {
+        case Some(n) => return (this(fieldMap = fieldMap + key ~> (n + 1)), s"$fname$n")
+        case _ => return (this(fieldMap = fieldMap + key ~> 1), fname)
+      }
+    }
   }
 
+  def bitWidth(size: Z): Z = {
+    var n = size - 1
+    var r = 0
+    while (n > 0) {
+      n = n / 2
+      r = r + 1
+    }
+    return r
+  }
 }
 
 import BitCodecGen._
@@ -458,8 +485,8 @@ import BitCodecGen._
 
   def genSpecConcat(context: Context, spec: Spec.Concat, reporter: Reporter): Context = {
     val name = spec.name
-    val fname = ops.StringOps(name).firstToLower
-    var elementContext = context(path = context.path :+ fname, owner = name, supr = "Runtime.Composite",
+    val (ctx, fname) = context.fieldName(context.path, name)
+    var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite",
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     for (element <- spec.elements) {
       elementContext = genSpec(elementContext, element, reporter)
@@ -522,6 +549,7 @@ import BitCodecGen._
       decoding = context.decoding :+ st"$fname.decode(input, context)",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      fieldMap = elementContext.fieldMap,
       nextFound = 0)
   }
 
@@ -537,8 +565,8 @@ import BitCodecGen._
         case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
         case _ => return context
       }
-    val fname = ops.StringOps(name).firstToLower
-    var subContext = context(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
+    val (ctx, fname) = context.fieldName(context.path, name)
+    var subContext = ctx(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
@@ -594,6 +622,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      fieldMap = subContext.fieldMap,
       nextFound = 0
     )
   }
@@ -606,9 +635,9 @@ import BitCodecGen._
     val normSubs: ISZ[Spec.PredSpec] = for (sub <- subs) yield
       if (sub.spec.isInstanceOf[Spec.Composite]) sub
       else sub(spec = Spec.Concat(ops.StringOps(sub.spec.name).firstToUpper, ISZ(sub.spec)))
-    val fname = ops.StringOps(name).firstToLower
-    val path = context.path :+ fname
-    var subContext = context(path = path, main = ISZ(), owner = name, supr = name,
+    val (ctx, fname) = context.fieldName(context.path, name)
+    val path = ctx.path :+ fname
+    var subContext = ctx(path = path, main = ISZ(), owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     var choose = ISZ[ST]()
     for (i <- 0 until normSubs.size) {
@@ -665,6 +694,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      fieldMap = subContext.fieldMap,
       nextFound = 0
     )
   }
@@ -731,6 +761,7 @@ import BitCodecGen._
             |  }
             |  return r
             |}""",
+      fieldMap = elementContext.fieldMap,
       nextFound = 0
     )
   }
@@ -785,6 +816,7 @@ import BitCodecGen._
             |  ${(predSTs, "\n")}
             |  return !hasError
             |}""",
+      fieldMap = elementContext.fieldMap,
       nextFound = 0
     )
   }
@@ -836,6 +868,7 @@ import BitCodecGen._
             |  }
             |  return r
             |}""",
+      fieldMap = context.fieldMap,
       nextFound = 0
     )
   }
@@ -845,8 +878,8 @@ import BitCodecGen._
     val subs = spec.subs
     val normSubs: ISZ[Spec] = for (sub <- subs) yield
       if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
-    val fname = ops.StringOps(name).firstToLower
-    var subContext = context(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
+    val (ctx, fname) = context.fieldName(context.path, name)
+    var subContext = ctx(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
@@ -909,6 +942,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      fieldMap = context.fieldMap,
       nextFound = 0
     )
   }
@@ -978,6 +1012,7 @@ import BitCodecGen._
             |  ${prevText(s"$owner.${name}Update", notImplemented)}
             |  // END USER CODE: $owner.${name}Update
             |}""",
+      fieldMap = elementContext.fieldMap,
       nextFound = 0
     )
   }
@@ -1034,6 +1069,7 @@ import BitCodecGen._
             |  ${prevText(s"$owner.${name}Update", notImplemented)}
             |  // END USER CODE: $owner.${name}Update
             |}""",
+      fieldMap = context.fieldMap,
       nextFound = 0
     )
   }
@@ -1179,16 +1215,6 @@ import BitCodecGen._
         )
 
     }
-  }
-
-  def bitWidth(size: Z): Z = {
-    var n = size - 1
-    var r = 0
-    while (n > 0) {
-      n = n / 2
-      r = r + 1
-    }
-    return r
   }
 
   def funNameTypeBody(path: ISZ[String],
