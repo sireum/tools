@@ -128,11 +128,11 @@ object BitCodecGraphGen {
       node match {
         case node: BcNode.Sub =>
           val subG = subMap.get(node.path).get
-          var r = ISZ[BcNode]()
+          var nodes = ISZ[BcNode]()
           for (subNode <- subG.nodesInverse if subG.outgoing(subNode).isEmpty) {
-            r = r :+ subNode
+            nodes = nodes :+ subNode
           }
-          return r
+          return nodes
         case _ => return ISZ(node)
       }
     }
@@ -140,11 +140,11 @@ object BitCodecGraphGen {
       node match {
         case node: BcNode.Sub =>
           val subG = subMap.get(node.path).get
-          var r = ISZ[BcNode]()
+          var nodes = ISZ[BcNode]()
           for (subNode <- subG.nodesInverse if subG.incoming(subNode).isEmpty) {
-            r = r :+ subNode
+            nodes = nodes :+ subNode
           }
-          return r
+          return nodes
         case _ => return ISZ(node)
       }
     }
@@ -343,7 +343,7 @@ import BitCodecGraphGen._
               r = r.addDataEdge(BcEdge(labelOpt), eNode, eNode)
             case string"Raw" =>
               updateCurrent(current(elements = current.elements :+
-                BcNode.Element(element.name, st"&lt;...($dependsOn)&gt;".render)))
+                BcNode.Element(desc.name, st"&lt;...($dependsOn)&gt;".render)))
           }
         case element: PredUnion =>
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
