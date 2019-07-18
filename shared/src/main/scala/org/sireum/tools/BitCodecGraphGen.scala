@@ -61,10 +61,10 @@ object BitCodecGraphGen {
     o match {
       case o: Pred.Boolean => return if (o.value) st"T" else st"F"
       case o: Pred.Bits => return st"""u${o.size}\"${o.value}\""""
-      case o: Pred.Bytes => return st"u8[${(for (value <- o.value) yield conversions.Z.toU8(value),".")}]"
-      case o: Pred.Shorts => return st"u16[${(for (value <- o.value) yield conversions.Z.toU16(value),".")}]"
-      case o: Pred.Ints => return st"u32[${(for (value <- o.value) yield conversions.Z.toU32(value),".")}]"
-      case o: Pred.Longs => return st"u64[${(for (value <- o.value) yield conversions.Z.toU64(value),".")}]"
+      case o: Pred.Bytes => return st"u8[${(for (value <- o.value) yield conversions.Z.toU8(value), ".")}]"
+      case o: Pred.Shorts => return st"u16[${(for (value <- o.value) yield conversions.Z.toU16(value), ".")}]"
+      case o: Pred.Ints => return st"u32[${(for (value <- o.value) yield conversions.Z.toU32(value), ".")}]"
+      case o: Pred.Longs => return st"u64[${(for (value <- o.value) yield conversions.Z.toU64(value), ".")}]"
       case o: Pred.Skip => return st"_${o.size}"
       case o: Pred.Between => return st"u${o.size}(${o.lo}..${o.hi})"
       case o: Pred.Not => return st"!(${render(o.pred)})"
@@ -79,21 +79,24 @@ object BitCodecGraphGen {
         case _ => return F
       }
     }
+
+    if (!ops.ISZOps(g.nodesInverse).exists((n: BcNode) => isEmptyContainer(n))) {
+      return g
+    }
+
     var r = Graph.empty[BcNode, BcEdge]
     for (node <- g.nodesInverse) {
       if (isEmptyContainer(node)) {
-        for (out <- g.outgoing(node)) {
+        for (out <- g.outgoing(node); in <- g.incoming(node)) {
           val Graph.Edge.Data(_, dest, outData) = out
-          for (in <- g.incoming(node)) {
-            val Graph.Edge.Data(src, _, inData) = in
-            val labelOpt: Option[String] = (inData.labelOpt, outData.labelOpt) match {
-              case (Some(lIn), Some(lOut)) => Some(s"$lIn:$lOut")
-              case (Some(lIn), _) => Some(lIn)
-              case (_, Some(lOut)) => Some(lOut)
-              case _ => None()
-            }
-            r = r.addDataEdge(BcEdge(labelOpt), src, dest)
+          val Graph.Edge.Data(src, _, inData) = in
+          val labelOpt: Option[String] = (inData.labelOpt, outData.labelOpt) match {
+            case (Some(lIn), Some(lOut)) => Some(s"$lIn:$lOut")
+            case (Some(lIn), _) => Some(lIn)
+            case (_, Some(lOut)) => Some(lOut)
+            case _ => None()
           }
+          r = r.addDataEdge(BcEdge(labelOpt), src, dest)
         }
       } else {
         r = r * node
@@ -107,10 +110,14 @@ object BitCodecGraphGen {
         }
       }
     }
-    return r
+    return compress(r)
   }
 
   @pure def inlineGraph(g: Graph[BcNode, BcEdge], genResult: GenResult): Graph[BcNode, BcEdge] = {
+    if (!ops.ISZOps(g.nodesInverse).exists((n: BcNode) => n.isInstanceOf[BcNode.Sub])) {
+      return g
+    }
+
     def isSubEdge(e: Graph.Edge[BcNode, BcEdge]): B = {
       e.source match {
         case _: BcNode.Sub => return T
@@ -122,8 +129,10 @@ object BitCodecGraphGen {
       }
       return F
     }
+
     var r = Graph.empty[BcNode, BcEdge]
     var subMap = HashMap.empty[ISZ[String], Graph[BcNode, BcEdge]]
+
     def getSources(node: BcNode): ISZ[BcNode] = {
       node match {
         case node: BcNode.Sub =>
@@ -136,6 +145,7 @@ object BitCodecGraphGen {
         case _ => return ISZ(node)
       }
     }
+
     def getDests(node: BcNode): ISZ[BcNode] = {
       node match {
         case node: BcNode.Sub =>
@@ -176,6 +186,7 @@ object BitCodecGraphGen {
     @pure def elementST(e: BcNode.Element): ST = {
       return st"<TD>${e.name}:${e.size}</TD>"
     }
+
     @pure def elementsST(elements: ISZ[BcNode.Element]): ST = {
       val r =
         st"""<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
@@ -183,6 +194,7 @@ object BitCodecGraphGen {
             |</TABLE>"""
       return r
     }
+
     @pure def nodePath(n: BcNode): ST = {
       val path: ISZ[String] = if (n.path(0) == "") ops.ISZOps(n.path).drop(1) else n.path
       return st"./${(path, ".")}.svg"
@@ -212,13 +224,17 @@ object BitCodecGraphGen {
       data.labelOpt match {
         case Some(l) =>
           g.nodesInverse(dest) match {
-            case _: BcNode.Branch => edges = edges :+ st"""n$src -> n$dest [arrowhead=none, label="$l"];"""
-            case _ => edges = edges :+ st"""n$src -> n$dest [label="$l"];"""
+            case _: BcNode.Branch if !g.nodesInverse(src).isInstanceOf[BcNode.Branch] =>
+              edges = edges :+ st"""n$src -> n$dest [arrowhead=none, label="$l"];"""
+            case _ =>
+              edges = edges :+ st"""n$src -> n$dest [label="$l"];"""
           }
         case _ =>
           g.nodesInverse(dest) match {
-            case _: BcNode.Branch => edges = edges :+ st"""n$src -> n$dest [arrowhead=none];"""
-            case _ => edges = edges :+ st"""n$src -> n$dest;"""
+            case _: BcNode.Branch if !g.nodesInverse(src).isInstanceOf[BcNode.Branch] =>
+              edges = edges :+ st"""n$src -> n$dest [arrowhead=none];"""
+            case _ =>
+              edges = edges :+ st"""n$src -> n$dest;"""
           }
       }
     }
@@ -239,7 +255,7 @@ object BitCodecGraphGen {
   @pure def specDot(o: Spec, enums: HashSMap[String, AST.Stmt.Enum]): ST = {
     val gen = BitCodecGraphGen(enums)
     val g = gen.genSpecInlined(o)
-    return graphDot(g)
+    return graphDot(compress(g))
   }
 }
 
@@ -268,6 +284,7 @@ import BitCodecGraphGen._
     var r = Graph.empty[BcNode, BcEdge]
     var current = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
     var currentIndex: Z = 0
+    var subNumMap = HashMap.empty[String, Z]
     r = r * current
 
     def updateCurrent(node: BcNode.Container): Unit = {
@@ -280,36 +297,45 @@ import BitCodecGraphGen._
       current = node
     }
 
-    def sub(from: BcNode, element: Concat, to: BcNode, inLabelOpt: Option[String], outLabelOpt: Option[String]): BcNode = {
-      val elementNode = BcNode.Sub(element.name, path :+ element.name)
+    def sub(from: BcNode, element: Concat, to: BcNode, inLabelOpt: Option[String], outLabelOpt: Option[String]): Unit = {
+      var name: String = element.name
+      subNumMap.get(name) match {
+        case Some(n) =>
+          subNumMap = subNumMap + name ~> (n + 1)
+          name = s"$name$n"
+        case _ => subNumMap = subNumMap + name ~> 2
+      }
+      val elementNode = BcNode.Sub(element.name, path :+ name)
       r = r * elementNode
       r = r.addDataEdge(BcEdge(inLabelOpt), from, elementNode)
       r = r.addDataEdge(BcEdge(outLabelOpt), elementNode, to)
       accs = genSpecConcat(elementNode.path, element, accs)
-      return elementNode
     }
 
     def predRepeat(isWhile: B, preds: ISZ[Pred], e: Spec): Unit = {
-      val next = BcNode.Container(path:+ s"${r.nodes.size}", ISZ())
+      val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+      r = r * bPre
+      val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+      r = r * bPost
+      val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
       r = r * next
       val predsLabel = renderPreds(preds)
       val eNorm: Concat = e match {
         case e: Concat => e
         case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
       }
-      val (loopLabel, outLabel): (String, String) = if (isWhile) {
-        (predsLabel, s"!($predsLabel)")
-      } else {
-        (s"!($predsLabel)", predsLabel)
-      }
-      val eNode = sub(current, eNorm, next, None(), Some(outLabel))
-      r = r.addDataEdge(BcEdge(Some(loopLabel)), eNode, eNode)
+      val loopLabel: String = if (isWhile) predsLabel else s"!($predsLabel)"
+      sub(bPre, eNorm, bPost, None(), None())
+      r = r.addDataEdge(BcEdge(None()), current, bPre)
+      r = r.addDataEdge(BcEdge(Some(loopLabel)), bPost, bPre)
+      r = r.addDataEdge(BcEdge(None()), bPost, next)
+      setCurrent(next)
     }
 
     for (element <- o.elements) {
       element match {
         case element: Concat =>
-          val next = BcNode.Container(path:+ s"${r.nodes.size}", ISZ())
+          val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           sub(current, element, next, None(), None())
           setCurrent(next)
         case element: Poly =>
@@ -317,82 +343,104 @@ import BitCodecGraphGen._
           val dependsOn = st"${(desc.dependsOn, ", ")}"
           desc.compName match {
             case string"Union" =>
+              val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+              r = r * bPre
+              val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+              r = r * bPost
               val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
               r = r * next
-              val branch = BcNode.Branch(path ++ ISZ(desc.name, s"${r.nodes.size}"))
-              r = r * branch
-              r = r.addDataEdge(BcEdge(Some(dependsOn.render)), current, branch)
               for (e <- desc.elementsOpt.get) {
                 val eNorm: Concat = e match {
                   case e: Concat => e
                   case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
                 }
-                sub(branch, eNorm, next, None(), None())
+                sub(bPre, eNorm, bPost, None(), None())
               }
+              r = r.addDataEdge(BcEdge(Some(dependsOn.render)), current, bPre)
+              r = r.addDataEdge(BcEdge(None()), bPost, next)
               setCurrent(next)
             case string"Repeat" =>
+              val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+              r = r * bPre
+              val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+              r = r * bPost
               val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
               r = r * next
-              val labelOpt: Option[String] = Some(dependsOn.render)
+              val loopLabel = dependsOn.render
               val e = desc.elementsOpt.get(0)
               val eNorm: Concat = e match {
                 case e: Concat => e
                 case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
               }
-              val eNode = sub(current, eNorm, next, None(), labelOpt)
-              r = r.addDataEdge(BcEdge(labelOpt), eNode, eNode)
+              sub(bPre, eNorm, bPost, None(), None())
+              r = r.addDataEdge(BcEdge(None()), current, bPre)
+              r = r.addDataEdge(BcEdge(Some(loopLabel)), bPost, bPre)
+              r = r.addDataEdge(BcEdge(None()), bPost, next)
+              setCurrent(next)
             case string"Raw" =>
               updateCurrent(current(elements = current.elements :+
                 BcNode.Element(desc.name, st"&lt;...($dependsOn)&gt;".render)))
           }
         case element: PredUnion =>
+          val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPre
+          val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPost
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
-          val branch = BcNode.Branch(path ++ ISZ(element.name, s"${r.nodes.size}"))
-          r = r * branch
-          r = r.addDataEdge(BcEdge(None()), current, branch)
           for (e <- element.subs) {
             val eNorm: Concat = e match {
               case PredSpec(_, spec: Concat) => spec
               case _ => Concat(ops.StringOps(e.spec.name).firstToUpper, ISZ(e.spec))
             }
-            sub(branch, eNorm, next, Some(renderPreds(e.preds)), None())
+            sub(bPre, eNorm, bPost, Some(renderPreds(e.preds)), None())
           }
+          r = r.addDataEdge(BcEdge(None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None()), bPost, next)
           setCurrent(next)
         case element: PredRepeatWhile =>
           predRepeat(T, element.preds, element.element)
         case element: PredRepeatUntil =>
           predRepeat(F, element.preds, element.element)
         case element: GenUnion =>
+          val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPre
+          val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPost
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
-          val branch = BcNode.Branch(path ++ ISZ(element.name, s"${r.nodes.size}"))
-          r = r * branch
-          r = r.addDataEdge(BcEdge(None()), current, branch)
           for (e <- element.subs) {
             val eNorm: Concat = e match {
               case e: Concat => e
               case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
             }
-            sub(branch, eNorm, next, None(), None())
+            sub(bPre, eNorm, bPost, None(), None())
           }
+          r = r.addDataEdge(BcEdge(None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None()), bPost, next)
           setCurrent(next)
         case element: GenRepeat =>
+          val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPre
+          val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
+          r = r * bPost
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
-          val labelOpt: Option[String] = None()
           val e = element.element
           val eNorm: Concat = e match {
             case e: Concat => e
             case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
           }
-          val eNode = sub(current, eNorm, next, None(), labelOpt)
-          r = r.addDataEdge(BcEdge(labelOpt), eNode, eNode)
+          sub(bPre, eNorm, bPost, None(), None())
+          r = r.addDataEdge(BcEdge(None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None()), bPost, bPre)
+          r = r.addDataEdge(BcEdge(None()), bPost, next)
+          setCurrent(next)
         case element: GenRaw =>
           updateCurrent(current(elements = current.elements :+
             BcNode.Element(element.name, st"&lt;...&gt;".render)))
         case element: Boolean =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, "1")))
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, "B")))
         case element: Enum =>
           enums.get(element.objectName) match {
             case Some(enum) =>
@@ -404,17 +452,17 @@ import BitCodecGraphGen._
         case element: Bits =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size}")))
         case element: Bytes =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8}")))
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} (${element.size}*8)")))
         case element: Shorts =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16}")))
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} (${element.size}*16)")))
         case element: Ints =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32}")))
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
         case element: Longs =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64}")))
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
         case element: Pads =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element("(pads)", s"${element.size}")))
       }
     }
-    return accs + path ~> compress(r)
+    return accs + path ~> r
   }
 }
