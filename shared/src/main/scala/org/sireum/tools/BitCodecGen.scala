@@ -44,18 +44,23 @@ object BitCodecGen {
 
   @datatype class PosOptTransformer extends Transformer.PrePost[B] {
     val emptyAttr: Option[AST.Attr] = Some(AST.Attr(None()))
+
     @pure override def preAttr(ctx: B, o: AST.Attr): PreResult[B, AST.Attr] = {
       return PreResult(ctx, F, emptyAttr)
     }
+
     @pure override def preTypedAttr(ctx: B, o: AST.TypedAttr): PreResult[B, AST.TypedAttr] = {
       return PreResult(ctx, T, Some(o(posOpt = None())))
     }
+
     @pure override def preResolvedAttr(ctx: B, o: AST.ResolvedAttr): PreResult[B, AST.ResolvedAttr] = {
       return PreResult(ctx, T, Some(o(posOpt = None())))
     }
+
     @pure override def preExpFun(ctx: B, o: Exp.Fun): PreResult[B, AST.Exp] = {
       return PreResult(ctx, T, Some(o(context = ISZ())))
     }
+
     @pure override def preResolvedInfoLocalVar(ctx: B, o: ResolvedInfo.LocalVar): PreResult[B, ResolvedInfo] = {
       return PreResult(ctx, T, Some(o(context = ISZ())))
     }
@@ -214,8 +219,8 @@ object BitCodecGen {
       val fname = ops.StringOps(name).firstToLower
       val key = container :+ fname
       fieldMap.get(key) match {
-        case Some(n) => return (this(fieldMap = fieldMap + key ~> (n + 1)), s"$fname$n")
-        case _ => return (this(fieldMap = fieldMap + key ~> 1), fname)
+        case Some(n) => return (this (fieldMap = fieldMap + key ~> (n + 1)), s"$fname$n")
+        case _ => return (this (fieldMap = fieldMap + key ~> 2), fname)
       }
     }
   }
@@ -824,9 +829,9 @@ import BitCodecGen._
   def genSpecRaw(context: Context, name: String, dependsOn: ISZ[String], reporter: Reporter): Context = {
     val (pName, pType, pBody): (String, String, String) =
       funNameTypeBody(context.path :+ name, dependsOn.size, name, "Spec.Raw.size", reporter) match {
-      case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
-      case _ => return context
-    }
+        case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
+        case _ => return context
+      }
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
@@ -1231,6 +1236,7 @@ import BitCodecGen._
       }
       return T
     }
+
     funs.get(name) match {
       case Some((f, t)) =>
         val tsize: Z = t match {
@@ -1288,6 +1294,7 @@ import BitCodecGen._
       j = j + 1
       return ops.StringOps(line).substring(if (ok) size else i, j)
     }
+
     val lines = ops.StringOps(ops.StringOps(text).replaceAllLiterally("\n", " \n")).
       split((c: C) => c == '\n')
     var firstLineIndex: Z = -1
