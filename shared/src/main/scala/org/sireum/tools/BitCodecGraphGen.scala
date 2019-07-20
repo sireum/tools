@@ -194,8 +194,9 @@ object BitCodecGraphGen {
     }
 
     @pure def elementsST(path: ISZ[String], elements: ISZ[BcNode.Element]): ST = {
+      val p = ops.ISZOps(path).dropRight(1)
       val r =
-        st"""<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" TOOLTIP="${(path, ".")}" HREF="#">
+        st"""<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" TOOLTIP="${(p, ".")}" HREF="#">
             |  <TR>${for (e <- elements) yield elementST(e)}</TR>
             |</TABLE>"""
       return r
@@ -377,12 +378,14 @@ import BitCodecGraphGen._
               r = r * bPost
               val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
               r = r * next
-              for (e <- desc.elementsOpt.get) {
+              val elements = desc.elementsOpt.get
+              for (i <- 0 until elements.size) {
+                val e = elements(i)
                 val eNorm: Concat = e match {
                   case e: Concat => e
                   case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
                 }
-                sub(bPre, eNorm, bPost, None(), None())
+                sub(bPre, eNorm, bPost, Some(s"$i"), None())
               }
               val label = dependsOn.render
               r = r.addDataEdge(BcEdge(Some(label), tooltipOpt), current, bPre)

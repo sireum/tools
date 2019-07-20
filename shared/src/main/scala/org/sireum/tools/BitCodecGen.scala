@@ -432,11 +432,11 @@ import BitCodecGen._
   }
 
   def genSpec(context: Context, o: Spec, reporter: Reporter): Context = {
-    def firstContext(): (B, Context) = {
-      if (context.seenSpecs.contains(o.name))  {
+    def firstContext(name: String): (B, Context) = {
+      if (context.seenSpecs.contains(name))  {
         return (F, context)
       } else {
-        return (T, context(seenSpecs = context.seenSpecs + o.name))
+        return (T, context(seenSpecs = context.seenSpecs + name))
       }
     }
     o match {
@@ -447,31 +447,31 @@ import BitCodecGen._
       case o: Spec.Ints => return genSpecInts(context, o, reporter)
       case o: Spec.Longs => return genSpecLongs(context, o, reporter)
       case o: Spec.Enum =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.objectName)
         return genSpecEnum(first, ctx, o, reporter)
       case o: Spec.Concat =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.name)
         return genSpecConcat(first, ctx, o, reporter)
       case o: Spec.PredUnion =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.name)
         genSpecPredUnion(first, ctx, o, reporter)
       case o: Spec.PredRepeatWhile => genSpecPredRepeat(context, o.name, T, o.preds, o.element, reporter)
       case o: Spec.PredRepeatUntil => genSpecPredRepeat(context, o.name, F, o.preds, o.element, reporter)
       case o: Spec.GenUnion =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.name)
         return genSpecGenUnion(first, ctx, o, reporter)
       case o: Spec.GenRepeat =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.name)
         return genSpecGenRepeat(first, ctx, o, reporter)
       case o: Spec.GenRaw =>
-        val (first, ctx) = firstContext()
+        val (first, ctx) = firstContext(o.name)
         return genSpecGenRaw(first, ctx, o, reporter)
       case o: Spec.Pads => return genSpecPads(context, o, reporter)
-      case o: Spec.Poly =>
-        val p = o.polyDesc
+      case poly: Spec.Poly =>
+        val p = poly.polyDesc
         p.compName match {
           case string"Union" =>
-            val (first, ctx) = firstContext()
+            val (first, ctx) = firstContext(o.name)
             return genSpecUnion(first, ctx, p.name, p.dependsOn, p.elementsOpt.get, reporter)
           case string"Repeat" => return genSpecRepeat(context, p.name, p.dependsOn, p.elementsOpt.get(0), reporter)
           case string"Raw" => return genSpecRaw(context, p.name, p.dependsOn, reporter)
@@ -705,7 +705,7 @@ import BitCodecGen._
       members = context.members,
       fieldMap = elementContext.fieldMap,
       nextFound = 0,
-      seenSpecs = context.seenSpecs
+      seenSpecs = elementContext.seenSpecs
     )
   }
 
@@ -738,6 +738,10 @@ import BitCodecGen._
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
+            |
+            |  def empty: $name = {
+            |    return ${normSubs(0).name}.empty
+            |  }
             |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.name}", "\n")}
@@ -825,6 +829,10 @@ import BitCodecGen._
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
+            |
+            |  def empty: $name = {
+            |    return ${normSubs(0).spec.name}.empty
+            |  }
             |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.spec.name}", "\n")}
@@ -1052,6 +1060,10 @@ import BitCodecGen._
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
+            |
+            |  def empty: $name = {
+            |    return ${normSubs(0).name}.empty
+            |  }
             |
             |  object ChoiceContext {
             |    def empty: ChoiceContext = {
