@@ -145,15 +145,14 @@ object BitCodecGen {
           checkSpec(o.element)
         case o: Spec.GenRaw => checkNameFirstLower("GenRaw", o)
           checkKind(o)
-        case o: Spec.Pads =>
-        case o: Spec.Poly =>
-          val p = o.polyDesc
+        case _: Spec.Pads =>
+        case poly: Spec.Poly =>
+          val p = poly.polyDesc
           p.compName match {
             case string"Union" =>
               checkNameFirstUpper("Union", o)
               checkKind(o)
             case string"Repeat" => checkNameFirstLower("Repeat", o)
-
             case string"Raw" => checkNameFirstLower("Raw", o)
           }
           if (p.elementsOpt.nonEmpty) {
