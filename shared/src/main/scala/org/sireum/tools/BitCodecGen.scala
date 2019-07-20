@@ -82,6 +82,91 @@ object BitCodecGen {
   )
   val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
+  def check(spec: Spec, reporter: Reporter): Unit = {
+    def checkNameFirstLower(desc: String, o: Spec): Unit = {
+      if (ops.StringOps(o.name).firstToLower != o.name) {
+        reporter.error(None(), kind, s"$desc spec should have a name starting with a lower case, but found '${o.name}'.")
+      }
+    }
+    def checkNameFirstUpper(desc: String, o: Spec): Unit = {
+      if (ops.StringOps(o.name).firstToUpper != o.name) {
+        reporter.error(None(), kind, s"$desc spec should have a name starting with an upper case, but found '${o.name}'.")
+      }
+    }
+    var seenSpecs = HashMap.empty[String, Spec]
+
+    def checkKind(o: Spec): Unit = {
+      seenSpecs.get(o.name) match {
+        case Some(other) =>
+          if (other != o) {
+            reporter.error(None(), kind, s"Name '${o.name}' is used for two different specs.")
+          }
+        case _ => seenSpecs = seenSpecs + o.name ~> o
+      }
+    }
+
+    def checkSpec(o: Spec): Unit = {
+      o match {
+        case o: Spec.Boolean => checkNameFirstLower("Boolean", o)
+        case o: Spec.Bits => checkNameFirstLower("Bits", o)
+        case o: Spec.Bytes => checkNameFirstLower("Bytes", o)
+        case o: Spec.Shorts => checkNameFirstLower("Shorts", o)
+        case o: Spec.Ints => checkNameFirstLower("Ints", o)
+        case o: Spec.Longs => checkNameFirstLower("Longs", o)
+        case o: Spec.Enum =>
+          checkNameFirstLower("Enum", o)
+          checkKind(o)
+        case o: Spec.Concat =>
+          checkNameFirstUpper("Concat", o)
+          checkKind(o)
+          for (e <- o.elements) {
+            checkSpec(e)
+          }
+        case o: Spec.PredUnion =>
+          checkNameFirstUpper("PredUnion", o)
+          checkKind(o)
+          for (p <- o.subs) {
+            checkSpec(p.spec)
+          }
+        case o: Spec.PredRepeatWhile =>
+          checkNameFirstLower("PredRepeatWhile", o)
+          checkSpec(o.element)
+        case o: Spec.PredRepeatUntil =>
+          checkNameFirstLower("PredRepeatUntil", o)
+          checkSpec(o.element)
+        case o: Spec.GenUnion =>
+          checkNameFirstUpper("GenUnion", o)
+          checkKind(o)
+          for (e <- o.subs) {
+            checkSpec(e)
+          }
+        case o: Spec.GenRepeat => checkNameFirstLower("GenRepeat", o)
+          checkKind(o)
+          checkSpec(o.element)
+        case o: Spec.GenRaw => checkNameFirstLower("GenRaw", o)
+          checkKind(o)
+        case o: Spec.Pads =>
+        case o: Spec.Poly =>
+          val p = o.polyDesc
+          p.compName match {
+            case string"Union" =>
+              checkNameFirstUpper("Union", o)
+              checkKind(o)
+            case string"Repeat" => checkNameFirstLower("Repeat", o)
+
+            case string"Raw" => checkNameFirstLower("Raw", o)
+          }
+          if (p.elementsOpt.nonEmpty) {
+            for (e <- p.elementsOpt.get) {
+              checkSpec(e)
+            }
+          }
+      }
+    }
+
+    checkSpec(spec)
+  }
+
   def gen(output: Output.Type,
           isBigEndian: B,
           licenseOpt: Option[String],
@@ -110,13 +195,15 @@ object BitCodecGen {
         "Top-level Spec has to be a composite (i.e., Concat, Union or GenUnion)")
     }
 
+    check(spec, reporter)
+
     if (reporter.hasIssue) {
       return st"$prevGen"
     }
 
     output match {
       case Output.Dot =>
-        return BitCodecGraphGen.specDot(spec, collector.enums)
+        return BitCodecGraphGen.specDot(spec, text, collector.enums, collector.funs)
       case Output.Json =>
         var enumMap = Map.empty[String, ISZ[String]]
         for (enum <- collector.enums.values) {
@@ -192,7 +279,7 @@ object BitCodecGen {
   object Context {
     def create: Context = {
       return Context(ISZ(), 2, ISZ.create(65, F), ISZ(), ISZ(),
-        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0)
+        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0, HashSet.empty)
     }
   }
 
@@ -210,7 +297,8 @@ object BitCodecGen {
                           encoding: ISZ[ST],
                           members: ISZ[ST],
                           fieldMap: HashMap[ISZ[String], Z],
-                          nextFound: Z) {
+                          nextFound: Z,
+                          seenSpecs: HashSet[String]) {
     def freshFound: String = {
       return if (nextFound == 0) "" else s"$nextFound"
     }
@@ -233,6 +321,47 @@ object BitCodecGen {
       r = r + 1
     }
     return r
+  }
+
+  def reorientLines(text: String, column: Z): String = {
+    def removeFirstLastWhitespaces(line: String, size: Z): String = {
+      val cs = conversions.String.toCis(line)
+      var ok = T
+      var i = 0
+      while (i < size && i < line.size && ok) {
+        if (!cs(i).isWhitespace) {
+          ok = F
+        } else {
+          i = i + 1
+        }
+      }
+      var j = line.size - 1
+      while (j >= 0 && cs(j).isWhitespace) {
+        j = j - 1
+      }
+      j = j + 1
+      return ops.StringOps(line).substring(if (ok) size else i, j)
+    }
+
+    val lines = ops.StringOps(ops.StringOps(text).replaceAllLiterally("\n", " \n")).
+      split((c: C) => c == '\n')
+    var firstLineIndex: Z = -1
+    for (i <- 0 until lines.size if firstLineIndex < 0 && ops.StringOps(lines(i)).trim.size > 0) {
+      firstLineIndex = i
+    }
+    if (firstLineIndex < 0) {
+      return text
+    }
+    val firstLineChars = conversions.String.toCis(lines(firstLineIndex))
+    var offset: Z = 0
+    if (column >= 0) {
+      offset = column
+    } else {
+      while (offset < firstLineChars.size && firstLineChars(offset).isWhitespace) {
+        offset = offset + 1
+      }
+    }
+    return st"${(for (line <- lines) yield removeFirstLastWhitespaces(line, offset), "\n")}".render
   }
 }
 
@@ -304,6 +433,13 @@ import BitCodecGen._
   }
 
   def genSpec(context: Context, o: Spec, reporter: Reporter): Context = {
+    def firstContext(): (B, Context) = {
+      if (context.seenSpecs.contains(o.name))  {
+        return (F, context)
+      } else {
+        return (T, context(seenSpecs = context.seenSpecs + o.name))
+      }
+    }
     o match {
       case o: Spec.Boolean => return genSpecBoolean(context, o, reporter)
       case o: Spec.Bits => return genSpecBits(context, o, reporter)
@@ -311,19 +447,33 @@ import BitCodecGen._
       case o: Spec.Shorts => return genSpecShorts(context, o, reporter)
       case o: Spec.Ints => return genSpecInts(context, o, reporter)
       case o: Spec.Longs => return genSpecLongs(context, o, reporter)
-      case o: Spec.Enum => return genSpecEnum(context, o, reporter)
-      case o: Spec.Concat => return genSpecConcat(context, o, reporter)
-      case o: Spec.PredUnion => genSpecPredUnion(context, o, reporter)
+      case o: Spec.Enum =>
+        val (first, ctx) = firstContext()
+        return genSpecEnum(first, ctx, o, reporter)
+      case o: Spec.Concat =>
+        val (first, ctx) = firstContext()
+        return genSpecConcat(first, ctx, o, reporter)
+      case o: Spec.PredUnion =>
+        val (first, ctx) = firstContext()
+        genSpecPredUnion(first, ctx, o, reporter)
       case o: Spec.PredRepeatWhile => genSpecPredRepeat(context, o.name, T, o.preds, o.element, reporter)
       case o: Spec.PredRepeatUntil => genSpecPredRepeat(context, o.name, F, o.preds, o.element, reporter)
-      case o: Spec.GenUnion => return genSpecGenUnion(context, o, reporter)
-      case o: Spec.GenRepeat => return genSpecGenRepeat(context, o, reporter)
-      case o: Spec.GenRaw => return genSpecGenRaw(context, o, reporter)
+      case o: Spec.GenUnion =>
+        val (first, ctx) = firstContext()
+        return genSpecGenUnion(first, ctx, o, reporter)
+      case o: Spec.GenRepeat =>
+        val (first, ctx) = firstContext()
+        return genSpecGenRepeat(first, ctx, o, reporter)
+      case o: Spec.GenRaw =>
+        val (first, ctx) = firstContext()
+        return genSpecGenRaw(first, ctx, o, reporter)
       case o: Spec.Pads => return genSpecPads(context, o, reporter)
       case o: Spec.Poly =>
         val p = o.polyDesc
         p.compName match {
-          case string"Union" => return genSpecUnion(context, p.name, p.dependsOn, p.elementsOpt.get, reporter)
+          case string"Union" =>
+            val (first, ctx) = firstContext()
+            return genSpecUnion(first, ctx, p.name, p.dependsOn, p.elementsOpt.get, reporter)
           case string"Repeat" => return genSpecRepeat(context, p.name, p.dependsOn, p.elementsOpt.get(0), reporter)
           case string"Raw" => return genSpecRaw(context, p.name, p.dependsOn, reporter)
         }
@@ -433,7 +583,7 @@ import BitCodecGen._
       encoding = context.encoding :+ st"Writer.${endianPrefix}U64S(output, context, $name)")
   }
 
-  def genSpecEnum(context: Context, spec: Spec.Enum, reporter: Reporter): Context = {
+  def genSpecEnum(first: B, context: Context, spec: Spec.Enum, reporter: Reporter): Context = {
     val name = spec.name
     val objectName = spec.objectName
     val enum: AST.Stmt.Enum = enums.get(objectName) match {
@@ -444,13 +594,13 @@ import BitCodecGen._
         return context
     }
     val size = bitWidth(enum.elements.size)
-    val first = enum.elements(0).value
+    val firstElem = enum.elements(0).value
     val tpe = st"$objectName.Type"
     return context(
       imports = context.imports(size ~> T),
       errNum = context.errNum + 1,
-      mainDecl = context.mainDecl :+ st"val ERROR_$objectName: Z = ${context.errNum}",
-      main = context.main :+
+      mainDecl = if (!first) context.mainDecl else context.mainDecl :+ st"val ERROR_$objectName: Z = ${context.errNum}",
+      main = if (!first) context.main else context.main :+
         st"""@enum object $objectName {
             |  ${(for (element <- enum.elements) yield st"'${element.value}", "\n")}
             |}
@@ -460,13 +610,13 @@ import BitCodecGen._
             |    context.signalError(ERROR_$objectName)
             |  }
             |  if (context.hasError) {
-            |    return $objectName.$first
+            |    return $objectName.$firstElem
             |  }
             |  val r: $tpe = Reader.MS.${endianPrefix}U$size(input, context) match {
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
-            |      $objectName.$first
+            |      $objectName.$firstElem
             |  }
             |  return r
             |}
@@ -483,12 +633,12 @@ import BitCodecGen._
             |  }
             |}""",
       fields = context.fields :+ st"var $name: $tpe",
-      inits = context.inits :+ st"""$objectName.$first""",
+      inits = context.inits :+ st"""$objectName.$firstElem""",
       decoding = context.decoding :+ st"$name = decode$objectName(input, context)",
       encoding = context.encoding :+ st"encode$objectName(output, context, $name)")
   }
 
-  def genSpecConcat(context: Context, spec: Spec.Concat, reporter: Reporter): Context = {
+  def genSpecConcat(first: B, context: Context, spec: Spec.Concat, reporter: Reporter): Context = {
     val name = spec.name
     val (ctx, fname) = context.fieldName(context.path, name)
     var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite",
@@ -500,8 +650,8 @@ import BitCodecGen._
       path = context.path,
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_$name: Z = ${elementContext.errNum}",
-      main = elementContext.main :+
+      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_$name: Z = ${elementContext.errNum}",
+      main = if (!first) elementContext.main else elementContext.main :+
         st"""object $name {
             |  def empty: $name = {
             |    return $name(${(elementContext.inits, ", ")})
@@ -555,10 +705,13 @@ import BitCodecGen._
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
       fieldMap = elementContext.fieldMap,
-      nextFound = 0)
+      nextFound = 0,
+      seenSpecs = context.seenSpecs
+    )
   }
 
-  def genSpecUnion(context: Context,
+  def genSpecUnion(first: B,
+                   context: Context,
                    name: String,
                    dependsOn: ISZ[String],
                    subs: ISZ[Spec],
@@ -571,7 +724,7 @@ import BitCodecGen._
         case _ => return context
       }
     val (ctx, fname) = context.fieldName(context.path, name)
-    var subContext = ctx(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
+    var subContext = ctx(path = ctx.path :+ fname, main = ctx.main, owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
@@ -581,13 +734,11 @@ import BitCodecGen._
       path = context.path,
       errNum = subContext.errNum + 1,
       imports = subContext.imports,
-      mainDecl = subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
-      main = context.main :+
+      mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
+      main = if (!first) subContext.main else subContext.main :+
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
-            |
-            |  ${(subContext.main, "\n\n")}
             |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.name}", "\n")}
@@ -608,10 +759,10 @@ import BitCodecGen._
       owner = context.owner,
       supr = context.supr,
       fields = context.fields :+ st"var $fname: $name",
-      inits = context.inits :+ st"$name.${normSubs(0).name}.empty",
+      inits = context.inits :+ st"${normSubs(0).name}.empty",
       wellFormed = context.wellFormed :+
         st"""($name.choose($deps), $fname) match {
-            |  ${(for (sub <- normSubs) yield st"case ($name.Choice.${sub.name}, _: $name.${sub.name}) =>", "\n")}
+            |  ${(for (sub <- normSubs) yield st"case ($name.Choice.${sub.name}, _: ${sub.name}) =>", "\n")}
             |  case _ => return ERROR_$name
             |}
             |
@@ -621,18 +772,20 @@ import BitCodecGen._
             |}""",
       decoding = context.decoding :+
         st"""$name.choose($deps) match {
-            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = $name.${sub.name}.empty", "\n")}
+            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = ${sub.name}.empty", "\n")}
             |  case _ => context.signalError(ERROR_$name)
             |}
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
       fieldMap = subContext.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = subContext.seenSpecs
     )
   }
 
-  def genSpecPredUnion(context: Context,
+  def genSpecPredUnion(first: B,
+                       context: Context,
                        o: Spec.PredUnion,
                        reporter: Reporter): Context = {
     val name = o.name
@@ -642,7 +795,7 @@ import BitCodecGen._
       else sub(spec = Spec.Concat(ops.StringOps(sub.spec.name).firstToUpper, ISZ(sub.spec)))
     val (ctx, fname) = context.fieldName(context.path, name)
     val path = ctx.path :+ fname
-    var subContext = ctx(path = path, main = ISZ(), owner = name, supr = name,
+    var subContext = ctx(path = path, main = ctx.main, owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     var choose = ISZ[ST]()
     for (i <- 0 until normSubs.size) {
@@ -668,13 +821,11 @@ import BitCodecGen._
       path = context.path,
       errNum = subContext.errNum + 1,
       imports = subContext.imports,
-      mainDecl = subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
-      main = context.main :+
+      mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
+      main = if (!first) subContext.main else subContext.main :+
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
-            |
-            |  ${(subContext.main, "\n\n")}
             |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.spec.name}", "\n")}
@@ -689,18 +840,19 @@ import BitCodecGen._
       owner = context.owner,
       supr = context.supr,
       fields = context.fields :+ st"var $fname: $name",
-      inits = context.inits :+ st"$name.${normSubs(0).spec.name}.empty",
+      inits = context.inits :+ st"${normSubs(0).spec.name}.empty",
       wellFormed = context.wellFormed,
       decoding = context.decoding :+
         st"""$name.choose(input, context) match {
-            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.spec.name} => $fname = $name.${sub.spec.name}.empty", "\n")}
+            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.spec.name} => $fname = ${sub.spec.name}.empty", "\n")}
             |  case _ => context.signalError(ERROR_$name)
             |}
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
       fieldMap = subContext.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = subContext.seenSpecs
     )
   }
 
@@ -720,7 +872,7 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
-    var elementContext = context(path = context.path :+ name, main = ISZ(), owner = st"${owner}_$name".render,
+    var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
       supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
@@ -767,7 +919,8 @@ import BitCodecGen._
             |  return r
             |}""",
       fieldMap = elementContext.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = elementContext.seenSpecs
     )
   }
 
@@ -782,7 +935,7 @@ import BitCodecGen._
       else element
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
-    var elementContext = context(path = context.path :+ name, main = ISZ(), owner = st"${owner}_$name".render,
+    var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
       supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ())
     var predSTs = ISZ[ST]()
@@ -822,7 +975,8 @@ import BitCodecGen._
             |  return !hasError
             |}""",
       fieldMap = elementContext.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = elementContext.seenSpecs
     )
   }
 
@@ -874,17 +1028,18 @@ import BitCodecGen._
             |  return r
             |}""",
       fieldMap = context.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = context.seenSpecs
     )
   }
 
-  def genSpecGenUnion(context: Context, spec: Spec.GenUnion, reporter: Reporter): Context = {
+  def genSpecGenUnion(first: B, context: Context, spec: Spec.GenUnion, reporter: Reporter): Context = {
     val name = spec.name
     val subs = spec.subs
     val normSubs: ISZ[Spec] = for (sub <- subs) yield
       if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
     val (ctx, fname) = context.fieldName(context.path, name)
-    var subContext = ctx(path = context.path :+ fname, main = ISZ(), owner = name, supr = name,
+    var subContext = ctx(path = context.path :+ fname, main = ctx.main, owner = name, supr = name,
       fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
@@ -893,8 +1048,8 @@ import BitCodecGen._
       path = context.path,
       errNum = subContext.errNum + 1,
       imports = subContext.imports,
-      mainDecl = subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
-      main = context.main :+
+      mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
+      main = if (!first) subContext.main else subContext.main :+
         st"""@record trait $name extends ${context.supr}
             |
             |object $name {
@@ -913,8 +1068,6 @@ import BitCodecGen._
             |     // END USER CODE: $name.ChoiceContext
             |  )
             |
-            |  ${(subContext.main, "\n\n")}
-            |
             |  @enum object Choice {
             |     ${(for (sub <- normSubs) yield st"'${sub.name}", "\n")}
             |     'Error
@@ -929,7 +1082,7 @@ import BitCodecGen._
       owner = context.owner,
       supr = context.supr,
       fields = context.fields :+ st"var $fname: $name",
-      inits = context.inits :+ st"$name.${normSubs(0).name}.empty",
+      inits = context.inits :+ st"${normSubs(0).name}.empty",
       wellFormed = context.wellFormed :+
         st"""val wf$name = $fname.wellFormed
             |if (wf$name != 0) {
@@ -941,18 +1094,19 @@ import BitCodecGen._
             |${prevText(s"$name.ChoiceContext.init", "")}
             |// END USER CODE: $name.ChoiceContext.init
             |$name.choose(input, context, ${fname}ChoiceContext) match {
-            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = $name.${sub.name}.empty", "\n")}
+            |  ${(for (sub <- normSubs) yield st"case $name.Choice.${sub.name} => $fname = ${sub.name}.empty", "\n")}
             |  case _ => context.signalError(ERROR_$name)
             |}
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
       fieldMap = context.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = subContext.seenSpecs
     )
   }
 
-  def genSpecGenRepeat(context: Context, spec: Spec.GenRepeat, reporter: Reporter): Context = {
+  def genSpecGenRepeat(first: B, context: Context, spec: Spec.GenRepeat, reporter: Reporter): Context = {
     val name = spec.name
     val element = spec.element
     val normElement: Spec =
@@ -960,7 +1114,7 @@ import BitCodecGen._
       else element
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
-    var elementContext = context(path = context.path :+ name, main = ISZ(), owner = st"${owner}_$name".render,
+    var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
       supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
@@ -969,8 +1123,8 @@ import BitCodecGen._
       path = context.path,
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
-      main = elementContext.main :+
+      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      main = if (!first) elementContext.main else elementContext.main :+
         st"""object $owner${mname}Context {
             |  def empty: $owner${mname}Context = {
             |    // BEGIN USER CODE: $owner${mname}Context.empty
@@ -1018,11 +1172,12 @@ import BitCodecGen._
             |  // END USER CODE: $owner.${name}Update
             |}""",
       fieldMap = elementContext.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = elementContext.seenSpecs
     )
   }
 
-  def genSpecGenRaw(context: Context, spec: Spec.GenRaw, reporter: Reporter): Context = {
+  def genSpecGenRaw(first: B, context: Context, spec: Spec.GenRaw, reporter: Reporter): Context = {
     val name = spec.name
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
@@ -1031,8 +1186,8 @@ import BitCodecGen._
       path = context.path,
       errNum = context.errNum + 1,
       imports = context.imports,
-      mainDecl = context.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
-      main = context.main :+
+      mainDecl = if (!first) context.mainDecl else context.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      main = if (!first) context.main else context.main :+
         st"""object $owner${mname}Context {
             |  def empty: $owner${mname}Context = {
             |    // BEGIN USER CODE: $owner${mname}Context.empty
@@ -1075,7 +1230,8 @@ import BitCodecGen._
             |  // END USER CODE: $owner.${name}Update
             |}""",
       fieldMap = context.fieldMap,
-      nextFound = 0
+      nextFound = 0,
+      seenSpecs = context.seenSpecs
     )
   }
 
@@ -1273,46 +1429,5 @@ import BitCodecGen._
       case Some(t) => return reorientLines(t, -1)
       case _ => return default
     }
-  }
-
-  def reorientLines(text: String, column: Z): String = {
-    def removeFirstLastWhitespaces(line: String, size: Z): String = {
-      val cs = conversions.String.toCis(line)
-      var ok = T
-      var i = 0
-      while (i < size && i < line.size && ok) {
-        if (!cs(i).isWhitespace) {
-          ok = F
-        } else {
-          i = i + 1
-        }
-      }
-      var j = line.size - 1
-      while (j >= 0 && cs(j).isWhitespace) {
-        j = j - 1
-      }
-      j = j + 1
-      return ops.StringOps(line).substring(if (ok) size else i, j)
-    }
-
-    val lines = ops.StringOps(ops.StringOps(text).replaceAllLiterally("\n", " \n")).
-      split((c: C) => c == '\n')
-    var firstLineIndex: Z = -1
-    for (i <- 0 until lines.size if firstLineIndex < 0 && ops.StringOps(lines(i)).trim.size > 0) {
-      firstLineIndex = i
-    }
-    if (firstLineIndex < 0) {
-      return text
-    }
-    val firstLineChars = conversions.String.toCis(lines(firstLineIndex))
-    var offset: Z = 0
-    if (column >= 0) {
-      offset = column
-    } else {
-      while (offset < firstLineChars.size && firstLineChars(offset).isWhitespace) {
-        offset = offset + 1
-      }
-    }
-    return st"${(for (line <- lines) yield removeFirstLastWhitespaces(line, offset), "\n")}".render
   }
 }
