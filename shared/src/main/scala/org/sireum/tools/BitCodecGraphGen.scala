@@ -51,7 +51,7 @@ object BitCodecGraphGen {
 
   }
 
-  @datatype class BcEdge(labelOpt: Option[String])
+  @datatype class BcEdge(labelOpt: Option[String], tooltipOpt: Option[String])
 
   @pure def renderPreds(preds: ISZ[Pred]): String = {
     return st"${(for (pred <- preds) yield render(pred), ".")}".render
@@ -96,7 +96,13 @@ object BitCodecGraphGen {
             case (_, Some(lOut)) => Some(lOut)
             case _ => None()
           }
-          r = r.addDataEdge(BcEdge(labelOpt), src, dest)
+          val tooltipOpt: Option[String] = (inData.tooltipOpt, outData.tooltipOpt) match {
+            case (Some(tIn), Some(tOut)) => Some(s"$tIn:$tOut")
+            case (Some(tIn), _) => Some(tIn)
+            case (_, Some(tOut)) => Some(tOut)
+            case _ => None()
+          }
+          r = r.addDataEdge(BcEdge(labelOpt, tooltipOpt), src, dest)
         }
       } else {
         r = r * node
@@ -187,9 +193,9 @@ object BitCodecGraphGen {
       return st"<TD>${e.name}:${e.size}</TD>"
     }
 
-    @pure def elementsST(elements: ISZ[BcNode.Element]): ST = {
+    @pure def elementsST(path: ISZ[String], elements: ISZ[BcNode.Element]): ST = {
       val r =
-        st"""<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+        st"""<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" TOOLTIP="${(path, ".")}" HREF="#">
             |  <TR>${for (e <- elements) yield elementST(e)}</TR>
             |</TABLE>"""
       return r
@@ -210,9 +216,9 @@ object BitCodecGraphGen {
         case node: BcNode.Container =>
           nodes = nodes :+
             st"""$nodeName [label=<
-                |  ${elementsST(node.elements)}
+                |  ${elementsST(node.path, node.elements)}
                 |>];"""
-        case node: BcNode.Branch =>
+        case _: BcNode.Branch =>
           nodes = nodes :+ st"$nodeName [shape=point];"
         case node: BcNode.Sub =>
           nodes = nodes :+ st"""$nodeName [style=dotted, label="${node.name}", href="${nodePath(node)}"];"""
@@ -223,11 +229,19 @@ object BitCodecGraphGen {
       val Graph.Internal.Edge.Data(src, dest, data) = edge
       data.labelOpt match {
         case Some(l) =>
+          val tooltip: ST = data.tooltipOpt match {
+            case Some(t) =>
+              val tt = ops.StringOps(ops.StringOps(t).
+                replaceAllLiterally("\n", "&#013;")).
+                replaceAllLiterally("\"", "\\\"")
+              st""", tooltip="$tt", href="#""""
+            case _ => st""
+          }
           g.nodesInverse(dest) match {
             case _: BcNode.Branch if !g.nodesInverse(src).isInstanceOf[BcNode.Branch] =>
-              edges = edges :+ st"""n$src -> n$dest [arrowhead=none, label="$l"];"""
+              edges = edges :+ st"""n$src -> n$dest [arrowhead=none, label="$l"$tooltip];"""
             case _ =>
-              edges = edges :+ st"""n$src -> n$dest [label="$l"];"""
+              edges = edges :+ st"""n$src -> n$dest [label="$l"$tooltip];"""
           }
         case _ =>
           g.nodesInverse(dest) match {
@@ -252,8 +266,11 @@ object BitCodecGraphGen {
     return r
   }
 
-  @pure def specDot(o: Spec, enums: HashSMap[String, AST.Stmt.Enum]): ST = {
-    val gen = BitCodecGraphGen(enums)
+  @pure def specDot(o: Spec,
+                    text: String,
+                    enums: HashSMap[String, AST.Stmt.Enum],
+                    funs: HashSMap[String, (AST.Exp.Fun, AST.Type)]): ST = {
+    val gen = BitCodecGraphGen(text, enums, funs)
     val g = gen.genSpecInlined(o)
     return graphDot(compress(g))
   }
@@ -261,7 +278,9 @@ object BitCodecGraphGen {
 
 import BitCodecGraphGen._
 
-@datatype class BitCodecGraphGen(enums: HashSMap[String, AST.Stmt.Enum]) {
+@datatype class BitCodecGraphGen(text: String,
+                                 enums: HashSMap[String, AST.Stmt.Enum],
+                                 funs: HashSMap[String, (AST.Exp.Fun, AST.Type)]) {
 
   @pure def genSpecInlined(o: Spec): Graph[BcNode, BcEdge] = {
     val r = genSpec(o)
@@ -305,10 +324,10 @@ import BitCodecGraphGen._
           name = s"$name$n"
         case _ => subNumMap = subNumMap + name ~> 2
       }
-      val elementNode = BcNode.Sub(element.name, path :+ name)
+      val elementNode = BcNode.Sub(element.name, path :+ ops.StringOps(name).firstToLower)
       r = r * elementNode
-      r = r.addDataEdge(BcEdge(inLabelOpt), from, elementNode)
-      r = r.addDataEdge(BcEdge(outLabelOpt), elementNode, to)
+      r = r.addDataEdge(BcEdge(inLabelOpt, None()), from, elementNode)
+      r = r.addDataEdge(BcEdge(outLabelOpt, None()), elementNode, to)
       accs = genSpecConcat(elementNode.path, element, accs)
     }
 
@@ -326,9 +345,9 @@ import BitCodecGraphGen._
       }
       val loopLabel: String = if (isWhile) predsLabel else s"!($predsLabel)"
       sub(bPre, eNorm, bPost, None(), None())
-      r = r.addDataEdge(BcEdge(None()), current, bPre)
-      r = r.addDataEdge(BcEdge(Some(loopLabel)), bPost, bPre)
-      r = r.addDataEdge(BcEdge(None()), bPost, next)
+      r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
+      r = r.addDataEdge(BcEdge(Some(loopLabel), None()), bPost, bPre)
+      r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
       setCurrent(next)
     }
 
@@ -341,6 +360,15 @@ import BitCodecGraphGen._
         case element: Poly =>
           val desc = element.polyDesc
           val dependsOn = st"${(desc.dependsOn, ", ")}"
+          def tooltipOpt: Option[String] = {
+            funs.get(desc.name) match {
+              case Some((fun, _)) =>
+                val fpos = fun.posOpt.get
+                return Some(BitCodecGen.reorientLines(ops.StringOps(text).
+                  substring(fpos.offset, fpos.offset + fpos.length), fpos.beginColumn - 1))
+              case _ => return None()
+            }
+          }
           desc.compName match {
             case string"Union" =>
               val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -356,8 +384,9 @@ import BitCodecGraphGen._
                 }
                 sub(bPre, eNorm, bPost, None(), None())
               }
-              r = r.addDataEdge(BcEdge(Some(dependsOn.render)), current, bPre)
-              r = r.addDataEdge(BcEdge(None()), bPost, next)
+              val label = dependsOn.render
+              r = r.addDataEdge(BcEdge(Some(label), tooltipOpt), current, bPre)
+              r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
               setCurrent(next)
             case string"Repeat" =>
               val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -373,9 +402,9 @@ import BitCodecGraphGen._
                 case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
               }
               sub(bPre, eNorm, bPost, None(), None())
-              r = r.addDataEdge(BcEdge(None()), current, bPre)
-              r = r.addDataEdge(BcEdge(Some(loopLabel)), bPost, bPre)
-              r = r.addDataEdge(BcEdge(None()), bPost, next)
+              r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
+              r = r.addDataEdge(BcEdge(Some(loopLabel), tooltipOpt), bPost, bPre)
+              r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
               setCurrent(next)
             case string"Raw" =>
               updateCurrent(current(elements = current.elements :+
@@ -395,8 +424,8 @@ import BitCodecGraphGen._
             }
             sub(bPre, eNorm, bPost, Some(renderPreds(e.preds)), None())
           }
-          r = r.addDataEdge(BcEdge(None()), current, bPre)
-          r = r.addDataEdge(BcEdge(None()), bPost, next)
+          r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
         case element: PredRepeatWhile =>
           predRepeat(T, element.preds, element.element)
@@ -416,8 +445,8 @@ import BitCodecGraphGen._
             }
             sub(bPre, eNorm, bPost, None(), None())
           }
-          r = r.addDataEdge(BcEdge(None()), current, bPre)
-          r = r.addDataEdge(BcEdge(None()), bPost, next)
+          r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
         case element: GenRepeat =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -432,9 +461,9 @@ import BitCodecGraphGen._
             case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
           }
           sub(bPre, eNorm, bPost, None(), None())
-          r = r.addDataEdge(BcEdge(None()), current, bPre)
-          r = r.addDataEdge(BcEdge(None()), bPost, bPre)
-          r = r.addDataEdge(BcEdge(None()), bPost, next)
+          r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
+          r = r.addDataEdge(BcEdge(None(), None()), bPost, bPre)
+          r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
         case element: GenRaw =>
           updateCurrent(current(elements = current.elements :+
