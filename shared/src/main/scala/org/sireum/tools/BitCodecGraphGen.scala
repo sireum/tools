@@ -257,6 +257,7 @@ object BitCodecGraphGen {
     val r =
       st"""digraph G {
           |  rankdir = LR;
+          |  graph [splines=ortho];
           |  node [shape=plaintext];
           |  edge [arrowhead=vee];
           |
