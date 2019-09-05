@@ -1420,13 +1420,18 @@ import BitCodecGen._
         }
         if (f.params.size != 1) {
           reporter.error(f.posOpt, kind,
-            s"Expecting one argument for $spec function, but found ${f.params.size}")
+            s"Expecting one parameter for $spec function, but found ${f.params.size}")
+          return None()
+        }
+        if (f.params(0).idOpt.isEmpty) {
+          reporter.error(f.posOpt, kind,
+            s"Expecting one named parameter for $spec function, but found unnamed")
           return None()
         }
         val tpos = t.posOpt.get
         val fpos = f.posOpt.get
         val epos = f.exp.asStmt.posOpt.get
-        return Some((f.params(0).id.value, ops.StringOps(text).substring(tpos.offset, tpos.offset + tpos.length),
+        return Some((f.params(0).idOpt.get.value, ops.StringOps(text).substring(tpos.offset, tpos.offset + tpos.length),
           reorientLines(ops.StringOps(text).substring(epos.offset, epos.offset + epos.length),
             if (fpos.beginLine == epos.beginLine) fpos.beginColumn - 1 else epos.beginColumn - 1)))
       case _ =>
