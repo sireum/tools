@@ -431,9 +431,9 @@ import BitCodecGraphGen._
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
-        case element: PredRepeatWhile =>
+        case element: PredRepeatWhileImpl =>
           predRepeat(T, element.preds, element.element)
-        case element: PredRepeatUntil =>
+        case element: PredRepeatUntilImpl =>
           predRepeat(F, element.preds, element.element)
         case element: GenUnion =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -452,7 +452,7 @@ import BitCodecGraphGen._
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
-        case element: GenRepeat =>
+        case element: GenRepeatImpl =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
           r = r * bPre
           val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -469,7 +469,7 @@ import BitCodecGraphGen._
           r = r.addDataEdge(BcEdge(None(), None()), bPost, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
-        case element: GenRaw =>
+        case element: GenRawImpl =>
           updateCurrent(current(elements = current.elements :+
             BcNode.Element(element.name, st"&lt;...&gt;".render)))
         case element: Boolean =>
