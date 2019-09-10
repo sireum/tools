@@ -1214,7 +1214,7 @@ import BitCodecGen._
       members = context.members :+
         st"""def ${name}Continue(input: MSZ[B], context: Context, ${name}Context: $owner${mname}Context): B = {
             |  // BEGIN USER CODE: $owner.${name}Continue
-            |  ${prevText(s"$owner.${name}Continue", if (maxElements > 0) s"${name}Context.i < $maxElements" else notImplemented)}
+            |  ${prevText(s"$owner.${name}Continue", if (maxElements > 0) s"return ${name}Context.i < $maxElements" else notImplemented)}
             |  // END USER CODE: $owner.${name}Continue
             |}
             |
