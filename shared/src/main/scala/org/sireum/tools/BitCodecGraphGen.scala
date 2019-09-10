@@ -484,13 +484,13 @@ import BitCodecGraphGen._
           }
         case element: Bits =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size}")))
-        case element: Bytes =>
+        case element: BytesImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} (${element.size}*8)")))
-        case element: Shorts =>
+        case element: ShortsImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} (${element.size}*16)")))
-        case element: Ints =>
+        case element: IntsImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
-        case element: Longs =>
+        case element: LongsImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
         case element: Pads =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element("(pads)", s"${element.size}")))
