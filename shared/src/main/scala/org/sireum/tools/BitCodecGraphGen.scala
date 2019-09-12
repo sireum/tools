@@ -240,9 +240,9 @@ object BitCodecGraphGen {
           }
           g.nodesInverse(dest) match {
             case _: BcNode.Branch if !g.nodesInverse(src).isInstanceOf[BcNode.Branch] =>
-              edges = edges :+ st"""n$src -> n$dest [arrowhead=none, label="$l"$tooltip];"""
+              edges = edges :+ st"""n$src -> n$dest [arrowhead=none, xlabel="$l"$tooltip];"""
             case _ =>
-              edges = edges :+ st"""n$src -> n$dest [label="$l"$tooltip];"""
+              edges = edges :+ st"""n$src -> n$dest [xlabel="$l"$tooltip];"""
           }
         case _ =>
           g.nodesInverse(dest) match {
@@ -333,7 +333,7 @@ import BitCodecGraphGen._
       accs = genSpecConcat(elementNode.path, element, accs)
     }
 
-    def predRepeat(isWhile: B, preds: ISZ[Pred], e: Spec): Unit = {
+    def predRepeat(isWhile: B, preds: ISZ[Pred], e: Spec, maxElements: Z): Unit = {
       val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
       r = r * bPre
       val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -346,7 +346,7 @@ import BitCodecGraphGen._
         case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
       }
       val loopLabel: String = if (isWhile) predsLabel else s"!($predsLabel)"
-      sub(bPre, eNorm, bPost, None(), None())
+      sub(bPre, eNorm, bPost, None(), if (maxElements > 0) Some(s"max: $maxElements") else None())
       r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
       r = r.addDataEdge(BcEdge(Some(loopLabel), None()), bPost, bPre)
       r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
@@ -405,14 +405,15 @@ import BitCodecGraphGen._
                 case e: Concat => e
                 case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
               }
-              sub(bPre, eNorm, bPost, None(), None())
+              sub(bPre, eNorm, bPost, None(), if (desc.max > 0) Some(s"max: ${desc.max}") else None())
               r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
               r = r.addDataEdge(BcEdge(Some(loopLabel), tooltipOpt), bPost, bPre)
               r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
               setCurrent(next)
             case string"Raw" =>
+              val max: String = if (desc.max > 0) s"max: ${desc.max}, " else ""
               updateCurrent(current(elements = current.elements :+
-                BcNode.Element(desc.name, st"&lt;...($dependsOn)&gt;".render)))
+                BcNode.Element(desc.name, st"&lt;$max...($dependsOn)&gt;".render)))
           }
         case element: PredUnion =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -432,9 +433,9 @@ import BitCodecGraphGen._
           r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
         case element: PredRepeatWhileImpl =>
-          predRepeat(T, element.preds, element.element)
+          predRepeat(T, element.preds, element.element, element.maxElements)
         case element: PredRepeatUntilImpl =>
-          predRepeat(F, element.preds, element.element)
+          predRepeat(F, element.preds, element.element, element.maxElements)
         case element: GenUnion =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
           r = r * bPre
@@ -464,14 +465,15 @@ import BitCodecGraphGen._
             case e: Concat => e
             case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
           }
-          sub(bPre, eNorm, bPost, None(), None())
+          sub(bPre, eNorm, bPost, None(), if (element.maxElements > 0) Some(s"max: ${element.maxElements}") else None())
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, next)
           setCurrent(next)
         case element: GenRawImpl =>
+          val max: String = if (element.maxSize > 0) s"max: ${element.maxSize}" else ""
           updateCurrent(current(elements = current.elements :+
-            BcNode.Element(element.name, st"&lt;...&gt;".render)))
+            BcNode.Element(element.name, st"&lt;$max...&gt;".render)))
         case element: Boolean =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, "B")))
         case element: Enum =>
