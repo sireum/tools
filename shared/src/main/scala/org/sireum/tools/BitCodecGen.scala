@@ -1180,7 +1180,7 @@ import BitCodecGen._
         st"""object $owner${mname}Context {
             |  def empty: $owner${mname}Context = {
             |    // BEGIN USER CODE: $owner${mname}Context.empty
-            |    ${prevText(s"$owner${mname}Context.empty", if (maxElements > 0) s"$owner${mname}Context(0)" else notImplemented)}
+            |    ${prevText(s"$owner${mname}Context.empty", if (maxElements > 0) s"return $owner${mname}Context(0)" else notImplemented)}
             |    // END USER CODE: $owner${mname}Context.empty
             |  }
             |}
