@@ -902,7 +902,7 @@ import BitCodecGen._
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
       simports = elementContext.simports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
@@ -976,7 +976,7 @@ import BitCodecGen._
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
       simports = elementContext.simports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
@@ -1175,7 +1175,7 @@ import BitCodecGen._
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
       simports = elementContext.simports,
-      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${context.errNum}",
+      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
       main = if (!first) elementContext.main else elementContext.main :+
         st"""object $owner${mname}Context {
             |  def empty: $owner${mname}Context = {
