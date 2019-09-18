@@ -74,11 +74,6 @@ import org.sireum.cli.CliOpt._
       |  @datatype class HelpOption extends $topName
       |
       |  ${(decls, "\n\n")}
-      |}
-      |
-      |import $name._
-      |
-      |@record class $name(pathSep: C) {
       |
       |  ${(parser, "\n\n")}
       |
@@ -93,7 +88,7 @@ import org.sireum.cli.CliOpt._
       |  }
       |
       |  def parsePaths(args: ISZ[String], i: Z): Option[ISZ[String]] = {
-      |    return tokenize(args, i, "path", pathSep, F)
+      |    return tokenize(args, i, "path", (c: C) => c === ':' || c === ';', "':' or ';'", F)
       |  }
       |
       |  def parsePath(args: ISZ[String], i: Z): Option[Option[String]] = {
@@ -104,7 +99,7 @@ import org.sireum.cli.CliOpt._
       |  }
       |
       |  def parseStrings(args: ISZ[String], i: Z, sep: C): Option[ISZ[String]] = {
-      |    tokenize(args, i, "string", sep, F) match {
+      |    tokenize(args, i, "string", (c: C) => c == sep, s"'$$sep'", F) match {
       |      case r@Some(_) => return r
       |      case _ => return None()
       |    }
@@ -119,7 +114,7 @@ import org.sireum.cli.CliOpt._
       |  }
       |
       |  def parseNums(args: ISZ[String], i: Z, sep: C, minOpt: Option[Z], maxOpt: Option[Z]): Option[ISZ[Z]] = {
-      |    tokenize(args, i, "integer", sep, T) match {
+      |    tokenize(args, i, "integer", (c: C) => sep == c, s"'$$sep'", T) match {
       |      case Some(sargs) =>
       |        var r = ISZ[Z]()
       |        for (arg <- sargs) {
@@ -133,23 +128,23 @@ import org.sireum.cli.CliOpt._
       |    }
       |  }
       |
-      |  def tokenize(args: ISZ[String], i: Z, tpe: String, sep: C, removeWhitespace: B): Option[ISZ[String]] = {
+      |  def tokenize(args: ISZ[String], i: Z, tpe: String, sepP: C => B @pure, sepText: String, removeWhitespace: B): Option[ISZ[String]] = {
       |    if (i >= args.size) {
-      |      eprintln(s"Expecting a sequence of $$tpe separated by '$$sep', but none found.")
+      |      eprintln(s"Expecting a sequence of $$tpe separated by $$sepText, but none found.")
       |      return None()
       |    }
       |    val arg = args(i)
-      |    return Some(tokenizeH(arg, sep, removeWhitespace))
+      |    return Some(tokenizeH(arg, sepP, removeWhitespace))
       |  }
       |
-      |  def tokenizeH(arg: String, sep: C, removeWhitespace: B): ISZ[String] = {
+      |  def tokenizeH(arg: String, sepP: C => B @pure, removeWhitespace: B): ISZ[String] = {
       |    val argCis = conversions.String.toCis(arg)
       |    var r = ISZ[String]()
       |    var cis = ISZ[C]()
       |    var j = 0
       |    while (j < argCis.size) {
       |      val c = argCis(j)
-      |      if (c == sep) {
+      |      if (sepP(c)) {
       |        r = r :+ conversions.String.fromCis(cis)
       |        cis = ISZ[C]()
       |      } else {
@@ -436,7 +431,7 @@ import org.sireum.cli.CliOpt._
     }
     parser = parser :+
       st"""def parse${name}s(args: ISZ[String], i: Z): Option[ISZ[$name.Type]] = {
-      |  val tokensOpt = tokenize(args, i, "$name", '${c.sep.get}', T)
+      |  val tokensOpt = tokenize(args, i, "$name", (c: C) => c === '${c.sep.get}', "''${c.sep.get}''", T)
       |  if (tokensOpt.isEmpty) {
       |    return None()
       |  }
