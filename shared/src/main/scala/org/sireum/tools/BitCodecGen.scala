@@ -177,6 +177,7 @@ object BitCodecGen {
           packageNames: ISZ[String],
           name: String,
           text: String,
+          traits: ISZ[String],
           spec: Spec,
           specJson: ST,
           program: AST.TopUnit.Program,
@@ -247,8 +248,9 @@ object BitCodecGen {
           "funTexts" ~> Json.Printer.printMap(F, funTextMap, Json.Printer.printString _, Json.Printer.printString _)
         ))
       case _ =>
-        val bcGen = BitCodecGen(output == Output.Program, isBigEndian, licenseOpt, filename, packageNames, name, normText, program,
-          ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums, collector.funs, codeSectionMap)
+        val bcGen = BitCodecGen(output == Output.Program, isBigEndian, licenseOpt, filename, packageNames, name,
+          normText, traits, program, ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums,
+          collector.funs, codeSectionMap)
 
         return bcGen.gen(spec, reporter)
     }
@@ -295,9 +297,9 @@ object BitCodecGen {
   }
 
   object Context {
-    def create: Context = {
-      return Context(ISZ(), 2, ISZ.create(65, F), ISZ.create(65, F), ISZ(), ISZ(),
-        "", "Runtime.Composite", ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0, HashSet.empty)
+    def create(isupers: ISZ[String]): Context = {
+      return Context(ISZ(), 2, ISZ.create(65, F), ISZ.create(65, F), ISZ(), ISZ(), "", "Runtime.Composite",
+        isupers, ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0, HashSet.empty)
     }
   }
 
@@ -309,12 +311,17 @@ object BitCodecGen {
                           main: ISZ[ST],
                           owner: String,
                           supr: String,
+                          isupers: ISZ[String],
                           fields: ISZ[ST],
+                          ifields: ISZ[ST],
+                          i2m: ISZ[ST],
+                          m2i: ISZ[ST],
                           inits: ISZ[ST],
                           wellFormed: ISZ[ST],
                           decoding: ISZ[ST],
                           encoding: ISZ[ST],
                           members: ISZ[ST],
+                          omembers: ISZ[ST],
                           fieldMap: HashMap[ISZ[String], Z],
                           nextFound: Z,
                           seenSpecs: HashSet[String]) {
@@ -393,6 +400,7 @@ import BitCodecGen._
                             packageNames: ISZ[String],
                             name: String,
                             text: String,
+                            traits: ISZ[String],
                             program: AST.TopUnit.Program,
                             prevGen: String,
                             enums: HashSMap[String, AST.Stmt.Enum],
@@ -403,7 +411,7 @@ import BitCodecGen._
   val enumMaxSize: String => Z@pure = (id: String) => bitWidth(enums.get(id).get.elements.size)
 
   def gen(spec: Spec, reporter: Reporter): ST = {
-    val context = genSpec(Context.create, spec, reporter)
+    val context = genSpec(Context.create(traits), spec, reporter)
     if (reporter.hasIssue) {
       return st"$prevGen"
     }
@@ -506,6 +514,9 @@ import BitCodecGen._
     val tpe = st"B"
     return context(
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $tpe",
+      i2m = context.i2m :+ st"$name",
+      m2i = context.m2i :+ st"$name",
       inits = context.inits :+ st"F",
       decoding = context.decoding :+ st"$name = Reader.MS.bleB(input, context)",
       encoding = context.encoding :+ st"Writer.bleB(output, context, $name)")
@@ -523,13 +534,20 @@ import BitCodecGen._
       return context(
         imports = context.imports(size ~> T),
         fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $tpe",
+        i2m = context.i2m :+ st"$name",
+        m2i = context.m2i :+ st"$name",
         inits = context.inits :+ st"""u$size"0"""",
         decoding = context.decoding :+ st"$name = Reader.MS.${prefix}U$size(input, context)",
         encoding = context.encoding :+ st"Writer.${prefix}U$size(output, context, $name)")
     } else {
       val tpe = st"MSZ[B]"
+      val itpe = st"ISZ[B]"
       return context(
         fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $itpe",
+        i2m = context.i2m :+ st"$name.toMS",
+        m2i = context.m2i :+ st"$name.toIS",
         inits = context.inits :+ st"MSZ.create($size, F)",
         wellFormed = context.wellFormed :+
           st"""if ($name.size != $size) {
@@ -549,16 +567,23 @@ import BitCodecGen._
         imports = if (signed) context.imports else context.imports(n ~> T),
         simports = if (signed) context.simports(n ~> T) else context.simports,
         fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $tpe",
+        i2m = context.i2m :+ st"$name",
+        m2i = context.m2i :+ st"$name",
         inits = context.inits :+ st"""$us$n"0"""",
         wellFormed = context.wellFormed,
         decoding = context.decoding :+ st"$name = Reader.MS.${endianPrefix}$US$n(input, context)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}$US$n(output, context, $name)")
     } else {
       val tpe = st"MSZ[$US$n]"
+      val itpe = st"ISZ[$US$n]"
       return context(
         imports = if (signed) context.imports else context.imports(n ~> T),
         simports = if (signed) context.simports(n ~> T) else context.simports,
         fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $itpe",
+        i2m = context.i2m :+ st"$name.toMS",
+        m2i = context.m2i :+ st"$name.toIS",
         inits = context.inits :+ st"""MSZ.create($size, $us$n"0")""",
         wellFormed = context.wellFormed :+
           st"""if ($name.size != $size) {
@@ -620,16 +645,28 @@ import BitCodecGen._
             |  }
             |}""",
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $tpe",
+      i2m = context.i2m :+ st"$name",
+      m2i = context.m2i :+ st"$name",
       inits = context.inits :+ st"""$objectName.$firstElem""",
       decoding = context.decoding :+ st"$name = decode$objectName(input, context)",
       encoding = context.encoding :+ st"encode$objectName(output, context, $name)")
   }
 
+  @pure def isupers(context: Context): ST = {
+    if (context.isupers.nonEmpty) {
+      return st" extends ${(context.isupers, " with ")}"
+    } else {
+      return st""
+    }
+  }
+
   def genSpecConcat(first: B, context: Context, spec: Spec.Concat, reporter: Reporter): Context = {
     val name = spec.name
     val (ctx, fname) = context.fieldName(context.path, name)
-    var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite",
-      fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
+    var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite", isupers = traits,
+      fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ(), omembers = ISZ())
     for (element <- spec.elements) {
       elementContext = genSpec(elementContext, element, reporter)
     }
@@ -644,14 +681,39 @@ import BitCodecGen._
             |
             |  val maxSize: Z = z"${spec.computeMaxSizeOpt(enumMaxSize).getOrElse(-1)}"
             |
-            |  def empty: $name = {
-            |    return $name(${(elementContext.inits, ", ")})
+            |  def empty: M$name = {
+            |    return M$name(${(elementContext.inits, ", ")})
+            |  }
+            |
+            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |    val r = empty
+            |    r.decode(input.toMS, context)
+            |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
+            |  }
+            |
+            |  ${(elementContext.omembers, "\n\n")}
+            |}
+            |
+            |@datatype class $name(
+            |  ${(elementContext.ifields, ",\n")}
+            |)${isupers(context)} {
+            |
+            |  @strictpure def toMutable: M$name = M$name(${(elementContext.i2m, ", ")})
+            |
+            |  def encode(output: MSZ[B], context: Context): Unit = {
+            |    toMutable.encode(output, context)
+            |  }
+            |
+            |  def wellFormed: Z = {
+            |    return toMutable.wellFormed
             |  }
             |}
             |
-            |@record class $name(
+            |@record class M$name(
             |  ${(elementContext.fields, ",\n")}
             |) extends ${context.supr} {
+            |
+            |  @strictpure def toImmutable: $name = $name(${(elementContext.m2i, ", ")})
             |
             |  def wellFormed: Z = {
             |
@@ -685,7 +747,11 @@ import BitCodecGen._
             |}""",
       owner = context.owner,
       supr = context.supr,
-      fields = context.fields :+ st"var $fname: $name",
+      isupers = context.isupers,
+      fields = context.fields :+ st"var $fname: M$name",
+      ifields = context.ifields :+ st"val $fname: $name",
+      i2m = context.i2m :+ st"$fname.toMutable",
+      m2i = context.m2i :+ st"$fname.toImmutable",
       inits = context.inits :+ st"$name.empty",
       wellFormed = context.wellFormed :+
         st"""val wf$name = $fname.wellFormed
@@ -695,6 +761,7 @@ import BitCodecGen._
       decoding = context.decoding :+ st"$fname.decode(input, context)",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      omembers = context.omembers,
       fieldMap = elementContext.fieldMap,
       nextFound = 0,
       seenSpecs = elementContext.seenSpecs
@@ -716,8 +783,9 @@ import BitCodecGen._
         case _ => return context
       }
     val (ctx, fname) = context.fieldName(context.path, name)
-    var subContext = ctx(path = ctx.path :+ fname, main = ctx.main, owner = name, supr = name,
-      fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
+    var subContext = ctx(path = ctx.path :+ fname, main = ctx.main, owner = name, supr = s"M$name", isupers = ISZ(name),
+      fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ(), omembers = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
     }
@@ -729,14 +797,28 @@ import BitCodecGen._
       simports = subContext.simports,
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
-        st"""@record trait $name extends ${context.supr}
+        st"""@datatype trait $name${isupers(context)} {
+            |  @strictpure def toMutable: M$name
+            |  def encode(output: MSZ[B], context: Context): Unit
+            |  def wellFormed: Z
+            |}
+            |
+            |@record trait M$name extends ${context.supr} {
+            |  @strictpure def toImmutable: $name
+            |}
             |
             |object $name {
             |
             |  val maxSize: Z = z"${maxSizeOpt.getOrElse(-1)}"
             |
-            |  def empty: $name = {
+            |  def empty: M$name = {
             |    return ${normSubs(0).name}.empty
+            |  }
+            |
+            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |    val r = empty
+            |    r.decode(input.toMS, context)
+            |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
             |  }
             |
             |  @enum object Choice {
@@ -754,14 +836,20 @@ import BitCodecGen._
             |    }
             |    return Choice.Error
             |  }
+            |
+            |  ${(subContext.omembers, "\n\n")}
             |}""",
       owner = context.owner,
       supr = context.supr,
-      fields = context.fields :+ st"var $fname: $name",
+      isupers = context.isupers,
+      fields = context.fields :+ st"var $fname: M$name",
+      ifields = context.ifields :+ st"val $fname: $name",
+      i2m = context.i2m :+ st"$fname.toMutable",
+      m2i = context.m2i :+ st"$fname.toImmutable",
       inits = context.inits :+ st"${normSubs(0).name}.empty",
       wellFormed = context.wellFormed :+
         st"""($name.choose($deps), $fname) match {
-            |  ${(for (sub <- normSubs) yield st"case ($name.Choice.${sub.name}, _: ${sub.name}) =>", "\n")}
+            |  ${(for (sub <- normSubs) yield st"case ($name.Choice.${sub.name}, _: M${sub.name}) =>", "\n")}
             |  case _ => return ERROR_$name
             |}
             |
@@ -777,6 +865,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      omembers = context.omembers,
       fieldMap = subContext.fieldMap,
       nextFound = 0,
       seenSpecs = subContext.seenSpecs
@@ -794,8 +883,9 @@ import BitCodecGen._
       else sub(spec = Spec.Concat(ops.StringOps(sub.spec.name).firstToUpper, ISZ(sub.spec)))
     val (ctx, fname) = context.fieldName(context.path, name)
     val path = ctx.path :+ fname
-    var subContext = ctx(path = path, main = ctx.main, owner = name, supr = name,
-      fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
+    var subContext = ctx(path = path, main = ctx.main, owner = name, supr = s"M$name", isupers = ISZ(name),
+      fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ(), omembers = ISZ())
     var choose = ISZ[ST]()
     for (i <- 0 until normSubs.size) {
       val sub = normSubs(i)
@@ -823,14 +913,28 @@ import BitCodecGen._
       simports = subContext.simports,
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
-        st"""@record trait $name extends ${context.supr}
+        st"""@datatype trait $name${isupers(context)} {
+            |  @strictpure def toMutable: M$name
+            |  def encode(output: MSZ[B], context: Context): Unit
+            |  def wellFormed: Z
+            |}
+            |
+            |@record trait M$name extends ${context.supr} {
+            |  @strictpure def toImmutable: $name
+            |}
             |
             |object $name {
             |
             |  val maxSize: Z = z"${o.maxSizeOpt(enumMaxSize).getOrElse(-1)}"
             |
-            |  def empty: $name = {
+            |  def empty: M$name = {
             |    return ${normSubs(0).spec.name}.empty
+            |  }
+            |
+            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |    val r = empty
+            |    r.decode(input.toMS, context)
+            |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
             |  }
             |
             |  @enum object Choice {
@@ -842,10 +946,16 @@ import BitCodecGen._
             |    ${(choose, "\n;")}
             |    return Choice.Error
             |  }
+            |
+            |  ${(subContext.omembers, "\n\n")}
             |}""",
       owner = context.owner,
       supr = context.supr,
-      fields = context.fields :+ st"var $fname: $name",
+      isupers = context.isupers,
+      fields = context.fields :+ st"var $fname: M$name",
+      ifields = context.ifields :+ st"val $fname: $name",
+      i2m = context.i2m :+ st"$fname.toMutable",
+      m2i = context.m2i :+ st"$fname.toImmutable",
       inits = context.inits :+ st"${normSubs(0).spec.name}.empty",
       wellFormed = context.wellFormed,
       decoding = context.decoding :+
@@ -856,6 +966,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      omembers = context.omembers,
       fieldMap = subContext.fieldMap,
       nextFound = 0,
       seenSpecs = subContext.seenSpecs
@@ -881,10 +992,12 @@ import BitCodecGen._
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
-    val tpe = st"MSZ[${normElement.name}]"
+    val tpe = st"MSZ[M${normElement.name}]"
+    val itpe = st"ISZ[${normElement.name}]"
     var wf = ISZ(
       st"""val ${name}Size = sizeOf$mname($deps)
           |if ($name.size != ${name}Size) {
@@ -906,7 +1019,11 @@ import BitCodecGen._
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
+      isupers = context.isupers,
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $itpe",
+      i2m = context.i2m :+ st"$owner.toMutable$mname($name)",
+      m2i = context.m2i :+ st"$owner.toImmutable$mname($name)",
       inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
@@ -935,6 +1052,22 @@ import BitCodecGen._
             |  }
             |  return r
             |}""",
+      omembers = context.omembers :+
+        st"""def toMutable$mname(s: $itpe): $tpe = {
+            |  var r = $tpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toMutable
+            |  }
+            |  return r
+            |}
+            |
+            |def toImmutable$mname(s: $tpe): $itpe = {
+            |  var r = $itpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toImmutable
+            |  }
+            |  return r
+            |}""",
       fieldMap = elementContext.fieldMap,
       nextFound = 0,
       seenSpecs = elementContext.seenSpecs
@@ -954,8 +1087,9 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
-      encoding = ISZ(), members = ISZ())
+      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
+      encoding = ISZ(), members = ISZ(), omembers = ISZ())
     var predSTs = ISZ[ST]()
     for (pred <- preds) {
       val p = genSpecPred(elementContext, pred, reporter)
@@ -963,7 +1097,8 @@ import BitCodecGen._
       elementContext = p._1
     }
     elementContext = genSpec(elementContext, normElement, reporter)
-    val tpe = st"MSZ[${normElement.name}]"
+    val tpe = st"MSZ[M${normElement.name}]"
+    val itpe = st"ISZ[${normElement.name}]"
     var wf = ISZ[ST]()
     if (maxElements >= 0) {
       wf = wf :+
@@ -980,7 +1115,11 @@ import BitCodecGen._
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
+      isupers = context.isupers,
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $itpe",
+      i2m = context.i2m :+ st"$owner.toMutable$mname($name)",
+      m2i = context.m2i :+ st"$owner.toImmutable$mname($name)",
       inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
@@ -1000,6 +1139,22 @@ import BitCodecGen._
             |  ${(predSTs, "\n")}
             |  return !hasError
             |}""",
+      omembers = context.omembers :+
+        st"""def toMutable$mname(s: $itpe): $tpe = {
+            |  var r = $tpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toMutable
+            |  }
+            |  return r
+            |}
+            |
+            |def toImmutable$mname(s: $tpe): $itpe = {
+            |  var r = $itpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toImmutable
+            |  }
+            |  return r
+            |}""",
       fieldMap = elementContext.fieldMap,
       nextFound = 0,
       seenSpecs = elementContext.seenSpecs
@@ -1017,6 +1172,7 @@ import BitCodecGen._
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
     val tpe = st"MSZ[B]"
+    val itpe = st"ISZ[B]"
     var wf = ISZ(
       st"""val ${name}Size = sizeOf$mname($deps)
           |if ($name.size != ${name}Size) {
@@ -1038,7 +1194,11 @@ import BitCodecGen._
       main = context.main,
       owner = context.owner,
       supr = context.supr,
+      isupers = context.isupers,
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $itpe",
+      i2m = context.i2m :+ st"$name.toMS",
+      m2i = context.m2i :+ st"$name.toIS",
       inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
@@ -1063,6 +1223,7 @@ import BitCodecGen._
             |  }
             |  return r
             |}""",
+      omembers = context.omembers,
       fieldMap = context.fieldMap,
       nextFound = 0,
       seenSpecs = context.seenSpecs
@@ -1075,8 +1236,9 @@ import BitCodecGen._
     val normSubs: ISZ[Spec] = for (sub <- subs) yield
       if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
     val (ctx, fname) = context.fieldName(context.path, name)
-    var subContext = ctx(path = context.path :+ fname, main = ctx.main, owner = name, supr = name,
-      fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ())
+    var subContext = ctx(path = context.path :+ fname, main = ctx.main, owner = name, supr = s"M$name",
+      isupers = ISZ(name), fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), inits = ISZ(), wellFormed = ISZ(),
+      decoding = ISZ(), encoding = ISZ(), members = ISZ(), omembers = ISZ())
     for (sub <- normSubs) {
       subContext = genSpec(subContext, sub, reporter)
     }
@@ -1087,14 +1249,28 @@ import BitCodecGen._
       simports = subContext.simports,
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
-        st"""@record trait $name extends ${context.supr}
+        st"""@datatype trait $name${isupers(context)} {
+            |  @strictpure def toMutable: M$name
+            |  def encode(output: MSZ[B], context: Context): Unit
+            |  def wellFormed: Z
+            |}
+            |
+            |@record trait M$name extends ${context.supr} {
+            |  @strictpure def toImmutable: $name
+            |}
             |
             |object $name {
             |
             |  val maxSize: Z = z"${spec.maxSizeOpt(enumMaxSize).getOrElse(-1)}"
             |
-            |  def empty: $name = {
+            |  def empty: M$name = {
             |    return ${normSubs(0).name}.empty
+            |  }
+            |
+            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |    val r = empty
+            |    r.decode(input.toMS, context)
+            |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
             |  }
             |
             |  object ChoiceContext {
@@ -1121,10 +1297,16 @@ import BitCodecGen._
             |    ${prevText(s"$name.choose", notImplemented)}
             |    // END USER CODE: $name.choose
             |  }
+            |
+            |  ${(subContext.omembers, "\n\n")}
             |}""",
       owner = context.owner,
       supr = context.supr,
-      fields = context.fields :+ st"var $fname: $name",
+      isupers = context.isupers,
+      fields = context.fields :+ st"var $fname: M$name",
+      ifields = context.ifields :+ st"val $fname: $name",
+      i2m = context.i2m :+ st"$fname.toMutable",
+      m2i = context.m2i :+ st"$fname.toImmutable",
       inits = context.inits :+ st"${normSubs(0).name}.empty",
       wellFormed = context.wellFormed :+
         st"""val wf$name = $fname.wellFormed
@@ -1143,6 +1325,7 @@ import BitCodecGen._
             |$fname.decode(input, context)""",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
       members = context.members,
+      omembers = context.omembers,
       fieldMap = context.fieldMap,
       nextFound = 0,
       seenSpecs = subContext.seenSpecs
@@ -1158,10 +1341,11 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", fields = ISZ(), inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
-      encoding = ISZ(), members = ISZ())
+      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      inits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ(), omembers = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
-    val tpe = st"MSZ[${normElement.name}]"
+    val tpe = st"MSZ[M${normElement.name}]"
+    val itpe = st"ISZ[${normElement.name}]"
     val maxElements = spec.maxElements
     var wf = ISZ[ST]()
     if (maxElements > 0) {
@@ -1192,7 +1376,11 @@ import BitCodecGen._
             |)""",
       owner = context.owner,
       supr = context.supr,
+      isupers = context.isupers,
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $itpe",
+      i2m = context.i2m :+ st"$owner.toMutable$mname($name)",
+      m2i = context.m2i :+ st"$owner.toImmutable$mname($name)",
       inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
@@ -1223,6 +1411,22 @@ import BitCodecGen._
             |  ${prevText(s"$owner.${name}Update", if (maxElements > 0) s"${name}Context.i = ${name}Context.i + 1" else notImplemented)}
             |  // END USER CODE: $owner.${name}Update
             |}""",
+      omembers = context.omembers :+
+        st"""def toMutable$mname(s: $itpe): $tpe = {
+            |  var r = $tpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toMutable
+            |  }
+            |  return r
+            |}
+            |
+            |def toImmutable$mname(s: $tpe): $itpe = {
+            |  var r = $itpe()
+            |  for (e <- s) {
+            |    r = r :+ e.toImmutable
+            |  }
+            |  return r
+            |}""",
       fieldMap = elementContext.fieldMap,
       nextFound = 0,
       seenSpecs = elementContext.seenSpecs
@@ -1234,6 +1438,7 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     val tpe = st"MSZ[B]"
+    val itpe = st"ISZ[B]"
     val maxSize = spec.maxSize
     var wf = ISZ[ST]()
     if (maxSize > 0) {
@@ -1264,7 +1469,11 @@ import BitCodecGen._
             |)""",
       owner = context.owner,
       supr = context.supr,
+      isupers = context.isupers,
       fields = context.fields :+ st"var $name: $tpe",
+      ifields = context.ifields :+ st"val $name: $itpe",
+      i2m = context.i2m :+ st"$name.toMS",
+      m2i = context.m2i :+ st"$name.toIS",
       inits = context.inits :+ st"$tpe()",
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
@@ -1290,6 +1499,7 @@ import BitCodecGen._
             |  ${prevText(s"$owner.${name}Update", notImplemented)}
             |  // END USER CODE: $owner.${name}Update
             |}""",
+      omembers = context.omembers,
       fieldMap = context.fieldMap,
       nextFound = 0,
       seenSpecs = context.seenSpecs

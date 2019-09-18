@@ -160,7 +160,9 @@ object cli {
       Opt(name = "license", longKey = "license", shortKey = Some('l'),
         tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated codec files")
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated codec files"),
+      Opt(name = "traits", longKey = "traits", shortKey = Some('t'),
+        tpe = Type.Str(sep = Some(';'), default = None()), description = "Fully-qualified name of @sig traits for all bitcodec types to extend")
     ),
     groups = ISZ()
   )
