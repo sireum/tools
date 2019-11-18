@@ -117,6 +117,8 @@ object BitCodecGen {
         case o: Spec.ShortsImpl => checkNameFirstLower("Shorts", o)
         case o: Spec.IntsImpl => checkNameFirstLower("Ints", o)
         case o: Spec.LongsImpl => checkNameFirstLower("Longs", o)
+        case o: Spec.FloatsImpl => checkNameFirstLower("Floats", o)
+        case o: Spec.DoublesImpl => checkNameFirstLower("Doubles", o)
         case o: Spec.Enum =>
           checkNameFirstLower("Enum", o)
           checkKind(o)
@@ -478,6 +480,8 @@ import BitCodecGen._
       case o: Spec.ShortsImpl => return genSpecEights(context, o.name, 16, o.size, o.signed, reporter)
       case o: Spec.IntsImpl => return genSpecEights(context, o.name, 32, o.size, o.signed, reporter)
       case o: Spec.LongsImpl => return genSpecEights(context, o.name, 64, o.size, o.signed, reporter)
+      case o: Spec.FloatsImpl => return genSpecFPs(context, o.name, T, o.size, reporter)
+      case o: Spec.DoublesImpl => return genSpecFPs(context, o.name, F, o.size, reporter)
       case o: Spec.Enum =>
         val (first, ctx) = firstContext(o.objectName)
         return genSpecEnum(first, ctx, o, reporter)
@@ -593,6 +597,42 @@ import BitCodecGen._
               |}""",
         decoding = context.decoding :+ st"Reader.IS.${endianPrefix}$US${n}S(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}$US${n}S(output, context, $name)")
+    }
+  }
+
+  def genSpecFPs(context: Context, name: String, isSingle: B, size: Z, reporter: Reporter): Context = {
+    val n: ST = if (isSingle) st"32" else st"64"
+    val init: ST = if (isSingle) st"0.0f" else st"0.0d"
+    if (size == 1) {
+      val tpe = st"F$n"
+      return context(
+        imports = context.imports,
+        simports = context.simports,
+        fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $tpe",
+        i2m = context.i2m :+ st"$name",
+        m2i = context.m2i :+ st"$name",
+        inits = context.inits :+ init,
+        wellFormed = context.wellFormed,
+        decoding = context.decoding :+ st"$name = Reader.IS.${endianPrefix}F$n(input, context)",
+        encoding = context.encoding :+ st"Writer.${endianPrefix}F$n(output, context, $name)")
+    } else {
+      val tpe = st"MSZ[F$n]"
+      val itpe = st"ISZ[F$n]"
+      return context(
+        imports = context.imports,
+        simports = context.simports,
+        fields = context.fields :+ st"var $name: $tpe",
+        ifields = context.ifields :+ st"val $name: $itpe",
+        i2m = context.i2m :+ st"$name.toMS",
+        m2i = context.m2i :+ st"$name.toIS",
+        inits = context.inits :+ st"""MSZ.create($size, $init)""",
+        wellFormed = context.wellFormed :+
+          st"""if ($name.size != $size) {
+              |  return ERROR_${context.owner}
+              |}""",
+        decoding = context.decoding :+ st"Reader.IS.${endianPrefix}F${n}S(input, context, $name, $size)",
+        encoding = context.encoding :+ st"Writer.${endianPrefix}F${n}S(output, context, $name)")
     }
   }
 
@@ -1603,6 +1643,28 @@ import BitCodecGen._
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, u64"0")
               |  Reader.IS.${endianPrefix}U64S(input, ctx, temp, $size)
+              |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
+              |}"""
+        )
+      case pred: Spec.Pred.Floats =>
+        val size = pred.value.size
+        val values: ISZ[ST] = for (value <- pred.value) yield st"${value}f"
+        return (
+          context,
+          st"""if (!hasError) {
+              |  val temp = MSZ.create($size, 0.0f)
+              |  Reader.IS.${endianPrefix}F32S(input, ctx, temp, $size)
+              |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
+              |}"""
+        )
+      case pred: Spec.Pred.Doubles =>
+        val size = pred.value.size
+        val values: ISZ[ST] = for (value <- pred.value) yield st"${value}d"
+        return (
+          context,
+          st"""if (!hasError) {
+              |  val temp = MSZ.create($size, 0.0d)
+              |  Reader.IS.${endianPrefix}F64S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )

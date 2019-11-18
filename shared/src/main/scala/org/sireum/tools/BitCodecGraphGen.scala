@@ -65,6 +65,8 @@ object BitCodecGraphGen {
       case o: Pred.Shorts => return st"u16[${(for (value <- o.value) yield conversions.Z.toU16(value), ".")}]"
       case o: Pred.Ints => return st"u32[${(for (value <- o.value) yield conversions.Z.toU32(value), ".")}]"
       case o: Pred.Longs => return st"u64[${(for (value <- o.value) yield conversions.Z.toU64(value), ".")}]"
+      case o: Pred.Floats => return st"f32[${(o.value, ",")}]"
+      case o: Pred.Doubles => return st"f64[${(o.value, ",")}]"
       case o: Pred.Skip => return st"_${o.size}"
       case o: Pred.Between => return st"u${o.size}(${o.lo}..${o.hi})"
       case o: Pred.Not => return st"!(${render(o.pred)})"
@@ -493,6 +495,10 @@ import BitCodecGraphGen._
         case element: IntsImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
         case element: LongsImpl =>
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
+        case element: FloatsImpl =>
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
+        case element: DoublesImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
         case element: Pads =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element("(pads)", s"${element.size}")))
