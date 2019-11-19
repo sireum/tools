@@ -136,9 +136,15 @@ object BitCodecGen {
           }
         case o: Spec.PredRepeatWhileImpl =>
           checkNameFirstLower("PredRepeatWhile", o)
+          if (o.preds.isEmpty && o.maxElements < 0) {
+            reporter.error(None(), kind, s"${o.name} should either be bounded or is a non-empty predictive spec.")
+          }
           checkSpec(o.element)
         case o: Spec.PredRepeatUntilImpl =>
           checkNameFirstLower("PredRepeatUntil", o)
+          if (o.preds.isEmpty && o.maxElements < 0) {
+            reporter.error(None(), kind, s"${o.name} should either be bounded or is a non-empty predictive spec.")
+          }
           checkSpec(o.element)
         case o: Spec.GenUnion =>
           checkNameFirstUpper("GenUnion", o)
@@ -1162,10 +1168,16 @@ import BitCodecGen._
     var wf = ISZ[ST]()
     if (maxElements >= 0) {
       wf = wf :+
-        st"""if ($name.size > $maxElements) {
+        st"""if ($name.size ${if (predSTs.isEmpty) "!=" else ">"} $maxElements) {
             |  return ERROR_${owner}_$name
             |}"""
     }
+    val whileCondOpt: Option[ST] =
+      if (maxElements >= 0) Some(st"$name.size < $maxElements")
+      else None()
+    val matchOpt: Option[ST] =
+      if (predSTs.isEmpty) None()
+      else Some(st"${if (whileCondOpt.isEmpty) "" else " && "}${if (isWhile) "" else "!"}match$mname(input, context)")
     return Context(
       path = context.path,
       errNum = elementContext.errNum + 1,
@@ -1184,7 +1196,7 @@ import BitCodecGen._
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
         st"""$name = MSZ()
-            |while (${if (isWhile) "" else "!"}match$mname(input, context)) {
+            |while ($whileCondOpt$matchOpt) {
             |  $name = $name :+ ${normElement.name}.empty
             |  $name($name.size - 1).decode(input, context)
             |}""",
@@ -1192,7 +1204,7 @@ import BitCodecGen._
         st"""for (i <- 0 until $name.size) {
             |  $name(i).encode(output, context)
             |}""",
-      members = context.members :+
+      members = if (predSTs.isEmpty) context.members else context.members :+
         st"""def match$mname(input: ISZ[B], context: Context): B = {
             |  var ctx = context
             |  var hasError = F
