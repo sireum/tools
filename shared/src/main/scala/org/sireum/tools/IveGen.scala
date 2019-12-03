@@ -83,6 +83,8 @@ object IveGen {
 
   def mill(
             alreadyExists: B,
+            isWin: B,
+            sireumHome: String,
             projectName: String,
             moduleName: String,
             packageName: ISZ[String],
@@ -93,6 +95,8 @@ object IveGen {
             scalacPluginVer: String
           ): Map[ISZ[String], ST] = {
     def workspace: ST = {
+      val sep: String = if (isWin) "\\" else "/"
+      val slangRun = st"$sireumHome${sep}bin${sep}slang-run.${if (isWin) "bat" else "sh"}"
       val r =
         st"""<?xml version="1.0" encoding="UTF-8"?>
             |<project version="4">
@@ -163,6 +167,15 @@ object IveGen {
             |      <setting name="path" value="" />
             |      <method v="2" />
             |    </configuration>
+            |    <configuration default="true" type="ScalaAmmoniteRunConfigurationType" factoryName="Ammonite" singleton="false">
+            |      <setting name="execName" value="$slangRun" />
+            |      <setting name="fileName" value="" />
+            |      <setting name="scriptParameters" value="" />
+            |      <method v="2" />
+            |    </configuration>
+            |    <list>
+            |      <item itemvalue="Application.Slang Script Runner" />
+            |    </list>
             |  </component>
             |</project>"""
       return r
