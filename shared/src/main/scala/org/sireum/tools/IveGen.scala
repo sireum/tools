@@ -218,7 +218,7 @@ object IveGen {
             |object $normModuleName extends ScalaModule {
             |  override def scalaVersion = "$scalaVer"
             |  override def ivyDeps = super.ivyDeps() ++ Agg(
-            |    jpLatest(isCross = false, owner = "sireum", repo = "runtime", lib = "library")
+            |    jpLatest(isCross = false, owner = "sireum", repo = "kekinian", lib = "library")
             |  )
             |  override def scalacPluginIvyDeps = super.scalacPluginIvyDeps() ++ Agg(
             |    ivy"org.sireum::scalac-plugin:$scalacPluginVer"
