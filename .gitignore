@@ -19,5 +19,6 @@ target
 /runtime
 /slang
 /license.txt
+/cache
 *.cmd.jar
 *.cmd.com
