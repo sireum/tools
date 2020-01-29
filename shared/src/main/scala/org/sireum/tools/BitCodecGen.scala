@@ -482,10 +482,10 @@ import BitCodecGen._
     o match {
       case o: Spec.Boolean => return genSpecBoolean(context, o, reporter)
       case o: Spec.Bits => return genSpecBits(context, o, reporter)
-      case o: Spec.BytesImpl => return genSpecEights(context, o.name, 8, o.size, o.signed, reporter)
-      case o: Spec.ShortsImpl => return genSpecEights(context, o.name, 16, o.size, o.signed, reporter)
-      case o: Spec.IntsImpl => return genSpecEights(context, o.name, 32, o.size, o.signed, reporter)
-      case o: Spec.LongsImpl => return genSpecEights(context, o.name, 64, o.size, o.signed, reporter)
+      case o: Spec.BytesImpl => return genSpecEights(context, o.name, 8, o.size, o.signed, o.valueOpt, reporter)
+      case o: Spec.ShortsImpl => return genSpecEights(context, o.name, 16, o.size, o.signed, o.valueOpt, reporter)
+      case o: Spec.IntsImpl => return genSpecEights(context, o.name, 32, o.size, o.signed, o.valueOpt, reporter)
+      case o: Spec.LongsImpl => return genSpecEights(context, o.name, 64, o.size, o.signed, o.valueOpt, reporter)
       case o: Spec.FloatsImpl => return genSpecFPs(context, o.name, T, o.size, reporter)
       case o: Spec.DoublesImpl => return genSpecFPs(context, o.name, F, o.size, reporter)
       case o: Spec.Enum =>
@@ -570,7 +570,7 @@ import BitCodecGen._
     }
   }
 
-  def genSpecEights(context: Context, name: String, n: Z, size: Z, signed: B, reporter: Reporter): Context = {
+  def genSpecEights(context: Context, name: String, n: Z, size: Z, signed: B, valueOpt: Option[Z], reporter: Reporter): Context = {
     val us: String = if (signed) "s" else "u"
     val US: String = if (signed) "S" else "U"
     if (size == 1) {
@@ -583,7 +583,12 @@ import BitCodecGen._
         i2m = context.i2m :+ st"$name",
         m2i = context.m2i :+ st"$name",
         inits = context.inits :+ st"""$us$n"0"""",
-        wellFormed = context.wellFormed,
+        wellFormed = context.wellFormed ++
+          (if (valueOpt.isEmpty) ISZ[ST]()
+          else ISZ(
+            st"""if ($name != $us$n"${valueOpt.get}") {
+                |  return ERROR_${context.owner}
+                |}""")),
         decoding = context.decoding :+ st"$name = Reader.IS.${endianPrefix}$US$n(input, context)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}$US$n(output, context, $name)")
     } else {

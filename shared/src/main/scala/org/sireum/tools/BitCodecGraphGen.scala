@@ -489,13 +489,33 @@ import BitCodecGraphGen._
         case element: Bits =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size}")))
         case element: BytesImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} (${element.size}*8)")))
+          val sizeOrVal: ST =
+            element.valueOpt match {
+              case Some(value) => st"$value"
+              case _ => st"${element.size}*8"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} ($sizeOrVal)")))
         case element: ShortsImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} (${element.size}*16)")))
+          val sizeOrVal: ST =
+            element.valueOpt match {
+              case Some(value) => st"$value"
+              case _ => st"${element.size}*16"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} ($sizeOrVal)")))
         case element: IntsImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
+          val sizeOrVal: ST =
+            element.valueOpt match {
+              case Some(value) => st"$value"
+              case _ => st"${element.size}*32"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: LongsImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
+          val sizeOrVal: ST =
+            element.valueOpt match {
+              case Some(value) => st"$value"
+              case _ => st"${element.size}*64"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
         case element: FloatsImpl =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
         case element: DoublesImpl =>
