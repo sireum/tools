@@ -491,28 +491,28 @@ import BitCodecGraphGen._
         case element: BytesImpl =>
           val sizeOrVal: ST =
             element.valueOpt match {
-              case Some(value) => st"$value"
+              case Some(value) => st"= $value"
               case _ => st"${element.size}*8"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} ($sizeOrVal)")))
         case element: ShortsImpl =>
           val sizeOrVal: ST =
             element.valueOpt match {
-              case Some(value) => st"$value"
+              case Some(value) => st"= $value"
               case _ => st"${element.size}*16"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} ($sizeOrVal)")))
         case element: IntsImpl =>
           val sizeOrVal: ST =
             element.valueOpt match {
-              case Some(value) => st"$value"
+              case Some(value) => st"= $value"
               case _ => st"${element.size}*32"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: LongsImpl =>
           val sizeOrVal: ST =
             element.valueOpt match {
-              case Some(value) => st"$value"
+              case Some(value) => st"= $value"
               case _ => st"${element.size}*64"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
