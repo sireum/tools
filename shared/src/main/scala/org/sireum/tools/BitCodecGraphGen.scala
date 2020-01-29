@@ -489,31 +489,31 @@ import BitCodecGraphGen._
         case element: Bits =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size}")))
         case element: BytesImpl =>
-          val sizeOrVal: ST =
+          val sizeOrVal: String =
             element.valueOpt match {
-              case Some(value) => st"= $value"
-              case _ => st"${element.size}*8"
+              case Some(value) => s"= $value"
+              case _ => s"${element.size}*8"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} ($sizeOrVal)")))
         case element: ShortsImpl =>
-          val sizeOrVal: ST =
+          val sizeOrVal: String =
             element.valueOpt match {
-              case Some(value) => st"= $value"
-              case _ => st"${element.size}*16"
+              case Some(value) => s"= $value"
+              case _ => s"${element.size}*16"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} ($sizeOrVal)")))
         case element: IntsImpl =>
-          val sizeOrVal: ST =
+          val sizeOrVal: String =
             element.valueOpt match {
-              case Some(value) => st"= $value"
-              case _ => st"${element.size}*32"
+              case Some(value) => s"= $value"
+              case _ => s"${element.size}*32"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: LongsImpl =>
-          val sizeOrVal: ST =
+          val sizeOrVal: String =
             element.valueOpt match {
-              case Some(value) => st"= $value"
-              case _ => st"${element.size}*64"
+              case Some(value) => s"= $value"
+              case _ => s"${element.size}*64"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
         case element: FloatsImpl =>
