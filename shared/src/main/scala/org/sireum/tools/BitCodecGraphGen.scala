@@ -490,29 +490,29 @@ import BitCodecGraphGen._
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size}")))
         case element: BytesImpl =>
           val sizeOrVal: String =
-            element.valueOpt match {
-              case Some(value) => s"= $value"
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
               case _ => s"${element.size}*8"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} ($sizeOrVal)")))
         case element: ShortsImpl =>
           val sizeOrVal: String =
-            element.valueOpt match {
-              case Some(value) => s"= $value"
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
               case _ => s"${element.size}*16"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} ($sizeOrVal)")))
         case element: IntsImpl =>
           val sizeOrVal: String =
-            element.valueOpt match {
-              case Some(value) => s"= $value"
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
               case _ => s"${element.size}*32"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: LongsImpl =>
           val sizeOrVal: String =
-            element.valueOpt match {
-              case Some(value) => s"= $value"
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
               case _ => s"${element.size}*64"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
