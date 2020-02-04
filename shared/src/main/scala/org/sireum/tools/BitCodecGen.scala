@@ -486,8 +486,12 @@ import BitCodecGen._
       case o: Spec.ShortsImpl => return genSpecEights(context, o.name, 16, o.size, o.signed, o.minOpt, o.maxOpt, reporter)
       case o: Spec.IntsImpl => return genSpecEights(context, o.name, 32, o.size, o.signed, o.minOpt, o.maxOpt, reporter)
       case o: Spec.LongsImpl => return genSpecEights(context, o.name, 64, o.size, o.signed, o.minOpt, o.maxOpt, reporter)
-      case o: Spec.FloatsImpl => return genSpecFPs(context, o.name, T, o.size, reporter)
-      case o: Spec.DoublesImpl => return genSpecFPs(context, o.name, F, o.size, reporter)
+      case o: Spec.FloatsImpl =>
+        return genSpecFPs(context, o.name, T, o.size, o.minOpt.map((v: F32) => s"$v"),
+          o.maxOpt.map((v: F32) => s"$v"), reporter)
+      case o: Spec.DoublesImpl =>
+        return genSpecFPs(context, o.name, F, o.size, o.minOpt.map((v: F64) => s"$v"),
+          o.maxOpt.map((v: F64) => s"$v"), reporter)
       case o: Spec.Enum =>
         val (first, ctx) = firstContext(o.objectName)
         return genSpecEnum(first, ctx, o, reporter)
@@ -574,23 +578,23 @@ import BitCodecGen._
                     reporter: Reporter): Context = {
     val us: String = if (signed) "s" else "u"
     val US: String = if (signed) "S" else "U"
-    val wfs: ISZ[ST] = (minOpt, maxOpt) match {
-      case (Some(min), Some(max)) =>
-        if (min == max) {
-          ISZ(
-            st"""if ($name != $us$n"${min}") {
-                |  return ERROR_${context.owner}
-                |}""")
-        } else {
-          ISZ(
-            st"""if ($name < $us$n"$min" || $name > $us$n"$max") {
-                |  return ERROR_${context.owner}
-                |}""")
-        }
-      case _ => ISZ[ST]()
-    }
     if (size == 1) {
       val tpe = st"$US$n"
+      val wfs: ISZ[ST] = (minOpt, maxOpt) match {
+        case (Some(min), Some(max)) =>
+          if (min == max) {
+            ISZ(
+              st"""if ($name != $us$n"${min}") {
+                  |  return ERROR_${context.owner}
+                  |}""")
+          } else {
+            ISZ(
+              st"""if ($name < $us$n"$min" || $name > $us$n"$max") {
+                  |  return ERROR_${context.owner}
+                  |}""")
+          }
+        case _ => ISZ[ST]()
+      }
       return context(
         imports = if (signed) context.imports else context.imports(n ~> T),
         simports = if (signed) context.simports(n ~> T) else context.simports,
@@ -605,6 +609,30 @@ import BitCodecGen._
     } else {
       val tpe = st"MSZ[$US$n]"
       val itpe = st"ISZ[$US$n]"
+      var wfs: ISZ[ST] = ISZ(
+        st"""if ($name.size != $size) {
+            |  return ERROR_${context.owner}
+            |}"""
+      )
+      (minOpt, maxOpt) match {
+        case (Some(min), Some(max)) =>
+          if (min == max) {
+            wfs = wfs :+
+              st"""for (${name}Element <- $name) {
+                  |  if (${name}Element != $us$n"${min}") {
+                  |    return ERROR_${context.owner}
+                  |  }
+                  |}"""
+          } else {
+            wfs = wfs :+
+              st"""for (${name}Element <- $name) {
+                  |  if (${name}Element < $us$n"$min" || ${name}Element > $us$n"$max") {
+                  |    return ERROR_${context.owner}
+                  |  }
+                  |}"""
+          }
+        case _ =>
+      }
       return context(
         imports = if (signed) context.imports else context.imports(n ~> T),
         simports = if (signed) context.simports(n ~> T) else context.simports,
@@ -613,20 +641,26 @@ import BitCodecGen._
         i2m = context.i2m :+ st"$name.toMS",
         m2i = context.m2i :+ st"$name.toIS",
         inits = context.inits :+ st"""MSZ.create($size, $us$n"0")""",
-        wellFormed = context.wellFormed :+
-          st"""if ($name.size != $size) {
-              |  return ERROR_${context.owner}
-              |}""",
+        wellFormed = context.wellFormed ++ wfs,
         decoding = context.decoding :+ st"Reader.IS.${endianPrefix}$US${n}S(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}$US${n}S(output, context, $name)")
     }
   }
 
-  def genSpecFPs(context: Context, name: String, isSingle: B, size: Z, reporter: Reporter): Context = {
-    val n: ST = if (isSingle) st"32" else st"64"
+  def genSpecFPs(context: Context, name: String, isSingle: B, size: Z, minOpt: Option[String], maxOpt: Option[String],
+                 reporter: Reporter): Context = {
+    val (n, suffix): (ST, ST) = if (isSingle) (st"32", st"f") else (st"64", st"d")
     val init: ST = if (isSingle) st"0.0f" else st"0.0d"
     if (size == 1) {
       val tpe = st"F$n"
+      val wfs: ISZ[ST] = (minOpt, maxOpt) match {
+        case (Some(min), Some(max)) =>
+          ISZ(
+            st"""if ($name < $min$suffix || $name > $max$suffix) {
+                |  return ERROR_${context.owner}
+                |}""")
+        case _ => ISZ[ST]()
+      }
       return context(
         imports = context.imports,
         simports = context.simports,
@@ -635,12 +669,27 @@ import BitCodecGen._
         i2m = context.i2m :+ st"$name",
         m2i = context.m2i :+ st"$name",
         inits = context.inits :+ init,
-        wellFormed = context.wellFormed,
+        wellFormed = context.wellFormed ++ wfs,
         decoding = context.decoding :+ st"$name = Reader.IS.${endianPrefix}F$n(input, context)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}F$n(output, context, $name)")
     } else {
       val tpe = st"MSZ[F$n]"
       val itpe = st"ISZ[F$n]"
+      var wfs: ISZ[ST] = ISZ(
+        st"""if ($name.size != $size) {
+            |  return ERROR_${context.owner}
+            |}"""
+      )
+      (minOpt, maxOpt) match {
+        case (Some(min), Some(max)) =>
+          wfs = wfs :+
+            st"""for (${name}Element <- $name) {
+                |  if (${name}Element < $min$suffix || ${name}Element > $max$suffix) {
+                |    return ERROR_${context.owner}
+                |  }
+                |}"""
+        case _ =>
+      }
       return context(
         imports = context.imports,
         simports = context.simports,
@@ -649,10 +698,7 @@ import BitCodecGen._
         i2m = context.i2m :+ st"$name.toMS",
         m2i = context.m2i :+ st"$name.toIS",
         inits = context.inits :+ st"""MSZ.create($size, $init)""",
-        wellFormed = context.wellFormed :+
-          st"""if ($name.size != $size) {
-              |  return ERROR_${context.owner}
-              |}""",
+        wellFormed = context.wellFormed ++ wfs,
         decoding = context.decoding :+ st"Reader.IS.${endianPrefix}F${n}S(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}F${n}S(output, context, $name)")
     }

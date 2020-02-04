@@ -491,35 +491,61 @@ import BitCodecGraphGen._
         case element: BytesImpl =>
           val sizeOrVal: String =
             (element.minOpt, element.maxOpt) match {
-              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
+              case (Some(min), Some(max)) =>
+                if (min == max) s"= $min"
+                else if (element.size == 1) s"$min..$max"
+                else s"${element.size}*8; $min..$max"
               case _ => s"${element.size}*8"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 8} ($sizeOrVal)")))
         case element: ShortsImpl =>
           val sizeOrVal: String =
             (element.minOpt, element.maxOpt) match {
-              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
+              case (Some(min), Some(max)) =>
+                if (min == max) s"= $min"
+                else if (element.size == 1) s"$min..$max"
+                else s"${element.size}*16; $min..$max"
               case _ => s"${element.size}*16"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 16} ($sizeOrVal)")))
         case element: IntsImpl =>
           val sizeOrVal: String =
             (element.minOpt, element.maxOpt) match {
-              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
+              case (Some(min), Some(max)) =>
+                if (min == max) s"= $min"
+                else if (element.size == 1) s"$min..$max"
+                else s"${element.size}*32; $min..$max"
               case _ => s"${element.size}*32"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: LongsImpl =>
           val sizeOrVal: String =
             (element.minOpt, element.maxOpt) match {
-              case (Some(min), Some(max)) => if (min == max) s"= $min" else s"$min..$max"
+              case (Some(min), Some(max)) =>
+                if (min == max) s"= $min"
+                else if (element.size == 1) s"$min..$max"
+                else s"${element.size}*64; $min..$max"
               case _ => s"${element.size}*64"
             }
           updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
         case element: FloatsImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} (${element.size}*32)")))
+          val sizeOrVal: String =
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) =>
+                if (element.size == 1) s"$min..$max"
+                else s"${element.size}*32; $min..$max"
+              case _ => s"${element.size}*32"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 32} ($sizeOrVal)")))
         case element: DoublesImpl =>
-          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} (${element.size}*64)")))
+          val sizeOrVal: String =
+            (element.minOpt, element.maxOpt) match {
+              case (Some(min), Some(max)) =>
+                if (element.size == 1) s"$min..$max"
+                else s"${element.size}*64; $min..$max"
+              case _ => s"${element.size}*64"
+            }
+          updateCurrent(current(elements = current.elements :+ BcNode.Element(element.name, s"${element.size * 64} ($sizeOrVal)")))
         case element: Pads =>
           updateCurrent(current(elements = current.elements :+ BcNode.Element("(pads)", s"${element.size}")))
       }
