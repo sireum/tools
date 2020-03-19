@@ -298,6 +298,52 @@ object BitCodecGen {
       return super.preExpInvoke(o)
     }
 
+    override def preExpInvokeNamed(o: AST.Exp.InvokeNamed): AST.MTransformer.PreResult[AST.Exp] = {
+      o.attr.resOpt match {
+        case Some(res) =>
+          res match {
+            case m: AST.ResolvedInfo.Method if m.mode == AST.MethodMode.Constructor || m.mode == AST.MethodMode.Method =>
+              val className = m.owner :+ m.id
+              if (funOwners.contains(className)) {
+                val ownerSimpleName = m.id
+                val targ = o.targs(0)
+                def nameOpt: Option[AST.Exp.LitString] = {
+                  for (arg <- o.args if arg.id.value == "name") {
+                    arg.arg match {
+                      case n: AST.Exp.LitString => return Some(n)
+                      case _ =>
+                        reporter.error(arg.arg.posOpt, kind,
+                          s"Invalid name form for $ownerSimpleName; it has to be a String literal")
+                    }
+                  }
+                  return None()
+                }
+                def funOpt: Option[AST.Exp.Fun] = {
+                  for (arg <- o.args) {
+                    arg.arg match {
+                      case fun: AST.Exp.Fun => return Some(fun)
+                      case _ =>
+                    }
+                  }
+                  reporter.error(o.posOpt, kind,
+                    s"Invalid ${funName.get(className).get} form for $ownerSimpleName; it has to be a function with a single parameter")
+                  return None()
+                }
+                (nameOpt, funOpt) match {
+                  case (Some(name), Some(fun)) =>
+                    funs = funs + name.value ~> ((fun, targ))
+                    val fpos = fun.posOpt.get
+                    funTexts = funTexts + name.value ~> ops.StringOps(text).substring(fpos.offset, fpos.offset + fpos.length)
+                  case _ =>
+                }
+              }
+            case _ =>
+          }
+        case _ =>
+      }
+      return super.preExpInvokeNamed(o)
+    }
+
     override def preStmtEnum(o: AST.Stmt.Enum): AST.MTransformer.PreResult[AST.Stmt] = {
       enums = enums + o.id.value ~> o
       return super.preStmtEnum(o)
