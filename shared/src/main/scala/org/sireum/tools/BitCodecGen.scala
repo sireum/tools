@@ -87,6 +87,8 @@ object BitCodecGen {
   val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
   def check(spec: Spec, reporter: Reporter): Unit = {
+    var names = HashSet.empty[String]
+
     def checkNameFirstLower(desc: String, o: Spec): Unit = {
       if (ops.StringOps(o.name).firstToLower != o.name) {
         reporter.error(None(), kind, s"$desc spec should have a name starting with a lower case, but found '${o.name}'.")
@@ -95,6 +97,11 @@ object BitCodecGen {
     def checkNameFirstUpper(desc: String, o: Spec): Unit = {
       if (ops.StringOps(o.name).firstToUpper != o.name) {
         reporter.error(None(), kind, s"$desc spec should have a name starting with an upper case, but found '${o.name}'.")
+      }
+      if (names.contains(o.name)) {
+        reporter.error(None(), kind, s"Cannot reuse name ${o.name}")
+      } else {
+        names = names + o.name
       }
     }
     var seenSpecs = HashMap.empty[String, Spec]
