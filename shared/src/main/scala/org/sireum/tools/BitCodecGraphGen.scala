@@ -84,10 +84,10 @@ object BitCodecGraphGen {
 
     @pure def mergeTextOpts(tOpt1: Option[String], tOpt2: Option[String]): Option[String] = {
       (tOpt1, tOpt2) match {
-        case (Some(t1), Some(t2)) => Some(s"$t1:$t2")
-        case (Some(t1), _) => Some(t1)
-        case (_, Some(t2)) => Some(t2)
-        case _ => None()
+        case (Some(t1), Some(t2)) => return Some(s"$t1:$t2")
+        case (Some(t1), _) => return Some(t1)
+        case (_, Some(t2)) => return Some(t2)
+        case _ => return None()
       }
     }
 
