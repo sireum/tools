@@ -82,42 +82,48 @@ object BitCodecGraphGen {
       }
     }
 
+    @pure def mergeTextOpts(tOpt1: Option[String], tOpt2: Option[String]): Option[String] = {
+      (tOpt1, tOpt2) match {
+        case (Some(t1), Some(t2)) => Some(s"$t1:$t2")
+        case (Some(t1), _) => Some(t1)
+        case (_, Some(t2)) => Some(t2)
+        case _ => None()
+      }
+    }
+
     if (!ops.ISZOps(g.nodesInverse).exists((n: BcNode) => isEmptyContainer(n))) {
       return g
     }
 
     var r = Graph.empty[BcNode, BcEdge]
-    for (node <- g.nodesInverse) {
-      if (isEmptyContainer(node)) {
-        for (out <- g.outgoing(node); in <- g.incoming(node)) {
-          val Graph.Edge.Data(_, dest, outData) = out
-          val Graph.Edge.Data(src, _, inData) = in
-          val labelOpt: Option[String] = (inData.labelOpt, outData.labelOpt) match {
-            case (Some(lIn), Some(lOut)) => Some(s"$lIn:$lOut")
-            case (Some(lIn), _) => Some(lIn)
-            case (_, Some(lOut)) => Some(lOut)
-            case _ => None()
-          }
-          val tooltipOpt: Option[String] = (inData.tooltipOpt, outData.tooltipOpt) match {
-            case (Some(tIn), Some(tOut)) => Some(s"$tIn:$tOut")
-            case (Some(tIn), _) => Some(tIn)
-            case (_, Some(tOut)) => Some(tOut)
-            case _ => None()
-          }
-          r = r.addDataEdge(BcEdge(labelOpt, tooltipOpt), src, dest)
-        }
-      } else {
-        r = r * node
-        for (out <- g.outgoing(node) if !isEmptyContainer(out.dest)) {
-          r = r * out.dest
-          r = r.addEdge(out)
-        }
-        for (in <- g.incoming(node) if !isEmptyContainer(in.source)) {
-          r = r * in.source
-          r = r.addEdge(in)
-        }
+    var added = HashSet.empty[BcNode]
+    var eliminated = HashSet.empty[BcNode]
+    for (node <- g.nodesInverse if isEmptyContainer(node) && !added.contains(node)) {
+      eliminated = eliminated + node
+      for (out <- g.outgoing(node); in <- g.incoming(node)) {
+        val Graph.Edge.Data(_, dest, outData) = out
+        val Graph.Edge.Data(src, _, inData) = in
+        val labelOpt = mergeTextOpts(inData.labelOpt, outData.labelOpt)
+        val tooltipOpt = mergeTextOpts(inData.tooltipOpt, outData.tooltipOpt)
+        r = r * src
+        r = r * dest
+        added = added + src
+        added = added + dest
+        r = r.addDataEdge(BcEdge(labelOpt, tooltipOpt), src, dest)
       }
     }
+    for (node <- g.nodesInverse if !eliminated.contains(node)) {
+      r = r * node
+      for (out <- g.outgoing(node) if !eliminated.contains(out.dest)) {
+        r = r * out.dest
+        r = r.addEdge(out)
+      }
+      for (in <- g.incoming(node) if !eliminated.contains(in.source)) {
+        r = r * in.source
+        r = r.addEdge(in)
+      }
+    }
+
     return compress(r)
   }
 
