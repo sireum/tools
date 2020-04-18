@@ -1,6 +1,6 @@
 // #Sireum
 /*
- Copyright (c) 2019, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -594,7 +594,7 @@ import BitCodecGen._
   def genSpecBits(context: Context, spec: Spec.Bits, reporter: Reporter): Context = {
     val name = spec.name
     val size = spec.size
-    val prefix: String = if (size == 1) "ble" else endianPrefix
+    val prefix: String = if (size <= 8) "ble" else endianPrefix
     if (size < 1) {
       reporter.error(None(), kind, st"Size must be >= 1 for Spec.Bits ${(context.path :+ name, ".")}".render)
       return context
@@ -648,6 +648,7 @@ import BitCodecGen._
           }
         case _ => ISZ[ST]()
       }
+      val prefix: String = if (n <= 8) "ble" else endianPrefix
       return context(
         imports = if (signed) context.imports else context.imports(n ~> T),
         simports = if (signed) context.simports(n ~> T) else context.simports,
@@ -657,8 +658,8 @@ import BitCodecGen._
         m2i = context.m2i :+ st"$name",
         inits = context.inits :+ st"""$us$n"0"""",
         wellFormed = context.wellFormed ++ wfs,
-        decoding = context.decoding :+ st"$name = Reader.IS.${endianPrefix}$US$n(input, context)",
-        encoding = context.encoding :+ st"Writer.${endianPrefix}$US$n(output, context, $name)")
+        decoding = context.decoding :+ st"$name = Reader.IS.${prefix}$US$n(input, context)",
+        encoding = context.encoding :+ st"Writer.${prefix}$US$n(output, context, $name)")
     } else {
       val tpe = st"MSZ[$US$n]"
       val itpe = st"ISZ[$US$n]"
@@ -770,6 +771,7 @@ import BitCodecGen._
     val size = bitWidth(enum.elements.size)
     val firstElem = enum.elements(0).value
     val tpe = st"$objectName.Type"
+    val prefix: String = if (size <= 8) "ble" else endianPrefix
     return context(
       imports = context.imports(size ~> T),
       simports = context.simports,
@@ -787,7 +789,7 @@ import BitCodecGen._
             |  if (context.hasError) {
             |    return $objectName.$firstElem
             |  }
-            |  val r: $tpe = Reader.IS.${endianPrefix}U$size(input, context) match {
+            |  val r: $tpe = Reader.IS.${prefix}U$size(input, context) match {
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
@@ -804,7 +806,7 @@ import BitCodecGen._
             |    return
             |  }
             |  $name match {
-            |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.${endianPrefix}U$size(output, context, u$size"$i")""", "\n")}
+            |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.${if (size <= 8) "ble" else endianPrefix}U$size(output, context, u$size"$i")""", "\n")}
             |  }
             |}""",
       fields = context.fields :+ st"var $name: $tpe",
@@ -1721,7 +1723,7 @@ import BitCodecGen._
         } else {
           context(imports = context.imports(size ~> T))
         }
-        val prefix: String = if (size == 1) "ble" else endianPrefix
+        val prefix: String = if (size <= 8) "ble" else endianPrefix
         return (
           ctx,
           st"""if (!hasError) {
@@ -1815,7 +1817,7 @@ import BitCodecGen._
         if (pred.lo >= pred.hi) {
           reporter.error(None(), kind, st"Expecting Pred.Between.lo < Pred.Between.hi in ${(context.path, ".")}, but found ${pred.lo} >= ${pred.hi}".render)
         }
-        val prefix: String = if (size == 1) "ble" else endianPrefix
+        val prefix: String = if (size <= 8) "ble" else endianPrefix
         return (
           ctx,
           st"""if (!hasError) {
