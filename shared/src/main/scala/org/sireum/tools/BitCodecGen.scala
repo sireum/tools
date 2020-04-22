@@ -87,8 +87,6 @@ object BitCodecGen {
   val notImplemented: String = """halt("Not implemented yet") // TODO"""
 
   def check(spec: Spec, reporter: Reporter): Unit = {
-    var names = HashSet.empty[String]
-
     def checkNameFirstLower(desc: String, o: Spec): Unit = {
       if (ops.StringOps(o.name).firstToLower != o.name) {
         reporter.error(None(), kind, s"$desc spec should have a name starting with a lower case, but found '${o.name}'.")
@@ -98,21 +96,17 @@ object BitCodecGen {
       if (ops.StringOps(o.name).firstToUpper != o.name) {
         reporter.error(None(), kind, s"$desc spec should have a name starting with an upper case, but found '${o.name}'.")
       }
-      if (names.contains(o.name)) {
-        reporter.error(None(), kind, s"Cannot reuse name ${o.name}")
-      } else {
-        names = names + o.name
-      }
     }
     var seenSpecs = HashMap.empty[String, Spec]
 
     def checkKind(o: Spec): Unit = {
-      seenSpecs.get(o.name) match {
+      val name = ops.StringOps(o.name).firstToUpper
+      seenSpecs.get(name) match {
         case Some(other) =>
           if (other != o) {
             reporter.error(None(), kind, s"Name '${o.name}' is used for two different specs.")
           }
-        case _ => seenSpecs = seenSpecs + o.name ~> o
+        case _ => seenSpecs = seenSpecs + name ~> o
       }
     }
 
@@ -143,12 +137,18 @@ object BitCodecGen {
           }
         case o: Spec.PredRepeatWhileImpl =>
           checkNameFirstLower("PredRepeatWhile", o)
+          if (!(o.element.isScalar || o.element.isInstanceOf[Spec.Composite])) {
+            checkKind(o.element)
+          }
           if (o.preds.isEmpty && o.maxElements < 0) {
             reporter.error(None(), kind, s"${o.name} should either be bounded or is a non-empty predictive spec.")
           }
           checkSpec(o.element)
         case o: Spec.PredRepeatUntilImpl =>
           checkNameFirstLower("PredRepeatUntil", o)
+          if (!(o.element.isScalar || o.element.isInstanceOf[Spec.Composite])) {
+            checkKind(o.element)
+          }
           if (o.preds.isEmpty && o.maxElements < 0) {
             reporter.error(None(), kind, s"${o.name} should either be bounded or is a non-empty predictive spec.")
           }
@@ -159,10 +159,12 @@ object BitCodecGen {
           for (e <- o.subs) {
             checkSpec(e)
           }
-        case o: Spec.GenRepeatImpl => checkNameFirstLower("GenRepeat", o)
+        case o: Spec.GenRepeatImpl =>
+          checkNameFirstLower("GenRepeat", o)
           checkKind(o)
           checkSpec(o.element)
-        case o: Spec.GenRawImpl => checkNameFirstLower("GenRaw", o)
+        case o: Spec.GenRawImpl =>
+          checkNameFirstLower("GenRaw", o)
           checkKind(o)
         case _: Spec.Pads =>
         case poly: Spec.Poly =>
@@ -171,7 +173,12 @@ object BitCodecGen {
             case string"Union" =>
               checkNameFirstUpper("Union", o)
               checkKind(o)
-            case string"Repeat" => checkNameFirstLower("Repeat", o)
+            case string"Repeat" =>
+              checkNameFirstLower("Repeat", o)
+              val element = p.elementsOpt.get(0)
+              if (!(element.isScalar || element.isInstanceOf[Spec.Composite])) {
+                checkKind(element)
+              }
             case string"Raw" => checkNameFirstLower("Raw", o)
           }
           if (p.elementsOpt.nonEmpty) {
@@ -532,6 +539,14 @@ import BitCodecGen._
         return (T, context(seenSpecs = context.seenSpecs + name))
       }
     }
+    def repeatFirstContext(rname: String): (B, Context) = {
+      val name = s"${context.owner}_$rname"
+      if (context.seenSpecs.contains(name))  {
+        return (F, context)
+      } else {
+        return (T, context(seenSpecs = context.seenSpecs + name))
+      }
+    }
     o match {
       case o: Spec.Boolean => return genSpecBoolean(context, o, reporter)
       case o: Spec.Bits => return genSpecBits(context, o, reporter)
@@ -553,9 +568,13 @@ import BitCodecGen._
         return genSpecConcat(first, ctx, o, reporter)
       case o: Spec.PredUnion =>
         val (first, ctx) = firstContext(o.name)
-        genSpecPredUnion(first, ctx, o, reporter)
-      case o: Spec.PredRepeatWhileImpl => genSpecPredRepeat(context, o.name, o.maxElements, T, o.preds, o.element, reporter)
-      case o: Spec.PredRepeatUntilImpl => genSpecPredRepeat(context, o.name, o.maxElements, F, o.preds, o.element, reporter)
+        return genSpecPredUnion(first, ctx, o, reporter)
+      case o: Spec.PredRepeatWhileImpl =>
+        val (first, ctx) = repeatFirstContext(o.name)
+        genSpecPredRepeat(first, ctx, o.name, o.maxElements, T, o.preds, o.element, reporter)
+      case o: Spec.PredRepeatUntilImpl =>
+        val (first, ctx) = repeatFirstContext(o.name)
+        genSpecPredRepeat(first, ctx, o.name, o.maxElements, F, o.preds, o.element, reporter)
       case o: Spec.GenUnion =>
         val (first, ctx) = firstContext(o.name)
         return genSpecGenUnion(first, ctx, o, reporter)
@@ -572,7 +591,9 @@ import BitCodecGen._
           case string"Union" =>
             val (first, ctx) = firstContext(o.name)
             return genSpecUnion(first, ctx, p.name, o.maxSizeOpt(enumMaxSize), p.dependsOn, p.elementsOpt.get, reporter)
-          case string"Repeat" => return genSpecRepeat(context, p.name, p.max, p.dependsOn, p.elementsOpt.get(0), reporter)
+          case string"Repeat" =>
+            val (first, ctx) = repeatFirstContext(o.name)
+            return genSpecRepeat(first, ctx, p.name, p.max, p.dependsOn, p.elementsOpt.get(0), reporter)
           case string"Raw" => return genSpecRaw(context, p.name, p.max, p.dependsOn, reporter)
         }
     }
@@ -1156,7 +1177,8 @@ import BitCodecGen._
     )
   }
 
-  def genSpecRepeat(context: Context,
+  def genSpecRepeat(first: B,
+                    context: Context,
                     name: String,
                     maxElements: Z,
                     dependsOn: ISZ[String],
@@ -1183,8 +1205,8 @@ import BitCodecGen._
       if (element.isScalar) (st"MSZ[${elementContext.tpeInits(0)._1}]", st"ISZ[${elementContext.tpeInits(0)._1}]")
       else (st"MSZ[M${normElement.name}]", st"ISZ[${normElement.name}]")
     var wf = ISZ(
-      st"""val ${name}Size = sizeOf$mname($deps)
-          |if ($name.size != ${name}Size) {
+      st"""val ${name}Sz = sizeOf$mname($deps)
+          |if ($name.size != ${name}Sz) {
           |  return ERROR_${owner}_$name
           |}"""
     )
@@ -1211,7 +1233,7 @@ import BitCodecGen._
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
       simports = elementContext.simports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
+      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
@@ -1223,19 +1245,19 @@ import BitCodecGen._
       tpeInits = context.tpeInits :+ ((tpe, st"$tpe()")),
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
-        st"""val ${name}Size = sizeOf$mname($deps)
-            |if (${name}Size >= 0) {
-            |  $name = MSZ.create(${name}Size, $elementTpe)
-            |  for (i <- 0 until ${name}Size) {
+        st"""val ${name}Sz = sizeOf$mname($deps)
+            |if (${name}Sz >= 0) {
+            |  $name = MSZ.create(${name}Sz, $elementTpe)
+            |  for (i <- 0 until ${name}Sz) {
             |    $decode
             |  }
             |} else {
             |  context.signalError(ERROR_${owner}_$name)
             |}""",
       encoding = context.encoding :+
-        st"""val ${name}Size = sizeOf$mname($deps)
-            |if (${name}Size >= 0) {
-            |  for (i <- 0 until ${name}Size) {
+        st"""val ${name}Sz = sizeOf$mname($deps)
+            |if (${name}Sz >= 0) {
+            |  for (i <- 0 until ${name}Sz) {
             |    $encode
             |  }
             |} else {
@@ -1270,7 +1292,8 @@ import BitCodecGen._
     )
   }
 
-  def genSpecPredRepeat(context: Context,
+  def genSpecPredRepeat(first: B,
+                        context: Context,
                         name: String,
                         maxElements: Z,
                         isWhile: B,
@@ -1327,7 +1350,7 @@ import BitCodecGen._
       errNum = elementContext.errNum + 1,
       imports = elementContext.imports,
       simports = elementContext.simports,
-      mainDecl = elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
+      mainDecl = if (!first) elementContext.mainDecl else elementContext.mainDecl :+ st"val ERROR_${owner}_$name: Z = ${elementContext.errNum}",
       main = elementContext.main,
       owner = context.owner,
       supr = context.supr,
@@ -1389,8 +1412,8 @@ import BitCodecGen._
     val tpe = st"MSZ[B]"
     val itpe = st"ISZ[B]"
     var wf = ISZ(
-      st"""val ${name}Size = sizeOf$mname($deps)
-          |if ($name.size != ${name}Size) {
+      st"""val ${name}Sz = sizeOf$mname($deps)
+          |if ($name.size != ${name}Sz) {
           |  return ERROR_${owner}_$name
           |}"""
     )
@@ -1417,17 +1440,17 @@ import BitCodecGen._
       tpeInits = context.tpeInits :+ ((tpe, st"$tpe()")),
       wellFormed = context.wellFormed ++ wf,
       decoding = context.decoding :+
-        st"""val ${name}Size = sizeOf$mname($deps)
-            |if (${name}Size >= 0) {
-            |  $name = MSZ.create(${name}Size, F)
-            |  Reader.IS.bleRaw(input, context, $name, ${name}Size)
+        st"""val ${name}Sz = sizeOf$mname($deps)
+            |if (${name}Sz >= 0) {
+            |  $name = MSZ.create(${name}Sz, F)
+            |  Reader.IS.bleRaw(input, context, $name, ${name}Sz)
             |} else {
             |  context.signalError(ERROR_${owner}_$name)
             |}""",
       encoding = context.encoding :+
-        st"""val ${name}Size = sizeOf$mname($deps)
-            |if (${name}Size >= 0) {
-            |  Writer.bleRaw(output, context, $name, ${name}Size)
+        st"""val ${name}Sz = sizeOf$mname($deps)
+            |if (${name}Sz >= 0) {
+            |  Writer.bleRaw(output, context, $name, ${name}Sz)
             |} else {
             |  context.signalError(ERROR_${owner}_$name)
             |}""",
