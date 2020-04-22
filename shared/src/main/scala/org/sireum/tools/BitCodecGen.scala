@@ -104,7 +104,7 @@ object BitCodecGen {
       seenSpecs.get(name) match {
         case Some(other) =>
           if (other != o) {
-            reporter.error(None(), kind, s"Name '${o.name}' is used for two different specs.")
+            reporter.error(None(), kind, s"Name '${o.name}' is used for different specs.")
           }
         case _ => seenSpecs = seenSpecs + name ~> o
       }
@@ -123,13 +123,13 @@ object BitCodecGen {
         case o: Spec.Enum =>
           checkNameFirstLower("Enum", o)
           checkKind(o)
-        case o: Spec.Concat =>
+        case o: Spec.ConcatImpl =>
           checkNameFirstUpper("Concat", o)
           checkKind(o)
           for (e <- o.elements) {
             checkSpec(e)
           }
-        case o: Spec.PredUnion =>
+        case o: Spec.PredUnionImpl =>
           checkNameFirstUpper("PredUnion", o)
           checkKind(o)
           for (p <- o.subs) {
@@ -153,7 +153,7 @@ object BitCodecGen {
             reporter.error(None(), kind, s"${o.name} should either be bounded or is a non-empty predictive spec.")
           }
           checkSpec(o.element)
-        case o: Spec.GenUnion =>
+        case o: Spec.GenUnionImpl =>
           checkNameFirstUpper("GenUnion", o)
           checkKind(o)
           for (e <- o.subs) {
@@ -563,10 +563,10 @@ import BitCodecGen._
       case o: Spec.Enum =>
         val (first, ctx) = firstContext(o.objectName)
         return genSpecEnum(first, ctx, o, reporter)
-      case o: Spec.Concat =>
+      case o: Spec.ConcatImpl =>
         val (first, ctx) = firstContext(o.name)
         return genSpecConcat(first, ctx, o, reporter)
-      case o: Spec.PredUnion =>
+      case o: Spec.PredUnionImpl =>
         val (first, ctx) = firstContext(o.name)
         return genSpecPredUnion(first, ctx, o, reporter)
       case o: Spec.PredRepeatWhileImpl =>
@@ -575,7 +575,7 @@ import BitCodecGen._
       case o: Spec.PredRepeatUntilImpl =>
         val (first, ctx) = repeatFirstContext(o.name)
         genSpecPredRepeat(first, ctx, o.name, o.maxElements, F, o.preds, o.element, reporter)
-      case o: Spec.GenUnion =>
+      case o: Spec.GenUnionImpl =>
         val (first, ctx) = firstContext(o.name)
         return genSpecGenUnion(first, ctx, o, reporter)
       case o: Spec.GenRepeatImpl =>
@@ -590,7 +590,7 @@ import BitCodecGen._
         p.compName match {
           case string"Union" =>
             val (first, ctx) = firstContext(o.name)
-            return genSpecUnion(first, ctx, p.name, o.maxSizeOpt(enumMaxSize), p.dependsOn, p.elementsOpt.get, reporter)
+            return genSpecUnion(first, ctx, p.name, o.maxSizeOpt(enumMaxSize), p.dependsOn, p.elementsOpt.get, p.asOpt, reporter)
           case string"Repeat" =>
             val (first, ctx) = repeatFirstContext(o.name)
             return genSpecRepeat(first, ctx, p.name, p.max, p.dependsOn, p.elementsOpt.get(0), reporter)
@@ -847,9 +847,9 @@ import BitCodecGen._
     }
   }
 
-  def genSpecConcat(first: B, context: Context, spec: Spec.Concat, reporter: Reporter): Context = {
+  def genSpecConcat(first: B, context: Context, spec: Spec.ConcatImpl, reporter: Reporter): Context = {
     val name = spec.name
-    val (ctx, fname) = context.fieldName(context.path, name)
+    val (ctx, fname) = context.fieldName(context.path, spec.asOpt.getOrElse(name))
     var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite", isupers = traits,
       fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ(), omembers = ISZ())
@@ -870,6 +870,7 @@ import BitCodecGen._
             |  return if (context.hasError) None[ISZ[B]]() else Some(buffer.toIS)
             |}"""
     }
+    val wfName = s"wf${spec.asOpt.getOrElse(name)}"
     return Context(
       path = context.path,
       errNum = elementContext.errNum + 1,
@@ -952,9 +953,9 @@ import BitCodecGen._
       m2i = context.m2i :+ st"$fname.toImmutable",
       tpeInits = context.tpeInits :+ ((st"M$name", st"$name.empty")),
       wellFormed = context.wellFormed :+
-        st"""val wf$name = $fname.wellFormed
-            |if (wf$name != 0) {
-            |  return wf$name
+        st"""val $wfName = $fname.wellFormed
+            |if ($wfName != 0) {
+            |  return $wfName
             |}""",
       decoding = context.decoding :+ st"$fname.decode(input, context)",
       encoding = context.encoding :+ st"$fname.encode(output, context)",
@@ -972,6 +973,7 @@ import BitCodecGen._
                    maxSizeOpt: Option[Z],
                    dependsOn: ISZ[String],
                    subs: ISZ[Spec],
+                   asOpt: Option[String],
                    reporter: Reporter): Context = {
     val normSubs: ISZ[Spec] = for (sub <- subs) yield
       if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
@@ -980,7 +982,7 @@ import BitCodecGen._
         case Some((pn, ptpe, pt)) => (pn, ptpe, pt)
         case _ => return context
       }
-    val (ctx, fname) = context.fieldName(context.path, name)
+    val (ctx, fname) = context.fieldName(context.path, asOpt.getOrElse(name))
     var subContext = ctx(path = ctx.path :+ fname, main = ctx.main, owner = name, supr = s"M$name", isupers = ISZ(name),
       fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ(), omembers = ISZ())
@@ -991,6 +993,7 @@ import BitCodecGen._
     val encode: ST =
       if (isBounded) st"def encode(context: Context): Option[ISZ[B]]"
       else st"def encode(buffSize: Z, context: Context): Option[ISZ[B]]"
+    val wfName = s"wf${asOpt.getOrElse(name)}"
     return Context(
       path = context.path,
       errNum = subContext.errNum + 1,
@@ -1054,9 +1057,9 @@ import BitCodecGen._
             |  case _ => return ERROR_$name
             |}
             |
-            |val wf$name = $fname.wellFormed
-            |if (wf$name != 0) {
-            |  return wf$name
+            |val $wfName = $fname.wellFormed
+            |if ($wfName != 0) {
+            |  return $wfName
             |}""",
       decoding = context.decoding :+
         st"""$name.choose($deps) match {
@@ -1075,14 +1078,14 @@ import BitCodecGen._
 
   def genSpecPredUnion(first: B,
                        context: Context,
-                       o: Spec.PredUnion,
+                       o: Spec.PredUnionImpl,
                        reporter: Reporter): Context = {
     val name = o.name
     val subs = o.subs
     val normSubs: ISZ[Spec.PredSpec] = for (sub <- subs) yield
       if (sub.spec.isInstanceOf[Spec.Composite]) sub
       else sub(spec = Spec.Concat(ops.StringOps(sub.spec.name).firstToUpper, ISZ(sub.spec)))
-    val (ctx, fname) = context.fieldName(context.path, name)
+    val (ctx, fname) = context.fieldName(context.path, o.asOpt.getOrElse(name))
     val path = ctx.path :+ fname
     var subContext = ctx(path = path, main = ctx.main, owner = name, supr = s"M$name", isupers = ISZ(name),
       fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
@@ -1468,12 +1471,12 @@ import BitCodecGen._
     )
   }
 
-  def genSpecGenUnion(first: B, context: Context, spec: Spec.GenUnion, reporter: Reporter): Context = {
+  def genSpecGenUnion(first: B, context: Context, spec: Spec.GenUnionImpl, reporter: Reporter): Context = {
     val name = spec.name
     val subs = spec.subs
     val normSubs: ISZ[Spec] = for (sub <- subs) yield
       if (sub.isInstanceOf[Spec.Composite]) sub else Spec.Concat(ops.StringOps(sub.name).firstToUpper, ISZ(sub))
-    val (ctx, fname) = context.fieldName(context.path, name)
+    val (ctx, fname) = context.fieldName(context.path, spec.asOpt.getOrElse(name))
     var subContext = ctx(path = context.path :+ fname, main = ctx.main, owner = name, supr = s"M$name",
       isupers = ISZ(name), fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), tpeInits = ISZ(), wellFormed = ISZ(),
       decoding = ISZ(), encoding = ISZ(), members = ISZ(), omembers = ISZ())
@@ -1483,6 +1486,7 @@ import BitCodecGen._
     val encode: ST =
       if (isBounded) st"def encode(context: Context): Option[ISZ[B]]"
       else st"def encode(buffSize: Z, context: Context): Option[ISZ[B]]"
+    val wfName = s"wf${spec.asOpt.getOrElse(name)}"
     return Context(
       path = context.path,
       errNum = subContext.errNum + 1,
@@ -1550,9 +1554,9 @@ import BitCodecGen._
       m2i = context.m2i :+ st"$fname.toImmutable",
       tpeInits = context.tpeInits :+ ((st"M$name", st"${normSubs(0).name}.empty")),
       wellFormed = context.wellFormed :+
-        st"""val wf$name = $fname.wellFormed
-            |if (wf$name != 0) {
-            |  return wf$name
+        st"""val $wfName = $fname.wellFormed
+            |if ($wfName != 0) {
+            |  return $wfName
             |}""",
       decoding = context.decoding :+
         st"""val ${fname}ChoiceContext = $name.ChoiceContext.empty

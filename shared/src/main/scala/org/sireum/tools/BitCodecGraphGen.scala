@@ -299,7 +299,7 @@ import BitCodecGraphGen._
 
   @pure def genSpec(o: Spec): GenResult = {
     o match {
-      case o: Concat =>
+      case o: ConcatImpl =>
         return genSpecConcat(ISZ(o.name), o, HashSMap.empty)
       case _ =>
         val oNorm = Concat("", ISZ(o))
@@ -308,13 +308,21 @@ import BitCodecGraphGen._
     }
   }
 
-  @pure def genSpecConcat(path: ISZ[String], o: Concat, acc: GenResult): GenResult = {
+  @pure def genSpecConcat(path: ISZ[String], o: ConcatImpl, acc: GenResult): GenResult = {
     var accs = acc
     var r = Graph.empty[BcNode, BcEdge]
     var current = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
     var currentIndex: Z = 0
     var subNumMap = HashMap.empty[String, Z]
     r = r * current
+
+    def normalize(s: Spec): ConcatImpl = {
+      s match {
+        case s: ConcatImpl => return s
+        case s: Composite => return ConcatImpl(ops.StringOps(s.name).firstToUpper, ISZ(s), s.asOpt)
+        case _ => return Concat(ops.StringOps(s.name).firstToUpper, ISZ(s))
+      }
+    }
 
     def updateCurrent(node: BcNode.Container): Unit = {
       r = r(nodes = (r.nodes - current ~> currentIndex) + node ~> currentIndex, nodesInverse = r.nodesInverse(currentIndex ~> node))
@@ -326,7 +334,7 @@ import BitCodecGraphGen._
       current = node
     }
 
-    def sub(from: BcNode, element: Concat, to: BcNode, inLabelOpt: Option[String], outLabelOpt: Option[String]): Unit = {
+    def sub(from: BcNode, element: ConcatImpl, to: BcNode, inLabelOpt: Option[String], outLabelOpt: Option[String]): Unit = {
       var name: String = element.name
       subNumMap.get(name) match {
         case Some(n) =>
@@ -334,7 +342,7 @@ import BitCodecGraphGen._
           name = s"$name$n"
         case _ => subNumMap = subNumMap + name ~> 2
       }
-      val elementNode = BcNode.Sub(element.name, path :+ ops.StringOps(name).firstToLower)
+      val elementNode = BcNode.Sub(element.name, path :+ ops.StringOps(element.asOpt.getOrElse(name)).firstToLower)
       r = r * elementNode
       r = r.addDataEdge(BcEdge(inLabelOpt, None()), from, elementNode)
       r = r.addDataEdge(BcEdge(outLabelOpt, None()), elementNode, to)
@@ -349,10 +357,7 @@ import BitCodecGraphGen._
       val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
       r = r * next
       val predsLabel = renderPreds(preds)
-      val eNorm: Concat = e match {
-        case e: Concat => e
-        case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
-      }
+      val eNorm: ConcatImpl = normalize(e)
       val loopLabel: String = if (isWhile) predsLabel else s"!($predsLabel)"
       sub(bPre, eNorm, bPost, None(), if (maxElements > 0) Some(s"max: $maxElements") else None())
       r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
@@ -363,7 +368,7 @@ import BitCodecGraphGen._
 
     for (element <- o.elements) {
       element match {
-        case element: Concat =>
+        case element: ConcatImpl =>
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           sub(current, element, next, None(), None())
           setCurrent(next)
@@ -390,10 +395,7 @@ import BitCodecGraphGen._
               val elements = desc.elementsOpt.get
               for (i <- 0 until elements.size) {
                 val e = elements(i)
-                val eNorm: Concat = e match {
-                  case e: Concat => e
-                  case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
-                }
+                val eNorm: ConcatImpl = normalize(e)
                 sub(bPre, eNorm, bPost, Some(s"$i"), None())
               }
               val label = dependsOn.render
@@ -409,10 +411,7 @@ import BitCodecGraphGen._
               r = r * next
               val loopLabel = dependsOn.render
               val e = desc.elementsOpt.get(0)
-              val eNorm: Concat = e match {
-                case e: Concat => e
-                case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
-              }
+              val eNorm: ConcatImpl = normalize(e)
               sub(bPre, eNorm, bPost, None(), if (desc.max > 0) Some(s"max: ${desc.max}") else None())
               r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
               r = r.addDataEdge(BcEdge(Some(loopLabel), tooltipOpt), bPost, bPre)
@@ -423,7 +422,7 @@ import BitCodecGraphGen._
               updateCurrent(current(elements = current.elements :+
                 BcNode.Element(desc.name, st"&lt;$max...($dependsOn)&gt;".render)))
           }
-        case element: PredUnion =>
+        case element: PredUnionImpl =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
           r = r * bPre
           val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -431,10 +430,7 @@ import BitCodecGraphGen._
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
           for (e <- element.subs) {
-            val eNorm: Concat = e match {
-              case PredSpec(_, spec: Concat) => spec
-              case _ => Concat(ops.StringOps(e.spec.name).firstToUpper, ISZ(e.spec))
-            }
+            val eNorm: ConcatImpl = normalize(e.spec)
             sub(bPre, eNorm, bPost, Some(renderPreds(e.preds)), None())
           }
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
@@ -444,7 +440,7 @@ import BitCodecGraphGen._
           predRepeat(T, element.preds, element.element, element.maxElements)
         case element: PredRepeatUntilImpl =>
           predRepeat(F, element.preds, element.element, element.maxElements)
-        case element: GenUnion =>
+        case element: GenUnionImpl =>
           val bPre = BcNode.Branch(path :+ s"${r.nodes.size}")
           r = r * bPre
           val bPost = BcNode.Branch(path :+ s"${r.nodes.size}")
@@ -452,10 +448,7 @@ import BitCodecGraphGen._
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
           for (e <- element.subs) {
-            val eNorm: Concat = e match {
-              case e: Concat => e
-              case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
-            }
+            val eNorm: ConcatImpl = normalize(e)
             sub(bPre, eNorm, bPost, None(), None())
           }
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
@@ -469,10 +462,7 @@ import BitCodecGraphGen._
           val next = BcNode.Container(path :+ s"${r.nodes.size}", ISZ())
           r = r * next
           val e = element.element
-          val eNorm: Concat = e match {
-            case e: Concat => e
-            case _ => Concat(ops.StringOps(e.name).firstToUpper, ISZ(e))
-          }
+          val eNorm: ConcatImpl = normalize(e)
           sub(bPre, eNorm, bPost, None(), if (element.maxElements > 0) Some(s"max: ${element.maxElements}") else None())
           r = r.addDataEdge(BcEdge(None(), None()), current, bPre)
           r = r.addDataEdge(BcEdge(None(), None()), bPost, bPre)
