@@ -59,6 +59,6 @@ object SerializerGenJvm {
       case _ => ISZ()
     }
     val r = SerializerGen.gen(mode, sources, packageName, reporter, lOpt, fOpt, nameOpt)
-    return if (reporter.hasError) None() else Some(r.render.value)
+    return if (reporter.hasError) None() else Some(r.render)
   }
 }
