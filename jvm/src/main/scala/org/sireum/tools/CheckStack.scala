@@ -35,8 +35,10 @@ object CheckStack {
   val PERL_UNAVAILABLE: Z = -3
   val OBJDUMP_UNAVAILABLE: Z = -4
   val OBJDUMP_ERROR: Z = -5
+  val NO_INPUT: Z = -6
+  val INVALID_INPUT: Z = -7
 
-  def run(sireumHome: Os.Path, version: String, paths: ISZ[Os.Path], objdump: String, arch: String): Z = {
+  def run(sireumHome: Os.Path, version: String, paths: ISZ[Os.Path], isBin: B, objdump: String, arch: String): Z = {
 
     var out = ISZ[String]()
 
@@ -51,44 +53,109 @@ object CheckStack {
       return T
     }
 
-    val checkstack = sireumHome / "bin" / "linux" / ".checkstack"
-    val ver = sireumHome / "bin" / "linux" / ".checkstack.ver"
-    if (!checkstack.exists || !ver.exists || ver.read != version) {
-      checkstack.downloadFrom(s"https://raw.githubusercontent.com/torvalds/linux/$version/scripts/checkstack.pl")
-      ver.write(version)
-    }
-
-    if (!Os.isLinux) {
-      eprintln("This tool is only available under Linux")
-      return NOT_LINUX
-    }
-
-    if (Os.proc(ISZ("perl", "-v")).run().exitCode != 0) {
-      eprintln("This tool requires perl")
-      return PERL_UNAVAILABLE
-    }
-
-    if (Os.proc(ISZ(objdump, "--version")).run().exitCode != 0) {
-      eprintln(s"Could not find $objdump")
-      return OBJDUMP_UNAVAILABLE
-    }
-
-    for (path <- paths) {
-      if (path.isFile) {
-        if (!dump(path)) {
-          return OBJDUMP_ERROR
+    def dotsu(): Z = {
+      @pure def lt(s1: String, s2: String): B = {
+        val s1s = ops.StringOps(s1).split((c: C) => c == '\t')
+        if (s1s.size != 3) {
+          halt(
+            st"""Ill-formed .su line:
+                |$s1""".render)
         }
-      } else {
-        for (p <- Os.Path.walk(path, F, F, (_: Os.Path) => T)) {
-          if (ops.StringOps(p.name).endsWith(".o")) {
-            if (!dump(p)) {
-              return OBJDUMP_ERROR
+        val n1: Z = Z(s1s(1)) match {
+          case Some(m1) => m1
+          case _ =>
+            halt(
+              st"""Ill-formed .su line:
+                  |$s1""".render)
+        }
+        val s2s = ops.StringOps(s2).split((c: C) => c == '\t')
+        if (s2s.size != 3) {
+          halt(
+            st"""Ill-formed .su line:
+                |$s2""".render)
+        }
+        val n2: Z = Z(s2s(1)) match {
+          case Some(m2) => m2
+          case _ =>
+            halt(
+              st"""Ill-formed .su line:
+                  |$s2""".render)
+        }
+        if (n1 > n2) {
+          return T
+        } else if (n1 == n2) {
+          return s1s(0).size < s2s(0).size
+        } else {
+          return F
+        }
+      }
+      for (path <- paths) {
+        for (file <- Os.Path.walk(path, F, F, (p: Os.Path) => ops.StringOps(p.name).endsWith(".su"))) {
+          out = out ++ file.readLines
+        }
+      }
+      if (out.isEmpty) {
+        eprintln("Could not find .su files")
+        return NO_INPUT
+      }
+
+      for (line <- ops.ISZOps(out).sortWith(lt _)) {
+        println(line)
+      }
+      return 0
+    }
+
+    def bin(): Z = {
+      if (!Os.isLinux) {
+        eprintln("Binary mode is only available under Linux")
+        return NOT_LINUX
+      }
+
+      if (Os.proc(ISZ("perl", "-v")).run().exitCode != 0) {
+        eprintln("Binary mode requires perl")
+        return PERL_UNAVAILABLE
+      }
+
+      if (Os.proc(ISZ(objdump, "--version")).run().exitCode != 0) {
+        eprintln(s"Could not find $objdump")
+        return OBJDUMP_UNAVAILABLE
+      }
+
+      val checkstack = sireumHome / "bin" / "linux" / ".checkstack"
+      val ver = sireumHome / "bin" / "linux" / ".checkstack.ver"
+      if (!checkstack.exists || !ver.exists || ver.read != version) {
+        checkstack.downloadFrom(s"https://raw.githubusercontent.com/torvalds/linux/$version/scripts/checkstack.pl")
+        ver.write(version)
+      }
+
+      for (path <- paths) {
+        if (path.isFile) {
+          if (!dump(path)) {
+            return OBJDUMP_ERROR
+          }
+        } else {
+          for (p <- Os.Path.walk(path, F, F, (_: Os.Path) => T)) {
+            if (ops.StringOps(p.name).endsWith(".o")) {
+              if (!dump(p)) {
+                return OBJDUMP_ERROR
+              }
             }
           }
         }
       }
+      if (out.isEmpty) {
+        eprintln("Could not find .o files")
+        return NO_INPUT
+      }
+      val outs = st"""${(out, "\n\n")}""".render
+      return Os.proc(ISZ("perl", checkstack.string, arch)).input(outs).console.run().exitCode
     }
-    val outs = st"""${(out, "\n\n")}""".render
-    return Os.proc(ISZ("perl", checkstack.string, arch)).input(outs).console.run().exitCode
+
+    if (isBin) {
+      return bin()
+    } else {
+      return dotsu()
+    }
+
   }
 }

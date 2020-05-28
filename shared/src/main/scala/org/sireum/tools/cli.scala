@@ -174,17 +174,23 @@ object cli {
     header = "Sireum CheckStack",
     usage = "<option>* ( <file> | <dir> )*",
     opts = ISZ(
-      Opt(name = "objdump", longKey = "objdump", shortKey = Some('o'),
-        tpe = Type.Str(None(), Some("objdump")),
-        description = "Name of object file dumper"),
-      Opt(name = "arch", longKey = "arch", shortKey = Some('a'),
-        tpe = Type.Choice("Arch", None(), ISZ(
-          "amd64", "x86", "aarch64", "arm", "powerpc", "openrisc", "mips", "mips64", "m68k", "ia64", "nios2", "parisc",
-          "s390x", "sh64", "sparc"
-        )),
-        description = "Target architecture")
+      Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
+        tpe = Type.Choice(name = "CheckStackMode", sep = None(), elements =  ISZ("dotsu", "bin")),
+        description = "Analysis mode"),
     ),
-    groups = ISZ()
+    groups = ISZ(
+      OptGroup(name = "Binary Mode", opts = ISZ(
+        Opt(name = "objdump", longKey = "objdump", shortKey = Some('o'),
+          tpe = Type.Str(None(), Some("objdump")),
+          description = "Name of object file dumper"),
+        Opt(name = "arch", longKey = "arch", shortKey = Some('a'),
+          tpe = Type.Choice("CheckStackArch", None(), ISZ(
+            "amd64", "x86", "aarch64", "arm", "powerpc", "openrisc", "mips", "mips64", "m68k", "ia64", "nios2", "parisc",
+            "s390x", "sh64", "sparc"
+          )),
+          description = "Target architecture")
+      ))
+    )
   )
 
   val group: Group = Group(
