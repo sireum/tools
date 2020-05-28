@@ -167,11 +167,31 @@ object cli {
     groups = ISZ()
   )
 
+  val checkstackTool: Tool = Tool(
+    name = "checkstack",
+    command = "checkstack",
+    description = "Native function stack size check tool",
+    header = "Sireum CheckStack",
+    usage = "<option>* ( <file> | <dir> )*",
+    opts = ISZ(
+      Opt(name = "objdump", longKey = "objdump", shortKey = Some('o'),
+        tpe = Type.Str(None(), Some("objdump")),
+        description = "Name of object file dumper"),
+      Opt(name = "arch", longKey = "arch", shortKey = Some('a'),
+        tpe = Type.Choice("Arch", None(), ISZ(
+          "amd64", "x86", "aarch64", "arm", "powerpc", "openrisc", "mips", "mips64", "m68k", "ia64", "nios2", "parisc",
+          "s390x", "sh64", "sparc"
+        )),
+        description = "Target architecture")
+    ),
+    groups = ISZ()
+  )
+
   val group: Group = Group(
     name = "tools",
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(bcGenTool, cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
   )
 }
