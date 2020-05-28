@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,35 +27,35 @@ package org.sireum.tools
 
 import org.sireum.message._
 import com.sksamuel.diffpatch.DiffMatchPatch
-import org.sireum.{Os, None => SNone, Some => SSome, String => SString, ISZ}
+import org.sireum._
 import Paths._
 import org.sireum.test.SireumSpec
 
 class SerializerGenJvmTest extends SireumSpec {
 
-  *(gen(Seq(slangInfoPath, slangAstPath), slangMsgPackPath, SerializerGen.Mode.MessagePack))
+  *(gen(ISZ(slangInfoPath, slangAstPath), slangMsgPackPath, SerializerGen.Mode.MessagePack))
 
-  *(gen(Seq(slangInfoPath, slangAstPath), slangJSONPath, SerializerGen.Mode.JSON))
+  *(gen(ISZ(slangInfoPath, slangAstPath), slangJSONPath, SerializerGen.Mode.JSON))
 
-  def gen(srcs: Seq[Os.Path], dest: Os.Path, mode: SerializerGen.Mode.Type): Boolean = {
+  def gen(srcs: ISZ[Os.Path], dest: Os.Path, mode: SerializerGen.Mode.Type): Boolean = {
     val reporter = Reporter.create
     val rOpt =
-      SerializerGenJvm(
+      SerializerGenJvm.run(
         allowSireumPackage = true,
         mode,
-        SSome(licensePath),
+        Some(licensePath),
         srcs,
         dest,
-        SSome(ISZ[SString]("org", "sireum", "lang", "tipe")),
-        SNone(),
+        Some(ISZ[String]("org", "sireum", "lang", "tipe")),
+        None(),
         reporter
       )
     reporter.printMessages()
     rOpt match {
-      case SSome(r) =>
+      case Some(r) =>
         if (dest.exists) {
           val expected = dest.read.value
-          val result = r
+          val result = r.value
           if (!(result =~= expected)) {
             val dmp = new DiffMatchPatch()
             Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))

@@ -1,5 +1,6 @@
+// #Sireum
 /*
- Copyright (c) 2019, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,29 +26,28 @@
 
 package org.sireum.tools
 
-import org.sireum.{ISZ, Z, None => SNone, Option => SOption, Some => SSome, String => SString, Os}
+import org.sireum._
 import org.sireum.cli.CliOpt
 
 object CliGenJvm {
 
-  def apply(
-    licenseOpt: SOption[Os.Path],
+  def run(
+    licenseOpt: Option[Os.Path],
     config: CliOpt,
     src: Os.Path,
     dest: Os.Path,
-    packageName: ISZ[SString],
-    nameOpt: SOption[SString],
+    packageName: ISZ[String],
+    nameOpt: Option[String],
     firstColumnLimit: Z,
     secondColumnLimit: Z
   ): String = {
-    val lOpt = licenseOpt match {
-      case SSome(f) => SSome(SString(f.read.value.trim))
-      case _ => SNone[SString]()
+    val lOpt: Option[String] = licenseOpt match {
+      case Some(f) => Some(ops.StringOps(f.read).trim)
+      case _ => None()
     }
-    val fOpt = SSome(src.name)
-    CliGen(firstColumnLimit, secondColumnLimit + firstColumnLimit)
+    val fOpt = Some(src.name)
+    return CliGen(firstColumnLimit, secondColumnLimit + firstColumnLimit)
       .gen(lOpt, fOpt, packageName, nameOpt.getOrElse("Cli"), config)
       .render
-      .value
   }
 }

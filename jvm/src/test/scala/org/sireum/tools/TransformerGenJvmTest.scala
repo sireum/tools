@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,12 +40,12 @@ class TransformerGenJvmTest extends SireumSpec {
   def gen(src: Os.Path, dest: Os.Path, isImmutable: Boolean): Boolean = {
     val reporter = Reporter.create
     val rOpt =
-      TransformerGenJvm(allowSireumPackage = true, isImmutable, SSome(licensePath), src, dest, SNone(), reporter)
+      TransformerGenJvm.run(allowSireumPackage = true, isImmutable, SSome(licensePath), src, dest, SNone(), reporter)
     reporter.printMessages()
     rOpt match {
       case SSome(r) =>
         val expected = dest.read.value
-        val result = r
+        val result = r.value
         if (!(result =~= expected)) {
           val dmp = new DiffMatchPatch()
           Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))

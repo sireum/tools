@@ -1,5 +1,6 @@
+// #Sireum
 /*
- Copyright (c) 2019, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,42 +26,39 @@
 
 package org.sireum.tools
 
+import org.sireum._
 import org.sireum.message._
-import org.sireum.{Os, ISZ, None => SNone, Option => SOption, Some => SSome, String => SString}
 
 object SerializerGenJvm {
-  val messageKind = "JsonGen"
+  val messageKind: String = "JsonGen"
 
-  def apply(
-    allowSireumPackage: Boolean,
+  def run(
+    allowSireumPackage: B,
     mode: SerializerGen.Mode.Type,
-    licenseOpt: SOption[Os.Path],
-    srcs: Seq[Os.Path],
+    licenseOpt: Option[Os.Path],
+    srcs: ISZ[Os.Path],
     dest: Os.Path,
-    packageNameOpt: SOption[ISZ[SString]],
-    nameOpt: SOption[SString],
+    packageNameOpt: Option[ISZ[String]],
+    nameOpt: Option[String],
     reporter: Reporter
-  ): SOption[String] = {
-    val lOpt = licenseOpt match {
-      case SSome(f) => SSome(SString(f.read.value.trim))
-      case _ => SNone[SString]()
+  ): Option[String] = {
+    val lOpt: Option[String] = licenseOpt match {
+      case Some(f) => Some(ops.StringOps(f.read).trim)
+      case _ => None()
     }
-    var uris = Vector[SString]()
-    var sources = ISZ[(SOption[SString], SString)]()
+    var uris = ISZ[String]()
+    var sources = ISZ[(Option[String], String)]()
     for (src <- srcs) {
       val srcText = src.read
       uris = uris :+ src.name
-      sources = sources :+ ((SSome(src.toUri), srcText))
+      sources = sources :+ ((Some(src.toUri), srcText))
     }
-    val fOpt = {
-      import org.sireum._
-      SSome(st"${(uris, ", ")}".render)
-    }
-    val packageName: ISZ[SString] = packageNameOpt match {
-      case SSome(pn) => pn
+    val fOpt: Option[String] = Some(st"${(uris, ", ")}".render)
+    val packageName: ISZ[String] = packageNameOpt match {
+      case Some(pn) => pn
       case _ => ISZ()
     }
     val r = SerializerGen.gen(mode, sources, packageName, reporter, lOpt, fOpt, nameOpt)
-    if (reporter.hasError) SNone() else SSome(r.render.value)
+    return if (reporter.hasError) None() else Some(r.render.value)
   }
 }

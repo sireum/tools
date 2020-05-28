@@ -1,5 +1,6 @@
+// #Sireum
 /*
- Copyright (c) 2019, Robby, Kansas State University
+ Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -25,36 +26,36 @@
 
 package org.sireum.tools
 
+import org.sireum._
 import org.sireum.message._
 import org.sireum.lang.ast._
 import org.sireum.lang.parser.SlangParser
-import org.sireum.{Os, None => SNone, Option => SOption, Some => SSome, String => SString}
 
 object TransformerGenJvm {
-  val messageKind = "TransformerGen"
+  val messageKind: String = "TransformerGen"
 
-  def apply(
-    allowSireumPackage: Boolean,
-    isImmutable: Boolean,
-    licenseOpt: SOption[Os.Path],
+  def run(
+    allowSireumPackage: B,
+    isImmutable: B,
+    licenseOpt: Option[Os.Path],
     src: Os.Path,
     dest: Os.Path,
-    nameOpt: SOption[SString],
+    nameOpt: Option[String],
     reporter: Reporter
-  ): SOption[String] = {
+  ): Option[String] = {
     val srcText = src.read
-    val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, SSome(src.toUri), srcText.value, reporter)
+    val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
     r.unitOpt match {
-      case SSome(p: TopUnit.Program) =>
+      case Some(p: TopUnit.Program) =>
         val lOpt = licenseOpt match {
-          case SSome(f) => SSome(SString(f.read.value.trim))
-          case _ => SNone[SString]()
+          case Some(f) => Some(String(f.read.value.trim))
+          case _ => None[String]()
         }
-        val fOpt = SSome(src.name)
-        SSome(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
+        val fOpt = Some(src.name)
+        Some(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
       case _ =>
-        reporter.error(SNone(), "TransformerGen", "Expecting program input.")
-        return SNone()
+        reporter.error(None(), "TransformerGen", "Expecting program input.")
+        return None()
     }
   }
 }
