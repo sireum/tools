@@ -1,4 +1,3 @@
-// #Sireum
 /*
  Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
@@ -47,12 +46,12 @@ object TransformerGenJvm {
     val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
     r.unitOpt match {
       case Some(p: TopUnit.Program) =>
-        val lOpt = licenseOpt match {
+        val lOpt: Option[String] = licenseOpt match {
           case Some(f) => Some(String(f.read.value.trim))
           case _ => None[String]()
         }
         val fOpt = Some(src.name)
-        Some(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
+        return Some(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
       case _ =>
         reporter.error(None(), "TransformerGen", "Expecting program input.")
         return None()
