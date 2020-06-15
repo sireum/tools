@@ -37,6 +37,7 @@ object Paths {
   val cliPath = rootDir / "kekinian" / "cli" / "jvm" / "src" / "main" / "scala" / "org" / "sireum" / "Cli.scala"
   val slangAstPackagePath = rootDir / "slang" / "ast" / "shared" / "src" / "main" / "scala" / "org" / "sireum" / "lang" / "ast"
   val slangAstPath = slangAstPackagePath / "AST.scala"
+  val slangTypedPath = slangAstPackagePath / "Typed.scala"
   val slangMTransformerPath = slangAstPackagePath / "MTransformer.scala"
   val slangTransformerPath = slangAstPackagePath / "Transformer.scala"
   val slangTipePath = rootDir / "slang" / "tipe" / "shared" / "src" / "main" / "scala" / "org" / "sireum" / "lang"

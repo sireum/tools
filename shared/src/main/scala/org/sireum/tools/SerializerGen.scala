@@ -977,10 +977,11 @@ object SerializerGen {
     @pure def basic(tipe: AST.Type): Option[(B, String)] = {
       tipe match {
         case tipe: AST.Type.Named =>
-          if (tipe.typeArgs.nonEmpty || tipe.name.ids.size != 1) {
+          val ids = tipe.name.ids
+          if (!(tipe.typeArgs.isEmpty || ids.size == 1 || (ids.size == 3 && ids(0).value == "org" && ids(1).value == "sireum"))) {
             return None()
           }
-          val r = tipe.name.ids(0).value
+          val r = tipe.name.ids(tipe.name.ids.size - 1).value
           var isSimple = T
           r.native match {
             case "B" =>

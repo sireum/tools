@@ -33,9 +33,9 @@ import org.sireum.test.SireumSpec
 
 class SerializerGenJvmTest extends SireumSpec {
 
-  *(gen(ISZ(slangInfoPath, slangAstPath), slangMsgPackPath, SerializerGen.Mode.MessagePack))
+  *(gen(ISZ(slangInfoPath, slangAstPath, slangTypedPath), slangMsgPackPath, SerializerGen.Mode.MessagePack))
 
-  *(gen(ISZ(slangInfoPath, slangAstPath), slangJSONPath, SerializerGen.Mode.JSON))
+  *(gen(ISZ(slangInfoPath, slangAstPath, slangTypedPath), slangJSONPath, SerializerGen.Mode.JSON))
 
   def gen(srcs: ISZ[Os.Path], dest: Os.Path, mode: SerializerGen.Mode.Type): Boolean = {
     val reporter = Reporter.create
