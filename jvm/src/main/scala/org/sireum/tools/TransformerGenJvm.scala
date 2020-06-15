@@ -27,7 +27,7 @@ package org.sireum.tools
 
 import org.sireum._
 import org.sireum.message._
-import org.sireum.lang.ast._
+import org.sireum.lang.{ast => AST}
 import org.sireum.lang.parser.SlangParser
 
 object TransformerGenJvm {
@@ -37,24 +37,37 @@ object TransformerGenJvm {
     allowSireumPackage: B,
     isImmutable: B,
     licenseOpt: Option[Os.Path],
-    src: Os.Path,
-    dest: Os.Path,
+    sources: ISZ[Os.Path],
     nameOpt: Option[String],
     reporter: Reporter
   ): Option[String] = {
-    val srcText = src.read
-    val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
-    r.unitOpt match {
-      case Some(p: TopUnit.Program) =>
-        val lOpt: Option[String] = licenseOpt match {
-          case Some(f) => Some(String(f.read.value.trim))
-          case _ => None[String]()
-        }
-        val fOpt = Some(src.name)
-        return Some(PrePostTransformerGen.gen(isImmutable, lOpt, fOpt, nameOpt, p, reporter).render.value)
-      case _ =>
-        reporter.error(None(), "TransformerGen", "Expecting program input.")
-        return None()
+    if (sources.isEmpty) {
+      reporter.error(None(), "TransformerGen", "Expecting a program input")
+      return None()
     }
+    var programs = ISZ[AST.TopUnit.Program]()
+    for (src <- sources) {
+      val srcText = src.read
+      val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
+      r.unitOpt match {
+        case Some(p: AST.TopUnit.Program) =>
+          programs = programs :+ p
+        case _ =>
+          reporter.error(None(), "TransformerGen", s"$src is not a Slang program")
+          return None()
+      }
+    }
+    for (i <- 1 until programs.size) {
+      if (programs(i - 1).packageName.ids.map((id: AST.Id) => id.value) != programs(i).packageName.ids.map((id: AST.Id) => id.value)) {
+        reporter.error(None(), "TransformerGen", "All program inputs should be in the same package")
+        return None()
+      }
+    }
+    val lOpt: Option[String] = licenseOpt match {
+      case Some(f) => Some(String(f.read.value.trim))
+      case _ => None[String]()
+    }
+    return Some(PrePostTransformerGen.gen(isImmutable, lOpt, nameOpt,
+      for (source <- sources) yield source.name, programs, reporter).render.value)
   }
 }

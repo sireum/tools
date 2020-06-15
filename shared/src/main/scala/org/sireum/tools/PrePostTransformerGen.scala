@@ -40,23 +40,24 @@ object PrePostTransformerGen {
   def gen(
     isImmutable: B,
     licenseOpt: Option[String],
-    fileOpt: Option[String],
     nameOpt: Option[String],
-    p: AST.TopUnit.Program,
+    fileUris: ISZ[String],
+    programs: ISZ[AST.TopUnit.Program],
     reporter: Reporter
   ): ST = {
-
     val gdr = GlobalDeclarationResolver(HashMap.empty, HashMap.empty, reporter)
-    gdr.resolveProgram(p)
+    for (p <- programs) {
+      gdr.resolveProgram(p)
+    }
     val name = nameOpt.getOrElse(if (isImmutable) "Transformer" else "MTransformer")
     val t = PrePostTransformerGen(
       gdr.globalNameMap,
       gdr.globalTypeMap,
-      AST.Util.ids2strings(p.packageName.ids),
+      AST.Util.ids2strings(programs(0).packageName.ids),
       isImmutable,
       reporter
     )
-    val r = t.gen(licenseOpt, fileOpt, name)
+    val r = t.gen(licenseOpt, fileUris, name)
     reporter.reports(t.reporter.messages)
     return r
   }
@@ -83,7 +84,7 @@ object PrePostTransformerGen {
   var transformMethods: ISZ[ST] = ISZ()
   var transformSpecificMethods: ISZ[ST] = ISZ()
 
-  def gen(licenseOpt: Option[String], fileUriOpt: Option[String], name: String): ST = {
+  def gen(licenseOpt: Option[String], fileUris: ISZ[String], name: String): ST = {
     for (ti <- globalTypes) {
       ti match {
         case ti: TypeInfo.Adt => genAdt(ti)
@@ -93,7 +94,7 @@ object PrePostTransformerGen {
     }
     template.main(
       licenseOpt,
-      fileUriOpt,
+      fileUris,
       packageName,
       name,
       preMethods,

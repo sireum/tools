@@ -34,7 +34,7 @@ object TransformerGen {
 
     def main(
       licenseOpt: Option[String],
-      fileUriOpt: Option[String],
+      fileUris: ISZ[String],
       packageNames: ISZ[String],
       name: String,
       preMethods: ISZ[ST],
@@ -115,7 +115,7 @@ object TransformerGen {
 
       @pure def main(
         licenseOpt: Option[String],
-        fileUriOpt: Option[String],
+        fileUris: ISZ[String],
         packageNames: ISZ[String],
         name: String,
         preMethods: ISZ[ST],
@@ -127,7 +127,7 @@ object TransformerGen {
         | $text
         | */
         |""")
-        val fileUri: Option[ST] = fileUriOpt.map((text: String) => st"""// This file is auto-generated from $text
+        val fileUri: ISZ[ST] = fileUris.map((text: String) => st"""// This file is auto-generated from $text
         |""")
         val packageName: Option[ST] =
           if (packageNames.nonEmpty) Some(st"""package ${(packageNames, ".")}
@@ -136,7 +136,7 @@ object TransformerGen {
         |// @formatter:off
         |
         |$license
-        |$fileUri
+        |${(fileUri, "\n")}
         |$packageName
         |import org.sireum._
         |
@@ -387,7 +387,7 @@ object TransformerGen {
 
       @pure def main(
         licenseOpt: Option[String],
-        fileUriOpt: Option[String],
+        fileUris: ISZ[String],
         packageNames: ISZ[String],
         name: String,
         preMethods: ISZ[ST],
@@ -399,8 +399,8 @@ object TransformerGen {
         | $text
         | */
         |""")
-        val fileUri: Option[ST] = fileUriOpt.map((text: String) => st"""// This file is auto-generated from $text
-        |""")
+        val fileUri: ST = st"""// This file is auto-generated from ${(fileUris, ", ")}
+        |"""
         val packageName: Option[ST] =
           if (packageNames.nonEmpty) Some(st"""package ${(packageNames, ".")}
           |""") else None[ST]()

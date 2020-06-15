@@ -29,18 +29,18 @@ import org.sireum.message._
 import org.sireum.test.SireumSpec
 import Paths._
 import com.sksamuel.diffpatch.DiffMatchPatch
-import org.sireum.{Os, Some => SSome, None => SNone}
+import org.sireum.{Os, Some => SSome, None => SNone, ISZ}
 
 class TransformerGenJvmTest extends SireumSpec {
 
-  *(gen(slangAstPath, slangMTransformerPath, isImmutable = false))
+  *(gen(ISZ(slangAstPath, slangTypedPath), slangMTransformerPath, isImmutable = false))
 
-  *(gen(slangAstPath, slangTransformerPath, isImmutable = true))
+  *(gen(ISZ(slangAstPath, slangTypedPath), slangTransformerPath, isImmutable = true))
 
-  def gen(src: Os.Path, dest: Os.Path, isImmutable: Boolean): Boolean = {
+  def gen(src: ISZ[Os.Path], dest: Os.Path, isImmutable: Boolean): Boolean = {
     val reporter = Reporter.create
     val rOpt =
-      TransformerGenJvm.run(allowSireumPackage = true, isImmutable, SSome(licensePath), src, dest, SNone(), reporter)
+      TransformerGenJvm.run(allowSireumPackage = true, isImmutable, SSome(licensePath), src, SNone(), reporter)
     reporter.printMessages()
     rOpt match {
       case SSome(r) =>
