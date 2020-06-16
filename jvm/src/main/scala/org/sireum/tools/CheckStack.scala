@@ -50,7 +50,7 @@ object CheckStack {
       ops.StringOps(line).split((c: C) => c == '\t' || c == ':' || c == ' ' || c == '[' || c == ']')
 
     @datatype trait Dotsu extends Template {
-      @strictpure def format(lines: ISZ[String]): ST = {
+      @pure def format(lines: ISZ[String]): ST = {
         var rows = ISZ[ST]()
         for (line <- lines) {
           val s = splitLine(line)
@@ -118,7 +118,7 @@ object CheckStack {
       }
 
       @datatype class Rst extends Dotsu {
-        @strictpure def row(elements: ISZ[String]): ST ={
+        @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
           val r =
             st"""* - $filename [$line, $column]
@@ -141,7 +141,7 @@ object CheckStack {
     }
 
     @datatype trait Bin extends Template {
-      @strictpure def format(lines: ISZ[String]): ST = {
+      @pure def format(lines: ISZ[String]): ST = {
         var rows = ISZ[ST]()
         for (line <- lines) {
           val s = splitLine(line)
@@ -207,7 +207,7 @@ object CheckStack {
       }
 
       @datatype class Rst extends Bin {
-        @strictpure def row(elements: ISZ[String]): ST ={
+        @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
           val r =
             st"""* - $filename [$offset]
