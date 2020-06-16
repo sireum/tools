@@ -157,7 +157,7 @@ object CheckStack {
 
     object Bin {
 
-      @datatype class Plain extends Dotsu {
+      @datatype class Plain extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
           return st"$filename:$offset:$fname\t$size"
@@ -165,7 +165,7 @@ object CheckStack {
         @strictpure def main(rows: ISZ[ST]): ST = st"""${(rows, "\n")}"""
       }
 
-      @datatype class Csv extends Dotsu {
+      @datatype class Csv extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
           return st"$filename,$offset,$fname,$size"
@@ -175,7 +175,7 @@ object CheckStack {
               |${(rows, "\n")}"""
       }
 
-      @datatype class Html extends Dotsu {
+      @datatype class Html extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
           val r =
@@ -195,7 +195,7 @@ object CheckStack {
               |</table>"""
       }
 
-      @datatype class Md extends Dotsu {
+      @datatype class Md extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
           return st"| $filename | $offset | $fname | $size |"
@@ -206,7 +206,7 @@ object CheckStack {
                |${(rows, "\n")}"""
       }
 
-      @datatype class Rst extends Dotsu {
+      @datatype class Rst extends Bin {
         @strictpure def row(elements: ISZ[String]): ST ={
           val ISZ(offset, fname, filename, size) = elements
           val r =
@@ -363,7 +363,7 @@ object CheckStack {
       val ver = sireumHome / "bin" / "linux" / ".checkstack.ver"
       if (!checkstack.exists || !ver.exists || ver.read != version) {
         checkstack.downloadFrom(s"https://raw.githubusercontent.com/torvalds/linux/$version/scripts/checkstack.pl")
-        ver.write(version)
+        ver.writeOver(version)
       }
 
       for (path <- paths) {
