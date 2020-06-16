@@ -30,6 +30,205 @@ import org.sireum._
 
 object CheckStack {
 
+  @enum object Format {
+    'Plain
+    'Html
+    'Md
+    'Rst
+    'Csv
+  }
+
+  @datatype trait Template {
+    @pure def row(elements: ISZ[String]): ST
+    @pure def main(rows: ISZ[ST]): ST
+    @pure def format(lines: ISZ[String]): ST
+  }
+
+  object Template {
+
+    @strictpure def splitLine(line: String): ISZ[String] =
+      ops.StringOps(line).split((c: C) => c == '\t' || c == ':' || c == ' ' || c == '[' || c == ']')
+
+    @datatype trait Dotsu extends Template {
+      @strictpure def format(lines: ISZ[String]): ST = {
+        var rows = ISZ[ST]()
+        for (line <- lines) {
+          val s = splitLine(line)
+          if (s.size == 6) {
+            rows = rows :+ row(s)
+          } else {
+            halt(s"Invalid input line: '$line'")
+          }
+        }
+        return main(rows)
+      }
+    }
+
+    object Dotsu {
+
+      @datatype class Plain extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(filename, line, column, fname, size, alloc) = elements
+          return st"$filename:$line:$column:$fname $size $alloc"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST = st"""${(rows, "\n")}"""
+      }
+
+      @datatype class Csv extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(filename, line, column, fname, size, alloc) = elements
+          return st"$filename,$line,$column,$fname,$size,$alloc"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""Filename,Line,Column,Function,Bytes,Allocation
+              |${(rows, "\n")}"""
+      }
+
+      @datatype class Html extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(filename, line, column, fname, size, alloc) = elements
+          val r =
+            st"""<tr>
+                |  <td>$filename [$line,$column]<br/>$fname</td>
+                |  <td>$size</td>
+                |  <td>$alloc</td>
+                |</tr>"""
+          return r
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""<table class="checkstack_table">
+              |  <tr>
+              |    <th>Function</th>
+              |    <th>Bytes</th>
+              |    <th>Allocation</th>
+              |  </tr>
+              |  ${(rows, "\n")}
+              |</table>"""
+      }
+
+      @datatype class Md extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(filename, line, column, fname, size, alloc) = elements
+          return st"| $filename | $line:$column | $fname | $size | $alloc |"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""| Filename | Position | Function | Bytes | Allocation |
+               || :--- | :---: | :--- | ---: | :---: |
+               |${(rows, "\n")}"""
+      }
+
+      @datatype class Rst extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST ={
+          val ISZ(filename, line, column, fname, size, alloc) = elements
+          val r =
+            st"""* - $filename [$line, $column]
+                |    $fname
+                |  - $size
+                |  - $alloc"""
+          return r
+        }
+
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st""".. list-table:: Checkstack Result
+              |   :widths: 80 10 10
+              |   :header-rows: 1
+              |
+              |   * - Function
+              |     - Bytes
+              |     - Allocation
+              |   ${(rows, "\n")}"""
+      }
+    }
+
+    @datatype trait Bin extends Template {
+      @strictpure def format(lines: ISZ[String]): ST = {
+        var rows = ISZ[ST]()
+        for (line <- lines) {
+          val s = splitLine(line)
+          if (s.size == 4) {
+            rows = rows :+ row(s)
+          } else {
+            halt(s"Invalid input line: '$line'")
+          }
+        }
+        return main(rows)
+      }
+    }
+
+    object Bin {
+
+      @datatype class Plain extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(offset, fname, filename, size) = elements
+          return st"$filename:$offset:$fname\t$size"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST = st"""${(rows, "\n")}"""
+      }
+
+      @datatype class Csv extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(offset, fname, filename, size) = elements
+          return st"$filename,$offset,$fname,$size"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""Filename,Offset,Function,Bytes
+              |${(rows, "\n")}"""
+      }
+
+      @datatype class Html extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(offset, fname, filename, size) = elements
+          val r =
+            st"""<tr>
+                |  <td>$filename [$offset]<br/>$fname</td>
+                |  <td>$size</td>
+                |</tr>"""
+          return r
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""<table class="checkstack_table">
+              |  <tr>
+              |    <th>Function</th>
+              |    <th>Bytes</th>
+              |  </tr>
+              |  ${(rows, "\n")}
+              |</table>"""
+      }
+
+      @datatype class Md extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST = {
+          val ISZ(offset, fname, filename, size) = elements
+          return st"| $filename | $offset | $fname | $size |"
+        }
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st"""| Filename | Offset | Function | Bytes |
+               || :--- | ---: | :--- | ---: |
+               |${(rows, "\n")}"""
+      }
+
+      @datatype class Rst extends Dotsu {
+        @strictpure def row(elements: ISZ[String]): ST ={
+          val ISZ(offset, fname, filename, size) = elements
+          val r =
+            st"""* - $filename [$offset]
+                |    $fname
+                |  - $size"""
+          return r
+        }
+
+        @strictpure def main(rows: ISZ[ST]): ST =
+          st""".. list-table:: Checkstack Result
+              |   :widths: 80 10 10
+              |   :header-rows: 1
+              |
+              |   * - Function
+              |     - Bytes
+              |   ${(rows, "\n")}"""
+      }
+    }
+
+  }
+
   val NO_SIREUM_HOME: Z = -1
   val NOT_LINUX: Z = -2
   val PERL_UNAVAILABLE: Z = -3
@@ -38,7 +237,8 @@ object CheckStack {
   val NO_INPUT: Z = -6
   val INVALID_INPUT: Z = -7
 
-  def run(sireumHome: Os.Path, version: String, paths: ISZ[Os.Path], isBin: B, objdump: String, arch: String): Z = {
+  def run(sireumHome: Os.Path, version: String, paths: ISZ[Os.Path], isBin: B, objdump: String, arch: String,
+          format: Format.Type): Z = {
 
     var out = ISZ[String]()
 
@@ -54,27 +254,27 @@ object CheckStack {
     }
 
     def dotsu(): Z = {
-      @pure def lt(s1: String, s2: String): B = {
-        val s1s = ops.StringOps(s1).split((c: C) => c == '\t')
-        if (s1s.size != 3) {
+      @pure def ltDotsu(s1: String, s2: String): B = {
+        val s1s = Template.splitLine(s1)
+        if (s1s.size != 6) {
           halt(
             st"""Ill-formed .su line:
                 |$s1""".render)
         }
-        val n1: Z = Z(s1s(1)) match {
+        val n1: Z = Z(s1s(4)) match {
           case Some(m1) => m1
           case _ =>
             halt(
               st"""Ill-formed .su line:
                   |$s1""".render)
         }
-        val s2s = ops.StringOps(s2).split((c: C) => c == '\t')
-        if (s2s.size != 3) {
+        val s2s = Template.splitLine(s2)
+        if (s2s.size != 6) {
           halt(
             st"""Ill-formed .su line:
                 |$s2""".render)
         }
-        val n2: Z = Z(s2s(1)) match {
+        val n2: Z = Z(s2s(4)) match {
           case Some(m2) => m2
           case _ =>
             halt(
@@ -99,28 +299,66 @@ object CheckStack {
         return NO_INPUT
       }
 
-      for (line <- ops.ISZOps(out).sortWith(lt _)) {
-        println(line)
+      val template: Template = format match {
+        case CheckStack.Format.Plain => Template.Dotsu.Plain()
+        case CheckStack.Format.Csv => Template.Dotsu.Csv()
+        case CheckStack.Format.Md => Template.Dotsu.Md()
+        case CheckStack.Format.Rst => Template.Dotsu.Rst()
+        case CheckStack.Format.Html => Template.Dotsu.Html()
       }
+
+      println(template.format(ops.ISZOps(out).sortWith(ltDotsu _)).render)
       return 0
     }
 
     def bin(): Z = {
+      @pure def ltBin(s1: String, s2: String): B = {
+        val s1s = Template.splitLine(s1)
+        if (s1s.size != 4) {
+          halt(
+            st"""Ill-formed .su line:
+                |$s1""".render)
+        }
+        val n1: Z = Z(s1s(3)) match {
+          case Some(m1) => m1
+          case _ =>
+            halt(
+              st"""Ill-formed .su line:
+                  |$s1""".render)
+        }
+        val s2s = Template.splitLine(s2)
+        if (s2s.size != 4) {
+          halt(
+            st"""Ill-formed .su line:
+                |$s2""".render)
+        }
+        val n2: Z = Z(s2s(3)) match {
+          case Some(m2) => m2
+          case _ =>
+            halt(
+              st"""Ill-formed .su line:
+                  |$s2""".render)
+        }
+        if (n1 > n2) {
+          return T
+        } else if (n1 == n2) {
+          return s1s(0).size < s2s(0).size
+        } else {
+          return F
+        }
+      }
       if (!Os.isLinux) {
         eprintln("Binary mode is only available under Linux")
         return NOT_LINUX
       }
-
       if (Os.proc(ISZ("perl", "-v")).run().exitCode != 0) {
         eprintln("Binary mode requires perl")
         return PERL_UNAVAILABLE
       }
-
       if (Os.proc(ISZ(objdump, "--version")).run().exitCode != 0) {
         eprintln(s"Could not find $objdump")
         return OBJDUMP_UNAVAILABLE
       }
-
       val checkstack = sireumHome / "bin" / "linux" / ".checkstack"
       val ver = sireumHome / "bin" / "linux" / ".checkstack.ver"
       if (!checkstack.exists || !ver.exists || ver.read != version) {
@@ -148,7 +386,20 @@ object CheckStack {
         return NO_INPUT
       }
       val outs = st"""${(out, "\n\n")}""".render
-      return Os.proc(ISZ("perl", checkstack.string, arch)).input(outs).console.run().exitCode
+      val r = Os.proc(ISZ("perl", checkstack.string, arch)).input(outs).redirectErr.run()
+      val lines = ops.ISZOps(ops.StringOps(r.out).split((c: C) => c == '\n')).sortWith(ltBin _)
+
+      val template: Template = format match {
+        case CheckStack.Format.Plain => Template.Bin.Plain()
+        case CheckStack.Format.Csv => Template.Bin.Csv()
+        case CheckStack.Format.Md => Template.Bin.Md()
+        case CheckStack.Format.Rst => Template.Bin.Rst()
+        case CheckStack.Format.Html => Template.Bin.Html()
+      }
+
+      println(template.format(lines).render)
+
+      return r.exitCode
     }
 
     if (isBin) {

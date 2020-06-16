@@ -189,8 +189,15 @@ object cli {
             "s390x", "sh64", "sparc"
           )),
           description = "Target architecture")
+      )),
+      OptGroup(name = "Output Mode", opts = ISZ(
+        Opt(name = "format", longKey = "format", shortKey = Some('f'),
+          tpe = Type.Choice("CheckStackFormat", None(), ISZ(
+            "plain", "csv", "html", "md", "rst"
+          )),
+          description = "Output format")
       ))
-    )
+    ),
   )
 
   val group: Group = Group(
