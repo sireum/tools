@@ -342,7 +342,7 @@ object CheckStack {
         if (n1 > n2) {
           return T
         } else if (n1 == n2) {
-          return s1s(0).size < s2s(0).size
+          return s1s(3).size < s2s(3).size
         } else {
           return F
         }
