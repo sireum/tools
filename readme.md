@@ -1,6 +1,6 @@
 # Sireum Utility Tools
 
-[![Actions Status](https://github.com/sireum/tools/workflows/CI/badge.svg)](https://github.com/sireum/tools/actions) [![Run Status](https://api.shippable.com/projects/5a968ae4d03865070013954a/badge?branch=master)](https://app.shippable.com/projects/5a968ae4d03865070013954a) 
+[![Actions Status](https://github.com/sireum/tools/workflows/CI/badge.svg)](https://github.com/sireum/tools/actions) 
 
 This repository holds various Sireum utility tools:
 
