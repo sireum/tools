@@ -1,6 +1,8 @@
 # Sireum Utility Tools
 
-[![Actions Status](https://github.com/sireum/tools/workflows/CI/badge.svg)](https://github.com/sireum/tools/actions) 
+| [![Actions Status](https://github.com/sireum/tools/workflows/CI/badge.svg)](https://github.com/sireum/tools/actions) | [![](https://jitpack.io/v/org.sireum/kekinian.svg)](https://jitpack.io/#org.sireum.kekinian/tools) |
+| :---: | :---: | 
+| <sub><sup>amd64: mac, linux, windows</sup></sub> | <sub><sup>maven package repository</sup></sub> |
 
 This repository holds various Sireum utility tools:
 
