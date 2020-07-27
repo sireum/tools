@@ -673,14 +673,15 @@ object SerializerGen {
         case _ => missingUri = T
       }
     }
+    val tc = FrontEnd.libraryReporter._1
     val (rep, programs, globalNameMap, globalTypeMap) =
-      FrontEnd.parseProgramAndGloballyResolve(sources, HashMap.empty, HashMap.empty)
+      FrontEnd.parseProgramAndGloballyResolve(sources, tc.nameMap, tc.typeMap)
     if (rep.hasError) {
       reporter.reports(rep.messages)
       return st""
     }
     val pName: ISZ[String] = if (packageName.isEmpty) programs(0).packageName.ids.map(id => id.value) else packageName
-    val typeMap = globalTypeMap -- ISZ(AST.Typed.unit.ids, AST.Typed.nothing.ids)
+    val typeMap = globalTypeMap -- tc.typeMap.keys
     val globalTypes: ISZ[TypeInfo] =
       if (missingUri) sortedGlobalTypes(typeMap) else sortedGlobalTypesUriLt(typeMap, uriLtOrder(uris))
     val g = Gen(mode, globalNameMap, typeMap, globalTypes, pName, Reporter.create)
