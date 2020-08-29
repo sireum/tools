@@ -69,6 +69,10 @@ trait Module extends CrossJvmJsJitPack {
       jpLatest(isCross = true, "sireum", "slang", "frontend"): _*)
   }
 
+  final override def jvmIvyDeps = Agg(
+    ivy"org.ow2.asm:asm:$asmVersion",
+  )
+
   final override def deps =
     if (isSourceDep) Seq(frontEndObject) else Seq()
 
