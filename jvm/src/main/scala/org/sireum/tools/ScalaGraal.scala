@@ -77,7 +77,7 @@ object ScalaGraal {
   }
 
   def rewrite(jar: Os.Path): Unit = {
-    val fs = FileSystems.newFileSystem(Paths.get(jar.value.value))
+    val fs = FileSystems.newFileSystem(Paths.get(jar.value.value), null.asInstanceOf[ClassLoader])
     def process(p: Path): Unit = {
       if (!Files.exists(p)) {
         return
