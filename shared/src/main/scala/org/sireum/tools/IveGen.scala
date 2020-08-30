@@ -311,7 +311,7 @@ object IveGen {
             |  <configuration default="false" name="Slang Script Runner" type="Application" factoryName="Application" singleton="false">
             |    <option name="MAIN_CLASS_NAME" value="org.sireum.Sireum" />
             |    <module name="$moduleName" />
-            |    <option name="PROGRAM_PARAMETERS" value="slang run -s $$FilePath$$" />
+            |    <option name="PROGRAM_PARAMETERS" value="slang run $$FilePath$$" />
             |    <method v="2" />
             |  </configuration>
             |</component>"""
