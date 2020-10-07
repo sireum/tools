@@ -31,7 +31,7 @@ import org.objectweb.asm.{AnnotationVisitor, Attribute, ClassReader, ClassVisito
 
 object ScalaGraal {
 
-  val api: Int = Opcodes.ASM8
+  val api: Int = Opcodes.ASM9
 
   class MVisitor(visitor: MethodVisitor) extends MethodVisitor(api) {
 
