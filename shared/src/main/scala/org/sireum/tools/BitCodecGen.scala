@@ -194,6 +194,7 @@ object BitCodecGen {
 
   def gen(output: Output.Type,
           isBigEndian: B,
+          isMutable: B,
           licenseOpt: Option[String],
           filename: String,
           packageNames: ISZ[String],
@@ -270,9 +271,9 @@ object BitCodecGen {
           "funTexts" ~> Json.Printer.printMap(F, funTextMap, Json.Printer.printString _, Json.Printer.printString _)
         ))
       case _ =>
-        val bcGen = BitCodecGen(output == Output.Program, isBigEndian, licenseOpt, filename, packageNames, name,
-          normText, traits, spec, program, ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"), collector.enums,
-          collector.funs, codeSectionMap)
+        val bcGen = BitCodecGen(output == Output.Program, isBigEndian, isMutable, licenseOpt, filename, packageNames,
+          name, normText, traits, spec, program, ops.StringOps(prevGen).replaceAllLiterally("/r/n", "/n"),
+          collector.enums, collector.funs, codeSectionMap)
 
         return bcGen.gen(reporter)
     }
@@ -365,8 +366,8 @@ object BitCodecGen {
   }
 
   object Context {
-    def create(isupers: ISZ[String]): Context = {
-      return Context(ISZ(), 2, ISZ.create(65, F), ISZ.create(65, F), ISZ(), ISZ(), "", "Runtime.Composite",
+    def create(isupers: ISZ[String], composite: String): Context = {
+      return Context(ISZ(), 2, ISZ.create(65, F), ISZ.create(65, F), ISZ(), ISZ(), "", composite,
         isupers, ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), ISZ(), HashMap.empty, 0, HashSet.empty)
     }
   }
@@ -463,6 +464,7 @@ import BitCodecGen._
 
 @datatype class BitCodecGen(isProgram: B,
                             isBigEndian: B,
+                            isMutable: B,
                             licenseOpt: Option[String],
                             filename: String,
                             packageNames: ISZ[String],
@@ -476,12 +478,16 @@ import BitCodecGen._
                             funs: HashSMap[String, (AST.Exp.Fun, AST.Type)],
                             codeSectionMap: HashSMap[String, String]) {
 
+  val decodeInput: String = if (isMutable) "MSZ[B]" else "ISZ[B]"
+  val encodeOutput: String = if (isMutable) "MOption[MSZ[B]]" else "Option[ISZ[B]]"
+  val reader: String = if (isMutable) "Reader.MS" else "Reader.IS"
+  val composite: String = if (isMutable) "Runtime.MComposite" else "Runtime.Composite"
   val endianPrefix: String = if (isBigEndian) "be" else "le"
   val enumMaxSize: String => Z@pure = (id: String) => bitWidth(enums.get(id).get.elements.size)
   val isBounded: B = topSpec.computeMaxSizeOpt(enumMaxSize).nonEmpty
 
   def gen(reporter: Reporter): ST = {
-    val context = genSpec(Context.create(traits), topSpec, reporter)
+    val context = genSpec(Context.create(traits, composite), topSpec, reporter)
     if (reporter.hasIssue) {
       return st"$prevGen"
     }
@@ -608,7 +614,7 @@ import BitCodecGen._
       i2m = context.i2m :+ st"$name",
       m2i = context.m2i :+ st"$name",
       tpeInits = context.tpeInits :+ ((tpe, st"F")),
-      decoding = context.decoding :+ st"$name = Reader.IS.bleB(input, context)",
+      decoding = context.decoding :+ st"$name = $reader.bleB(input, context)",
       encoding = context.encoding :+ st"Writer.bleB(output, context, $name)")
   }
 
@@ -628,7 +634,7 @@ import BitCodecGen._
         i2m = context.i2m :+ st"$name",
         m2i = context.m2i :+ st"$name",
         tpeInits = context.tpeInits :+ ((tpe, st"""u$size"0"""")),
-        decoding = context.decoding :+ st"$name = Reader.IS.${prefix}U$size(input, context)",
+        decoding = context.decoding :+ st"$name = $reader.${prefix}U$size(input, context)",
         encoding = context.encoding :+ st"Writer.${prefix}U$size(output, context, $name)")
     } else {
       val tpe = st"MSZ[B]"
@@ -643,7 +649,7 @@ import BitCodecGen._
           st"""if ($name.size != $size) {
               |  return ERROR_${context.owner}
               |}""",
-        decoding = context.decoding :+ st"Reader.IS.${prefix}BS(input, context, $name, $size)",
+        decoding = context.decoding :+ st"$reader.${prefix}BS(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${prefix}BS(output, context, $name)")
     }
   }
@@ -679,7 +685,7 @@ import BitCodecGen._
         m2i = context.m2i :+ st"$name",
         tpeInits = context.tpeInits :+ ((tpe, st"""$us$n"0"""")),
         wellFormed = context.wellFormed ++ wfs,
-        decoding = context.decoding :+ st"$name = Reader.IS.${prefix}$US$n(input, context)",
+        decoding = context.decoding :+ st"$name = $reader.${prefix}$US$n(input, context)",
         encoding = context.encoding :+ st"Writer.${prefix}$US$n(output, context, $name)")
     } else {
       val tpe = st"MSZ[$US$n]"
@@ -717,7 +723,7 @@ import BitCodecGen._
         m2i = context.m2i :+ st"$name.toIS",
         tpeInits = context.tpeInits :+ ((tpe, st"""MSZ.create($size, $us$n"0")""")),
         wellFormed = context.wellFormed ++ wfs,
-        decoding = context.decoding :+ st"Reader.IS.${endianPrefix}$US${n}S(input, context, $name, $size)",
+        decoding = context.decoding :+ st"$reader.${endianPrefix}$US${n}S(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}$US${n}S(output, context, $name)")
     }
   }
@@ -745,7 +751,7 @@ import BitCodecGen._
         m2i = context.m2i :+ st"$name",
         tpeInits = context.tpeInits :+ ((tpe, init)),
         wellFormed = context.wellFormed ++ wfs,
-        decoding = context.decoding :+ st"$name = Reader.IS.${endianPrefix}F$n(input, context)",
+        decoding = context.decoding :+ st"$name = $reader.${endianPrefix}F$n(input, context)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}F$n(output, context, $name)")
     } else {
       val tpe = st"MSZ[F$n]"
@@ -774,7 +780,7 @@ import BitCodecGen._
         m2i = context.m2i :+ st"$name.toIS",
         tpeInits = context.tpeInits :+ ((tpe, st"""MSZ.create($size, $init)""")),
         wellFormed = context.wellFormed ++ wfs,
-        decoding = context.decoding :+ st"Reader.IS.${endianPrefix}F${n}S(input, context, $name, $size)",
+        decoding = context.decoding :+ st"$reader.${endianPrefix}F${n}S(input, context, $name, $size)",
         encoding = context.encoding :+ st"Writer.${endianPrefix}F${n}S(output, context, $name)")
     }
   }
@@ -803,14 +809,14 @@ import BitCodecGen._
             |  ${(for (element <- enum.elements) yield st"'${element.value}", "\n")}
             |}
             |
-            |def decode$objectName(input: ISZ[B], context: Context): $tpe = {
+            |def decode$objectName(input: $decodeInput, context: Context): $tpe = {
             |  if (context.offset + $size > input.size) {
             |    context.signalError(ERROR_$objectName)
             |  }
             |  if (context.hasError) {
             |    return $objectName.$firstElem
             |  }
-            |  val r: $tpe = Reader.IS.${prefix}U$size(input, context) match {
+            |  val r: $tpe = $reader.${prefix}U$size(input, context) match {
             |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
@@ -850,7 +856,7 @@ import BitCodecGen._
   def genSpecConcat(first: B, context: Context, spec: Spec.ConcatImpl, reporter: Reporter): Context = {
     val name = spec.name
     val (ctx, fname) = context.fieldName(context.path, spec.asOpt.getOrElse(name))
-    var elementContext = ctx(path = context.path :+ fname, owner = name, supr = "Runtime.Composite", isupers = traits,
+    var elementContext = ctx(path = context.path :+ fname, owner = name, supr = composite, isupers = traits,
       fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(), tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ(), omembers = ISZ())
     for (element <- spec.elements) {
@@ -858,17 +864,31 @@ import BitCodecGen._
     }
     val encode: ST = spec.maxSizeOpt(enumMaxSize) match {
       case Some(n) if isBounded =>
-        st"""def encode(context: Context): Option[ISZ[B]] = {
-            |  val buffer = MSZ.create($n, F)
-            |  toMutable.encode(buffer, context)
-            |  return if (context.hasError) None[ISZ[B]]() else Some(buffer.toIS)
-            |}"""
+        if (isMutable)
+          st"""def encode(context: Context): MOption[MSZ[B]] = {
+              |  val buffer = MSZ.create($n, F)
+              |  toMutable.encode(buffer, context)
+              |  return if (context.hasError) MNone[MSZ[B]]() else MSome(buffer)
+              |}"""
+        else
+          st"""def encode(context: Context): Option[ISZ[B]] = {
+              |  val buffer = MSZ.create($n, F)
+              |  toMutable.encode(buffer, context)
+              |  return if (context.hasError) None[ISZ[B]]() else Some(buffer.toIS)
+              |}"""
       case _ =>
-        st"""def encode(buffSize: Z, context: Context): Option[ISZ[B]] = {
-            |  val buffer = MSZ.create(buffSize, F)
-            |  toMutable.encode(buffer, context)
-            |  return if (context.hasError) None[ISZ[B]]() else Some(buffer.toIS)
-            |}"""
+        if (isMutable)
+          st"""def encode(buffSize: Z, context: Context): MOption[MSZ[B]] = {
+              |  val buffer = MSZ.create(buffSize, F)
+              |  toMutable.encode(buffer, context)
+              |  return if (context.hasError) MNone[MSZ[B]]() else MSome(buffer)
+              |}"""
+        else
+          st"""def encode(buffSize: Z, context: Context): Option[ISZ[B]] = {
+              |  val buffer = MSZ.create(buffSize, F)
+              |  toMutable.encode(buffer, context)
+              |  return if (context.hasError) None[ISZ[B]]() else Some(buffer.toIS)
+              |}"""
     }
     val wfName = s"wf${spec.asOpt.getOrElse(name)}"
     return Context(
@@ -886,7 +906,7 @@ import BitCodecGen._
             |    return M$name(${(elementContext.tpeInits.map((p: (ST, ST)) => p._2), ", ")})
             |  }
             |
-            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |  def decode(input: $decodeInput, context: Context): Option[$name] = {
             |    val r = empty
             |    r.decode(input, context)
             |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
@@ -925,7 +945,7 @@ import BitCodecGen._
             |    return 0
             |  }
             |
-            |  def decode(input: ISZ[B], context: Context): Unit = {
+            |  def decode(input: $decodeInput, context: Context): Unit = {
             |    ${(elementContext.decoding, "\n")}
             |
             |    val wf = wellFormed
@@ -991,8 +1011,8 @@ import BitCodecGen._
     }
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
     val encode: ST =
-      if (isBounded) st"def encode(context: Context): Option[ISZ[B]]"
-      else st"def encode(buffSize: Z, context: Context): Option[ISZ[B]]"
+      if (isBounded) st"def encode(context: Context): $encodeOutput"
+      else st"def encode(buffSize: Z, context: Context): $encodeOutput"
     val wfName = s"wf${asOpt.getOrElse(name)}"
     return Context(
       path = context.path,
@@ -1019,7 +1039,7 @@ import BitCodecGen._
             |    return ${normSubs(0).name}.empty
             |  }
             |
-            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |  def decode(input: $decodeInput, context: Context): Option[$name] = {
             |    val r = empty
             |    r.decode(input, context)
             |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
@@ -1111,8 +1131,8 @@ import BitCodecGen._
       subContext = genSpec(subContext, sub.spec, reporter)
     }
     val encode: ST =
-      if (isBounded) st"def encode(context: Context): Option[ISZ[B]]"
-      else st"def encode(buffSize: Z, context: Context): Option[ISZ[B]]"
+      if (isBounded) st"def encode(context: Context): $encodeOutput"
+      else st"def encode(buffSize: Z, context: Context): $encodeOutput"
     return Context(
       path = context.path,
       errNum = subContext.errNum + 1,
@@ -1138,7 +1158,7 @@ import BitCodecGen._
             |    return ${normSubs(0).spec.name}.empty
             |  }
             |
-            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |  def decode(input: $decodeInput, context: Context): Option[$name] = {
             |    val r = empty
             |    r.decode(input, context)
             |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
@@ -1149,7 +1169,7 @@ import BitCodecGen._
             |     'Error
             |  }
             |
-            |  def choose(input: ISZ[B], context: Context): Choice.Type = {
+            |  def choose(input: $decodeInput, context: Context): Choice.Type = {
             |    ${(choose, "\n;")}
             |    return Choice.Error
             |  }
@@ -1200,7 +1220,7 @@ import BitCodecGen._
     val owner = context.owner
     val deps: ST = if (dependsOn.size == 1) st"${dependsOn(0)}" else st"(${(dependsOn, ", ")})"
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      supr = composite, isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
       tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
@@ -1309,7 +1329,7 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      supr = composite, isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
       tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(),
       encoding = ISZ(), members = ISZ(), omembers = ISZ())
     var predSTs = ISZ[ST]()
@@ -1374,7 +1394,7 @@ import BitCodecGen._
             |  $encode
             |}""",
       members = if (predSTs.isEmpty) context.members else context.members :+
-        st"""def match$mname(input: ISZ[B], context: Context): B = {
+        st"""def match$mname(input: $decodeInput, context: Context): B = {
             |  var ctx = context
             |  var hasError = F
             |  ${(predSTs, "\n")}
@@ -1446,7 +1466,7 @@ import BitCodecGen._
         st"""val ${name}Sz = sizeOf$mname($deps)
             |if (${name}Sz >= 0) {
             |  $name = MSZ.create(${name}Sz, F)
-            |  Reader.IS.bleRaw(input, context, $name, ${name}Sz)
+            |  $reader.bleRaw(input, context, $name, ${name}Sz)
             |} else {
             |  context.signalError(ERROR_${owner}_$name)
             |}""",
@@ -1484,8 +1504,8 @@ import BitCodecGen._
       subContext = genSpec(subContext, sub, reporter)
     }
     val encode: ST =
-      if (isBounded) st"def encode(context: Context): Option[ISZ[B]]"
-      else st"def encode(buffSize: Z, context: Context): Option[ISZ[B]]"
+      if (isBounded) st"def encode(context: Context): $encodeOutput"
+      else st"def encode(buffSize: Z, context: Context): $encodeOutput"
     val wfName = s"wf${spec.asOpt.getOrElse(name)}"
     return Context(
       path = context.path,
@@ -1512,7 +1532,7 @@ import BitCodecGen._
             |    return ${normSubs(0).name}.empty
             |  }
             |
-            |  def decode(input: ISZ[B], context: Context): Option[$name] = {
+            |  def decode(input: $decodeInput, context: Context): Option[$name] = {
             |    val r = empty
             |    r.decode(input, context)
             |    return if (context.hasError) None[$name]() else Some(r.toImmutable)
@@ -1537,7 +1557,7 @@ import BitCodecGen._
             |     'Error
             |  }
             |
-            |  def choose(input: ISZ[B], context: Context, choiceContext: $name.ChoiceContext): Choice.Type = {
+            |  def choose(input: $decodeInput, context: Context, choiceContext: $name.ChoiceContext): Choice.Type = {
             |    // BEGIN USER CODE: $name.choose
             |    ${prevText(s"$name.choose", notImplemented)}
             |    // END USER CODE: $name.choose
@@ -1586,7 +1606,7 @@ import BitCodecGen._
     val mname = ops.StringOps(name).firstToUpper
     val owner = context.owner
     var elementContext = context(path = context.path :+ name, main = context.main, owner = st"${owner}_$name".render,
-      supr = "Runtime.Composite", isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
+      supr = composite, isupers = traits, fields = ISZ(), ifields = ISZ(), i2m = ISZ(), m2i = ISZ(),
       tpeInits = ISZ(), wellFormed = ISZ(), decoding = ISZ(), encoding = ISZ(), members = ISZ(), omembers = ISZ())
     elementContext = genSpec(elementContext, normElement, reporter)
     val (tpe, itpe): (ST, ST) =
@@ -1658,13 +1678,13 @@ import BitCodecGen._
             |  $encode
             |}""",
       members = context.members :+
-        st"""def ${name}Continue(input: ISZ[B], context: Context, ${name}Context: $owner${mname}Context): B = {
+        st"""def ${name}Continue(input: $decodeInput, context: Context, ${name}Context: $owner${mname}Context): B = {
             |  // BEGIN USER CODE: $owner.${name}Continue
             |  ${prevText(s"$owner.${name}Continue", if (maxElements > 0) s"return ${name}Context.i < $maxElements" else notImplemented)}
             |  // END USER CODE: $owner.${name}Continue
             |}
             |
-            |def ${name}Update(input: ISZ[B], context: Context, ${name}Context: $owner${mname}Context): Unit = {
+            |def ${name}Update(input: $decodeInput, context: Context, ${name}Context: $owner${mname}Context): Unit = {
             |  // BEGIN USER CODE: $owner.${name}Update
             |  ${prevText(s"$owner.${name}Update", if (maxElements > 0) s"${name}Context.i = ${name}Context.i + 1" else notImplemented)}
             |  // END USER CODE: $owner.${name}Update
@@ -1741,18 +1761,18 @@ import BitCodecGen._
             |${prevText(s"$owner${mname}Context.init", "")}
             |// END USER CODE: $owner${mname}Context.init
             |while (${name}Continue(input, context, ${name}Context)) {
-            |  $name = $name :+ Reader.IS.bleB(input, context)
+            |  $name = $name :+ $reader.bleB(input, context)
             |  ${name}Update(input, context, ${name}Context)
             |}""",
       encoding = context.encoding :+ st"""Writer.bleRaw(output, context, $name, $name.size)""",
       members = context.members :+
-        st"""def ${name}Continue(input: ISZ[B], context: Context, ${name}Context: $owner${mname}Context): B = {
+        st"""def ${name}Continue(input: $decodeInput, context: Context, ${name}Context: $owner${mname}Context): B = {
             |  // BEGIN USER CODE: $owner.${name}Continue
             |  ${prevText(s"$owner.${name}Continue", notImplemented)}
             |  // END USER CODE: $owner.${name}Continue
             |}
             |
-            |def ${name}Update(input: ISZ[B], context: Context, ${name}Context: $owner${mname}Context): Unit = {
+            |def ${name}Update(input: $decodeInput, context: Context, ${name}Context: $owner${mname}Context): Unit = {
             |  // BEGIN USER CODE: $owner.${name}Update
             |  ${prevText(s"$owner.${name}Update", notImplemented)}
             |  // END USER CODE: $owner.${name}Update
@@ -1778,7 +1798,7 @@ import BitCodecGen._
         return (
           context,
           st"""if(!hasError) {
-              |  hasError = ${if (pred.value) "!" else ""}Reader.IS.bleB(input, ctx)
+              |  hasError = ${if (pred.value) "!" else ""}$reader.bleB(input, ctx)
               |}"""
         )
       case pred: Spec.Pred.Bits =>
@@ -1793,7 +1813,7 @@ import BitCodecGen._
         return (
           ctx,
           st"""if (!hasError) {
-              |  val temp = Reader.IS.${prefix}U$size(input, ctx)
+              |  val temp = $reader.${prefix}U$size(input, ctx)
               |  hasError = !(ctx.errorCode == 0 && temp == u$size"${pred.value}")
               |}"""
         )
@@ -1804,7 +1824,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, u8"0")
-              |  Reader.IS.${endianPrefix}U8S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}U8S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1815,7 +1835,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, u16"0")
-              |  Reader.IS.${endianPrefix}U16S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}U16S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1826,7 +1846,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, u32"0")
-              |  Reader.IS.${endianPrefix}U32S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}U32S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1837,7 +1857,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, u64"0")
-              |  Reader.IS.${endianPrefix}U64S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}U64S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1848,7 +1868,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, 0.0f)
-              |  Reader.IS.${endianPrefix}F32S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}F32S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1859,7 +1879,7 @@ import BitCodecGen._
           context,
           st"""if (!hasError) {
               |  val temp = MSZ.create($size, 0.0d)
-              |  Reader.IS.${endianPrefix}F64S(input, ctx, temp, $size)
+              |  $reader.${endianPrefix}F64S(input, ctx, temp, $size)
               |  hasError = !(ctx.errorCode == 0 && temp == MSZ(${(values, ", ")}))
               |}"""
         )
@@ -1887,7 +1907,7 @@ import BitCodecGen._
         return (
           ctx,
           st"""if (!hasError) {
-              |  val temp = Reader.IS.${prefix}U$size(input, ctx)
+              |  val temp = $reader.${prefix}U$size(input, ctx)
               |  hasError = !(ctx.errorCode == 0 && u$size"${pred.lo}" <= temp && temp <= u$size"${pred.hi}")
               |}"""
         )
