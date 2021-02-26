@@ -34,7 +34,6 @@ object TransformerGenJvm {
   val messageKind: String = "TransformerGen"
 
   def run(
-    allowSireumPackage: B,
     isImmutable: B,
     licenseOpt: Option[Os.Path],
     sources: ISZ[Os.Path],
@@ -48,7 +47,7 @@ object TransformerGenJvm {
     var programs = ISZ[AST.TopUnit.Program]()
     for (src <- sources) {
       val srcText = src.read
-      val r = SlangParser(allowSireumPackage, isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
+      val r = SlangParser(isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
       r.unitOpt match {
         case Some(p: AST.TopUnit.Program) =>
           programs = programs :+ p

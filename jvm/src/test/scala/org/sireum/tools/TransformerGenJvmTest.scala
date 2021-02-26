@@ -40,7 +40,7 @@ class TransformerGenJvmTest extends SireumSpec {
   def gen(src: ISZ[Os.Path], dest: Os.Path, isImmutable: Boolean): Boolean = {
     val reporter = Reporter.create
     val rOpt =
-      TransformerGenJvm.run(allowSireumPackage = true, isImmutable, SSome(licensePath), src, SNone(), reporter)
+      TransformerGenJvm.run(isImmutable, SSome(licensePath), src, SNone(), reporter)
     reporter.printMessages()
     rOpt match {
       case SSome(r) =>
