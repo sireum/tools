@@ -33,11 +33,9 @@ object SerializerGenJvm {
   val messageKind: String = "JsonGen"
 
   def run(
-    allowSireumPackage: B,
     mode: SerializerGen.Mode.Type,
     licenseOpt: Option[Os.Path],
     srcs: ISZ[Os.Path],
-    dest: Os.Path,
     packageNameOpt: Option[ISZ[String]],
     nameOpt: Option[String],
     reporter: Reporter

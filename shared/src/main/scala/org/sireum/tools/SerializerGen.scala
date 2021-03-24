@@ -681,7 +681,11 @@ object SerializerGen {
       return st""
     }
     val pName: ISZ[String] = if (packageName.isEmpty) programs(0).packageName.ids.map(id => id.value) else packageName
-    val typeMap = globalTypeMap -- tc.typeMap.keys
+    val uriOpts = HashSet.empty[Option[String]] ++ (for (p <- sources) yield p._1)
+    var typeMap = HashMap.empty[QName, TypeInfo]
+    for (ti <- globalTypeMap.values if ti.posOpt.nonEmpty && uriOpts.contains(ti.posOpt.get.uriOpt)) {
+      typeMap = typeMap + ti.name ~> ti
+    }
     val globalTypes: ISZ[TypeInfo] =
       if (missingUri) sortedGlobalTypes(typeMap) else sortedGlobalTypesUriLt(typeMap, uriLtOrder(uris))
     val g = Gen(mode, globalNameMap, typeMap, globalTypes, pName, Reporter.create)
