@@ -41,11 +41,9 @@ class SerializerGenJvmTest extends SireumSpec {
     val reporter = Reporter.create
     val rOpt =
       SerializerGenJvm.run(
-        allowSireumPackage = true,
         mode,
         Some(licensePath),
         srcs,
-        dest,
         Some(ISZ[String]("org", "sireum", "lang", "tipe")),
         None(),
         reporter
