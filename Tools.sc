@@ -62,12 +62,9 @@ trait Module extends CrossJvmJsJitPack {
 
   final override def jsTestFrameworks = jvmTestFrameworks
 
-  final override def ivyDeps = {
-    val ds = Seq(ivy"org.scala-lang:scala-reflect:$scalaVersion", ivy"org.scala-lang:scala-compiler:$scalaVersion")
-    if (isSourceDep) Agg(ds: _*)
-    else Agg(ds :+
-      jpLatest(isCross = true, "sireum", "slang", "frontend"): _*)
-  }
+  final override def ivyDeps =
+    if (isSourceDep) Agg.empty
+    else Agg(jpLatest(isCross = true, "sireum", "slang", "frontend"))
 
   final override def jvmIvyDeps = Agg(
     ivy"org.ow2.asm:asm:$asmVersion",
