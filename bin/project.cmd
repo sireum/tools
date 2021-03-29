@@ -42,7 +42,7 @@ val homeDir = Os.slashDir.up.canon
 
 val (toolsShared, toolsJvm) = moduleSharedJvm(
   baseId = tools,
-  baseDir = homeDir / tools,
+  baseDir = homeDir,
   sharedDeps = ISZ(frontend),
   sharedIvyDeps = ISZ(),
   jvmDeps = ISZ(library, test),
@@ -51,4 +51,4 @@ val (toolsShared, toolsJvm) = moduleSharedJvm(
 
 val project = Project.empty + toolsShared + toolsJvm
 
-println(JSON.fromProject(project, T))
+projectCli(Os.cliArgs, project)
