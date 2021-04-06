@@ -28,7 +28,7 @@ val tools = "tools"
 
 val homeDir = Os.slashDir.up.canon
 
-val (toolsShared, toolsJvm) = moduleSharedJvm(
+val (toolsShared, toolsJvm) = moduleSharedJvmPub(
   baseId = tools,
   baseDir = homeDir,
   sharedDeps = ISZ(frontend),
@@ -37,6 +37,12 @@ val (toolsShared, toolsJvm) = moduleSharedJvm(
   jvmIvyDeps = ISZ(
     "org.ow2.asm:asm:",
     "com.sksamuel.diff:diff:"
+  ),
+  pubOpt = pub(
+    desc = "Sireum Tools",
+    url = "github.com/sireum/tools",
+    licenses = org.sireum.project.ProjectUtil.bsd2,
+    devs = ISZ(robby)
   )
 )
 
