@@ -41,7 +41,7 @@ val (toolsShared, toolsJvm) = moduleSharedJvmPub(
   pubOpt = pub(
     desc = "Sireum Tools",
     url = "github.com/sireum/tools",
-    licenses = org.sireum.project.ProjectUtil.bsd2,
+    licenses = bsd2,
     devs = ISZ(robby)
   )
 )
