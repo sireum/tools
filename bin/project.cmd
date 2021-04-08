@@ -35,7 +35,6 @@ val (toolsShared, toolsJvm) = moduleSharedJvmPub(
   sharedIvyDeps = ISZ(),
   jvmDeps = ISZ(library),
   jvmIvyDeps = ISZ(
-    "org.ow2.asm:asm:",
     "com.sksamuel.diff:diff:"
   ),
   pubOpt = pub(
