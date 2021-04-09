@@ -37,6 +37,7 @@ object cli {
     description = "Sireum IVE project generator",
     header = "Sireum IVE Project Generator",
     usage = "<option>* <project-parent-directory>",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "jdk", longKey = "jdk", shortKey = Some('j'),
         tpe = Type.Str(sep = None(), default = Some("Java")),
@@ -75,6 +76,7 @@ object cli {
     description = "Command-line interface (CLI) generator",
     header = "Sireum CLI Generator",
     usage = "<option>* <config-file>",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
         tpe = Type.Str(sep = Some('.'), default = Some("cli")),
@@ -99,6 +101,7 @@ object cli {
     description = "Transformer (visitor/rewriter) generator",
     header = "Sireum Transformer Generator",
     usage = "<option>* <slang-file>+",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
         tpe = Type.Choice(name = "TransformerMode", sep = Some(','), elements = ISZ("immutable", "mutable")),
@@ -120,6 +123,7 @@ object cli {
     description = "De/Serializer generator",
     header = "Sireum De/Serializer Generator",
     usage = "<option>* <slang-file>",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
         tpe = Type.Choice(name = "SerializerMode", sep = Some(','), elements = ISZ("json", "msgpack")),
@@ -144,6 +148,7 @@ object cli {
     description = "Bit encoder/decoder generator",
     header = "Sireum BitCodec Generator",
     usage = "<option>* <spec-file>",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
         tpe = Type.Choice(name = "BitCodecMode", sep = Some(','), elements = ISZ("program", "script", "json", "dot")),
@@ -176,6 +181,7 @@ object cli {
     description = "Native function stack size check tool",
     header = "Sireum CheckStack",
     usage = "<option>* ( <file> | <dir> )*",
+    usageDescOpt = None(),
     opts = ISZ(
       Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
         tpe = Type.Choice(name = "CheckStackMode", sep = None(), elements =  ISZ("dotsu", "bin")),
