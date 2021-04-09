@@ -277,6 +277,10 @@ import org.sireum.cli.CliOpt._
       c.groups.map[(String, ISZ[Opt])]((g: OptGroup) => (s"|${g.name} Options:", g.opts))
 
     var options = ISZ[ST]()
+    c.usageDescOpt match {
+      case Some(usageDesc) => options = options :+ st"$usageDesc"
+      case _ =>
+    }
     var first = T
     for (topts <- optss) {
 
