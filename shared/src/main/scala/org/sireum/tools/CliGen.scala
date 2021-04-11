@@ -499,8 +499,12 @@ import org.sireum.cli.CliOpt._
       case c: Type.NumChoice => return ("Z", c.choices(0).string)
       case c: Type.Str =>
         c.sep match {
-          case Some(_) =>
-            return ("ISZ[String]", if (c.default.isEmpty) "ISZ[String]()" else s"""ISZ("${c.default.get}")""")
+          case Some(sep) =>
+            val defs: ISZ[String] =
+              if (c.default.isEmpty) ISZ()
+              else for (s <- ops.StringOps(c.default.get).split((char: C) => char == sep)) yield
+                s""""${ops.StringOps(s).trim}""""
+            return ("ISZ[String]", if (c.default.isEmpty) "ISZ[String]()" else st"""ISZ(${(defs, ", ")})""".render)
           case _ =>
             return ("Option[String]", if (c.default.isEmpty) "None[String]()" else s"""Some("${c.default.get}")""")
         }
