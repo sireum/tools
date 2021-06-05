@@ -1,3 +1,4 @@
+// #Sireum
 /*
  Copyright (c) 2020, Robby, Kansas State University
  All rights reserved.
@@ -28,7 +29,6 @@ package org.sireum.tools
 import org.sireum._
 import org.sireum.message._
 import org.sireum.lang.{ast => AST}
-import org.sireum.lang.parser.SlangParser
 
 object TransformerGenJvm {
   val messageKind: String = "TransformerGen"
@@ -47,8 +47,8 @@ object TransformerGenJvm {
     var programs = ISZ[AST.TopUnit.Program]()
     for (src <- sources) {
       val srcText = src.read
-      val r = SlangParser(isWorksheet = false, isDiet = false, Some(src.toUri), srcText.value, reporter)
-      r.unitOpt match {
+      val r = lang.parser.Parser.parseTopUnit[AST.TopUnit](srcText, F, F, Some(src.toUri), reporter)
+      r match {
         case Some(p: AST.TopUnit.Program) =>
           programs = programs :+ p
         case _ =>
@@ -63,10 +63,10 @@ object TransformerGenJvm {
       }
     }
     val lOpt: Option[String] = licenseOpt match {
-      case Some(f) => Some(String(f.read.value.trim))
+      case Some(f) => Some(ops.StringOps(f.read).trim)
       case _ => None[String]()
     }
     return Some(PrePostTransformerGen.gen(isImmutable, lOpt, nameOpt,
-      for (source <- sources) yield source.name, programs, reporter).render.value)
+      for (source <- sources) yield source.name, programs, reporter).render)
   }
 }
