@@ -38,6 +38,7 @@ object TransformerGenJvm {
     licenseOpt: Option[Os.Path],
     sources: ISZ[Os.Path],
     nameOpt: Option[String],
+    exclude: ISZ[String],
     reporter: Reporter
   ): Option[String] = {
     if (sources.isEmpty) {
@@ -67,6 +68,6 @@ object TransformerGenJvm {
       case _ => None[String]()
     }
     return Some(PrePostTransformerGen.gen(isImmutable, lOpt, nameOpt,
-      for (source <- sources) yield source.name, programs, reporter).render)
+      for (source <- sources) yield source.name, programs, exclude, reporter).render)
   }
 }

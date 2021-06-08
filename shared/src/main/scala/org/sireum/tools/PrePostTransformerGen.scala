@@ -43,6 +43,7 @@ object PrePostTransformerGen {
     nameOpt: Option[String],
     fileUris: ISZ[String],
     programs: ISZ[AST.TopUnit.Program],
+    exclude: ISZ[String],
     reporter: Reporter
   ): ST = {
     val gdr = GlobalDeclarationResolver(HashMap.empty, HashMap.empty, reporter)
@@ -55,6 +56,7 @@ object PrePostTransformerGen {
       gdr.globalTypeMap,
       AST.Util.ids2strings(programs(0).packageName.ids),
       isImmutable,
+      HashSet ++ exclude,
       reporter
     )
     val r = t.gen(licenseOpt, fileUris, name)
@@ -68,6 +70,7 @@ object PrePostTransformerGen {
   globalTypeMap: TypeMap,
   packageName: QName,
   isImmutable: B,
+  exclude: HashSet[String],
   reporter: Reporter
 ) {
 
@@ -154,6 +157,9 @@ object PrePostTransformerGen {
         transformerGenKind,
         s"Cannot generate immutable transformer for @record ${ti.ast.id.value}."
       )
+      return
+    }
+    if (exclude.contains(ti.ast.id.value)) {
       return
     }
     if (ti.ast.isRoot) {

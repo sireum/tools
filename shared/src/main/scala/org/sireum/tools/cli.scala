@@ -103,6 +103,9 @@ object cli {
     usage = "<option>* <slang-file>+",
     usageDescOpt = None(),
     opts = ISZ(
+      Opt(name = "exclude", longKey = "exclude", shortKey = Some('e'),
+        tpe = Type.Str(sep = Some(','), default = None()),
+        description = "Exclude generating top-level transform for the specified type identifiers"),
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
         tpe = Type.Choice(name = "TransformerMode", sep = Some(','), elements = ISZ("immutable", "mutable")),
         description = "Transformer mode"),
@@ -112,7 +115,7 @@ object cli {
       Opt(name = "license", longKey = "license", shortKey = Some('l'),
         tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files")
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files"),
     ),
     groups = ISZ()
   )
