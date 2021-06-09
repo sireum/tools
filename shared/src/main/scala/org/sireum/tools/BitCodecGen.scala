@@ -932,7 +932,9 @@ import BitCodecGen._
             |  ${(elementContext.fields, ",\n")}
             |) extends ${context.supr} {
             |
-            |  @strictpure def toImmutable: $name = $name(${(elementContext.m2i, ", ")})
+            |  def toImmutable: $name = {
+            |    return $name(${(elementContext.m2i, ", ")})
+            |  }
             |
             |  def wellFormed: Z = {
             |
@@ -1022,13 +1024,13 @@ import BitCodecGen._
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
         st"""@datatype trait $name${isupers(context)} {
-            |  @strictpure def toMutable: M$name
+            |  @pure def toMutable: M$name
             |  $encode
             |  def wellFormed: Z
             |}
             |
             |@record trait M$name extends ${context.supr} {
-            |  @strictpure def toImmutable: $name
+            |  def toImmutable: $name
             |}
             |
             |object $name {
@@ -1141,13 +1143,13 @@ import BitCodecGen._
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
         st"""@datatype trait $name${isupers(context)} {
-            |  @strictpure def toMutable: M$name
+            |  @pure def toMutable: M$name
             |  $encode
             |  def wellFormed: Z
             |}
             |
             |@record trait M$name extends ${context.supr} {
-            |  @strictpure def toImmutable: $name
+            |  def toImmutable: $name
             |}
             |
             |object $name {
@@ -1294,7 +1296,7 @@ import BitCodecGen._
             |  return r
             |}""",
       omembers = context.omembers :+
-        st"""def toMutable$mname(s: $itpe): $tpe = {
+        st"""@pure def toMutable$mname(s: $itpe): $tpe = {
             |  var r = $tpe()
             |  for (e <- s) {
             |    r = r :+ e${if (element.isScalar) "" else ".toMutable"}
@@ -1401,7 +1403,7 @@ import BitCodecGen._
             |  return !hasError
             |}""",
       omembers = context.omembers :+
-        st"""def toMutable$mname(s: $itpe): $tpe = {
+        st"""@pure def toMutable$mname(s: $itpe): $tpe = {
             |  var r = $tpe()
             |  for (e <- s) {
             |    r = r :+ e${if (element.isScalar) "" else ".toMutable"}
@@ -1515,13 +1517,13 @@ import BitCodecGen._
       mainDecl = if (!first) subContext.mainDecl else subContext.mainDecl :+ st"val ERROR_$name: Z = ${subContext.errNum}",
       main = if (!first) subContext.main else subContext.main :+
         st"""@datatype trait $name${isupers(context)} {
-            |  @strictpure def toMutable: M$name
+            |  @pure def toMutable: M$name
             |  $encode
             |  def wellFormed: Z
             |}
             |
             |@record trait M$name extends ${context.supr} {
-            |  @strictpure def toImmutable: $name
+            |  def toImmutable: $name
             |}
             |
             |object $name {
@@ -1690,7 +1692,7 @@ import BitCodecGen._
             |  // END USER CODE: $owner.${name}Update
             |}""",
       omembers = context.omembers :+
-        st"""def toMutable$mname(s: $itpe): $tpe = {
+        st"""@pure def toMutable$mname(s: $itpe): $tpe = {
             |  var r = $tpe()
             |  for (e <- s) {
             |    r = r :+ e${if (element.isScalar) "" else ".toMutable"}
