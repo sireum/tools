@@ -28,8 +28,7 @@ package org.sireum.tools
 import org.sireum.message._
 import org.sireum.test.SireumSpec
 import Paths._
-import com.sksamuel.diffpatch.DiffMatchPatch
-import org.sireum.{Os, Some => SSome, None => SNone, ISZ}
+import org.sireum.{Os, Some => SSome, None => SNone, ISZ, DiffMatchPatch}
 
 class TransformerGenJvmTest extends SireumSpec {
 

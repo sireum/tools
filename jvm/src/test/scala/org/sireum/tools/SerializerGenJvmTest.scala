@@ -26,7 +26,6 @@
 package org.sireum.tools
 
 import org.sireum.message._
-import com.sksamuel.diffpatch.DiffMatchPatch
 import org.sireum._
 import Paths._
 import org.sireum.test.SireumSpec

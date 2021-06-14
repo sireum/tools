@@ -52,7 +52,7 @@ trait Module extends CrossJvmJsJitPack {
     if (isSourceDep) Agg.empty
     else Agg(jpLatest(isCross = true, "sireum", "runtime", "test"))
 
-  final override def jvmTestIvyDeps = Agg(ivy"com.sksamuel.diff:diff:$diffVersion")
+  final override def jvmTestIvyDeps = Agg.empty
 
   final override def jsTestIvyDeps = Agg.empty
 

@@ -34,9 +34,7 @@ val (toolsShared, toolsJvm) = moduleSharedJvmPub(
   sharedDeps = ISZ(frontend),
   sharedIvyDeps = ISZ(),
   jvmDeps = ISZ(library),
-  jvmIvyDeps = ISZ(
-    "com.sksamuel.diff:diff:"
-  ),
+  jvmIvyDeps = ISZ(),
   pubOpt = pub(
     desc = "Sireum Tools",
     url = "github.com/sireum/tools",
