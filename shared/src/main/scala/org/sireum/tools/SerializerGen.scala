@@ -37,8 +37,8 @@ import org.sireum.lang.symbol.Resolver._
 object SerializerGen {
 
   @enum object Mode {
-    'JSON
-    'MessagePack
+    "JSON"
+    "MessagePack"
   }
 
   @datatype trait Template {
@@ -695,12 +695,12 @@ object SerializerGen {
   }
 
   @record class Gen(
-                     mode: Mode.Type,
-                     globalNameMap: NameMap,
-                     globalTypeMap: TypeMap,
-                     sortedGlobalTypes: ISZ[TypeInfo],
-                     packageName: QName,
-                     reporter: Reporter
+                     val mode: Mode.Type,
+                     val globalNameMap: NameMap,
+                     val globalTypeMap: TypeMap,
+                     val sortedGlobalTypes: ISZ[TypeInfo],
+                     val packageName: QName,
+                     val reporter: Reporter
                    ) {
 
     val poset: Poset[QName] = typePoset(globalTypeMap, sortedGlobalTypes, reporter)

@@ -41,17 +41,17 @@ object BitCodecGraphGen {
 
   object BcNode {
 
-    @datatype class Container(val path: ISZ[String], elements: ISZ[Element]) extends BcNode
+    @datatype class Container(val path: ISZ[String], val elements: ISZ[Element]) extends BcNode
 
-    @datatype class Sub(name: String, val path: ISZ[String]) extends BcNode
+    @datatype class Sub(val name: String, val path: ISZ[String]) extends BcNode
 
     @datatype class Branch(val path: ISZ[String]) extends BcNode
 
-    @datatype class Element(name: String, size: String)
+    @datatype class Element(val name: String, val size: String)
 
   }
 
-  @datatype class BcEdge(labelOpt: Option[String], tooltipOpt: Option[String])
+  @datatype class BcEdge(val labelOpt: Option[String], val tooltipOpt: Option[String])
 
   @pure def renderPreds(preds: ISZ[Pred]): String = {
     return st"${(for (pred <- preds) yield render(pred), ".")}".render
@@ -288,9 +288,9 @@ object BitCodecGraphGen {
 
 import BitCodecGraphGen._
 
-@datatype class BitCodecGraphGen(text: String,
-                                 enums: HashSMap[String, AST.Stmt.Enum],
-                                 funs: HashSMap[String, (AST.Exp.Fun, AST.Type)]) {
+@datatype class BitCodecGraphGen(val text: String,
+                                 val enums: HashSMap[String, AST.Stmt.Enum],
+                                 val funs: HashSMap[String, (AST.Exp.Fun, AST.Type)]) {
 
   @pure def genSpecInlined(o: Spec): Graph[BcNode, BcEdge] = {
     val r = genSpec(o)

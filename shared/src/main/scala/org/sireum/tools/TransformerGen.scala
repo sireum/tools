@@ -666,10 +666,10 @@ object TransformerGen {
   val transformerGenKind: String = "TransformerGen"
 
   @datatype class AdtChild(
-    i: Z,
-    transformMethodCaseMembers: ISZ[ST],
-    transformMethodCaseChanges: ISZ[ST],
-    transformMethodCaseUpdates: ISZ[ST]
+    val i: Z,
+    val transformMethodCaseMembers: ISZ[ST],
+    val transformMethodCaseChanges: ISZ[ST],
+    val transformMethodCaseUpdates: ISZ[ST]
   )
 
 }

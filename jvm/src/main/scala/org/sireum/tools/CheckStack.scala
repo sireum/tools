@@ -31,11 +31,11 @@ import org.sireum._
 object CheckStack {
 
   @enum object Format {
-    'Plain
-    'Html
-    'Md
-    'Rst
-    'Csv
+    "Plain"
+    "Html"
+    "Md"
+    "Rst"
+    "Csv"
   }
 
   @datatype trait Template {

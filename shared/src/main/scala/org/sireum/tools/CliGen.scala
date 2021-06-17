@@ -30,7 +30,7 @@ import org.sireum._
 import org.sireum.cli.CliOpt
 import org.sireum.cli.CliOpt._
 
-@record class CliGen(firstColumnLimit: Z, secondColumnLimit: Z) {
+@record class CliGen(val firstColumnLimit: Z, val secondColumnLimit: Z) {
   var decls: ISZ[ST] = ISZ()
   var parser: ISZ[ST] = ISZ()
   var enumNames: Set[String] = Set.empty

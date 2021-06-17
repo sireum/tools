@@ -279,7 +279,7 @@ object BitCodecGen {
     }
   }
 
-  @record class EnumFunCollector(text: String, reporter: Reporter) extends AST.MTransformer {
+  @record class EnumFunCollector(val text: String, val reporter: Reporter) extends AST.MTransformer {
     var enums: HashSMap[String, AST.Stmt.Enum] = HashSMap.empty
     var funs: HashSMap[String, (AST.Exp.Fun, AST.Type)] = HashSMap.empty
     var funTexts: HashSMap[String, String] = HashSMap.empty
@@ -372,28 +372,28 @@ object BitCodecGen {
     }
   }
 
-  @datatype class Context(path: ISZ[String],
-                          errNum: Z,
-                          imports: ISZ[B],
-                          simports: ISZ[B],
-                          mainDecl: ISZ[ST],
-                          main: ISZ[ST],
-                          owner: String,
-                          supr: String,
-                          isupers: ISZ[String],
-                          fields: ISZ[ST],
-                          ifields: ISZ[ST],
-                          i2m: ISZ[ST],
-                          m2i: ISZ[ST],
-                          tpeInits: ISZ[(ST, ST)],
-                          wellFormed: ISZ[ST],
-                          decoding: ISZ[ST],
-                          encoding: ISZ[ST],
-                          members: ISZ[ST],
-                          omembers: ISZ[ST],
-                          fieldMap: HashMap[ISZ[String], Z],
-                          nextFound: Z,
-                          seenSpecs: HashSet[String]) {
+  @datatype class Context(val path: ISZ[String],
+                          val errNum: Z,
+                          val imports: ISZ[B],
+                          val simports: ISZ[B],
+                          val mainDecl: ISZ[ST],
+                          val main: ISZ[ST],
+                          val owner: String,
+                          val supr: String,
+                          val isupers: ISZ[String],
+                          val fields: ISZ[ST],
+                          val ifields: ISZ[ST],
+                          val i2m: ISZ[ST],
+                          val m2i: ISZ[ST],
+                          val tpeInits: ISZ[(ST, ST)],
+                          val wellFormed: ISZ[ST],
+                          val decoding: ISZ[ST],
+                          val encoding: ISZ[ST],
+                          val members: ISZ[ST],
+                          val omembers: ISZ[ST],
+                          val fieldMap: HashMap[ISZ[String], Z],
+                          val nextFound: Z,
+                          val seenSpecs: HashSet[String]) {
     def freshFound: String = {
       return if (nextFound == 0) "" else s"$nextFound"
     }
@@ -462,21 +462,21 @@ object BitCodecGen {
 
 import BitCodecGen._
 
-@datatype class BitCodecGen(isProgram: B,
-                            isBigEndian: B,
-                            isMutable: B,
-                            licenseOpt: Option[String],
-                            filename: String,
-                            packageNames: ISZ[String],
-                            name: String,
-                            text: String,
-                            traits: ISZ[String],
-                            topSpec: Spec,
-                            program: AST.TopUnit.Program,
-                            prevGen: String,
-                            enums: HashSMap[String, AST.Stmt.Enum],
-                            funs: HashSMap[String, (AST.Exp.Fun, AST.Type)],
-                            codeSectionMap: HashSMap[String, String]) {
+@datatype class BitCodecGen(val isProgram: B,
+                            val isBigEndian: B,
+                            val isMutable: B,
+                            val licenseOpt: Option[String],
+                            val filename: String,
+                            val packageNames: ISZ[String],
+                            val name: String,
+                            val text: String,
+                            val traits: ISZ[String],
+                            val topSpec: Spec,
+                            val program: AST.TopUnit.Program,
+                            val prevGen: String,
+                            val enums: HashSMap[String, AST.Stmt.Enum],
+                            val funs: HashSMap[String, (AST.Exp.Fun, AST.Type)],
+                            val codeSectionMap: HashSMap[String, String]) {
 
   val decodeInput: String = if (isMutable) "MSZ[B]" else "ISZ[B]"
   val encodeOutput: String = if (isMutable) "MOption[MSZ[B]]" else "Option[ISZ[B]]"

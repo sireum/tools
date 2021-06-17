@@ -66,12 +66,12 @@ object PrePostTransformerGen {
 }
 
 @record class PrePostTransformerGen(
-  globalNameMap: NameMap,
-  globalTypeMap: TypeMap,
-  packageName: QName,
-  isImmutable: B,
-  exclude: HashSet[String],
-  reporter: Reporter
+  val globalNameMap: NameMap,
+  val globalTypeMap: TypeMap,
+  val packageName: QName,
+  val isImmutable: B,
+  val exclude: HashSet[String],
+  val reporter: Reporter
 ) {
 
   val globalTypes: ISZ[TypeInfo] = sortedGlobalTypes(globalTypeMap)
