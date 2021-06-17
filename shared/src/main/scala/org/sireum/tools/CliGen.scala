@@ -262,9 +262,9 @@ import org.sireum.cli.CliOpt._
     var vars = ISZ[ST]()
     for (opt <- c.opts) {
       val (t, init) = tpe(opt.tpe)
-      val p = st"val ${opt.name}: $t"
+      val p = st"${opt.name}: $t"
       applyArgs = applyArgs :+ opt.name
-      params = params :+ p
+      params = params :+ st"val $p"
       vars = vars :+ st"var $p = $init"
     }
     for (optg <- c.groups) {
@@ -272,7 +272,7 @@ import org.sireum.cli.CliOpt._
         val (t, init) = tpe(opt.tpe)
         val p = st"${opt.name}: $t"
         applyArgs = applyArgs :+ opt.name
-        params = params :+ p
+        params = params :+ st"val $p"
         vars = vars :+ st"var $p = $init"
       }
     }
