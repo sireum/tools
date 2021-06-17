@@ -36,10 +36,10 @@ import org.sireum.message.Reporter
 object BitCodecGen {
 
   @enum object Output {
-    'Program
-    'Script
-    'Json
-    'Dot
+    "Program"
+    "Script"
+    "Json"
+    "Dot"
   }
 
   @datatype class PosOptTransformer extends Transformer.PrePost[B] {

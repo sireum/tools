@@ -142,12 +142,12 @@ object TransformerGen {
         |
         |object $name {
         |
-        |  @datatype class PreResult[Context, T](ctx: Context,
-        |                                        continu: B,
-        |                                        resultOpt: Option[T])
+        |  @datatype class PreResult[Context, T](val ctx: Context,
+        |                                        val continu: B,
+        |                                        val resultOpt: Option[T])
         |
-        |  @datatype class TPostResult[Context, T](ctx: Context,
-        |                                     resultOpt: Option[T])
+        |  @datatype class TPostResult[Context, T](val ctx: Context,
+        |                                          val resultOpt: Option[T])
         |
         |  @sig trait PrePost[Context] {
         |
@@ -163,7 +163,7 @@ object TransformerGen {
         |
         |import $name._
         |
-        |@datatype class $name[Context](pp: PrePost[Context]) {
+        |@datatype class $name[Context](val pp: PrePost[Context]) {
         |
         |  ${(transformMethods, "\n\n")}
         |
@@ -414,8 +414,8 @@ object TransformerGen {
         |
         |object $name {
         |
-        |  @record class PreResult[T](continu: B,
-        |                             resultOpt: MOption[T])
+        |  @record class PreResult[T](val continu: B,
+        |                             val resultOpt: MOption[T])
         |
         |  ${(transformHelpers, "\n\n")}
         |

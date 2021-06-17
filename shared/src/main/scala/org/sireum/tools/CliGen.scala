@@ -89,7 +89,7 @@ import org.sireum.cli.CliOpt._
           |
           |import $name._
           |
-          |@record class $name(pathSep: C) {
+          |@record class $name(val pathSep: C) {
           |
           |  ${(parser, "\n\n")}
           |
@@ -258,11 +258,11 @@ import org.sireum.cli.CliOpt._
 
   def tool(topName: String, c: Tool): Unit = {
     var applyArgs = ISZ[String]("help", "parseArguments(args, j)")
-    var params = ISZ[ST](st"help: String", st"args: ISZ[String]")
+    var params = ISZ[ST](st"val help: String", st"val args: ISZ[String]")
     var vars = ISZ[ST]()
     for (opt <- c.opts) {
       val (t, init) = tpe(opt.tpe)
-      val p = st"${opt.name}: $t"
+      val p = st"val ${opt.name}: $t"
       applyArgs = applyArgs :+ opt.name
       params = params :+ p
       vars = vars :+ st"var $p = $init"
