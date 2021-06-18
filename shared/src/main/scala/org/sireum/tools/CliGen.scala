@@ -249,6 +249,7 @@ import org.sireum.cli.CliOpt._
           |    }
           |  }
           |}
+          |// @formatter:on
           |
           |$beginMarker
           |$userCodeOpt
