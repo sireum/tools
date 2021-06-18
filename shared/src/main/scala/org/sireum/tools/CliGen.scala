@@ -74,10 +74,6 @@ import org.sireum.cli.CliOpt._
           |$packageName
           |import org.sireum._
           |
-          |$beginMarker
-          |$userCodeOpt
-          |$endMarker
-          |
           |object $name {
           |
           |  @datatype trait $topName
@@ -252,7 +248,12 @@ import org.sireum.cli.CliOpt._
           |        return None()
           |    }
           |  }
-          |}"""
+          |}
+          |
+          |$beginMarker
+          |$userCodeOpt
+          |$endMarker
+          |"""
     return r
   }
 
