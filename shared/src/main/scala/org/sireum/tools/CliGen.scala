@@ -49,8 +49,8 @@ import org.sireum.cli.CliOpt._
     val topName = s"${ops.StringOps(config.name).firstToUpper}TopOption"
 
     config match {
-      case config: Group => group(topName, config)
-      case config: Tool => tool(topName, config)
+      case config: Group => group(topName, ISZ(), config)
+      case config: Tool => tool(topName, ISZ(), config)
     }
     val license: Option[ST] = licenseOpt.map((text: String) =>
       st"""/*
@@ -258,12 +258,12 @@ import org.sireum.cli.CliOpt._
     return r
   }
 
-  def tool(topName: String, c: Tool): Unit = {
+  def tool(topName: String, path: ISZ[String], c: Tool): Unit = {
     var applyArgs = ISZ[String]("help", "parseArguments(args, j)")
     var params = ISZ[ST](st"val help: String", st"val args: ISZ[String]")
     var vars = ISZ[ST]()
     for (opt <- c.opts) {
-      val (t, init) = tpe(opt.tpe)
+      val (t, init) = tpe(path :+ c.command, opt.tpe)
       val p = st"${opt.name}: $t"
       applyArgs = applyArgs :+ opt.name
       params = params :+ st"val $p"
@@ -271,7 +271,7 @@ import org.sireum.cli.CliOpt._
     }
     for (optg <- c.groups) {
       for (opt <- optg.opts) {
-        val (t, init) = tpe(opt.tpe)
+        val (t, init) = tpe(path :+ c.command, opt.tpe)
         val p = st"${opt.name}: $t"
         applyArgs = applyArgs :+ opt.name
         params = params :+ st"val $p"
@@ -279,7 +279,7 @@ import org.sireum.cli.CliOpt._
       }
     }
 
-    val name = ops.StringOps(c.name).firstToUpper
+    val name = parseName(path, c.command)
 
     decls = decls :+
       st"""@datatype class ${name}Option(
@@ -346,30 +346,37 @@ import org.sireum.cli.CliOpt._
     var cases = ISZ[ST]()
 
     def optCase(opt: Opt): Unit = {
-      val parse: String = opt.tpe match {
+      val parse: ST = opt.tpe match {
         case t: Type.Choice =>
-          if (t.sep.nonEmpty) s"parse${ops.StringOps(t.name).firstToUpper}s(args, j + 1)"
-          else s"parse${ops.StringOps(t.name).firstToUpper}(args, j + 1)"
-        case _: Type.Flag => s"{ j = j - 1; Some(!${opt.name}) }"
+          val tname = parseName(path :+ c.command, t.name)
+          if (t.sep.nonEmpty) st"parse${tname}s(args, j + 1)"
+          else st"parse$tname(args, j + 1)"
+        case _: Type.Flag => st"{ j = j - 1; Some(!${opt.name}) }"
         case t: Type.Num =>
-          val r: String = t.sep match {
-            case Some(sep) => s"""parseNums(args, j + 1, '$sep', ${t.min}, ${t.max})"""
-            case _ => s"parseNum(args, j + 1, ${t.min}, ${t.max})"
+          val tMin: ST = t.min match {
+            case Some(min) => st"Some($min)"
+            case _ => st"None()"
           }
-          r
-        case t: Type.NumChoice => st"""parseNumChoice(args, j + 1, ISZ(z"${(t.choices, "\", z\"")}"))""".render
-        case t: Type.Path => if (t.multiple) s"parsePaths(args, j + 1)" else s"parsePath(args, j + 1)"
+          val tMax: ST = t.max match {
+            case Some(max) => st"Some($max)"
+            case _ => st"None()"
+          }
+          t.sep match {
+            case Some(sep) => st"""parseNums(args, j + 1, '$sep', $tMin, $tMax)"""
+            case _ => st"parseNum(args, j + 1, $tMin, $tMax)"
+          }
+        case t: Type.NumChoice => st"""parseNumChoice(args, j + 1, ISZ(z"${(t.choices, "\", z\"")}"))"""
+        case t: Type.Path => if (t.multiple) st"parsePaths(args, j + 1)" else st"parsePath(args, j + 1)"
         case t: Type.Str =>
-          val r: String = t.sep match {
-            case Some(sep) => s"""parseStrings(args, j + 1, '$sep')"""
-            case _ => s"parseString(args, j + 1)"
+          t.sep match {
+            case Some(sep) => st"""parseStrings(args, j + 1, '$sep')"""
+            case _ => st"parseString(args, j + 1)"
           }
-          r
       }
       val sh: String = if (opt.shortKey.isEmpty) "" else s"""arg == "-${opt.shortKey.get}" || """
       cases = cases :+
         st""" else if (${sh}arg == "--${opt.longKey}") {
-        |  val o: Option[${tpe(opt.tpe)._1}] = $parse
+        |  val o: Option[${tpe(path :+ c.command, opt.tpe)._1}] = $parse
         |  o match {
         |    case Some(v) => ${opt.name} = v
         |    case _ => return None()
@@ -469,14 +476,18 @@ import org.sireum.cli.CliOpt._
       |}"""
   }
 
-  def group(topName: String, c: Group): Unit = {
+  @strictpure def parseName(path: ISZ[String], id: String): ST =
+    st"${(for (e <- path :+ id) yield ops.StringOps(e).firstToUpper, "")}"
+
+  def group(topName: String, path: ISZ[String], c: Group): Unit = {
     val choices: ISZ[String] = for (sub <- c.subs) yield sub.command
     val choiceCases: ISZ[ST] = for (sub <- c.subs)
-      yield st"""case Some(string"${sub.command}") => parse${ops.StringOps(sub.name).firstToUpper}(args, i + 1)"""
+      yield st"""case Some(string"${sub.command}") => parse${parseName(path :+ c.command, sub.command)}(args, i + 1)"""
     val columns: ISZ[(String, String, String)] = for (sub <- c.subs if !sub.unlisted)
       yield (sub.command, "", sub.description)
+    val name = parseName(path, c.command)
     parser = parser :+
-      st"""def parse${ops.StringOps(c.name).firstToUpper}(args: ISZ[String], i: Z): Option[$topName] = {
+      st"""def parse$name(args: ISZ[String], i: Z): Option[$topName] = {
       |  if (i >= args.size) {
       |    println(
       |      st$tqs${(tokenizeH(c.header, '\n', F), "\n          |")}
@@ -495,13 +506,13 @@ import org.sireum.cli.CliOpt._
 
     for (sub <- c.subs) {
       sub match {
-        case sub: Group => group(topName, sub)
-        case sub: Tool => tool(topName, sub)
+        case sub: Group => group(topName, path :+ c.command, sub)
+        case sub: Tool => tool(topName, path :+ c.command, sub)
       }
     }
   }
 
-  @pure def tpe(c: Type): (String, String) = {
+  @pure def tpe(path: ISZ[String], c: Type): (String, String) = {
     c match {
       case c: Type.Flag => return ("B", c.default.string)
       case c: Type.Num =>
@@ -522,7 +533,7 @@ import org.sireum.cli.CliOpt._
             return ("Option[String]", if (c.default.isEmpty) "None[String]()" else s"""Some("${c.default.get}")""")
         }
       case c: Type.Choice =>
-        val name = ops.StringOps(c.name).firstToUpper
+        val name = parseName(path, c.name).render
         choiceEnum(name, c)
         return if (c.sep.nonEmpty) (s"ISZ[$name.Type]", s"ISZ($name.${ops.StringOps(c.elements(0)).firstToUpper})")
         else (s"$name.Type", s"$name.${ops.StringOps(c.elements(0)).firstToUpper}")
