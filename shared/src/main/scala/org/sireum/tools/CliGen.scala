@@ -321,10 +321,26 @@ import org.sireum.cli.CliOpt._
             else st"${opt.description} (expects one of { ${(t.elements, ", ")} }; default: ${t.elements(0)})".render
           case _: Type.Flag => opt.description
           case t: Type.Num =>
-            if (t.sep.isEmpty) s"${opt.description} (expects an integer; default is ${t.default})"
-            else s"${opt.description} (expects an int-list separated by '${t.sep.get}')"
+            val min: ST = t.min match {
+              case Some(v) => st"; min is $v"
+              case _ => st""
+            }
+            val max: ST = t.max match {
+              case Some(v) => st"; max is $v"
+              case _ => st""
+            }
+            if (t.sep.isEmpty) st"${opt.description} (expects an integer$min$max; default is ${t.default})".render
+            else st"${opt.description} (expects an int-list separated by '${t.sep.get}'$min$max)".render
           case t: Type.NumFlag =>
-            s"${opt.description} (accepts an optional integer; default is ${t.default})"
+            val min: ST = t.min match {
+              case Some(v) => st"; min is $v"
+              case _ => st""
+            }
+            val max: ST = t.max match {
+              case Some(v) => st"; max is $v"
+              case _ => st""
+            }
+            st"${opt.description} (accepts an optional integer$min$max; default is ${t.default})".render
           case t: Type.NumChoice => st"${opt.description} (expects one of { ${(t.choices, ", ")} })".render
           case t: Type.Path =>
             if (t.multiple) {
