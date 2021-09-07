@@ -130,7 +130,7 @@ import org.sireum.cli.CliOpt._
           |      case Some(sargs) =>
           |        var r = ISZ[Z]()
           |        for (arg <- sargs) {
-          |          parseNumH(arg, minOpt, maxOpt) match {
+          |          parseNumH(F, arg, minOpt, maxOpt)._2 match {
           |            case Some(n) => r = r :+ n
           |            case _ => return None()
           |          }
@@ -198,17 +198,27 @@ import org.sireum.cli.CliOpt._
           |      eprintln(s"Expecting an integer, but none found.")
           |      return None()
           |    }
-          |    return parseNumH(args(i), minOpt, maxOpt)
+          |    return parseNumH(F, args(i), minOpt, maxOpt)._2
           |  }
           |
-          |  def parseNumH(arg: String, minOpt: Option[Z], maxOpt: Option[Z]): Option[Z] = {
+          |  def parseNumFlag(args: ISZ[String], i: Z, minOpt: Option[Z], maxOpt: Option[Z]): Option[Option[Z]] = {
+          |    if (i >= args.size) {
+          |      return Some(None())
+          |    }
+          |    parseNumH(T, args(i), minOpt, maxOpt) match {
+          |      case (T, vOpt) => return Some(vOpt)
+          |      case _ => return None()
+          |    }
+          |  }
+          |
+          |  def parseNumH(optArg: B, arg: String, minOpt: Option[Z], maxOpt: Option[Z]): (B, Option[Z]) = {
           |    Z(arg) match {
           |      case Some(n) =>
           |        minOpt match {
           |          case Some(min) =>
           |            if (n < min) {
           |              eprintln(s"Expecting an integer at least $$min, but found $$n.")
-          |              return None()
+          |              return (F, None())
           |            }
           |          case _ =>
           |        }
@@ -216,15 +226,18 @@ import org.sireum.cli.CliOpt._
           |          case Some(max) =>
           |            if (n > max) {
           |              eprintln(s"Expecting an integer at most $$max, but found $$n.")
-          |              return None()
+          |              return (F, None())
           |            }
-          |            return Some(n)
           |          case _ =>
           |        }
-          |        return Some(n)
+          |        return (T, Some(n))
           |      case _ =>
-          |        eprintln(s"Expecting an integer, but found '$$arg'.")
-          |        return None()
+          |        if (!optArg) {
+          |          eprintln(s"Expecting an integer, but found '$$arg'.")
+          |          return (F, None())
+          |        } else {
+          |          return (T, None())
+          |       }
           |    }
           |  }
           |
@@ -310,6 +323,8 @@ import org.sireum.cli.CliOpt._
           case t: Type.Num =>
             if (t.sep.isEmpty) s"${opt.description} (expects an integer; default is ${t.default})"
             else s"${opt.description} (expects an int-list separated by '${t.sep.get}')"
+          case t: Type.NumFlag =>
+            s"${opt.description} (accepts an optional integer; default is ${t.default})"
           case t: Type.NumChoice => st"${opt.description} (expects one of { ${(t.choices, ", ")} })".render
           case t: Type.Path =>
             if (t.multiple) {
@@ -365,6 +380,19 @@ import org.sireum.cli.CliOpt._
             case Some(sep) => st"""parseNums(args, j + 1, '$sep', $tMin, $tMax)"""
             case _ => st"parseNum(args, j + 1, $tMin, $tMax)"
           }
+        case t: Type.NumFlag =>
+          val tMin: ST = t.min match {
+            case Some(min) => st"Some($min)"
+            case _ => st"None()"
+          }
+          val tMax: ST = t.max match {
+            case Some(max) => st"Some($max)"
+            case _ => st"None()"
+          }
+          st"""parseNumFlag(args, j + 1, $tMin, $tMax) match {
+              |    case o@Some(None()) => j = j - 1; o
+              |    case o => o
+              |  }"""
         case t: Type.NumChoice => st"""parseNumChoice(args, j + 1, ISZ(z"${(t.choices, "\", z\"")}"))"""
         case t: Type.Path => if (t.multiple) st"parsePaths(args, j + 1)" else st"parsePath(args, j + 1)"
         case t: Type.Str =>
@@ -520,6 +548,7 @@ import org.sireum.cli.CliOpt._
           case Some(_) => return ("ISZ[Z]", s"ISZ()")
           case _ => return ("Z", c.default.string)
         }
+      case _: Type.NumFlag => return ("Option[Z]", s"None()")
       case c: Type.NumChoice => return ("Z", c.choices(0).string)
       case c: Type.Str =>
         c.sep match {
