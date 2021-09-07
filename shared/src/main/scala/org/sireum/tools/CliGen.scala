@@ -406,7 +406,7 @@ import org.sireum.cli.CliOpt._
             case _ => st"None()"
           }
           st"""parseNumFlag(args, j + 1, $tMin, $tMax) match {
-              |    case o@Some(None()) => j = j - 1; o
+              |    case o@Some(None()) => j = j - 1; Some(Some(${t.default}))
               |    case o => o
               |  }"""
         case t: Type.NumChoice => st"""parseNumChoice(args, j + 1, ISZ(z"${(t.choices, "\", z\"")}"))"""

@@ -675,7 +675,7 @@ object SerializerGen {
     }
     val tc = FrontEnd.libraryReporter._1
     val (rep, programs, globalNameMap, globalTypeMap) =
-      FrontEnd.parseProgramAndGloballyResolve(T, for (p <- sources) yield FrontEnd.Input(p._2, p._1, 0), tc.nameMap,
+      FrontEnd.parseProgramAndGloballyResolve(0, for (p <- sources) yield FrontEnd.Input(p._2, p._1, 0), tc.nameMap,
         tc.typeMap)
     if (rep.hasError) {
       reporter.reports(rep.messages)
