@@ -215,11 +215,35 @@ object cli {
     ),
   )
 
+  val objectPrinterTool: Tool = Tool(
+    name = "opgen",
+    command = "opgen",
+    description = "Object printer meta-generator",
+    header = "Sireum Object Printer Meta-generator",
+    usage = "<option>* <fully-qualified-name>",
+    usageDescOpt = None(),
+    opts = ISZ(
+      Opt(name = "license", longKey = "license", shortKey = Some('l'),
+        tpe = Type.Path(F, None()),
+        description = ""),
+      Opt(name = "name", longKey = "name", shortKey = Some('n'),
+        tpe = Type.Str(None(), Some("ObjectPrinter")),
+        description = "Name of the generated object printer generator"),
+      Opt(name = "output", longKey = "output-dir", shortKey = Some('o'),
+        tpe = Type.Path(F, None()),
+        description = ""),
+      Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
+        tpe = Type.Str(Some('.'), None()),
+        description = "Package name of the generated object printer generator"),
+    ) ++ (for (opt <- lang.cli.slangTipe.opts if opt.name =!= "outline") yield opt),
+    groups = lang.cli.slangTipe.groups
+  )
+
   val group: Group = Group(
     name = "tools",
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, iveGenTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, iveGenTool, objectPrinterTool, serializerGenTool, transformerGenTool)
   )
 }
