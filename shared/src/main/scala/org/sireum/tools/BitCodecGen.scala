@@ -788,15 +788,15 @@ import BitCodecGen._
   def genSpecEnum(first: B, context: Context, spec: Spec.Enum, reporter: Reporter): Context = {
     val name = spec.name
     val objectName = spec.objectName
-    val enum: AST.Stmt.Enum = enums.get(objectName) match {
+    val enumStmt: AST.Stmt.Enum = enums.get(objectName) match {
       case Some(e) => e
       case _ =>
         reporter.error(None(), kind,
           st"Could not find enum $name for ${(context.path :+ name, ".")}".render)
         return context
     }
-    val size = bitWidth(enum.elements.size)
-    val firstElem = enum.elements(0).value
+    val size = bitWidth(enumStmt.elements.size)
+    val firstElem = enumStmt.elements(0).value
     val tpe = st"$objectName.Type"
     val prefix: String = if (size <= 8) "ble" else endianPrefix
     return context(
@@ -806,7 +806,7 @@ import BitCodecGen._
       mainDecl = if (!first) context.mainDecl else context.mainDecl :+ st"val ERROR_$objectName: Z = ${context.errNum}",
       main = if (!first) context.main else context.main :+
         st"""@enum object $objectName {
-            |  ${(for (element <- enum.elements) yield st"'${element.value}", "\n")}
+            |  ${(for (element <- enumStmt.elements) yield st"'${element.value}", "\n")}
             |}
             |
             |def decode$objectName(input: $decodeInput, context: Context): $tpe = {
@@ -817,7 +817,7 @@ import BitCodecGen._
             |    return $objectName.$firstElem
             |  }
             |  val r: $tpe = $reader.${prefix}U$size(input, context) match {
-            |    ${(for (i <- 0 until enum.elements.size) yield st"""case u$size"$i" => $objectName.${enum.elements(i).value}""", "\n")}
+            |    ${(for (i <- 0 until enumStmt.elements.size) yield st"""case u$size"$i" => $objectName.${enumStmt.elements(i).value}""", "\n")}
             |    case _ =>
             |      context.signalError(ERROR_$objectName)
             |      $objectName.$firstElem
@@ -833,7 +833,7 @@ import BitCodecGen._
             |    return
             |  }
             |  $name match {
-            |    ${(for (i <- 0 until enum.elements.size) yield st"""case $objectName.${enum.elements(i).value} => Writer.${if (size <= 8) "ble" else endianPrefix}U$size(output, context, u$size"$i")""", "\n")}
+            |    ${(for (i <- 0 until enumStmt.elements.size) yield st"""case $objectName.${enumStmt.elements(i).value} => Writer.${if (size <= 8) "ble" else endianPrefix}U$size(output, context, u$size"$i")""", "\n")}
             |  }
             |}""",
       fields = context.fields :+ st"var $name: $tpe",
