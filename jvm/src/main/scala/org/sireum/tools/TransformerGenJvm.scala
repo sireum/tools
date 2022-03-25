@@ -57,12 +57,6 @@ object TransformerGenJvm {
           return None()
       }
     }
-    for (i <- 1 until programs.size) {
-      if (programs(i - 1).packageName.ids.map((id: AST.Id) => id.value) != programs(i).packageName.ids.map((id: AST.Id) => id.value)) {
-        reporter.error(None(), "TransformerGen", "All program inputs should be in the same package")
-        return None()
-      }
-    }
     val lOpt: Option[String] = licenseOpt match {
       case Some(f) => Some(ops.StringOps(f.read).trim)
       case _ => None[String]()
