@@ -235,7 +235,7 @@ object cli {
       Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
         tpe = Type.Str(Some('.'), None()),
         description = "Package name of the generated object printer generator"),
-    ) ++ (for (opt <- lang.cli.slangTipe.opts if opt.name =!= "outline") yield opt),
+    ) ++ (for (opt <- lang.cli.slangTipe.opts if opt.name != "outline") yield opt),
     groups = lang.cli.slangTipe.groups
   )
 

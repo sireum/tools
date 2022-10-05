@@ -50,7 +50,7 @@ object CliGenJvm {
     val fOpt = Some(src.name)
     val (preambleOpt, userCodeOpt): (Option[String], Option[String]) = if (dest.exists) {
       val destContent = dest.read
-      val pOpt: Option[String] = if (dest.ext === "cmd") {
+      val pOpt: Option[String] = if (dest.ext == "cmd") {
         val destOps = ops.StringOps(destContent)
         val endCmd: String = "::!#"
         val i = destOps.stringIndexOf(endCmd)
@@ -93,7 +93,7 @@ object CliGenJvm {
     var r = CliGen(firstColumnLimit, secondColumnLimit + firstColumnLimit)
       .gen(preambleOpt, lOpt, fOpt, packageName, nameOpt.getOrElse("Cli"), config, beginMarker, endMarker, userCodeOpt)
       .render
-    if (dest.ext === "cmd") {
+    if (dest.ext == "cmd") {
       r = ops.StringOps(r).replaceAllLiterally("\n", "\r\n")
     }
     return r
