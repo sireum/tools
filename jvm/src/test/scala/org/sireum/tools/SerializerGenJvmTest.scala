@@ -53,7 +53,7 @@ class SerializerGenJvmTest extends SireumSpec {
         if (dest.exists) {
           val expected = dest.read.value
           val result = r.value
-          if (!(result =~= expected)) {
+          if (!(result =~ expected)) {
             val dmp = new DiffMatchPatch()
             Console.err.println(dmp.patch_toText(dmp.patch_make(expected, result)))
             Console.err.flush()
