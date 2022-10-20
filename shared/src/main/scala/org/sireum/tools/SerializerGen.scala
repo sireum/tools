@@ -683,7 +683,7 @@ object SerializerGen {
     }
     val pName: ISZ[String] = if (packageName.isEmpty) programs(0).packageName.ids.map(id => id.value) else packageName
     val uriOpts = HashSet.empty[Option[String]] ++ (for (p <- sources) yield p._1)
-    var typeMap = HashMap.empty[QName, TypeInfo]
+    var typeMap: TypeMap = HashSMap.empty
     for (ti <- globalTypeMap.values if ti.posOpt.nonEmpty && uriOpts.contains(ti.posOpt.get.uriOpt)) {
       typeMap = typeMap + ti.name ~> ti
     }

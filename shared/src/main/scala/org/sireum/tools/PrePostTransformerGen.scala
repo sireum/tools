@@ -46,7 +46,7 @@ object PrePostTransformerGen {
     exclude: ISZ[String],
     reporter: Reporter
   ): ST = {
-    val gdr = GlobalDeclarationResolver(HashMap.empty, HashMap.empty, reporter)
+    val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
     for (p <- programs) {
       gdr.resolveProgram(p)
     }
