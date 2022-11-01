@@ -171,11 +171,17 @@ object TransformerGen {
       }
 
       @pure def preMethodRoot(typeName: ST, tpe: ST, preMethodRootCases: ISZ[ST]): ST = {
-        return st"""@pure def pre$typeName(ctx: Context, o: $tpe): PreResult[Context, $tpe] = {
-        |  o match {
-        |    ${(preMethodRootCases, "\n")}
-        |  }
-        |}"""
+        if (preMethodRootCases.isEmpty) {
+          return st"""@pure def pre$typeName(ctx: Context, o: $tpe): PreResult[Context, $tpe] = {
+                     |  return PreResult(ctx, T, None())
+                     |}"""
+        } else {
+          return st"""@pure def pre$typeName(ctx: Context, o: $tpe): PreResult[Context, $tpe] = {
+                     |  o match {
+                     |    ${(preMethodRootCases, "\n")}
+                     |  }
+                     |}"""
+        }
       }
 
       @pure def preMethodRootCase(typeName: ST, tpe: ST, superType: ST, preAdaptOpt: Option[ST]): ST = {
@@ -199,11 +205,17 @@ object TransformerGen {
       }
 
       @pure def postMethodRoot(typeName: ST, tpe: ST, postMethodRootCases: ISZ[ST]): ST = {
-        return st"""@pure def post$typeName(ctx: Context, o: $tpe): TPostResult[Context, $tpe] = {
-        |  o match {
-        |    ${(postMethodRootCases, "\n")}
-        |  }
-        |}"""
+        if (postMethodRootCases.isEmpty) {
+          return st"""@pure def post$typeName(ctx: Context, o: $tpe): TPostResult[Context, $tpe] = {
+                     |  return TPostResult(ctx, None())
+                     |}"""
+        } else {
+          return st"""@pure def post$typeName(ctx: Context, o: $tpe): TPostResult[Context, $tpe] = {
+                     |  o match {
+                     |    ${(postMethodRootCases, "\n")}
+                     |  }
+                     |}"""
+        }
       }
 
       @pure def postMethodRootCase(typeName: ST, tpe: ST, superType: ST, postAdaptOpt: Option[ST]): ST = {
@@ -274,10 +286,15 @@ object TransformerGen {
       }
 
       @pure def transformMethodMatch(tpe: ST, transformMethodCases: ISZ[ST]): ST = {
-        return st"""val rOpt: TPostResult[Context, $tpe] = o2 match {
-        |  ${(transformMethodCases, "\n")}
-        |}
-        |rOpt"""
+        if (transformMethodCases.isEmpty) {
+          return st"""val rOpt: TPostResult[Context, $tpe] = TPostResult(ctx, None())
+                     |rOpt"""
+        } else {
+          return st"""val rOpt: TPostResult[Context, $tpe] = o2 match {
+                     |  ${(transformMethodCases, "\n")}
+                     |}
+                     |rOpt"""
+        }
       }
 
       @pure def transformMethodMatchSimple(ac: AdtChild): ST = {
@@ -435,11 +452,17 @@ object TransformerGen {
       }
 
       @pure def preMethodRoot(typeName: ST, tpe: ST, preMethodRootCases: ISZ[ST]): ST = {
-        return st"""def pre$typeName(o: $tpe): PreResult[$tpe] = {
-        |  o match {
-        |    ${(preMethodRootCases, "\n")}
-        |  }
-        |}"""
+        if (preMethodRootCases.isEmpty) {
+          return st"""def pre$typeName(o: $tpe): PreResult[$tpe] = {
+                     |  return PreResult(T, MNone())
+                     |}"""
+        } else {
+          return st"""def pre$typeName(o: $tpe): PreResult[$tpe] = {
+                     |  o match {
+                     |    ${(preMethodRootCases, "\n")}
+                     |  }
+                     |}"""
+        }
       }
 
       @pure def preMethodRootCase(typeName: ST, tpe: ST, superType: ST, preAdaptOpt: Option[ST]): ST = {
@@ -463,11 +486,17 @@ object TransformerGen {
       }
 
       @pure def postMethodRoot(typeName: ST, tpe: ST, postMethodRootCases: ISZ[ST]): ST = {
-        return st"""def post$typeName(o: $tpe): MOption[$tpe] = {
-        |  o match {
-        |    ${(postMethodRootCases, "\n")}
-        |  }
-        |}"""
+        if (postMethodRootCases.isEmpty) {
+          return st"""def post$typeName(o: $tpe): MOption[$tpe] = {
+                     |  return MNone()
+                     |}"""
+        } else {
+          return st"""def post$typeName(o: $tpe): MOption[$tpe] = {
+                     |  o match {
+                     |    ${(postMethodRootCases, "\n")}
+                     |  }
+                     |}"""
+        }
       }
 
       @pure def postMethodRootCase(typeName: ST, tpe: ST, superType: ST, postAdaptOpt: Option[ST]): ST = {
@@ -538,10 +567,15 @@ object TransformerGen {
       }
 
       @pure def transformMethodMatch(tpe: ST, transformMethodCases: ISZ[ST]): ST = {
-        return st"""val rOpt: MOption[$tpe] = o2 match {
-        |  ${(transformMethodCases, "\n")}
-        |}
-        |rOpt"""
+        if (transformMethodCases.isEmpty) {
+          return st"""val rOpt: MOption[$tpe] = MNone()
+                     |rOpt"""
+        } else {
+          return st"""val rOpt: MOption[$tpe] = o2 match {
+                     |  ${(transformMethodCases, "\n")}
+                     |}
+                     |rOpt"""
+        }
       }
 
       @pure def transformMethodMatchSimple(ac: AdtChild): ST = {
