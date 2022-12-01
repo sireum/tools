@@ -58,7 +58,7 @@ object CliGenJvm {
           Some(s"${destOps.substring(0, i + endCmd.size)}\n")
         } else {
           Some(
-            st"""::#! 2> /dev/null                                   #
+            st"""::/*#! 2> /dev/null                                 #
                 |@ 2>/dev/null # 2>nul & echo off & goto BOF         #
                 |if [ -z $${SIREUM_HOME} ]; then                      #
                 |  echo "Please set SIREUM_HOME env var"             #
@@ -73,7 +73,7 @@ object CliGenJvm {
                 |)
                 |%SIREUM_HOME%\bin\sireum.bat slang run "%0" %*
                 |exit /B %errorlevel%
-                |::!#
+                |::!#*/
                 |""".render)
         }
       } else {
