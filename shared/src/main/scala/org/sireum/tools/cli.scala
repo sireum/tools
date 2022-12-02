@@ -31,45 +31,6 @@ import org.sireum.cli.CliOpt._
 
 object cli {
 
-  val iveGenTool: Tool = Tool(
-    name = "ivegen",
-    command = "ivegen",
-    description = "Sireum IVE project generator",
-    header = "Sireum IVE Project Generator",
-    usage = "<option>* <project-parent-directory>",
-    usageDescOpt = None(),
-    opts = ISZ(
-      Opt(name = "jdk", longKey = "jdk", shortKey = Some('j'),
-        tpe = Type.Str(sep = None(), default = Some("Java")),
-        description = "JDK name"),
-      Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
-        tpe = Type.Choice(name = "IveMode", sep = None(), elements = ISZ("idea", "mill")),
-        description = "Project format (use idea for Slang script project and mill for full Slang development)"),
-      Opt(name = "projectName", longKey = "name", shortKey = Some('n'),
-        tpe = Type.Str(sep = None(), default = Some("hello")),
-        description = "Project name"),
-      Opt(name = "moduleName", longKey = "module", shortKey = None(),
-        tpe = Type.Str(sep = None(), default = None()),
-        description = "Module name (default: project name)"),
-      Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
-        tpe = Type.Str(sep = Some('.'), default = None()),
-        description = "Fully qualified app package name"),
-      Opt(name = "appName", longKey = "app", shortKey = None(),
-        tpe = Type.Str(sep = None(), default = None()),
-        description = "App/script name (default: \"app\" in mill mode; otherwise, \"script\")"),
-      Opt(name = "millPath", longKey = "mill-path", shortKey = None(),
-        tpe = Type.Flag(default = F),
-        description = "Use mill available in the PATH environment variable (only in mill mode)"),
-      Opt(name = "force", longKey = "force", shortKey = Some('f'),
-        tpe = Type.Flag(default = F),
-        description = "Force regeneration of JDK and library tables"),
-      Opt(name = "compile", longKey = "no-compile", shortKey = Some('c'),
-        tpe = Type.Flag(default = T),
-        description = "Only generate mill project without code compilation"),
-    ),
-    groups = ISZ()
-  )
-
   val cliGenTool: Tool = Tool(
     name = "cligen",
     command = "cligen",
@@ -244,6 +205,6 @@ object cli {
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, iveGenTool, objectPrinterTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, objectPrinterTool, serializerGenTool, transformerGenTool)
   )
 }
