@@ -237,7 +237,7 @@ object CheckStack {
   val NO_INPUT: Z = -6
   val INVALID_INPUT: Z = -7
 
-  def run(sireumHome: Os.Path, version: String, paths: ISZ[Os.Path], isBin: B, objdump: String, arch: String,
+  def run(sireumHome: Os.Path, checkstack: Os.Path, paths: ISZ[Os.Path], isBin: B, objdump: String, arch: String,
           format: Format.Type): Z = {
 
     var out = ISZ[String]()
@@ -358,12 +358,6 @@ object CheckStack {
       if (Os.proc(ISZ(objdump, "--version")).run().exitCode != 0) {
         eprintln(s"Could not find $objdump")
         return OBJDUMP_UNAVAILABLE
-      }
-      val checkstack = sireumHome / "bin" / "linux" / ".checkstack"
-      val ver = sireumHome / "bin" / "linux" / ".checkstack.ver"
-      if (!checkstack.exists || !ver.exists || ver.read != version) {
-        checkstack.downloadFrom(s"https://raw.githubusercontent.com/torvalds/linux/$version/scripts/checkstack.pl")
-        ver.writeOver(version)
       }
 
       for (path <- paths) {
