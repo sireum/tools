@@ -52,7 +52,7 @@ object CliGenJvm {
       val destContent = dest.read
       val pOpt: Option[String] = if (dest.ext == "cmd") {
         val destOps = ops.StringOps(destContent)
-        val endCmd: String = "::!#"
+        val endCmd: String = "::!#*/"
         val i = destOps.stringIndexOf(endCmd)
         if (i > 0) {
           Some(s"${destOps.substring(0, i + endCmd.size)}\n")
