@@ -375,7 +375,7 @@ object TransformerGen {
       }
 
       @pure def transformIS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.indices.reverse" else st"s2.indices"
+        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
         return st"""@pure def transformIS$indexType[Context, T](ctx: Context, s: IS[$indexType, T], f: (Context, T) => TPostResult[Context, T] @pure): TPostResult[Context, IS[$indexType, T]] = {
         |  val s2: MS[$indexType, T] = s.toMS
         |  var changed: B = F
@@ -659,7 +659,7 @@ object TransformerGen {
       }
 
       @pure def transformIS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.indices.reverse" else st"s2.indices"
+        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
         return st"""def transformIS$indexType[T](s: IS[$indexType, T], f: T => MOption[T]): MOption[IS[$indexType, T]] = {
         |  val s2: MS[$indexType, T] = s.toMS
         |  var changed: B = F
@@ -678,7 +678,7 @@ object TransformerGen {
       }
 
       @pure def transformMS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.indices.reverse" else st"s2.indices"
+        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
         return st"""def transformIS$indexType[T](s: IS[$indexType, T], f: T => MOption[T]): MOption[IS[$indexType, T]] = {
         |  var s2: MS[$indexType, T] = MS[Z, T]()
         |  var changed: B = F
