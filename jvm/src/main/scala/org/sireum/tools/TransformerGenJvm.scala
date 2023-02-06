@@ -35,6 +35,7 @@ object TransformerGenJvm {
 
   def run(
     isImmutable: B,
+    isReversed: B,
     licenseOpt: Option[Os.Path],
     sources: ISZ[Os.Path],
     nameOpt: Option[String],
@@ -61,7 +62,7 @@ object TransformerGenJvm {
       case Some(f) => Some(ops.StringOps(f.read).trim)
       case _ => None[String]()
     }
-    return Some(PrePostTransformerGen.gen(isImmutable, lOpt, nameOpt,
+    return Some(PrePostTransformerGen.gen(isImmutable, isReversed, lOpt, nameOpt,
       for (source <- sources) yield source.name, programs, exclude, reporter).render)
   }
 }

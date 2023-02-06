@@ -18,7 +18,7 @@ This repository holds various Sireum utility tools:
     * ... and a [custom (hand-written) extension](https://github.com/sireum/slang/blob/master/tipe/shared/src/main/scala/org/sireum/lang/tipe/CustomMessagePack.scala) 
       that adds compression/pooling for commonly occurring objects
 
-* **Transgen**: Transformer (visitor and rewriter) generator from Slang datatype definitions
+* **Trafo**: Transformer (visitor and rewriter) generator from Slang datatype definitions
 
   As an example, for Slang [AST](https://github.com/sireum/slang/blob/master/ast/shared/src/main/scala/org/sireum/lang/ast/AST.scala):
   

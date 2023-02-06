@@ -39,6 +39,7 @@ object PrePostTransformerGen {
 
   def gen(
     isImmutable: B,
+    isReversed: B,
     licenseOpt: Option[String],
     nameOpt: Option[String],
     fileUris: ISZ[String],
@@ -56,6 +57,7 @@ object PrePostTransformerGen {
       gdr.globalTypeMap,
       AST.Util.ids2strings(programs(0).packageName.ids),
       isImmutable,
+      isReversed,
       HashSet ++ exclude,
       reporter
     )
@@ -70,6 +72,7 @@ object PrePostTransformerGen {
   val globalTypeMap: TypeMap,
   val packageName: QName,
   val isImmutable: B,
+  val isReversed: B,
   val exclude: HashSet[String],
   val reporter: Reporter
 ) {
@@ -227,8 +230,8 @@ object PrePostTransformerGen {
       if (!collAdded.contains(coll)) {
         collAdded = collAdded + coll
         transformHelpers = transformHelpers :+
-          (if (isImmutableCollection) template.transformIS(indexType)
-           else template.transformMS(indexType))
+          (if (isImmutableCollection) template.transformIS(indexType, isReversed)
+           else template.transformMS(indexType, isReversed))
       }
       transformSpecific(name)
     }
@@ -285,7 +288,10 @@ object PrePostTransformerGen {
       }
     }
 
-    for (p <- ti.ast.params) {
+    val params: ISZ[AST.AdtParam] =
+      if (isReversed) for (i <- ti.ast.params.size - 1 to 0 by -1) yield ti.ast.params(i)
+      else ti.ast.params
+    for (p <- params) {
       val fieldName = p.id.value
       p.tipe match {
         case t: AST.Type.Named =>

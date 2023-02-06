@@ -60,8 +60,8 @@ object cli {
   )
 
   val transformerGenTool: Tool = Tool(
-    name = "transgen",
-    command = "transgen",
+    name = "trafo",
+    command = "trafo",
     description = "Transformer (visitor/rewriter) generator",
     header = "Sireum Transformer Generator",
     usage = "<option>* <slang-file>+",
@@ -70,14 +70,14 @@ object cli {
       Opt(name = "exclude", longKey = "exclude", shortKey = Some('e'),
         tpe = Type.Str(sep = Some(','), default = None()),
         description = "Exclude generating top-level transform for the specified type identifiers"),
+      Opt(name = "license", longKey = "license", shortKey = Some('l'),
+        tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
-        tpe = Type.Choice(name = "TransformerMode", sep = Some(','), elements = ISZ("immutable", "mutable")),
+        tpe = Type.Choice(name = "TransformerMode", sep = Some(','), elements = ISZ("immutable", "mutable", "rimmutable", "rmutable")),
         description = "Transformer mode"),
       Opt(name = "name", longKey = "name", shortKey = Some('n'),
         tpe = Type.Str(sep = None(), default = None()),
         description = "Type simple name for the transformers (default: \"Transformer\" or \"MTransformer\")"),
-      Opt(name = "license", longKey = "license", shortKey = Some('l'),
-        tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
         tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files"),
     ),
