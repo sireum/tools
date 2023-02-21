@@ -254,7 +254,7 @@ object BitCodecGen {
         }
 
         def printFun(o: AST.Exp.Fun): ST = {
-          org.sireum.lang.tipe.JSON.Printer.print_astExp(ft.transformExp(T, o).resultOpt.getOrElse(o))
+          return org.sireum.lang.tipe.JSON.Printer.print_astExp(ft.transformExp(T, o).resultOpt.getOrElse(o))
         }
 
         val maxSize: Z = spec.computeMaxSizeOpt((id: String) => bitWidth(enumMap.get(id).get.size)) match {
@@ -577,10 +577,10 @@ import BitCodecGen._
         return genSpecPredUnion(first, ctx, o, reporter)
       case o: Spec.PredRepeatWhileImpl =>
         val (first, ctx) = repeatFirstContext(o.name)
-        genSpecPredRepeat(first, ctx, o.name, o.maxElements, T, o.preds, o.element, reporter)
+        return genSpecPredRepeat(first, ctx, o.name, o.maxElements, T, o.preds, o.element, reporter)
       case o: Spec.PredRepeatUntilImpl =>
         val (first, ctx) = repeatFirstContext(o.name)
-        genSpecPredRepeat(first, ctx, o.name, o.maxElements, F, o.preds, o.element, reporter)
+        return genSpecPredRepeat(first, ctx, o.name, o.maxElements, F, o.preds, o.element, reporter)
       case o: Spec.GenUnionImpl =>
         val (first, ctx) = firstContext(o.name)
         return genSpecGenUnion(first, ctx, o, reporter)

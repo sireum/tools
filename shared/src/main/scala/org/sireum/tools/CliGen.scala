@@ -526,7 +526,7 @@ import org.sireum.cli.CliOpt._
   def group(topName: String, path: ISZ[String], c: Group): Unit = {
     val choices: ISZ[String] = for (sub <- c.subs) yield sub.command
     val choiceCases: ISZ[ST] = for (sub <- c.subs)
-      yield st"""case Some(string"${sub.command}") => parse${parseName(path :+ c.command, sub.command)}(args, i + 1)"""
+      yield st"""case Some(string"${sub.command}") => return parse${parseName(path :+ c.command, sub.command)}(args, i + 1)"""
     val columns: ISZ[(String, String, String)] = for (sub <- c.subs if !sub.unlisted)
       yield (sub.command, "", sub.description)
     val name = parseName(path, c.command)

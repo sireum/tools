@@ -833,7 +833,7 @@ object SerializerGen {
     }
 
     def printFunValue(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Fun): ST = {
-      template.printFun(fieldName, tipe.args.size, tipe.isPure)
+      return template.printFun(fieldName, tipe.args.size, tipe.isPure)
     }
 
     def printValue(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
@@ -856,7 +856,7 @@ object SerializerGen {
         case _ =>
       }
       val t = basicOrTypeName(ti, tipe)
-      template.printValue(t._3, fieldName, t._1)
+      return template.printValue(t._3, fieldName, t._1)
     }
 
     def parseField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {

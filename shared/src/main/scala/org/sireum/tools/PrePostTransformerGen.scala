@@ -98,7 +98,7 @@ object PrePostTransformerGen {
         case _ =>
       }
     }
-    template.main(
+    return template.main(
       licenseOpt,
       fileUris,
       packageName,
@@ -363,7 +363,7 @@ object PrePostTransformerGen {
 
   def adtTypeNameOpt(ti: TypeInfo.Adt, tipe: AST.Type): Option[QName] = {
     tipe match {
-      case tipe: AST.Type.Named => adtNameOpt(ti, AST.Util.ids2strings(tipe.name.ids), tipe.attr.posOpt)
+      case tipe: AST.Type.Named => return adtNameOpt(ti, AST.Util.ids2strings(tipe.name.ids), tipe.attr.posOpt)
       case _ => return None()
     }
   }
