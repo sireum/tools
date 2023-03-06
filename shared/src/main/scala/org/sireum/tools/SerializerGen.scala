@@ -47,6 +47,7 @@ object SerializerGen {
                     licenseOpt: Option[String],
                     fileUriOpt: Option[String],
                     packageNames: ISZ[String],
+                    imports: ISZ[ST],
                     name: Option[String],
                     constants: ISZ[ST],
                     printers: ISZ[ST],
@@ -117,6 +118,7 @@ object SerializerGen {
                     licenseOpt: Option[String],
                     fileUriOpt: Option[String],
                     packageNames: ISZ[String],
+                    imports: ISZ[ST],
                     name: Option[String],
                     constants: ISZ[ST],
                     printers: ISZ[ST],
@@ -144,6 +146,7 @@ object SerializerGen {
             |$packageName
             |import org.sireum._
             |import org.sireum.Json.Printer._
+            |${(imports, "\n")}
             |
             |object ${name.getOrElse("JSON")} {
             |
@@ -390,6 +393,7 @@ object SerializerGen {
                     licenseOpt: Option[String],
                     fileUriOpt: Option[String],
                     packageNames: ISZ[String],
+                    imports: ISZ[ST],
                     name: Option[String],
                     constants: ISZ[ST],
                     writers: ISZ[ST],
@@ -416,6 +420,7 @@ object SerializerGen {
             |$fileUri
             |$packageName
             |import org.sireum._
+            |${(imports, "\n")}
             |
             |object ${name.getOrElse("MsgPack")} {
             |
@@ -725,7 +730,12 @@ object SerializerGen {
           case _ =>
         }
       }
-      return template.main(licenseOpt, fileUriOpt, packageName, name, constants, printers, parsers, fromsTos)
+      // explicitly import top level package members to resolve potential ambiguous imports arising from
+      // Sireum's package object (e.g. org.sireum.hamr.ir.Flow and org.sireum.contract.Flow)
+      val packageMembers = ops.ISZOps(sortedGlobalTypes).filter((p: TypeInfo) =>
+        packageName.size + 1 == p.name.size && packageName == ops.ISZOps(p.name).dropRight(1))
+      val imports: ISZ[ST] = for(t <- packageMembers) yield st"import ${(t.name, ".")}"
+      return template.main(licenseOpt, fileUriOpt, packageName, imports, name, constants, printers, parsers, fromsTos)
     }
 
     def genEnum(ti: TypeInfo.Enum): Unit = {
