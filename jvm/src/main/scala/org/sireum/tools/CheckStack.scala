@@ -46,8 +46,9 @@ object CheckStack {
 
   object Template {
 
-    @strictpure def splitLine(line: String): ISZ[String] =
-      ops.StringOps(line).split((c: C) => c == '\t' || c == ':' || c == ' ' || c == '[' || c == ']')
+    @pure def splitLine(line: String): ISZ[String] = {
+      return ops.StringOps(line).split((c: C) => c == '\t' || c == ':' || c == ' ' || c == '[' || c == ']')
+    }
 
     @datatype trait Dotsu extends Template {
       @pure def format(lines: ISZ[String]): ST = {

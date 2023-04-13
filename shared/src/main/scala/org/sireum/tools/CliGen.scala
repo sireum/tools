@@ -520,8 +520,9 @@ import org.sireum.cli.CliOpt._
       |}"""
   }
 
-  @strictpure def parseName(path: ISZ[String], id: String): ST =
-    st"${(for (e <- path :+ id) yield ops.StringOps(e).firstToUpper, "")}"
+  @pure def parseName(path: ISZ[String], id: String): ST = {
+    return st"${(for (e <- path :+ id) yield ops.StringOps(e).firstToUpper, "")}"
+  }
 
   def group(topName: String, path: ISZ[String], c: Group): Unit = {
     val choices: ISZ[String] = for (sub <- c.subs) yield sub.command
