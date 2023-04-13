@@ -69,7 +69,7 @@ object CheckStack {
       @datatype class Plain extends Dotsu {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
-          return st"$filename:$line:$column:$fname $size $alloc"
+          st"$filename:$line:$column:$fname $size $alloc"
         }
         @strictpure def main(rows: ISZ[ST]): ST = st"""${(rows, "\n")}"""
       }
@@ -77,7 +77,7 @@ object CheckStack {
       @datatype class Csv extends Dotsu {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
-          return st"$filename,$line,$column,$fname,$size,$alloc"
+          st"$filename,$line,$column,$fname,$size,$alloc"
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""Filename,Line,Column,Function,Bytes,Allocation
@@ -87,13 +87,11 @@ object CheckStack {
       @datatype class Html extends Dotsu {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
-          val r =
-            st"""<tr>
-                |  <td>$filename [$line,$column]<br/>$fname</td>
-                |  <td>$size</td>
-                |  <td>$alloc</td>
-                |</tr>"""
-          return r
+          st"""<tr>
+              |  <td>$filename [$line,$column]<br/>$fname</td>
+              |  <td>$size</td>
+              |  <td>$alloc</td>
+              |</tr>"""
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""<table class="checkstack_table">
@@ -109,7 +107,7 @@ object CheckStack {
       @datatype class Md extends Dotsu {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
-          return st"| $filename | $line:$column | $fname | $size | $alloc |"
+          st"| $filename | $line:$column | $fname | $size | $alloc |"
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""| Filename | Position | Function | Bytes | Allocation |
@@ -120,12 +118,10 @@ object CheckStack {
       @datatype class Rst extends Dotsu {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(filename, line, column, fname, size, alloc) = elements
-          val r =
-            st"""* - $filename [$line, $column]
-                |    $fname
-                |  - $size
-                |  - $alloc"""
-          return r
+          st"""* - $filename [$line, $column]
+              |    $fname
+              |  - $size
+              |  - $alloc"""
         }
 
         @strictpure def main(rows: ISZ[ST]): ST =
@@ -160,7 +156,7 @@ object CheckStack {
       @datatype class Plain extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
-          return st"$filename:$offset:$fname\t$size"
+          st"$filename:$offset:$fname\t$size"
         }
         @strictpure def main(rows: ISZ[ST]): ST = st"""${(rows, "\n")}"""
       }
@@ -168,7 +164,7 @@ object CheckStack {
       @datatype class Csv extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
-          return st"$filename,$offset,$fname,$size"
+          st"$filename,$offset,$fname,$size"
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""Filename,Offset,Function,Bytes
@@ -178,12 +174,10 @@ object CheckStack {
       @datatype class Html extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
-          val r =
-            st"""<tr>
-                |  <td>$filename [$offset]<br/>$fname</td>
-                |  <td>$size</td>
-                |</tr>"""
-          return r
+          st"""<tr>
+              |  <td>$filename [$offset]<br/>$fname</td>
+              |  <td>$size</td>
+              |</tr>"""
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""<table class="checkstack_table">
@@ -198,7 +192,7 @@ object CheckStack {
       @datatype class Md extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
-          return st"| $filename | $offset | $fname | $size |"
+          st"| $filename | $offset | $fname | $size |"
         }
         @strictpure def main(rows: ISZ[ST]): ST =
           st"""| Filename | Offset | Function | Bytes |
@@ -209,11 +203,9 @@ object CheckStack {
       @datatype class Rst extends Bin {
         @strictpure def row(elements: ISZ[String]): ST = {
           val ISZ(offset, fname, filename, size) = elements
-          val r =
-            st"""* - $filename [$offset]
-                |    $fname
-                |  - $size"""
-          return r
+          st"""* - $filename [$offset]
+              |    $fname
+              |  - $size"""
         }
 
         @strictpure def main(rows: ISZ[ST]): ST =
