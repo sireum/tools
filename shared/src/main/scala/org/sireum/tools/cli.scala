@@ -200,11 +200,76 @@ object cli {
     groups = lang.cli.slangTipe.groups
   )
 
+  val slangCheckRunner: Tool = Tool(
+    name = "runner",
+    command = "runner",
+    description = "SlangCheck test generator runner",
+    header = "SlangCheck Test Generator Runner",
+    usage = "<option>* <fully-qualified-name>",
+    usageDescOpt = None(),
+    opts = ISZ(
+      Opt(name = "classpath", longKey = "classpath", shortKey = Some('c'),
+        tpe = Type.Path(T, None()),
+        description = "Classpath to load test runner class from"),
+      Opt(name = "max", longKey = "max", shortKey = Some('m'),
+        tpe = Type.Num(None(), 0, Some(1), None()),
+        description = "Maximum number of test objects"),
+      Opt(name = "output", longKey = "output", shortKey = Some('o'),
+        tpe = Type.Path(F, None()),
+        description = "Output file to store generated test case objects"),
+      Opt(name = "par", longKey = "parallel", shortKey = Some('p'),
+        tpe = Type.NumFlag(0, Some(1), None()),
+        description = "Enable parallelization"),
+      Opt(name = "scp", longKey = "scp", shortKey = Some('s'),
+        tpe = Type.Str(None(), None()),
+        description = "Server connection to scp compressed output file to"),
+      Opt(name = "timeout", longKey = "timeout", shortKey = Some('t'),
+        tpe = Type.Num(None(), 0, Some(1), None()),
+        description = "Timeout (seconds)")
+    ),
+    groups = ISZ()
+  )
+
+  val slangCheckTester: Tool = Tool(
+    name = "tester",
+    command = "tester",
+    description = "SlangCheck test case runner",
+    header = "SlangCheck Test Case Runner",
+    usage = "<option>* <fully-qualified-name>",
+    usageDescOpt = None(),
+    opts = ISZ(
+      Opt(name = "classpath", longKey = "classpath", shortKey = Some('c'),
+        tpe = Type.Path(T, None()),
+        description = "Classpath to load test runner class from"),
+      Opt(name = "input", longKey = "input", shortKey = Some('i'),
+        tpe = Type.Path(F, None()),
+        description = "Input file or directory containing compressed test case objects"),
+      Opt(name = "output", longKey = "output", shortKey = Some('o'),
+        tpe = Type.Path(F, None()),
+        description = "Output file to store passing/failing test case objects"),
+      Opt(name = "par", longKey = "parallel", shortKey = Some('p'),
+        tpe = Type.NumFlag(0, Some(1), None()),
+        description = "Enable parallelization"),
+      Opt(name = "scp", longKey = "scp", shortKey = Some('s'),
+        tpe = Type.Str(None(), None()),
+        description = "Server connection to scp compressed output file to")
+    ),
+    groups = ISZ()
+  )
+
+  val slangCheckGroup: Group = Group(
+    name = "slangcheck",
+    description = "SlangCheck tools",
+    header = "SlangCheck Tools",
+    unlisted = F,
+    subs = ISZ(slangCheckRunner, slangCheckTester)
+  )
+
   val group: Group = Group(
     name = "tools",
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, objectPrinterTool, serializerGenTool, transformerGenTool)
+    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, objectPrinterTool, serializerGenTool, slangCheckGroup, transformerGenTool)
   )
 }
