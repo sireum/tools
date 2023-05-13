@@ -41,7 +41,8 @@ object CliGenJvm {
     packageName: ISZ[String],
     nameOpt: Option[String],
     firstColumnLimit: Z,
-    secondColumnLimit: Z
+    secondColumnLimit: Z,
+    useReporter: B
   ): String = {
     val lOpt: Option[String] = licenseOpt match {
       case Some(f) => Some(ops.StringOps(f.read).trim)
@@ -90,7 +91,7 @@ object CliGenJvm {
       (None(), None())
     }
 
-    var r = CliGen(firstColumnLimit, secondColumnLimit + firstColumnLimit)
+    var r = CliGen(firstColumnLimit, secondColumnLimit + firstColumnLimit, useReporter)
       .gen(preambleOpt, lOpt, fOpt, packageName, nameOpt.getOrElse("Cli"), config, beginMarker, endMarker, userCodeOpt)
       .render
     if (dest.ext == "cmd") {

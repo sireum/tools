@@ -30,7 +30,8 @@ import org.sireum._
 import org.sireum.cli.CliOpt
 import org.sireum.cli.CliOpt._
 
-@record class CliGen(val firstColumnLimit: Z, val secondColumnLimit: Z) {
+@record class CliGen(val firstColumnLimit: Z, val secondColumnLimit: Z, val reporter: B) {
+  var errorPrefix: String = "eprintln("
   var decls: ISZ[ST] = ISZ()
   var parser: ISZ[ST] = ISZ()
   var enumNames: Set[String] = Set.empty
@@ -47,7 +48,9 @@ import org.sireum.cli.CliOpt._
     userCodeOpt: Option[String]
   ): ST = {
     val topName = s"${ops.StringOps(config.name).firstToUpper}TopOption"
-
+    if (reporter) {
+      errorPrefix = s"""reporter.error(None(), "$name", """
+    }
     config match {
       case config: Group => group(topName, ISZ(), config)
       case config: Tool => tool(topName, ISZ(), config)
@@ -85,7 +88,7 @@ import org.sireum.cli.CliOpt._
           |
           |import $name._
           |
-          |@record class $name(val pathSep: C) {
+          |@record class $name(val pathSep: C${if (reporter) ", reporter: message.Reporter" else ""}) {
           |
           |  ${(parser, "\n\n")}
           |
@@ -105,7 +108,7 @@ import org.sireum.cli.CliOpt._
           |
           |  def parsePath(args: ISZ[String], i: Z): Option[Option[String]] = {
           |    if (i >= args.size) {
-          |      eprintln("Expecting a path, but none found.")
+          |      ${errorPrefix}"Expecting a path, but none found.")
           |    }
           |    return Some(Some(args(i)))
           |  }
@@ -119,7 +122,7 @@ import org.sireum.cli.CliOpt._
           |
           |  def parseString(args: ISZ[String], i: Z): Option[Option[String]] = {
           |    if (i >= args.size) {
-          |      eprintln("Expecting a string, but none found.")
+          |      ${errorPrefix}"Expecting a string, but none found.")
           |      return None()
           |    }
           |    return Some(Some(args(i)))
@@ -142,7 +145,7 @@ import org.sireum.cli.CliOpt._
           |
           |  def tokenize(args: ISZ[String], i: Z, tpe: String, sep: C, removeWhitespace: B): Option[ISZ[String]] = {
           |    if (i >= args.size) {
-          |      eprintln(s"Expecting a sequence of $$tpe separated by '$$sep', but none found.")
+          |      ${errorPrefix}s"Expecting a sequence of $$tpe separated by '$$sep', but none found.")
           |      return None()
           |    }
           |    val arg = args(i)
@@ -186,7 +189,7 @@ import org.sireum.cli.CliOpt._
           |        if (set.contains(n)) {
           |          return r
           |        } else {
-          |          eprintln(s"Expecting one of the following: $$set, but found $$n.")
+          |          ${errorPrefix}s"Expecting one of the following: $$set, but found $$n.")
           |          return None()
           |        }
           |      case r => return r
@@ -195,7 +198,7 @@ import org.sireum.cli.CliOpt._
           |
           |  def parseNum(args: ISZ[String], i: Z, minOpt: Option[Z], maxOpt: Option[Z]): Option[Z] = {
           |    if (i >= args.size) {
-          |      eprintln(s"Expecting an integer, but none found.")
+          |      ${errorPrefix}s"Expecting an integer, but none found.")
           |      return None()
           |    }
           |    return parseNumH(F, args(i), minOpt, maxOpt)._2
@@ -217,7 +220,7 @@ import org.sireum.cli.CliOpt._
           |        minOpt match {
           |          case Some(min) =>
           |            if (n < min) {
-          |              eprintln(s"Expecting an integer at least $$min, but found $$n.")
+          |              ${errorPrefix}s"Expecting an integer at least $$min, but found $$n.")
           |              return (F, None())
           |            }
           |          case _ =>
@@ -225,7 +228,7 @@ import org.sireum.cli.CliOpt._
           |        maxOpt match {
           |          case Some(max) =>
           |            if (n > max) {
-          |              eprintln(s"Expecting an integer at most $$max, but found $$n.")
+          |              ${errorPrefix}s"Expecting an integer at most $$max, but found $$n.")
           |              return (F, None())
           |            }
           |          case _ =>
@@ -233,7 +236,7 @@ import org.sireum.cli.CliOpt._
           |        return (T, Some(n))
           |      case _ =>
           |        if (!optArg) {
-          |          eprintln(s"Expecting an integer, but found '$$arg'.")
+          |          ${errorPrefix}s"Expecting an integer, but found '$$arg'.")
           |          return (F, None())
           |        } else {
           |          return (T, None())
@@ -251,11 +254,11 @@ import org.sireum.cli.CliOpt._
           |    }
           |    cs.size match {
           |      case z"0" =>
-          |        eprintln(s"$$arg is not a mode of $$mode.")
+          |        ${errorPrefix}s"$$arg is not a mode of $$mode.")
           |        return None()
           |      case z"1" => return Some(cs(0))
           |      case _ =>
-          |        eprintln(
+          |        ${errorPrefix}
           |          st${tqs}Which one of the following modes did you mean by '$$arg'?
           |              |$${(cs, "\n")}$tqs.render)
           |        return None()
@@ -457,7 +460,7 @@ import org.sireum.cli.CliOpt._
       |        println(help)
       |        return Some(HelpOption())
       |      }$cases else {
-      |        eprintln(s"Unrecognized option '$$arg'.")
+      |        ${errorPrefix}s"Unrecognized option '$$arg'.")
       |        return None()
       |      }
       |      ${inc._2}
@@ -486,14 +489,14 @@ import org.sireum.cli.CliOpt._
       |  arg.native match {
       |    ${(cases, "\n")}
       |    case s =>
-      |      eprintln(s"Expecting one of the following: { ${(c.elements, ", ")} }, but found '$$s'.")
+      |      ${errorPrefix}s"Expecting one of the following: { ${(c.elements, ", ")} }, but found '$$s'.")
       |      return None()
       |  }
       |}"""
     parser = parser :+
       st"""def parse$name(args: ISZ[String], i: Z): Option[$name.Type] = {
       |  if (i >= args.size) {
-      |    eprintln("Expecting one of the following: { ${(c.elements, ", ")} }, but none found.")
+      |    ${errorPrefix}"Expecting one of the following: { ${(c.elements, ", ")} }, but none found.")
       |    return None()
       |  }
       |  val r = parse${name}H(args(i))

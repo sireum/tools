@@ -49,12 +49,15 @@ object cli {
       Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
         tpe = Type.Str(sep = Some('.'), default = None()),
         description = "Package name for the CLI processor"),
+      Opt(name = "reporter", longKey = "reporter", shortKey = Some('r'),
+        tpe = Type.Flag(F),
+        description = "Use message.Reporter for reporting error messages"),
       Opt(name = "script", longKey = "script", shortKey = Some('s'),
         tpe = Type.Str(sep = None(), default = None()),
         description = "Generate a script file with the provided name instead of a Slang program"),
       Opt(name = "width", longKey = "width", shortKey = Some('w'),
         tpe = Type.Num(sep = Some(','), default = 0, min = Some(0), max = None()),
-        description = "First (key) column (default: 25) and second column (default: 55) max width"),
+        description = "First (key) column (default: 25) and second column (default: 55) max width")
     ),
     groups = ISZ()
   )
@@ -79,7 +82,7 @@ object cli {
         tpe = Type.Str(sep = None(), default = None()),
         description = "Type simple name for the transformers (default: \"Transformer\" or \"MTransformer\")"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files"),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files")
     ),
     groups = ISZ()
   )
@@ -152,7 +155,7 @@ object cli {
     opts = ISZ(
       Opt(name = "mode", longKey = "mode", shortKey = Some('m'),
         tpe = Type.Choice(name = "CheckStackMode", sep = None(), elements =  ISZ("dotsu", "bin")),
-        description = "Analysis mode"),
+        description = "Analysis mode")
     ),
     groups = ISZ(
       OptGroup(name = "Binary Mode", opts = ISZ(
@@ -173,7 +176,7 @@ object cli {
           )),
           description = "Output format")
       ))
-    ),
+    )
   )
 
   val objectPrinterTool: Tool = Tool(
@@ -195,7 +198,7 @@ object cli {
         description = ""),
       Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
         tpe = Type.Str(Some('.'), None()),
-        description = "Package name of the generated object printer generator"),
+        description = "Package name of the generated object printer generator")
     ) ++ (for (opt <- lang.cli.slangTipe.opts if opt.name != "outline") yield opt),
     groups = lang.cli.slangTipe.groups
   )
