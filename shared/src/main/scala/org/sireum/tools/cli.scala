@@ -244,6 +244,9 @@ object cli {
       Opt(name = "classpath", longKey = "classpath", shortKey = Some('c'),
         tpe = Type.Path(T, None()),
         description = "Classpath to load test runner class from"),
+      Opt(name = "coverage", longKey = "coverage", shortKey = None(),
+        tpe = Type.Path(F, None()),
+        description = "JaCoCo exec and classdumpdir path prefix (without .exec and .dump)"),
       Opt(name = "input", longKey = "input", shortKey = Some('i'),
         tpe = Type.Path(F, None()),
         description = "Input file or directory containing compressed test case objects"),
@@ -255,7 +258,10 @@ object cli {
         description = "Enable parallelization"),
       Opt(name = "scp", longKey = "scp", shortKey = Some('s'),
         tpe = Type.Str(None(), None()),
-        description = "Server connection to scp compressed output file to")
+        description = "Server connection to scp compressed output file to"),
+      Opt(name = "sourcepath", longKey = "sourcepath", shortKey = None(),
+        tpe = Type.Path(T, None()),
+        description = "Sourcepath for coverage information")
     ),
     groups = ISZ()
   )
