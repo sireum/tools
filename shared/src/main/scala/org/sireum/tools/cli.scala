@@ -246,7 +246,7 @@ object cli {
         description = "Classpath to load test runner class from"),
       Opt(name = "coverage", longKey = "coverage", shortKey = None(),
         tpe = Type.Path(F, None()),
-        description = "JaCoCo exec and classdumpdir path prefix (without .exec and .dump)"),
+        description = "JaCoCo exec, classdumpdir, report path prefix (without .exec, .dump, .coverage)"),
       Opt(name = "input", longKey = "input", shortKey = Some('i'),
         tpe = Type.Path(F, None()),
         description = "Input file or directory containing compressed test case objects"),
