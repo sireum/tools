@@ -75,6 +75,12 @@ object SerializerGen {
 
     @pure def printEnumCase(elementName: String, tpe: ST): ST
 
+    @pure def printSubZ(name: ST, tpe: ST): ST
+
+    @pure def printSeqValue(isImmutable:  B, isSimple:  B, indexName: ST, fieldName: String, tpe: ST): ST
+
+    @pure def printSeq(isImmutable: B, indexName: String, indexString: String): Option[ST]
+
     @pure def printS(isImmutable: B, isSimple: B, name: ST, isBuiltIn: B, fieldName: String, indexType: String): ST
 
     @pure def printNameOne(isSimple: B, nameOne: String, name: ST, fieldName: String, isBuiltIn: B): ST
@@ -104,6 +110,12 @@ object SerializerGen {
     @pure def parseEnum(name: ST, tpe: ST, parseEnumCases: ISZ[ST]): ST
 
     @pure def parseEnumCase(elementName: String, tpe: ST): ST
+
+    @pure def parseSubZ(name: ST, tpe: ST): ST
+
+    @pure def parseSeqValue(isImmutable: B, indexName: ST, fieldName: ST): ST
+
+    @pure def parseSeq(isImmutable: B, name: String, tpe: String): ST
 
     @pure def parseS(isImmutable: B, indexType: String, name: ST, isBuiltIn: B): ST
 
@@ -265,8 +277,25 @@ object SerializerGen {
       return r
     }
 
+    @pure override def printSubZ(name:  ST, tpe:  ST): ST = {
+      val r =
+        st"""@pure def print$name(o: $tpe): ST = {
+            |  return printNumber(o.toZ.string)
+            |}"""
+      return r
+    }
+
     @pure def printEnumCase(elementName: String, tpe: ST): ST = {
       return st"""case $tpe.$elementName => "$elementName""""
+    }
+
+    @pure def printSeqValue(isImmutable:  B, isSimple:  B, indexName: ST, fieldName: String, tpe: ST): ST = {
+      val prefix: String = if (isImmutable) "IS" else "MS"
+      return st"print$prefix(${if (isSimple) "T" else "F"}, o.${fieldName}.map(print$tpe _))"
+    }
+
+    @pure def printSeq(isImmutable: B, indexName: String, indexString: String): Option[ST] = {
+      return None()
     }
 
     @pure def printS(isImmutable: B, isSimple: B, name: ST, isBuiltIn: B, fieldName: String, indexType: String): ST = {
@@ -362,6 +391,45 @@ object SerializerGen {
             |      return $tpe.byOrdinal(0).get
             |  }
             |}"""
+      return r
+    }
+
+    @pure def parseSubZ(name: ST, tpe: ST): ST = {
+      val r =
+        st"""def parse$name(): $tpe = {
+            |  val i = parser.offset
+            |  val s = parser.parseNumber()
+            |  $tpe(s) match {
+            |    case Some(n) => return n
+            |    case _ =>
+            |      parser.parseException(i, s"Expected a $tpe, but '$$s' found.")
+            |      return $tpe.Min
+            |  }
+            |}"""
+      return r
+    }
+
+    @pure def parseSeqValue(isImmutable: B, indexName: ST, fieldName: ST): ST = {
+      val prefix: String = if (isImmutable) "IS" else "MS"
+      return st"parse$prefix$indexName(parse$fieldName _)"
+    }
+
+    @pure def parseSeq(isImmutable: B, name: String, tpe: String): ST = {
+      val prefix: String = if (isImmutable) "IS" else "MS"
+      val r = st"""def parse$prefix$name[T](f: () => T): $prefix[$tpe, T] = {
+          |  if (!parser.parseArrayBegin()) {
+          |    return $prefix()
+          |  }
+          |  var e = f()
+          |  var r = $prefix[$tpe, T](e)
+          |  var continue = parser.parseArrayNext()
+          |  while (continue) {
+          |    e = f()
+          |    r = r :+ e
+          |    continue = parser.parseArrayNext()
+          |  }
+          |  return r
+          |}"""
       return r
     }
 
@@ -553,6 +621,31 @@ object SerializerGen {
       return st""
     }
 
+    @pure override def printSubZ(name:  ST, tpe:  ST): ST = {
+      val r =
+        st"""def write${name}(o: $tpe): Unit = {
+            |  writer.writeZ(o.toZ)
+            |}"""
+      return r
+    }
+
+    @pure def printSeqValue(isImmutable:  B, isSimple:  B, indexName: ST, fieldName: String, tpe: ST): ST = {
+      val prefix: String = if(isImmutable) "IS" else "MS"
+      return st"write$prefix$indexName(o.$fieldName, write$tpe _)"
+    }
+
+    @pure def printSeq(isImmutable: B, indexName: String, indexString: String): Option[ST] = {
+      val prefix: String = if(isImmutable) "IS" else "MS"
+      val r =
+        st"""def write$prefix$indexName[E](s: $prefix[$indexString, E], f: E => Unit) : Unit = {
+            |  writer.writeArrayHeader(s.size)
+            |  for (e <- s) {
+            |    f(e)
+            |  }
+            |}"""
+      return Some(r)
+    }
+
     @pure def printS(isImmutable: B, isSimple: B, name: ST, isBuiltIn: B, fieldName: String, indexType: String): ST = {
       val sName: String = if (isImmutable) "IS" else "MS"
       val w: String = if (isBuiltIn) "writer." else ""
@@ -641,6 +734,37 @@ object SerializerGen {
       return st""
     }
 
+    @pure override def parseSubZ(name:  ST, tpe:  ST): ST = {
+      val r =
+        st"""def read$name(): $tpe = {
+            |  val n = reader.readZ()
+            |  return $tpe.fromZ(n)
+            |}"""
+      return r
+    }
+
+    @pure override def parseSeqValue(isImmutable:  B, indexName:  ST, fieldName:  ST): ST = {
+      val prefix: String = if (isImmutable) "IS" else "MS"
+      return st"read$prefix$indexName(read$fieldName _)"
+    }
+
+    @pure override def parseSeq(isImmutable:  B, name:  String, tpe:  String): ST = {
+      val prefix: String = if (isImmutable) "IS" else "MS"
+      val r=
+        st"""def read$prefix$name[E](f: () => E): $prefix[$tpe, E] = {
+            |  val size = reader.readArrayHeader()
+            |  var r = $prefix[$tpe, E]()
+            |  var i = 0
+            |  while (i < size) {
+            |    val o = f()
+            |    r = r :+ o
+            |    i = i + 1
+            |  }
+            |  return r
+            |}"""
+      return r
+    }
+
     @pure def parseS(isImmutable: B, indexType: String, name: ST, isBuiltIn: B): ST = {
       val sName: String = if (isImmutable) "IS" else "MS"
       val p: String = if (isBuiltIn) "reader." else ""
@@ -716,6 +840,9 @@ object SerializerGen {
     var printers: ISZ[ST] = ISZ()
     var fromsTos: ISZ[ST] = ISZ()
 
+    var handledParseSequences: Map[String, Set[String]] = Map.empty[String, Set[String]] + "IS" ~> Set.empty + "MS" ~> Set.empty
+    var handledPrintSequences: Map[String, Set[String]] = Map.empty[String, Set[String]] + "IS" ~> Set.empty + "MS" ~> Set.empty
+
     val template: Template = mode match {
       case Mode.JSON => JsonTemplate()
       case Mode.MessagePack => MessagePackTemplate()
@@ -727,6 +854,7 @@ object SerializerGen {
           case ti: TypeInfo.Adt => genAdt(ti)
           case ti: TypeInfo.Sig => genRoot(ti.name)
           case ti: TypeInfo.Enum => genEnum(ti)
+          case ti: TypeInfo.SubZ => genSubZ(ti)
           case _ =>
         }
       }
@@ -832,6 +960,13 @@ object SerializerGen {
       fromsTos = fromsTos :+ template.from(rootTypeName, rootTypeString) :+ template.to(rootTypeName, rootTypeString)
     }
 
+    def genSubZ(ti: TypeInfo.SubZ): Unit = {
+      val subZString = typeNameString(packageName, ti.name)
+      val subZName = typeName(packageName, ti.name)
+      printers = printers :+ template.printSubZ(subZName, subZString)
+      parsers = parsers :+ template.parseSubZ(subZName, subZString)
+    }
+
     def printField(ti: TypeInfo.Adt, fieldName: String, tipe: AST.Type.Named): ST = {
       val v = printValue(ti, fieldName, tipe)
       return template.printField(fieldName, v)
@@ -862,7 +997,18 @@ object SerializerGen {
       val mapOpt = nameTwo(ti, tipe)
       mapOpt match {
         case Some((prefix, (isBuiltIn1, isSimple1, e1), (isBuiltIn2, isSimple2, e2))) =>
-          return template.printNameTwo(isSimple1 && isSimple2, prefix, e1, e2, fieldName, isBuiltIn1, isBuiltIn2)
+          if (prefix == "IS" || prefix == "MS") {
+            val namedIndex = tipe.typeArgs(0).asInstanceOf[AST.Type.Named]
+            ti.scope.resolveType(globalTypeMap, AST.Util.ids2strings(namedIndex.name.ids)) match {
+              case Some(ti2) =>
+                val indexTypeString = typeNameString(packageName, ti2.name)
+                printISHelper(prefix, e1.render, indexTypeString.render)
+              case _ =>
+            }
+            return template.printSeqValue(prefix == "IS", isSimple2, e1, fieldName, e2)
+          } else {
+            return template.printNameTwo(isSimple1 && isSimple2, prefix, e1, e2, fieldName, isBuiltIn1, isBuiltIn2)
+          }
         case _ =>
       }
       val t = basicOrTypeName(ti, tipe)
@@ -898,12 +1044,42 @@ object SerializerGen {
       }
       val mapOpt = nameTwo(ti, tipe)
       mapOpt match {
-        case Some((prefix, (isBuiltIn1, _, e1), (isBuiltIn2, _, e2))) =>
-          return template.parseNameTwo(prefix, e1, e2, isBuiltIn1, isBuiltIn2)
+        case Some((prefix, (isBuiltIn1, _, indexType), (isBuiltIn2, _, e2))) =>
+          if (prefix == "IS" || prefix == "MS") {
+            val namedIndex = tipe.typeArgs(0).asInstanceOf[AST.Type.Named]
+            ti.scope.resolveType(globalTypeMap, AST.Util.ids2strings(namedIndex.name.ids)) match {
+              case Some(ti2) =>
+                val indexTypeString = typeNameString(packageName, ti2.name)
+                parseISHelper(prefix, indexType.render, indexTypeString.render)
+              case _ =>
+            }
+            return template.parseSeqValue(prefix == "IS", indexType, e2)
+          } else {
+            return template.parseNameTwo(prefix, indexType, e2, isBuiltIn1, isBuiltIn2)
+          }
         case _ =>
       }
       val t = basicOrTypeName(ti, tipe)
       return template.parseValue(ISZ(t._3, st"()"), t._1)
+    }
+
+    def printISHelper(sequenceTypeName: String, indexType: String, indexTypeString: String): Unit = {
+      val handledIndices = handledPrintSequences.get(sequenceTypeName).get
+      if (!handledIndices.contains(indexType)) {
+        template.printSeq(sequenceTypeName == "IS", indexType, indexTypeString) match {
+          case Some(s) => printers = printers :+ s
+          case _ =>
+        }
+        handledPrintSequences = handledPrintSequences + sequenceTypeName ~> (handledIndices + indexType)
+      }
+    }
+
+    def parseISHelper(sequenceTypeName: String, indexType: String, indexTypeString: String): Unit = {
+      val handledIndices = handledParseSequences.get(sequenceTypeName).get
+      if (!handledIndices.contains(indexType)) {
+        parsers = parsers :+ template.parseSeq(sequenceTypeName == "IS", indexType, indexTypeString)
+        handledParseSequences = handledParseSequences + sequenceTypeName ~> (handledIndices + indexType)
+      }
     }
 
     def nameTwo(ti: TypeInfo.Adt, tipe: AST.Type.Named): Option[(String, (B, B, ST), (B, B, ST))] = {
@@ -919,6 +1095,8 @@ object SerializerGen {
         case "HashMap" =>
         case "HashSMap" =>
         case "Graph" =>
+        case "IS" =>
+        case "MS" =>
       }
       return Some((name, btn0, btn1))
     }
