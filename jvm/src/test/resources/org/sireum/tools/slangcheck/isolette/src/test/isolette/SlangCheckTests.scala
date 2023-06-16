@@ -1,4 +1,4 @@
-package tc
+package isolette
 
 import isolette.Isolette_Data_Model.{TempWstatus_impl, ValueStatus}
 import org.scalatest.funsuite.AnyFunSuite
