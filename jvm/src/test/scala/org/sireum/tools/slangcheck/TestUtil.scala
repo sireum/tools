@@ -45,7 +45,7 @@ object TestUtil {
     def compareKeys(a: Set[String], b: Set[String], dir: Os.Path): B = {
       val diff = a -- b.elements
       for (d <- diff.elements) {
-        cprintln(T, s"Couldn't match ${(dir / d).toUri}")
+        println(s"Couldn't match ${(dir / d).toUri}")
       }
       return diff.isEmpty
     }
@@ -59,7 +59,7 @@ object TestUtil {
         val rf = results / e
         if (ef.read != rf.read) {
           sameContent = F
-          cprint(T, s"File content differs: ${rf.toUri}")
+          println(s"File content differs: ${rf.toUri}")
         }
       }
     }

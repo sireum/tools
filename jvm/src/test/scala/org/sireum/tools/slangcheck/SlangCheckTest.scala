@@ -32,17 +32,21 @@ class SlangCheckTest extends TestSuite {
 
     //(resultsDir / "delme").write("delme") // simulate a change
 
+    var passing: B = T
+
     if (generateExpected) {
       val expectedDir = TestUtil.getExpectedDir(resultsDir)
       expectedDir.removeAll()
       resultsDir.copyOverTo(expectedDir)
       println(s"Replaced: ${expectedDir}")
     } else {
-      assert(TestUtil.compare(resultsDir))
+      passing = TestUtil.compare(resultsDir)
     }
 
     if (runGeneratedTests) {
-      proc"$sireum proyek test .".at(resultsDir).echo.console.runCheck()
+      passing = passing & proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
     }
+
+    assert(passing)
   }
 }
