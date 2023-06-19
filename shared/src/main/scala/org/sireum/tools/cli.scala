@@ -266,7 +266,7 @@ object cli {
     groups = ISZ()
   )
 
-  val slangCheckTool: Tool = Tool(
+  val slangCheckGenerator: Tool = Tool(
     name = "generator",
     command = "generator",
     description = "Slang Check generator",
@@ -289,7 +289,7 @@ object cli {
     description = "SlangCheck tools",
     header = "SlangCheck Tools",
     unlisted = F,
-    subs = ISZ(slangCheckRunner, slangCheckTester, slangCheckTool)
+    subs = ISZ(slangCheckRunner, slangCheckTester, slangCheckGenerator)
   )
 
   val group: Group = Group(

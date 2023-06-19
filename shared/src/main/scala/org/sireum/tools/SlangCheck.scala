@@ -63,6 +63,35 @@ object SlangCheck {
   }
 }
 
+object SlangCheckTest{
+  def gen(fileUris: ISZ[String],
+          programs: ISZ[AST.TopUnit.Program],
+          reporter: Reporter,
+          typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
+
+    val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
+    for (p <- programs) {
+      gdr.resolveProgram(p) //get all names and types
+    }
+    val packageName = AST.Util.ids2strings(programs(0).packageName.ids)
+
+    // call the various generators
+    var ret: ISZ[(ISZ[String], ST)] = ISZ()
+
+    val t = TestGen(
+      gdr.globalNameMap,
+      gdr.globalTypeMap,
+      packageName,
+      reporter, fileUris, typeHierarchy)
+
+    ret = ret :+ t.gen()
+    reporter.reports((t.reporter.messages))
+
+
+    return ret
+  }
+}
+
 @record class EnumGen(val globalNameMap: NameMap,
                       val globalTypeMap: TypeMap,
                       val packageName: QName,
@@ -1282,4 +1311,115 @@ object SlangCheck {
           |  }
           |}"""
   }
+}
+
+@record class TestGen(val globalNameMap: NameMap,
+                      val globalTypeMap: TypeMap,
+                      val packageName: QName,
+                      val reporter: Reporter,
+                      val fileNames: ISZ[String],
+                      val th: TypeHierarchy) {
+
+
+  var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
+  var slangTypeGen: ISZ[ST] = for (p <- slangTypes) yield genSlangType(p)
+
+  var nextClass: ISZ[ST] = ISZ()
+
+  def gen(): (ISZ[String], ST) = {
+    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
+
+    for (v <- th.typeMap.values) {
+      // println(v.posOpt)
+      val temp = v
+      v.posOpt match {
+        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
+          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
+        case _ =>
+      }
+    }
+
+    for (ti <- cleanedTypeMapValues) {
+      ti match {
+        case ti: TypeInfo.Adt =>
+          genAdt(ti)
+        case ti: TypeInfo.Enum =>
+          genEnum(ti)
+        case ti: TypeInfo.Sig =>
+          genSig(ti)
+        case _ => {}
+      }
+    }
+    return ( packageName :+ "SlangCheckTest.scala",
+      st"""package ${packageName}
+          |
+          |import org.scalatest.funsuite.AnyFunSuite
+          |import org.sireum.Random.Impl.Xoshiro256
+          |import org.sireum._
+          |
+          |class autogenTest extends AnyFunSuite{
+          |
+          |   ${(slangTypeGen, "\n\n")}
+          |
+          |   ${(nextClass, "\n\n")}
+          |
+          |}
+          |""")
+  }
+
+  //get generator for an enum
+  def genEnum(ti: TypeInfo.Enum): Unit = {
+    val adTypeString = Resolver.typeNameString(packageName, ti.name)
+    val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    nextClass = nextClass :+
+      st"""test("$adTypeString Output") {
+          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |    val gen = Gen_$adTypeName(randomLib)
+          |
+          |    for(r <- gen.take(100))
+          |      println(r)
+          |  }"""
+  }
+
+  //get a generator for a slang type
+  def genSlangType(typ: String): ST = {
+    return st"""test("$typ Output") {
+               |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+               |    val gen = Gen_$typ(randomLib)
+               |
+               |    for(r <- gen.take(100))
+               |      println(r)
+               |  }"""
+  }
+
+  //get a generator for a everything else
+  def genAdt(ti: TypeInfo.Adt): Unit = {
+    val adTypeString = Resolver.typeNameString(packageName, ti.name)
+    val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    nextClass = nextClass :+
+      st"""test("$adTypeString Output") {
+          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |    val gen = Gen_$adTypeName(randomLib)
+          |
+          |    for(r <- gen.take(100))
+          |      println(r)
+          |  }"""
+  }
+
+  def genSig(ti: TypeInfo.Sig): Unit = {
+    val adTypeString = Resolver.typeNameString(packageName, ti.name)
+    val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    nextClass = nextClass :+
+      st"""test("$adTypeString Output") {
+          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |    val gen = Gen_$adTypeName(randomLib)
+          |
+          |    for(r <- gen.take(100))
+          |      println(r)
+          |  }"""
+  }
+
 }
