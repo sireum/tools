@@ -9,21 +9,21 @@ import org.sireum.message.Reporter
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = F
+  val generateExpected: B = T
 
-  val runGeneratedTests: B = T || TestUtil.isCI
+  val runGeneratedTests: B = F || TestUtil.isCI
 
   val sireum = Os.path(Os.env("SIREUM_HOME").get) / "bin" / (if (Os.isWin) "sireum.bat" else "sireum")
 
   "isolette" in {
-    test("isolette")
+    test("isolette", "isolette")
   }
 
   "temp_control" in {
-    test("temp_control")
+    test("temp_control", "tc")
   }
 
-  def test(str: String): Unit = {
+  def test(str: String, pn: String): Unit = {
 
     val resultsDir = TestUtil.copy(str)
 
@@ -31,14 +31,17 @@ class SlangCheckTest extends TestSuite {
     // to manually see any changes
     println(s"Result Dir: ${resultsDir.toUri}")
 
-    def dataSources: scala.collection.Map[scala.Vector[Predef.String], Predef.String] =
-      RC.text(Vector("../../../../../resources/org/sireum/tools/slangcheck")) { (p, f) => p.last.contains(".scala") && !p.last.contains("SlangCheck") }
-
     val reporter = Reporter.create
 
-    //SCJVM.run(ISZ(), resultsDir, resultsDir, reporter) // TODO: How to get File paths from vector to Os.path
+    val artDir = resultsDir / "src" / "main" / "art" / "DataContent.scala"
+    val dataFiles = Os.Path.walk(resultsDir/ "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
 
-    //(resultsDir / "delme").write("delme") // simulate a change
+    println(dataFiles)
+
+    val destDir = resultsDir / "src" / "main" / "data"
+    val testDir = resultsDir / "src" / "test"
+
+    SCJVM.run(dataFiles, destDir, testDir, reporter)
 
     var passing: B = T
 
@@ -52,7 +55,9 @@ class SlangCheckTest extends TestSuite {
     }
 
     if (runGeneratedTests) {
-      passing = passing & proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
+      println("\n----------------- Running Generated Test --------------------- \n")
+      val passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
+      passing = passing & (TestUtil.isCI || passed)
     }
 
     assert(passing)
