@@ -279,7 +279,7 @@ object cli {
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
         tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated Slang Check files"),
       Opt(name = "testDir", longKey = "test-dir", shortKey = Some('t'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated unit tests"),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated unit tests")
     ),
     groups = ISZ()
   )
