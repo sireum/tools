@@ -9,7 +9,7 @@ import org.sireum.message.Reporter
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = F
+  val generateExpected: B = T
 
   val runGeneratedTests: B = F || TestUtil.isCI
 
@@ -45,8 +45,6 @@ class SlangCheckTest extends TestSuite {
 
     val artDir = resultsDir / "src" / "main" / "art" / "DataContent.scala"
     val dataFiles = Os.Path.walk(resultsDir/ "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
-
-    println(dataFiles)
 
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"
