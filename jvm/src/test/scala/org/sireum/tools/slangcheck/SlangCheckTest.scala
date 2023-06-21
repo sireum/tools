@@ -9,11 +9,13 @@ import org.sireum.message.Reporter
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = T
+  val generateExpected: B = F
 
   val runGeneratedTests: B = F || TestUtil.isCI
 
-  val sireum = Os.path(Os.env("SIREUM_HOME").get) / "bin" / (if (Os.isWin) "sireum.bat" else "sireum")
+  val verbose: B = F
+
+  val sireum: Os.Path = Os.path(Os.env("SIREUM_HOME").get) / "bin" / (if (Os.isWin) "sireum.bat" else "sireum")
 
   "isolette" in {
     test("isolette", "isolette")
@@ -22,6 +24,14 @@ class SlangCheckTest extends TestSuite {
   "temp_control" in {
     test("temp_control", "tc")
   }
+
+  "option_argument" in {
+    test("option_argument", "oa")
+  }
+
+//  "is_argument" in {
+//    test("is_argument", "is")
+//  }
 
   def test(str: String, pn: String): Unit = {
 
@@ -54,8 +64,7 @@ class SlangCheckTest extends TestSuite {
       passing = TestUtil.compare(resultsDir)
     }
 
-    if (runGeneratedTests) {
-      println("\n----------------- Running Generated Test --------------------- \n")
+    if (runGeneratedTests && !TestUtil.isCI) {
       val passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
       passing = passing & (TestUtil.isCI || passed)
     }
