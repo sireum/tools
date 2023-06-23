@@ -56,21 +56,9 @@ DataContent.scala
 
 @datatype class Config_U64(low: Option[U64], high: Option[U64], attempts: Z, filter: U64 => B) {}
 
-@datatype class Config_CoolingFanFanAckType(attempts: Z, filter: CoolingFan.FanAck.Type => B) {}
+@datatype class Config__artDataContent(attempts: Z, additiveTypeFiltering: B, typeFilter: ISZ[_artDataContent_DataTypeId.Type], filter: art.DataContent => B) {}
 
-@datatype class Config_CoolingFanFanAck_Payload(attempts: Z, filter: CoolingFan.FanAck_Payload => B) {}
-
-@datatype class Config_TempControlSoftwareSystemSetPoint_i(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i => B) {}
-
-@datatype class Config_TempControlSoftwareSystemSetPoint_i_Payload(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i_Payload => B) {}
-
-@datatype class Config_CoolingFanFanCmdType(attempts: Z, filter: CoolingFan.FanCmd.Type => B) {}
-
-@datatype class Config_CoolingFanFanCmd_Payload(attempts: Z, filter: CoolingFan.FanCmd_Payload => B) {}
-
-@datatype class Config_TempSensorTemperature_i(attempts: Z, filter: TempSensor.Temperature_i => B) {}
-
-@datatype class Config_TempSensorTemperature_i_Payload(attempts: Z, filter: TempSensor.Temperature_i_Payload => B) {}
+@datatype class Config__artEmpty(attempts: Z, filter: art.Empty => B) {}
 
 @datatype class Config_Base_TypesBoolean_Payload(attempts: Z, filter: Base_Types.Boolean_Payload => B) {}
 
@@ -104,8 +92,20 @@ DataContent.scala
 
 @datatype class Config_Base_TypesBits_Payload(attempts: Z, filter: Base_Types.Bits_Payload => B) {}
 
-@datatype class Config__artDataContent(attempts: Z, additiveTypeFiltering: B, typeFilter: ISZ[_artDataContent_DataTypeId.Type], filter: art.DataContent => B) {}
+@datatype class Config_CoolingFanFanAckType(attempts: Z, filter: CoolingFan.FanAck.Type => B) {}
 
-@datatype class Config__artEmpty(attempts: Z, filter: art.Empty => B) {}
+@datatype class Config_CoolingFanFanCmdType(attempts: Z, filter: CoolingFan.FanCmd.Type => B) {}
+
+@datatype class Config_CoolingFanFanCmd_Payload(attempts: Z, filter: CoolingFan.FanCmd_Payload => B) {}
+
+@datatype class Config_CoolingFanFanAck_Payload(attempts: Z, filter: CoolingFan.FanAck_Payload => B) {}
+
+@datatype class Config_TempSensorTemperature_i(attempts: Z, filter: TempSensor.Temperature_i => B) {}
+
+@datatype class Config_TempSensorTemperature_i_Payload(attempts: Z, filter: TempSensor.Temperature_i_Payload => B) {}
+
+@datatype class Config_TempControlSoftwareSystemSetPoint_i(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i => B) {}
+
+@datatype class Config_TempControlSoftwareSystemSetPoint_i_Payload(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i_Payload => B) {}
 
 

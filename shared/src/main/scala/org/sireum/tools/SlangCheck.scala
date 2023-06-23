@@ -63,6 +63,12 @@ object SlangCheck {
   }
 
   @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for(uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
+
+  @pure def sortedTypes(types: ISZ[TypeInfo]): ISZ[TypeInfo] = {
+    // see Resolver.sortedGlobalTypes
+    return ISZOps(types).sortWith(Resolver.ltTypeInfo(Resolver.uriLt _))
+  }
+
 }
 
 object SlangCheckTest{
@@ -115,7 +121,7 @@ object SlangCheckTest{
       }
     }
 
-    for (ti <- cleanedTypeMapValues) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
       ti match {
         case ti: TypeInfo.Sig =>
           genSig(ti)
@@ -204,7 +210,7 @@ object SlangCheckTest{
       }
     }
 
-    for (ti <- cleanedTypeMapValues) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1086,7 +1092,7 @@ object SlangCheckTest{
       }
     }
 
-    for (ti <- cleanedTypeMapValues) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1181,7 +1187,7 @@ object SlangCheckTest{
       }
     }
 
-    for (ti <- cleanedTypeMapValues) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1342,7 +1348,7 @@ object SlangCheckTest{
       }
     }
 
-    for (ti <- cleanedTypeMapValues) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)

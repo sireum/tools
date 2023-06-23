@@ -1084,85 +1084,174 @@ DataContent.scala
     return str
   }
 
-  // ============= CoolingFan.FanAck.Type ===================
+  // ============= art.DataContent ===================
 
-  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType
-  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit
+  def get_Config__artDataContent: Config__artDataContent
+  def set_Config__artDataContent(config: Config__artDataContent): Unit
 
-  def nextCoolingFanFanAckType(): CoolingFan.FanAck.Type = {
+  def nextISZ_artDataContent(): ISZ[art.DataContent] = {
+     val length: Z = gen.nextZBetween(0, get_Size)
+     var temp: ISZ[art.DataContent] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ next_artDataContent()
+     }
 
-    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1) //is genBetween inclusive
+     return temp
+  }
 
-    var v: CoolingFan.FanAck.Type = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
-    if(get_Config_CoolingFanFanAckType.attempts >= 0) {
-     for(i <- 0 to get_Config_CoolingFanFanAckType.attempts) {
-       if(get_Config_CoolingFanFanAckType.filter(v)) {
+  def next_artDataContent(): art.DataContent = {
+    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id, _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id, _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId._artEmpty_Id)
+
+    if(get_Config__artDataContent.additiveTypeFiltering) {
+       callEnum = get_Config__artDataContent.typeFilter
+    } else {
+       for(h <- get_Config__artDataContent.typeFilter) {
+         callEnum = ops.ISZOps(callEnum).filter(h.=!=)
+       }
+    }
+
+    var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+
+    var v: art.DataContent = c match {
+      case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+      case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+      case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+      case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
+      case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+      case _ => halt("Invalid Child")
+    }
+
+
+    if(get_Config__artDataContent.attempts >= 0) {
+     for(i <- 0 to get_Config__artDataContent.attempts) {
+       if(get_Config__artDataContent.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
-       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
+       c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+
+       v = c match {
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
+         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _ => halt("Invalid Child")
+       }
      }
     } else {
-     while(T){
-       if(get_Config_CoolingFanFanAckType.filter(v)) {
-        return v
+     while(T) {
+       if(get_Config__artDataContent.filter(v)) {
+         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
-       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
+       c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+
+       v = c match {
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
+         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _ => halt("Invalid Child")
+       }
      }
     }
     assert(F, "Requirements to strict to generate")
     halt("Requirements to strict to generate")
   }
 
-  def nextOptionCoolingFanFanAckType(): Option[CoolingFan.FanAck.Type] = {
+  def nextOption_artDataContent(): Option[art.DataContent] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(nextCoolingFanFanAckType())
+     return Some(next_artDataContent())
     else
      return None()
   }
 
-  // ============= CoolingFan.FanAck_Payload ===================
+  // ============= art.Empty ===================
 
-  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload
-  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit
+  def get_Config__artEmpty: Config__artEmpty
+  def set_Config__artEmpty(config: Config__artEmpty): Unit
 
-  def nextISZCoolingFanFanAck_Payload(): ISZ[CoolingFan.FanAck_Payload] = {
+  def nextISZ_artEmpty(): ISZ[art.Empty] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[CoolingFan.FanAck_Payload] = ISZ()
+        var temp: ISZ[art.Empty] = ISZ()
         for (r <- 0 until length) {
-          temp = temp :+ nextCoolingFanFanAck_Payload()
+          temp = temp :+ next_artEmpty()
         }
 
         return temp
     }
 
-  def nextCoolingFanFanAck_Payload(): CoolingFan.FanAck_Payload = {
-    var value: CoolingFan.FanAck.Type = nextCoolingFanFanAckType()
+  def next_artEmpty(): art.Empty = {
 
-    var v: CoolingFan.FanAck_Payload = CoolingFan.FanAck_Payload(value)
+    var v: art.Empty = art.Empty()
 
-    if(get_Config_CoolingFanFanAck_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_CoolingFanFanAck_Payload.attempts) {
-        if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
+    if(get_Config__artEmpty.attempts >= 0) {
+     for(i <- 0 to get_Config__artEmpty.attempts) {
+        if(get_Config__artEmpty.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextCoolingFanFanAckType()
-        v = CoolingFan.FanAck_Payload(value)
+        v = art.Empty()
      }
     } else {
      while(T) {
-       if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
+       if(get_Config__artEmpty.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextCoolingFanFanAckType()
-       v = CoolingFan.FanAck_Payload(value)
+       v = art.Empty()
      }
     }
 
@@ -1170,321 +1259,11 @@ DataContent.scala
     halt("Requirements to strict to generate")
   }
 
-  def nextOptionCoolingFanFanAck_Payload(): Option[CoolingFan.FanAck_Payload] = {
+  def nextOption_artEmpty(): Option[art.Empty] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(nextCoolingFanFanAck_Payload())
-    else
-     return None()
-  }
-
-  // ============= TempControlSoftwareSystem.SetPoint_i ===================
-
-  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i
-  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit
-
-  def nextISZTempControlSoftwareSystemSetPoint_i(): ISZ[TempControlSoftwareSystem.SetPoint_i] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[TempControlSoftwareSystem.SetPoint_i] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextTempControlSoftwareSystemSetPoint_i()
-        }
-
-        return temp
-    }
-
-  def nextTempControlSoftwareSystemSetPoint_i(): TempControlSoftwareSystem.SetPoint_i = {
-    var low: TempSensor.Temperature_i = nextTempSensorTemperature_i()
-    var high: TempSensor.Temperature_i = nextTempSensorTemperature_i()
-
-    var v: TempControlSoftwareSystem.SetPoint_i = TempControlSoftwareSystem.SetPoint_i(low, high)
-
-    if(get_Config_TempControlSoftwareSystemSetPoint_i.attempts >= 0) {
-     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i.attempts) {
-        if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        low = nextTempSensorTemperature_i()
-        high = nextTempSensorTemperature_i()
-        v = TempControlSoftwareSystem.SetPoint_i(low, high)
-     }
-    } else {
-     while(T) {
-       if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       low = nextTempSensorTemperature_i()
-       high = nextTempSensorTemperature_i()
-       v = TempControlSoftwareSystem.SetPoint_i(low, high)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionTempControlSoftwareSystemSetPoint_i(): Option[TempControlSoftwareSystem.SetPoint_i] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextTempControlSoftwareSystemSetPoint_i())
-    else
-     return None()
-  }
-
-  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
-
-  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload
-  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit
-
-  def nextISZTempControlSoftwareSystemSetPoint_i_Payload(): ISZ[TempControlSoftwareSystem.SetPoint_i_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[TempControlSoftwareSystem.SetPoint_i_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextTempControlSoftwareSystemSetPoint_i_Payload()
-        }
-
-        return temp
-    }
-
-  def nextTempControlSoftwareSystemSetPoint_i_Payload(): TempControlSoftwareSystem.SetPoint_i_Payload = {
-    var value: TempControlSoftwareSystem.SetPoint_i = nextTempControlSoftwareSystemSetPoint_i()
-
-    var v: TempControlSoftwareSystem.SetPoint_i_Payload = TempControlSoftwareSystem.SetPoint_i_Payload(value)
-
-    if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts) {
-        if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextTempControlSoftwareSystemSetPoint_i()
-        v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextTempControlSoftwareSystemSetPoint_i()
-       v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionTempControlSoftwareSystemSetPoint_i_Payload(): Option[TempControlSoftwareSystem.SetPoint_i_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextTempControlSoftwareSystemSetPoint_i_Payload())
-    else
-     return None()
-  }
-
-  // ============= CoolingFan.FanCmd.Type ===================
-
-  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType
-  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit
-
-  def nextCoolingFanFanCmdType(): CoolingFan.FanCmd.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1) //is genBetween inclusive
-
-    var v: CoolingFan.FanCmd.Type = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
-    if(get_Config_CoolingFanFanCmdType.attempts >= 0) {
-     for(i <- 0 to get_Config_CoolingFanFanCmdType.attempts) {
-       if(get_Config_CoolingFanFanCmdType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
-       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_CoolingFanFanCmdType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
-       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionCoolingFanFanCmdType(): Option[CoolingFan.FanCmd.Type] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextCoolingFanFanCmdType())
-    else
-     return None()
-  }
-
-  // ============= CoolingFan.FanCmd_Payload ===================
-
-  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload
-  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit
-
-  def nextISZCoolingFanFanCmd_Payload(): ISZ[CoolingFan.FanCmd_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[CoolingFan.FanCmd_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextCoolingFanFanCmd_Payload()
-        }
-
-        return temp
-    }
-
-  def nextCoolingFanFanCmd_Payload(): CoolingFan.FanCmd_Payload = {
-    var value: CoolingFan.FanCmd.Type = nextCoolingFanFanCmdType()
-
-    var v: CoolingFan.FanCmd_Payload = CoolingFan.FanCmd_Payload(value)
-
-    if(get_Config_CoolingFanFanCmd_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_CoolingFanFanCmd_Payload.attempts) {
-        if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextCoolingFanFanCmdType()
-        v = CoolingFan.FanCmd_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextCoolingFanFanCmdType()
-       v = CoolingFan.FanCmd_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionCoolingFanFanCmd_Payload(): Option[CoolingFan.FanCmd_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextCoolingFanFanCmd_Payload())
-    else
-     return None()
-  }
-
-  // ============= TempSensor.Temperature_i ===================
-
-  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i
-  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit
-
-  def nextISZTempSensorTemperature_i(): ISZ[TempSensor.Temperature_i] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[TempSensor.Temperature_i] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextTempSensorTemperature_i()
-        }
-
-        return temp
-    }
-
-  def nextTempSensorTemperature_i(): TempSensor.Temperature_i = {
-    var degrees: F32 = nextF32()
-
-    var v: TempSensor.Temperature_i = TempSensor.Temperature_i(degrees)
-
-    if(get_Config_TempSensorTemperature_i.attempts >= 0) {
-     for(i <- 0 to get_Config_TempSensorTemperature_i.attempts) {
-        if(get_Config_TempSensorTemperature_i.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        degrees = nextF32()
-        v = TempSensor.Temperature_i(degrees)
-     }
-    } else {
-     while(T) {
-       if(get_Config_TempSensorTemperature_i.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       degrees = nextF32()
-       v = TempSensor.Temperature_i(degrees)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextTempSensorTemperature_i())
-    else
-     return None()
-  }
-
-  // ============= TempSensor.Temperature_i_Payload ===================
-
-  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload
-  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit
-
-  def nextISZTempSensorTemperature_i_Payload(): ISZ[TempSensor.Temperature_i_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[TempSensor.Temperature_i_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextTempSensorTemperature_i_Payload()
-        }
-
-        return temp
-    }
-
-  def nextTempSensorTemperature_i_Payload(): TempSensor.Temperature_i_Payload = {
-    var value: TempSensor.Temperature_i = nextTempSensorTemperature_i()
-
-    var v: TempSensor.Temperature_i_Payload = TempSensor.Temperature_i_Payload(value)
-
-    if(get_Config_TempSensorTemperature_i_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_TempSensorTemperature_i_Payload.attempts) {
-        if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextTempSensorTemperature_i()
-        v = TempSensor.Temperature_i_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextTempSensorTemperature_i()
-       v = TempSensor.Temperature_i_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionTempSensorTemperature_i_Payload(): Option[TempSensor.Temperature_i_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextTempSensorTemperature_i_Payload())
+     return Some(next_artEmpty())
     else
      return None()
   }
@@ -2337,174 +2116,127 @@ DataContent.scala
      return None()
   }
 
-  // ============= art.DataContent ===================
+  // ============= CoolingFan.FanAck.Type ===================
 
-  def get_Config__artDataContent: Config__artDataContent
-  def set_Config__artDataContent(config: Config__artDataContent): Unit
+  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType
+  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit
 
-  def nextISZ_artDataContent(): ISZ[art.DataContent] = {
-     val length: Z = gen.nextZBetween(0, get_Size)
-     var temp: ISZ[art.DataContent] = ISZ()
-     for (r <- 0 until length) {
-       temp = temp :+ next_artDataContent()
-     }
+  def nextCoolingFanFanAckType(): CoolingFan.FanAck.Type = {
 
-     return temp
-  }
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1) //is genBetween inclusive
 
-  def next_artDataContent(): art.DataContent = {
-    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id, _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id, _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId._artEmpty_Id)
-
-    if(get_Config__artDataContent.additiveTypeFiltering) {
-       callEnum = get_Config__artDataContent.typeFilter
-    } else {
-       for(h <- get_Config__artDataContent.typeFilter) {
-         callEnum = ops.ISZOps(callEnum).filter(h.=!=)
-       }
-    }
-
-    var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-
-    var v: art.DataContent = c match {
-      case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-      case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-      case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-      case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-      case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
-      case _ => halt("Invalid Child")
-    }
-
-
-    if(get_Config__artDataContent.attempts >= 0) {
-     for(i <- 0 to get_Config__artDataContent.attempts) {
-       if(get_Config__artDataContent.filter(v)) {
+    var v: CoolingFan.FanAck.Type = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
+    if(get_Config_CoolingFanFanAckType.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanAckType.attempts) {
+       if(get_Config_CoolingFanFanAckType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-
-       v = c match {
-         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
-         case _ => halt("Invalid Child")
-       }
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
+       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
      }
     } else {
-     while(T) {
-       if(get_Config__artDataContent.filter(v)) {
-         return v
+     while(T){
+       if(get_Config_CoolingFanFanAckType.filter(v)) {
+        return v
        }
        println(s"Retrying for failing value: $v")
-       c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-
-       v = c match {
-         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
-         case _ => halt("Invalid Child")
-       }
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
+       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
      }
     }
     assert(F, "Requirements to strict to generate")
     halt("Requirements to strict to generate")
   }
 
-  def nextOption_artDataContent(): Option[art.DataContent] = {
+  def nextOptionCoolingFanFanAckType(): Option[CoolingFan.FanAck.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(next_artDataContent())
+     return Some(nextCoolingFanFanAckType())
     else
      return None()
   }
 
-  // ============= art.Empty ===================
+  // ============= CoolingFan.FanCmd.Type ===================
 
-  def get_Config__artEmpty: Config__artEmpty
-  def set_Config__artEmpty(config: Config__artEmpty): Unit
+  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType
+  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit
 
-  def nextISZ_artEmpty(): ISZ[art.Empty] = {
+  def nextCoolingFanFanCmdType(): CoolingFan.FanCmd.Type = {
+
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1) //is genBetween inclusive
+
+    var v: CoolingFan.FanCmd.Type = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
+    if(get_Config_CoolingFanFanCmdType.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanCmdType.attempts) {
+       if(get_Config_CoolingFanFanCmdType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
+       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
+     }
+    } else {
+     while(T){
+       if(get_Config_CoolingFanFanCmdType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
+       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
+     }
+    }
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionCoolingFanFanCmdType(): Option[CoolingFan.FanCmd.Type] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextCoolingFanFanCmdType())
+    else
+     return None()
+  }
+
+  // ============= CoolingFan.FanCmd_Payload ===================
+
+  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload
+  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit
+
+  def nextISZCoolingFanFanCmd_Payload(): ISZ[CoolingFan.FanCmd_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[art.Empty] = ISZ()
+        var temp: ISZ[CoolingFan.FanCmd_Payload] = ISZ()
         for (r <- 0 until length) {
-          temp = temp :+ next_artEmpty()
+          temp = temp :+ nextCoolingFanFanCmd_Payload()
         }
 
         return temp
     }
 
-  def next_artEmpty(): art.Empty = {
+  def nextCoolingFanFanCmd_Payload(): CoolingFan.FanCmd_Payload = {
+    var value: CoolingFan.FanCmd.Type = nextCoolingFanFanCmdType()
 
-    var v: art.Empty = art.Empty()
+    var v: CoolingFan.FanCmd_Payload = CoolingFan.FanCmd_Payload(value)
 
-    if(get_Config__artEmpty.attempts >= 0) {
-     for(i <- 0 to get_Config__artEmpty.attempts) {
-        if(get_Config__artEmpty.filter(v)) {
+    if(get_Config_CoolingFanFanCmd_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanCmd_Payload.attempts) {
+        if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        v = art.Empty()
+        value = nextCoolingFanFanCmdType()
+        v = CoolingFan.FanCmd_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config__artEmpty.filter(v)) {
+       if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       v = art.Empty()
+       value = nextCoolingFanFanCmdType()
+       v = CoolingFan.FanCmd_Payload(value)
      }
     }
 
@@ -2512,11 +2244,279 @@ DataContent.scala
     halt("Requirements to strict to generate")
   }
 
-  def nextOption_artEmpty(): Option[art.Empty] = {
+  def nextOptionCoolingFanFanCmd_Payload(): Option[CoolingFan.FanCmd_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(next_artEmpty())
+     return Some(nextCoolingFanFanCmd_Payload())
+    else
+     return None()
+  }
+
+  // ============= CoolingFan.FanAck_Payload ===================
+
+  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload
+  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit
+
+  def nextISZCoolingFanFanAck_Payload(): ISZ[CoolingFan.FanAck_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[CoolingFan.FanAck_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextCoolingFanFanAck_Payload()
+        }
+
+        return temp
+    }
+
+  def nextCoolingFanFanAck_Payload(): CoolingFan.FanAck_Payload = {
+    var value: CoolingFan.FanAck.Type = nextCoolingFanFanAckType()
+
+    var v: CoolingFan.FanAck_Payload = CoolingFan.FanAck_Payload(value)
+
+    if(get_Config_CoolingFanFanAck_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanAck_Payload.attempts) {
+        if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextCoolingFanFanAckType()
+        v = CoolingFan.FanAck_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextCoolingFanFanAckType()
+       v = CoolingFan.FanAck_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionCoolingFanFanAck_Payload(): Option[CoolingFan.FanAck_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextCoolingFanFanAck_Payload())
+    else
+     return None()
+  }
+
+  // ============= TempSensor.Temperature_i ===================
+
+  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i
+  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit
+
+  def nextISZTempSensorTemperature_i(): ISZ[TempSensor.Temperature_i] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[TempSensor.Temperature_i] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextTempSensorTemperature_i()
+        }
+
+        return temp
+    }
+
+  def nextTempSensorTemperature_i(): TempSensor.Temperature_i = {
+    var degrees: F32 = nextF32()
+
+    var v: TempSensor.Temperature_i = TempSensor.Temperature_i(degrees)
+
+    if(get_Config_TempSensorTemperature_i.attempts >= 0) {
+     for(i <- 0 to get_Config_TempSensorTemperature_i.attempts) {
+        if(get_Config_TempSensorTemperature_i.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        degrees = nextF32()
+        v = TempSensor.Temperature_i(degrees)
+     }
+    } else {
+     while(T) {
+       if(get_Config_TempSensorTemperature_i.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       degrees = nextF32()
+       v = TempSensor.Temperature_i(degrees)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextTempSensorTemperature_i())
+    else
+     return None()
+  }
+
+  // ============= TempSensor.Temperature_i_Payload ===================
+
+  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload
+  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit
+
+  def nextISZTempSensorTemperature_i_Payload(): ISZ[TempSensor.Temperature_i_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[TempSensor.Temperature_i_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextTempSensorTemperature_i_Payload()
+        }
+
+        return temp
+    }
+
+  def nextTempSensorTemperature_i_Payload(): TempSensor.Temperature_i_Payload = {
+    var value: TempSensor.Temperature_i = nextTempSensorTemperature_i()
+
+    var v: TempSensor.Temperature_i_Payload = TempSensor.Temperature_i_Payload(value)
+
+    if(get_Config_TempSensorTemperature_i_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_TempSensorTemperature_i_Payload.attempts) {
+        if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextTempSensorTemperature_i()
+        v = TempSensor.Temperature_i_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextTempSensorTemperature_i()
+       v = TempSensor.Temperature_i_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionTempSensorTemperature_i_Payload(): Option[TempSensor.Temperature_i_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextTempSensorTemperature_i_Payload())
+    else
+     return None()
+  }
+
+  // ============= TempControlSoftwareSystem.SetPoint_i ===================
+
+  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i
+  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit
+
+  def nextISZTempControlSoftwareSystemSetPoint_i(): ISZ[TempControlSoftwareSystem.SetPoint_i] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[TempControlSoftwareSystem.SetPoint_i] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextTempControlSoftwareSystemSetPoint_i()
+        }
+
+        return temp
+    }
+
+  def nextTempControlSoftwareSystemSetPoint_i(): TempControlSoftwareSystem.SetPoint_i = {
+    var low: TempSensor.Temperature_i = nextTempSensorTemperature_i()
+    var high: TempSensor.Temperature_i = nextTempSensorTemperature_i()
+
+    var v: TempControlSoftwareSystem.SetPoint_i = TempControlSoftwareSystem.SetPoint_i(low, high)
+
+    if(get_Config_TempControlSoftwareSystemSetPoint_i.attempts >= 0) {
+     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i.attempts) {
+        if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        low = nextTempSensorTemperature_i()
+        high = nextTempSensorTemperature_i()
+        v = TempControlSoftwareSystem.SetPoint_i(low, high)
+     }
+    } else {
+     while(T) {
+       if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       low = nextTempSensorTemperature_i()
+       high = nextTempSensorTemperature_i()
+       v = TempControlSoftwareSystem.SetPoint_i(low, high)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionTempControlSoftwareSystemSetPoint_i(): Option[TempControlSoftwareSystem.SetPoint_i] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextTempControlSoftwareSystemSetPoint_i())
+    else
+     return None()
+  }
+
+  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
+
+  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload
+  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit
+
+  def nextISZTempControlSoftwareSystemSetPoint_i_Payload(): ISZ[TempControlSoftwareSystem.SetPoint_i_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[TempControlSoftwareSystem.SetPoint_i_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextTempControlSoftwareSystemSetPoint_i_Payload()
+        }
+
+        return temp
+    }
+
+  def nextTempControlSoftwareSystemSetPoint_i_Payload(): TempControlSoftwareSystem.SetPoint_i_Payload = {
+    var value: TempControlSoftwareSystem.SetPoint_i = nextTempControlSoftwareSystemSetPoint_i()
+
+    var v: TempControlSoftwareSystem.SetPoint_i_Payload = TempControlSoftwareSystem.SetPoint_i_Payload(value)
+
+    if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts) {
+        if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextTempControlSoftwareSystemSetPoint_i()
+        v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextTempControlSoftwareSystemSetPoint_i()
+       v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionTempControlSoftwareSystemSetPoint_i_Payload(): Option[TempControlSoftwareSystem.SetPoint_i_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextTempControlSoftwareSystemSetPoint_i_Payload())
     else
      return None()
   }
@@ -2672,92 +2672,26 @@ DataContent.scala
     config_U64 = config
   }
 
-  // ============= CoolingFan.FanAck.Type ===================
-  def alwaysTrue_CoolingFanFanAckType(v: CoolingFan.FanAck.Type): B = {return T}
+  // ============= art.DataContent ===================
+  def alwaysTrue__artDataContent(v: art.DataContent): B = {return T}
 
-  var config_CoolingFanFanAckType: Config_CoolingFanFanAckType = Config_CoolingFanFanAckType(100, alwaysTrue_CoolingFanFanAckType _)
+  var config__artDataContent: Config__artDataContent = Config__artDataContent(100, F, ISZ(), alwaysTrue__artDataContent _)
 
-  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType = {return config_CoolingFanFanAckType}
+  def get_Config__artDataContent: Config__artDataContent = {return config__artDataContent}
 
-  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit ={
-    config_CoolingFanFanAckType = config
+  def set_Config__artDataContent(config: Config__artDataContent): Unit ={
+    config__artDataContent = config
   }
 
-  // ============= CoolingFan.FanAck_Payload ===================
-  def alwaysTrue_CoolingFanFanAck_Payload(v: CoolingFan.FanAck_Payload): B = {return T}
+  // ============= art.Empty ===================
+  def alwaysTrue__artEmpty(v: art.Empty): B = {return T}
 
-  var config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = Config_CoolingFanFanAck_Payload(100, alwaysTrue_CoolingFanFanAck_Payload _)
+  var config__artEmpty: Config__artEmpty = Config__artEmpty(100, alwaysTrue__artEmpty _)
 
-  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = {return config_CoolingFanFanAck_Payload}
+  def get_Config__artEmpty: Config__artEmpty = {return config__artEmpty}
 
-  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit ={
-    config_CoolingFanFanAck_Payload = config
-  }
-
-  // ============= TempControlSoftwareSystem.SetPoint_i ===================
-  def alwaysTrue_TempControlSoftwareSystemSetPoint_i(v: TempControlSoftwareSystem.SetPoint_i): B = {return T}
-
-  var config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = Config_TempControlSoftwareSystemSetPoint_i(100, TempControlSoftwareSystem.SetPoint_i_GumboX.D_Inv_SetPoint_i _)
-
-  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = {return config_TempControlSoftwareSystemSetPoint_i}
-
-  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit ={
-    config_TempControlSoftwareSystemSetPoint_i = config
-  }
-
-  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
-  def alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload(v: TempControlSoftwareSystem.SetPoint_i_Payload): B = {return T}
-
-  var config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = Config_TempControlSoftwareSystemSetPoint_i_Payload(100, alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload _)
-
-  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = {return config_TempControlSoftwareSystemSetPoint_i_Payload}
-
-  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit ={
-    config_TempControlSoftwareSystemSetPoint_i_Payload = config
-  }
-
-  // ============= CoolingFan.FanCmd.Type ===================
-  def alwaysTrue_CoolingFanFanCmdType(v: CoolingFan.FanCmd.Type): B = {return T}
-
-  var config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = Config_CoolingFanFanCmdType(100, alwaysTrue_CoolingFanFanCmdType _)
-
-  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = {return config_CoolingFanFanCmdType}
-
-  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit ={
-    config_CoolingFanFanCmdType = config
-  }
-
-  // ============= CoolingFan.FanCmd_Payload ===================
-  def alwaysTrue_CoolingFanFanCmd_Payload(v: CoolingFan.FanCmd_Payload): B = {return T}
-
-  var config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = Config_CoolingFanFanCmd_Payload(100, alwaysTrue_CoolingFanFanCmd_Payload _)
-
-  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = {return config_CoolingFanFanCmd_Payload}
-
-  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit ={
-    config_CoolingFanFanCmd_Payload = config
-  }
-
-  // ============= TempSensor.Temperature_i ===================
-  def alwaysTrue_TempSensorTemperature_i(v: TempSensor.Temperature_i): B = {return T}
-
-  var config_TempSensorTemperature_i: Config_TempSensorTemperature_i = Config_TempSensorTemperature_i(100, TempSensor.Temperature_i_GumboX.D_Inv_Temperature_i _)
-
-  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i = {return config_TempSensorTemperature_i}
-
-  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit ={
-    config_TempSensorTemperature_i = config
-  }
-
-  // ============= TempSensor.Temperature_i_Payload ===================
-  def alwaysTrue_TempSensorTemperature_i_Payload(v: TempSensor.Temperature_i_Payload): B = {return T}
-
-  var config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = Config_TempSensorTemperature_i_Payload(100, alwaysTrue_TempSensorTemperature_i_Payload _)
-
-  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = {return config_TempSensorTemperature_i_Payload}
-
-  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit ={
-    config_TempSensorTemperature_i_Payload = config
+  def set_Config__artEmpty(config: Config__artEmpty): Unit ={
+    config__artEmpty = config
   }
 
   // ============= Base_Types.Boolean_Payload ===================
@@ -2936,26 +2870,92 @@ DataContent.scala
     config_Base_TypesBits_Payload = config
   }
 
-  // ============= art.DataContent ===================
-  def alwaysTrue__artDataContent(v: art.DataContent): B = {return T}
+  // ============= CoolingFan.FanAck.Type ===================
+  def alwaysTrue_CoolingFanFanAckType(v: CoolingFan.FanAck.Type): B = {return T}
 
-  var config__artDataContent: Config__artDataContent = Config__artDataContent(100, F, ISZ(), alwaysTrue__artDataContent _)
+  var config_CoolingFanFanAckType: Config_CoolingFanFanAckType = Config_CoolingFanFanAckType(100, alwaysTrue_CoolingFanFanAckType _)
 
-  def get_Config__artDataContent: Config__artDataContent = {return config__artDataContent}
+  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType = {return config_CoolingFanFanAckType}
 
-  def set_Config__artDataContent(config: Config__artDataContent): Unit ={
-    config__artDataContent = config
+  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit ={
+    config_CoolingFanFanAckType = config
   }
 
-  // ============= art.Empty ===================
-  def alwaysTrue__artEmpty(v: art.Empty): B = {return T}
+  // ============= CoolingFan.FanCmd.Type ===================
+  def alwaysTrue_CoolingFanFanCmdType(v: CoolingFan.FanCmd.Type): B = {return T}
 
-  var config__artEmpty: Config__artEmpty = Config__artEmpty(100, alwaysTrue__artEmpty _)
+  var config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = Config_CoolingFanFanCmdType(100, alwaysTrue_CoolingFanFanCmdType _)
 
-  def get_Config__artEmpty: Config__artEmpty = {return config__artEmpty}
+  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = {return config_CoolingFanFanCmdType}
 
-  def set_Config__artEmpty(config: Config__artEmpty): Unit ={
-    config__artEmpty = config
+  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit ={
+    config_CoolingFanFanCmdType = config
+  }
+
+  // ============= CoolingFan.FanCmd_Payload ===================
+  def alwaysTrue_CoolingFanFanCmd_Payload(v: CoolingFan.FanCmd_Payload): B = {return T}
+
+  var config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = Config_CoolingFanFanCmd_Payload(100, alwaysTrue_CoolingFanFanCmd_Payload _)
+
+  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = {return config_CoolingFanFanCmd_Payload}
+
+  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit ={
+    config_CoolingFanFanCmd_Payload = config
+  }
+
+  // ============= CoolingFan.FanAck_Payload ===================
+  def alwaysTrue_CoolingFanFanAck_Payload(v: CoolingFan.FanAck_Payload): B = {return T}
+
+  var config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = Config_CoolingFanFanAck_Payload(100, alwaysTrue_CoolingFanFanAck_Payload _)
+
+  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = {return config_CoolingFanFanAck_Payload}
+
+  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit ={
+    config_CoolingFanFanAck_Payload = config
+  }
+
+  // ============= TempSensor.Temperature_i ===================
+  def alwaysTrue_TempSensorTemperature_i(v: TempSensor.Temperature_i): B = {return T}
+
+  var config_TempSensorTemperature_i: Config_TempSensorTemperature_i = Config_TempSensorTemperature_i(100, TempSensor.Temperature_i_GumboX.D_Inv_Temperature_i _)
+
+  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i = {return config_TempSensorTemperature_i}
+
+  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit ={
+    config_TempSensorTemperature_i = config
+  }
+
+  // ============= TempSensor.Temperature_i_Payload ===================
+  def alwaysTrue_TempSensorTemperature_i_Payload(v: TempSensor.Temperature_i_Payload): B = {return T}
+
+  var config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = Config_TempSensorTemperature_i_Payload(100, alwaysTrue_TempSensorTemperature_i_Payload _)
+
+  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = {return config_TempSensorTemperature_i_Payload}
+
+  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit ={
+    config_TempSensorTemperature_i_Payload = config
+  }
+
+  // ============= TempControlSoftwareSystem.SetPoint_i ===================
+  def alwaysTrue_TempControlSoftwareSystemSetPoint_i(v: TempControlSoftwareSystem.SetPoint_i): B = {return T}
+
+  var config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = Config_TempControlSoftwareSystemSetPoint_i(100, TempControlSoftwareSystem.SetPoint_i_GumboX.D_Inv_SetPoint_i _)
+
+  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = {return config_TempControlSoftwareSystemSetPoint_i}
+
+  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit ={
+    config_TempControlSoftwareSystemSetPoint_i = config
+  }
+
+  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
+  def alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload(v: TempControlSoftwareSystem.SetPoint_i_Payload): B = {return T}
+
+  var config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = Config_TempControlSoftwareSystemSetPoint_i_Payload(100, alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload _)
+
+  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = {return config_TempControlSoftwareSystemSetPoint_i_Payload}
+
+  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit ={
+    config_TempControlSoftwareSystemSetPoint_i_Payload = config
   }
 }
 
