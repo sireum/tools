@@ -57,9 +57,13 @@ object TestUtil {
       for (e <- eMap.keys) {
         val ef = expected / e
         val rf = results / e
-        if (ef.read != rf.read) {
+        val expectedText = ef.read
+        val resultsText = rf.read
+        if (expectedText != resultsText) {
           sameContent = F
+          val dmp = new DiffMatchPatch()
           println(s"File content differs: ${rf.toUri}")
+          println(dmp.patch_toText(dmp.patch_make(expectedText.native, resultsText.native)))
         }
       }
     }
