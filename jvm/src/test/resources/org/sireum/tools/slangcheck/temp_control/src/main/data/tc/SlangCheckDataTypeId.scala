@@ -8,23 +8,23 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/Base_Types.scala
+Base_Types.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/CoolingFan/FanAck.scala
+FanAck.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/CoolingFan/FanCmd.scala
+FanCmd.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/GUMBO_Definitions/GUMBO__Library.scala
+GUMBO__Library.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/TempControlSoftwareSystem/SetPoint_i.scala
+SetPoint_i.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/TempControlSoftwareSystem/SetPoint_i_GumboX.scala
+SetPoint_i_GumboX.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/TempSensor/Temperature_i.scala
+Temperature_i.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/data/tc/TempSensor/Temperature_i_GumboX.scala
+Temperature_i_GumboX.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/temp_control_results/src/main/art/DataContent.scala
+DataContent.scala
 
 */
 

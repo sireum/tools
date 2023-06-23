@@ -8,31 +8,31 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Base_Types.scala
+Base_Types.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/Failure_Flag_impl.scala
+Failure_Flag_impl.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/Monitor_Mode.scala
+Monitor_Mode.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/On_Off.scala
+On_Off.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/PhysicalTemp_impl.scala
+PhysicalTemp_impl.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/Regulator_Mode.scala
+Regulator_Mode.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/Status.scala
+Status.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/TempWstatus_impl.scala
+TempWstatus_impl.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/Temp_impl.scala
+Temp_impl.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Data_Model/ValueStatus.scala
+ValueStatus.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Environment/Heat.scala
+Heat.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/data/isolette/Isolette_Environment/Interface_Interaction.scala
+Interface_Interaction.scala
 
-file:///Users/belt/devel/sireum/kekinian/tools/jvm/src/test/resources/org/sireum/tools/slangcheck/isolette_results/src/main/art/DataContent.scala
+DataContent.scala
 
 */
 

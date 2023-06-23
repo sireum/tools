@@ -61,6 +61,8 @@ object SlangCheck {
 
     return ret
   }
+
+  @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for(uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
 }
 
 object SlangCheckTest{
@@ -132,7 +134,7 @@ object SlangCheckTest{
           |/*
           |GENERATED FROM
           |
-          |${(fileNames, "\n\n")}
+          |${(SlangCheck.toSimpleNames(fileNames), "\n\n")}
           |
           |*/
           |
@@ -225,7 +227,7 @@ object SlangCheckTest{
           |/*
           |GENERATED FROM
           |
-          |${(fileNames, "\n\n")}
+          |${(SlangCheck.toSimpleNames(fileNames), "\n\n")}
           |
           |*/
           |
@@ -1063,6 +1065,7 @@ object SlangCheckTest{
                         val reporter: Reporter,
                         val fileNames: ISZ[String],
                         val th: TypeHierarchy) {
+
   val globalTypes: ISZ[TypeInfo] = Resolver.sortedGlobalTypes(globalTypeMap)
 
   var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
@@ -1106,7 +1109,7 @@ object SlangCheckTest{
           |/*
           |GENERATED FROM
           |
-          |${(fileNames, "\n\n")}
+          |${(SlangCheck.toSimpleNames(fileNames), "\n\n")}
           |
           |*/
           |
@@ -1200,7 +1203,7 @@ object SlangCheckTest{
           |/*
           |GENERATED FROM
           |
-          |${(fileNames, "\n\n")}
+          |${(SlangCheck.toSimpleNames(fileNames), "\n\n")}
           |
           |*/
           |
