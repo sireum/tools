@@ -9,7 +9,7 @@ import org.sireum.message.Reporter
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = T
+  val generateExpected: B = F
 
   val runGeneratedTests: B = F || TestUtil.isCI
 
