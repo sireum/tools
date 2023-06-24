@@ -1090,17 +1090,17 @@ DataContent.scala
   def set_Config__artDataContent(config: Config__artDataContent): Unit
 
   def nextISZ_artDataContent(): ISZ[art.DataContent] = {
-     val length: Z = gen.nextZBetween(0, get_Size)
-     var temp: ISZ[art.DataContent] = ISZ()
-     for (r <- 0 until length) {
-       temp = temp :+ next_artDataContent()
-     }
+    val length: Z = gen.nextZBetween(0, get_Size)
+    var temp: ISZ[art.DataContent] = ISZ()
+    for (r <- 0 until length) {
+      temp = temp :+ next_artDataContent()
+    }
 
-     return temp
+    return temp
   }
 
   def next_artDataContent(): art.DataContent = {
-    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id, _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id, _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId._artEmpty_Id)
+    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId._artEmpty_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id, _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id, _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id)
 
     if(get_Config__artDataContent.additiveTypeFiltering) {
        callEnum = get_Config__artDataContent.typeFilter
@@ -1113,27 +1113,27 @@ DataContent.scala
     var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
     var v: art.DataContent = c match {
-      case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-      case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-      case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-      case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+      case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+      case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+      case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-      case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-      case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+      case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+      case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+      case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+      case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+      case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
       case _ => halt("Invalid Child")
     }
 
@@ -1147,27 +1147,27 @@ DataContent.scala
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
-         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
          case _ => halt("Invalid Child")
        }
      }
@@ -1180,27 +1180,27 @@ DataContent.scala
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
-         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
-         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
-         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
-         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
+         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id => (nextBase_TypesBoolean_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id => (nextBase_TypesInteger_16_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id => (nextBase_TypesInteger_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id => (nextBase_TypesInteger_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id => (nextBase_TypesInteger_8_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id => (nextBase_TypesInteger_Payload _).apply()
+         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id => (nextBase_TypesUnsigned_16_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id => (nextBase_TypesFloat_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id => (nextBase_TypesFloat_32_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id => (nextBase_TypesFloat_64_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id => (nextBase_TypesCharacter_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesString_Payload_Id => (nextBase_TypesString_Payload _).apply()
-         case _artDataContent_DataTypeId.Base_TypesBits_Payload_Id => (nextBase_TypesBits_Payload _).apply()
-         case _artDataContent_DataTypeId._artEmpty_Id => (next_artEmpty _).apply()
+         case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
          case _ => halt("Invalid Child")
        }
      }

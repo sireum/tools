@@ -8,7 +8,7 @@ object TestUtil {
   val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
 
   def resources: scala.collection.Map[scala.Vector[Predef.String], Predef.String] =
-    RC.text(Vector("../../../../../resources/org/sireum/tools/slangcheck")) { (p, f) => true}
+    RC.text(Vector("../../../../../resources/org/sireum/tools/slangcheck")) { (p, f) => true }
 
   def copy(s: String): Os.Path = {
     val resultDir = resourceDir / s"${s}_results"
@@ -31,10 +31,12 @@ object TestUtil {
 
     def toMap(dir: Os.Path): Map[String, Os.Path] = {
       var ret = Map.empty[String, Os.Path]
+
       def iter(d: Os.Path): Unit = {
         if (d.isFile) ret = ret + dir.relativize(d).value ~> d
         else for (dd <- d.list) yield iter(dd)
       }
+
       iter(dir)
       return ret
     }

@@ -1,11 +1,10 @@
 package org.sireum.tools.slangcheck.resources
 
 import org.sireum._
+import org.sireum.message.Reporter
 import org.sireum.test.TestSuite
 import org.sireum.tools.slangcheck.TestUtil
 import org.sireum.tools.{SlangCheckJvm => SCJVM}
-import org.sireum.$internal.RC
-import org.sireum.message.Reporter
 
 class SlangCheckTest extends TestSuite {
 
@@ -29,9 +28,9 @@ class SlangCheckTest extends TestSuite {
     test("option_argument", "oa")
   }
 
-//  "is_argument" in {
-//    test("is_argument", "is")
-//  }
+  //  "is_argument" in {
+  //    test("is_argument", "is")
+  //  }
 
   def test(str: String, pn: String): Unit = {
 
@@ -44,7 +43,7 @@ class SlangCheckTest extends TestSuite {
     val reporter = Reporter.create
 
     val artDir = resultsDir / "src" / "main" / "art" / "DataContent.scala"
-    val dataFiles = Os.Path.walk(resultsDir/ "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
+    val dataFiles = Os.Path.walk(resultsDir / "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
 
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"

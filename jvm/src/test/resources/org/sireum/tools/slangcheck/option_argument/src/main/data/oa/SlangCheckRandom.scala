@@ -1076,13 +1076,13 @@ DataContent.scala
   def set_Config__artDataContent(config: Config__artDataContent): Unit
 
   def nextISZ_artDataContent(): ISZ[art.DataContent] = {
-     val length: Z = gen.nextZBetween(0, get_Size)
-     var temp: ISZ[art.DataContent] = ISZ()
-     for (r <- 0 until length) {
-       temp = temp :+ next_artDataContent()
-     }
+    val length: Z = gen.nextZBetween(0, get_Size)
+    var temp: ISZ[art.DataContent] = ISZ()
+    for (r <- 0 until length) {
+      temp = temp :+ next_artDataContent()
+    }
 
-     return temp
+    return temp
   }
 
   def next_artDataContent(): art.DataContent = {

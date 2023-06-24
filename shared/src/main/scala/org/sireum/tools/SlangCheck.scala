@@ -2,12 +2,12 @@
 package org.sireum.tools
 
 import org.sireum._
-import org.sireum.lang.symbol.{GlobalDeclarationResolver, Info, Resolver, TypeInfo}
 import org.sireum.lang.symbol.Resolver.{NameMap, QName, TypeMap}
-import org.sireum.lang.tipe.{CustomMessagePack, TypeChecker, TypeHierarchy}
-import org.sireum.lang.{FrontEnd, ast => AST}
+import org.sireum.lang.symbol.{GlobalDeclarationResolver, Info, Resolver, TypeInfo}
+import org.sireum.lang.tipe.TypeHierarchy
+import org.sireum.lang.{ast => AST}
 import org.sireum.message.Reporter
-import org.sireum.ops.{ISZOps, StringOps}
+import org.sireum.ops.ISZOps
 
 object SlangCheck {
   def gen(fileUris: ISZ[String],
@@ -62,16 +62,19 @@ object SlangCheck {
     return ret
   }
 
-  @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for(uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
+  @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for (uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
 
   @pure def sortedTypes(types: ISZ[TypeInfo]): ISZ[TypeInfo] = {
     // see Resolver.sortedGlobalTypes
     return ISZOps(types).sortWith(Resolver.ltTypeInfo(Resolver.uriLt _))
   }
 
+  def sortedTyedNames(names: ISZ[AST.Typed.Name]): ISZ[AST.Typed.Name] = {
+    return ISZOps(names).sortWith((a: AST.Typed.Name, b: AST.Typed.Name) => s"${a.ids}${a.args}" < s"${b.ids}${b.args}")
+  }
 }
 
-object SlangCheckTest{
+object SlangCheckTest {
   def gen(fileUris: ISZ[String],
           programs: ISZ[AST.TopUnit.Program],
           reporter: Reporter,
@@ -108,6 +111,7 @@ object SlangCheckTest{
                       val th: TypeHierarchy) {
 
   var enums: ISZ[ST] = ISZ()
+
   def gen(): (ISZ[String], ST) = {
 
     var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
@@ -152,7 +156,7 @@ object SlangCheckTest{
   def genSig(ti: TypeInfo.Sig): Unit = {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
-    val leaves = th.substLeavesOfType(ti.posOpt, ti.tpe).left
+    val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
     val pn = packageName(0)
 
     var enumNames: ISZ[String] = ISZ()
@@ -278,473 +282,481 @@ object SlangCheckTest{
 
   // get the next function for the slang base types
   def genNextSlangBaseTypes(typ: String): ST = {
-    if(th.isSubZName(ISZ("org", "sireum", typ))) {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    val conf = get_Config_$typ
-                 |
-                 |    var r: $typ = if (conf.low.isEmpty) {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next$typ()
-                 |        else
-                 |          gen.next${typ}Between(${typ}.Min, conf.high.get)
-                 |      } else {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next${typ}Between(conf.low.get, ${typ}.Max)
-                 |        else
-                 |          gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |      }
-                 |
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(${typ}.Min, conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, ${typ}.Max)
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(${typ}.Min, conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, ${typ}.Max)
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
-    } else if(typ == "Z") {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    val conf = get_Config_$typ
-                 |
-                 |    var r: $typ = if (conf.low.isEmpty) {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next$typ()
-                 |        else
-                 |          gen.next${typ}Between(S64.Min.toZ, conf.high.get)
-                 |      } else {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next${typ}Between(conf.low.get, S64.Max.toZ)
-                 |        else
-                 |          gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |      }
-                 |
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(S64.Min.toZ, conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, S64.Max.toZ)
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(S64.Min.toZ, conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, S64.Max.toZ)
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
-    } else if(typ == "F32") {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    val conf = get_Config_$typ
-                 |
-                 |    var r: $typ = if (conf.low.isEmpty) {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next$typ()
-                 |        else
-                 |          gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
-                 |      } else {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
-                 |        else
-                 |          gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |      }
-                 |
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
-    } else if(typ == "F64") {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    val conf = get_Config_$typ
-                 |
-                 |    var r: $typ = if (conf.low.isEmpty) {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next$typ()
-                 |        else
-                 |          gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
-                 |      } else {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
-                 |        else
-                 |          gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |      }
-                 |
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
-    } else if(typ == "R") {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    val conf = get_Config_$typ
-                 |
-                 |    var r: $typ = if (conf.low.isEmpty) {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next$typ()
-                 |        else
-                 |          gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
-                 |      } else {
-                 |        if (conf.high.isEmpty)
-                 |          gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
-                 |        else
-                 |          gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |      }
-                 |
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = if (conf.low.isEmpty) {
-                 |         if (conf.high.isEmpty)
-                 |           gen.next$typ()
-                 |         else
-                 |            gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
-                 |        } else {
-                 |          if (conf.high.isEmpty)
-                 |            gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
-                 |          else
-                 |           gen.next${typ}Between(conf.low.get, conf.high.get)
-                 |       }
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
+    if (th.isSubZName(ISZ("org", "sireum", typ))) {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(${typ}.Min, conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, ${typ}.Max)
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(${typ}.Min, conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, ${typ}.Max)
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(${typ}.Min, conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, ${typ}.Max)
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
+    } else if (typ == "Z") {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(S64.Min.toZ, conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, S64.Max.toZ)
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(S64.Min.toZ, conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, S64.Max.toZ)
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(S64.Min.toZ, conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, S64.Max.toZ)
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
+    } else if (typ == "F32") {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(f32"-3.40282347E38f", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, f32"3.4028235E38f")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
+    } else if (typ == "F64") {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(f64"-1.7976931348623157E308f", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, f64"1.7976931348623157E308f")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
+    } else if (typ == "R") {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(r"-1.7976931348623157E308", conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, r"1.7976931348623157E308")
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
     } else {
-      return st"""// ========  ${typ} ==========
-                 |  def get_Config_${typ}: Config_${typ}
-                 |  def set_Config_${typ}(config: Config_${typ}): Unit
-                 |
-                 |  def nextISZ$typ(): ISZ[$typ] = {
-                 |   val length: Z = gen.nextZBetween(0, get_Size)
-                 |      var temp: ISZ[$typ] = ISZ()
-                 |      for (r <- 0 until length) {
-                 |        temp = temp :+ next$typ()
-                 |      }
-                 |
-                 |      return temp
-                 |  }
-                 |
-                 |  def next$typ(): $typ = {
-                 |    var r = gen.next$typ()
-                 |    if(get_Config_$typ.attempts >= 0) {
-                 |     for (i <- 0 to get_Config_$typ.attempts) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = gen.next$typ()
-                 |     }
-                 |    } else {
-                 |     while(T) {
-                 |       if (get_Config_$typ.filter(r)) {
-                 |         return r
-                 |       }
-                 |       println(s"Retrying for failing value: $$r")
-                 |       r = gen.next$typ()
-                 |     }
-                 |    }
-                 |    assert(F, "Requirements to strict to generate")
-                 |    halt("Requirements to strict to generate")
-                 |  }
-                 |
-                 |  def nextOption$typ(): Option[$typ] = {
-                 |     val none: Z = gen.nextZBetween(0,1)
-                 |
-                 |     if(none == 0)
-                 |       return Some(next${typ}())
-                 |     else
-                 |       return None()
-                 |  }"""
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |
+            |  def nextISZ$typ(): ISZ[$typ] = {
+            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |      var temp: ISZ[$typ] = ISZ()
+            |      for (r <- 0 until length) {
+            |        temp = temp :+ next$typ()
+            |      }
+            |
+            |      return temp
+            |  }
+            |
+            |  def next$typ(): $typ = {
+            |    var r = gen.next$typ()
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = gen.next$typ()
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       println(s"Retrying for failing value: $$r")
+            |       r = gen.next$typ()
+            |     }
+            |    }
+            |    assert(F, "Requirements to strict to generate")
+            |    halt("Requirements to strict to generate")
+            |  }
+            |
+            |  def nextOption$typ(): Option[$typ] = {
+            |     val none: Z = gen.nextZBetween(0,1)
+            |
+            |     if(none == 0)
+            |       return Some(next${typ}())
+            |     else
+            |       return None()
+            |  }""")
 
     }
   }
 
   // get the base definition for the config for the Slang Base Types
   def genConfigSlangBaseType(typ: String): ST = {
-    if(th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ =="F64" || typ == "Z" || typ == "R") {
-      return st"""// ============= ${typ} ===================
-                 |def alwaysTrue_$typ(v: $typ): B = {return T}
-                 |
-                 |var config_${typ}: Config_${typ} = Config_$typ(None(), None(), 100, alwaysTrue_$typ _)
-                 |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
-                 |
-                 |def set_Config_${typ}(config: Config_${typ}): Unit ={
-                 |  config_${typ} = config
-                 |}"""
+    if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "Z" || typ == "R") {
+      return (
+        st"""// ============= ${typ} ===================
+            |def alwaysTrue_$typ(v: $typ): B = {return T}
+            |
+            |var config_${typ}: Config_${typ} = Config_$typ(None(), None(), 100, alwaysTrue_$typ _)
+            |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
+            |
+            |def set_Config_${typ}(config: Config_${typ}): Unit ={
+            |  config_${typ} = config
+            |}""")
     } else {
-      return st"""// ============= ${typ} ===================
-                 |def alwaysTrue_$typ(v: $typ): B = {return T}
-                 |
-                 |var config_${typ}: Config_${typ} = Config_$typ(100, alwaysTrue_$typ _)
-                 |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
-                 |
-                 |def set_Config_${typ}(config: Config_${typ}): Unit ={
-                 |  config_${typ} = config
-                 |}"""
+      return (
+        st"""// ============= ${typ} ===================
+            |def alwaysTrue_$typ(v: $typ): B = {return T}
+            |
+            |var config_${typ}: Config_${typ} = Config_$typ(100, alwaysTrue_$typ _)
+            |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
+            |
+            |def set_Config_${typ}(config: Config_${typ}): Unit ={
+            |  config_${typ} = config
+            |}""")
 
     }
   }
@@ -876,7 +888,7 @@ object SlangCheckTest{
 
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
-    val leaves = th.substLeavesOfType(ti.posOpt, ti.tpe).left
+    val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
     val pn = packageName(0)
 
     var calls: ISZ[String] = ISZ()
@@ -894,7 +906,7 @@ object SlangCheckTest{
       }
     }
 
-    for(i <- 0 to enumNames.size-1) {
+    for (i <- 0 to enumNames.size - 1) {
       cases = cases :+ s"case ${enumNames(i)} => (${calls(i)} _).apply()"
     }
 
@@ -917,13 +929,13 @@ object SlangCheckTest{
           |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
           |
           |def nextISZ$adTypeName(): ISZ[$adTypeString] = {
-          |   val length: Z = gen.nextZBetween(0, get_Size)
-          |   var temp: ISZ[$adTypeString] = ISZ()
-          |   for (r <- 0 until length) {
-          |     temp = temp :+ next$adTypeName()
-          |   }
+          |  val length: Z = gen.nextZBetween(0, get_Size)
+          |  var temp: ISZ[$adTypeString] = ISZ()
+          |  for (r <- 0 until length) {
+          |    temp = temp :+ next$adTypeName()
+          |  }
           |
-          |   return temp
+          |  return temp
           |}
           |
           |def next${adTypeName}(): ${adTypeString} = {
@@ -994,7 +1006,6 @@ object SlangCheckTest{
     val vars: ISZ[ST] = for (v <- ti.vars.values) yield genVar(v)
     val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
     val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
-
 
 
     nextConfig = nextConfig :+
@@ -1104,7 +1115,7 @@ object SlangCheckTest{
       }
     }
 
-    return ( packageName :+ "SlangCheckConfig.scala",
+    return (packageName :+ "SlangCheckConfig.scala",
       st"""// #Sireum
           |
           |package ${packageName}
@@ -1138,7 +1149,7 @@ object SlangCheckTest{
 
   //get config type for a slang type
   def genSlangBaseTypes(typ: String): ST = {
-    return if(th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "R" || typ == "Z")
+    return if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "R" || typ == "Z")
       st"""@datatype class Config_${typ}(low: Option[$typ], high: Option[$typ], attempts: Z, filter: ${typ} => B) {}"""
     else
       st"""@datatype class Config_${typ}(attempts: Z, filter: ${typ} => B) {}"""
@@ -1198,7 +1209,7 @@ object SlangCheckTest{
         case _ => {}
       }
     }
-    return ( packageName :+ "SlangCheckGenerator.scala",
+    return (packageName :+ "SlangCheckGenerator.scala",
       st"""// #Sireum
           |
           |package ${packageName}
@@ -1250,24 +1261,25 @@ object SlangCheckTest{
 
   //get a generator for a slang type
   def genSlangType(typ: String): ST = {
-    return st"""@record class Gen_${typ}(param: RandomLibI) extends MJen[${typ}] {
-               |  override def generate(f: ${typ} => Jen.Action): Jen.Action = {
-               |    var continue = Jen.Continue
-               |    while (T) {
-               |
-               |      continue = f(param.next${typ}())
-               |
-               |      if (!continue) {
-               |        return Jen.End
-               |      }
-               |    }
-               |    return continue
-               |  }
-               |
-               |  override def string: String = {
-               |    return s""
-               |  }
-               |}"""
+    return (
+      st"""@record class Gen_${typ}(param: RandomLibI) extends MJen[${typ}] {
+          |  override def generate(f: ${typ} => Jen.Action): Jen.Action = {
+          |    var continue = Jen.Continue
+          |    while (T) {
+          |
+          |      continue = f(param.next${typ}())
+          |
+          |      if (!continue) {
+          |        return Jen.End
+          |      }
+          |    }
+          |    return continue
+          |  }
+          |
+          |  override def string: String = {
+          |    return s""
+          |  }
+          |}""")
   }
 
   //get a generator for a everything else
@@ -1359,7 +1371,7 @@ object SlangCheckTest{
         case _ => {}
       }
     }
-    return ( packageName :+ "SlangCheckTest.scala",
+    return (packageName :+ "SlangCheckTest.scala",
       st"""package ${packageName}
           |
           |import org.scalatest.funsuite.AnyFunSuite
@@ -1368,9 +1380,9 @@ object SlangCheckTest{
           |
           |class autogenTest extends AnyFunSuite{
           |
-          |   ${(slangTypeGen, "\n\n")}
+          |  ${(slangTypeGen, "\n\n")}
           |
-          |   ${(nextClass, "\n\n")}
+          |  ${(nextClass, "\n\n")}
           |
           |}
           |""")
@@ -1388,18 +1400,19 @@ object SlangCheckTest{
           |
           |    for(r <- gen.take(100))
           |      println(r)
-          |  }"""
+          |}"""
   }
 
   //get a generator for a slang type
   def genSlangType(typ: String): ST = {
-    return st"""test("$typ Output") {
-               |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-               |    val gen = Gen_$typ(randomLib)
-               |
-               |    for(r <- gen.take(100))
-               |      println(r)
-               |  }"""
+    return (
+      st"""test("$typ Output") {
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val gen = Gen_$typ(randomLib)
+          |
+          |  for(r <- gen.take(100))
+          |    println(r)
+          |}""")
   }
 
   //get a generator for a everything else
@@ -1409,12 +1422,12 @@ object SlangCheckTest{
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-          |    val gen = Gen_$adTypeName(randomLib)
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val gen = Gen_$adTypeName(randomLib)
           |
-          |    for(r <- gen.take(100))
-          |      println(r)
-          |  }"""
+          |  for(r <- gen.take(100))
+          |    println(r)
+          |}"""
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {
@@ -1423,12 +1436,12 @@ object SlangCheckTest{
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-          |    val gen = Gen_$adTypeName(randomLib)
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val gen = Gen_$adTypeName(randomLib)
           |
-          |    for(r <- gen.take(100))
-          |      println(r)
-          |  }"""
+          |  for(r <- gen.take(100))
+          |    println(r)
+          |}"""
   }
 
 }
