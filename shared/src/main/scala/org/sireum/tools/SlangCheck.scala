@@ -161,7 +161,7 @@ object SlangCheckTest {
 
     var enumNames: ISZ[String] = ISZ()
 
-    for (typ <- leaves) {
+    for (typ <- SlangCheck.sortedTyedNames(leaves)) {
       val ids = typ.ids
       if (ids(0) == pn) {
         enumNames = enumNames :+ st"\"${(ops.ISZOps(typ.ids).drop(1), "")}_Id\"".render
@@ -895,7 +895,7 @@ object SlangCheckTest {
     var enumNames: ISZ[String] = ISZ()
     var cases: ISZ[String] = ISZ()
 
-    for (typ <- leaves) {
+    for (typ <- SlangCheck.sortedTyedNames(leaves)) {
       val ids = typ.ids
       if (ids(0) == pn) {
         calls = calls :+ st"next${(ops.ISZOps(typ.ids).drop(1), "")}".render
