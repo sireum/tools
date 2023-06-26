@@ -54,8 +54,6 @@ object SlangCheckJvm {
       thl
     }
 
-    print()
-
     val t = FrontEnd.parseProgramAndGloballyResolve(0, sources2,
       th.nameMap, th.typeMap)
 
@@ -64,8 +62,6 @@ object SlangCheckJvm {
     th = TypeOutliner.checkOutline(0, T, th, reporter)
 
     th = TypeChecker.checkComponents(0, T, th, th.nameMap, th.typeMap, reporter)
-
-    print()
 
     val results = SC.gen(for (source <- sources) yield source.toUri, programs, reporter, th)
 

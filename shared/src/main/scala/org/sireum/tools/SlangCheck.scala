@@ -851,7 +851,7 @@ object SlangCheckTest {
           |
           |def next${adTypeName}(): ${adTypeString} = {
           |
-          |  var ordinal: Z = gen.nextZBetween(0, ${genShortEnumType(ti.name)}.numOfElements-1) //is genBetween inclusive
+          |  var ordinal: Z = gen.nextZBetween(0, ${genShortEnumType(ti.name)}.numOfElements-1)
           |
           |  var v: ${adTypeString} = ${genShortEnumType(ti.name)}.byOrdinal(ordinal).get
           |  if(get_Config_${adTypeName}.attempts >= 0) {
@@ -1097,7 +1097,6 @@ object SlangCheckTest {
     var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
 
     for (v <- th.typeMap.values) {
-      // println(v.posOpt)
       val temp = v
       v.posOpt match {
         case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
