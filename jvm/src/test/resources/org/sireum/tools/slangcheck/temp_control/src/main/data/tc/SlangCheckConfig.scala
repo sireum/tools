@@ -94,18 +94,18 @@ DataContent.scala
 
 @datatype class Config_CoolingFanFanAckType(attempts: Z, filter: CoolingFan.FanAck.Type => B) {}
 
+@datatype class Config_CoolingFanFanAck_Payload(attempts: Z, filter: CoolingFan.FanAck_Payload => B) {}
+
 @datatype class Config_CoolingFanFanCmdType(attempts: Z, filter: CoolingFan.FanCmd.Type => B) {}
 
 @datatype class Config_CoolingFanFanCmd_Payload(attempts: Z, filter: CoolingFan.FanCmd_Payload => B) {}
 
-@datatype class Config_CoolingFanFanAck_Payload(attempts: Z, filter: CoolingFan.FanAck_Payload => B) {}
+@datatype class Config_TempControlSoftwareSystemSetPoint_i(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i => B) {}
+
+@datatype class Config_TempControlSoftwareSystemSetPoint_i_Payload(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i_Payload => B) {}
 
 @datatype class Config_TempSensorTemperature_i(attempts: Z, filter: TempSensor.Temperature_i => B) {}
 
 @datatype class Config_TempSensorTemperature_i_Payload(attempts: Z, filter: TempSensor.Temperature_i_Payload => B) {}
-
-@datatype class Config_TempControlSoftwareSystemSetPoint_i(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i => B) {}
-
-@datatype class Config_TempControlSoftwareSystemSetPoint_i_Payload(attempts: Z, filter: TempControlSoftwareSystem.SetPoint_i_Payload => B) {}
 
 

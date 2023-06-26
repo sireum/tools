@@ -270,6 +270,14 @@ class autogenTest extends AnyFunSuite{
         println(r)
   }
 
+  test("CoolingFan.FanAck_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_CoolingFanFanAck_Payload(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
   test("CoolingFan.FanCmd.Type Output") {
       val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
       val gen = Gen_CoolingFanFanCmdType(randomLib)
@@ -286,9 +294,17 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("CoolingFan.FanAck_Payload Output") {
+  test("TempControlSoftwareSystem.SetPoint_i Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_CoolingFanFanAck_Payload(randomLib)
+    val gen = Gen_TempControlSoftwareSystemSetPoint_i(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("TempControlSoftwareSystem.SetPoint_i_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_TempControlSoftwareSystemSetPoint_i_Payload(randomLib)
 
     for(r <- gen.take(100))
       println(r)
@@ -305,22 +321,6 @@ class autogenTest extends AnyFunSuite{
   test("TempSensor.Temperature_i_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
     val gen = Gen_TempSensorTemperature_i_Payload(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("TempControlSoftwareSystem.SetPoint_i Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_TempControlSoftwareSystemSetPoint_i(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("TempControlSoftwareSystem.SetPoint_i_Payload Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_TempControlSoftwareSystemSetPoint_i_Payload(randomLib)
 
     for(r <- gen.take(100))
       println(r)

@@ -656,6 +656,25 @@ DataContent.scala
   }
 }
 
+@record class Gen_CoolingFanFanAck_Payload(param: RandomLibI) extends MJen[CoolingFan.FanAck_Payload] {
+  override def generate(f: CoolingFan.FanAck_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextCoolingFanFanAck_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 @record class Gen_CoolingFanFanCmdType(param: RandomLibI) extends MJen[CoolingFan.FanCmd.Type] {
   override def generate(f: CoolingFan.FanCmd.Type => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
@@ -694,12 +713,31 @@ DataContent.scala
   }
 }
 
-@record class Gen_CoolingFanFanAck_Payload(param: RandomLibI) extends MJen[CoolingFan.FanAck_Payload] {
-  override def generate(f: CoolingFan.FanAck_Payload => Jen.Action): Jen.Action = {
+@record class Gen_TempControlSoftwareSystemSetPoint_i(param: RandomLibI) extends MJen[TempControlSoftwareSystem.SetPoint_i] {
+  override def generate(f: TempControlSoftwareSystem.SetPoint_i => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.nextCoolingFanFanAck_Payload())
+      continue = f(param.nextTempControlSoftwareSystemSetPoint_i())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_TempControlSoftwareSystemSetPoint_i_Payload(param: RandomLibI) extends MJen[TempControlSoftwareSystem.SetPoint_i_Payload] {
+  override def generate(f: TempControlSoftwareSystem.SetPoint_i_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextTempControlSoftwareSystemSetPoint_i_Payload())
 
       if (!continue) {
         return Jen.End
@@ -738,44 +776,6 @@ DataContent.scala
     while (T) {
 
       continue = f(param.nextTempSensorTemperature_i_Payload())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_TempControlSoftwareSystemSetPoint_i(param: RandomLibI) extends MJen[TempControlSoftwareSystem.SetPoint_i] {
-  override def generate(f: TempControlSoftwareSystem.SetPoint_i => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextTempControlSoftwareSystemSetPoint_i())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_TempControlSoftwareSystemSetPoint_i_Payload(param: RandomLibI) extends MJen[TempControlSoftwareSystem.SetPoint_i_Payload] {
-  override def generate(f: TempControlSoftwareSystem.SetPoint_i_Payload => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextTempControlSoftwareSystemSetPoint_i_Payload())
 
       if (!continue) {
         return Jen.End
