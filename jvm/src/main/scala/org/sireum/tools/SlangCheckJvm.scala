@@ -11,10 +11,10 @@ object SlangCheckJvm {
   def run(sources: ISZ[Os.Path],
           destDir: Os.Path,
           testDir: Os.Path,
-          reporter: Reporter): Unit = {
+          reporter: Reporter): (ISZ[(ISZ[String], ST)], ISZ[(ISZ[String], ST)]) = {
     if (sources.isEmpty) { //Checks if files are present
       reporter.error(None(), "SlangCheckGenerator", "Expecting a program input")
-      return
+      return (ISZ(), ISZ())
     }
 
     def readFile(f: Os.Path): (Option[String], String) = {
@@ -30,7 +30,7 @@ object SlangCheckJvm {
           programs = programs :+ p
         case _ =>
           reporter.error(None(), "SlangCheckGenerator", s"$src is not a Slang program")
-          return
+          return (ISZ(), ISZ())
       }
     }
 
@@ -68,21 +68,10 @@ object SlangCheckJvm {
     print()
 
     val results = SC.gen(for (source <- sources) yield source.toUri, programs, reporter, th)
-    if (!reporter.hasError) {
-      for (r <- results) {
-        val destFile = destDir /+ r._1
-        destFile.writeOver(r._2.render)
-        println(s"Wrote: $destFile")
-      }
-    }
 
     val testResults = SlangCheckTest.gen(for (source <- sources) yield source.toUri, programs, reporter, th)
-    if (!reporter.hasError) {
-      for (r <- testResults) {
-        val destFile = testDir /+ r._1
-        destFile.writeOver(r._2.render)
-        println(s"Wrote: $destFile")
-      }
-    }
+
+
+    return (results, testResults)
   }
 }

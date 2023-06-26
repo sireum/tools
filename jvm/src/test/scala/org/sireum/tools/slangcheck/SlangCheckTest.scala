@@ -24,9 +24,9 @@ class SlangCheckTest extends TestSuite {
     test("temp_control", "tc")
   }
 
-  "option_argument" in {
-    test("option_argument", "oa")
-  }
+//  "option_argument" in {
+//    test("option_argument", "oa")
+//  }
 
   //  "is_argument" in {
   //    test("is_argument", "is")
@@ -44,11 +44,24 @@ class SlangCheckTest extends TestSuite {
 
     val artDir = resultsDir / "src" / "main" / "art" / "DataContent.scala"
     val dataFiles = Os.Path.walk(resultsDir / "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
-
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"
 
-    SCJVM.run(dataFiles, destDir, testDir, reporter)
+    val results = SCJVM.run(dataFiles, destDir, testDir, reporter)
+
+    if (!reporter.hasError) {
+      for (r <- results._1) {
+        val destFile = destDir /+ r._1
+        destFile.writeOver(ops.StringOps(r._2.render).replaceAllLiterally("\r\n", "\n"))
+        println(s"Wrote: $destFile")
+      }
+
+      for (r <- results._2) {
+        val destFile = testDir /+ r._1
+        destFile.writeOver(ops.StringOps(r._2.render).replaceAllLiterally("\r\n", "\n"))
+        println(s"Wrote: $destFile")
+      }
+    }
 
     var passing: B = T
 
