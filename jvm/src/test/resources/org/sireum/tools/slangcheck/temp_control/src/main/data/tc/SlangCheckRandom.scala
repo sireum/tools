@@ -2123,7 +2123,7 @@ DataContent.scala
 
   def nextCoolingFanFanAckType(): CoolingFan.FanAck.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
 
     var v: CoolingFan.FanAck.Type = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
     if(get_Config_CoolingFanFanAckType.attempts >= 0) {
@@ -2218,7 +2218,7 @@ DataContent.scala
 
   def nextCoolingFanFanCmdType(): CoolingFan.FanCmd.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
 
     var v: CoolingFan.FanCmd.Type = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
     if(get_Config_CoolingFanFanCmdType.attempts >= 0) {

@@ -2258,7 +2258,7 @@ DataContent.scala
 
   def nextIsolette_Data_ModelMonitor_ModeType(): Isolette_Data_Model.Monitor_Mode.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
 
     var v: Isolette_Data_Model.Monitor_Mode.Type = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
     if(get_Config_Isolette_Data_ModelMonitor_ModeType.attempts >= 0) {
@@ -2353,7 +2353,7 @@ DataContent.scala
 
   def nextIsolette_Data_ModelOn_OffType(): Isolette_Data_Model.On_Off.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.On_Off.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.On_Off.numOfElements-1)
 
     var v: Isolette_Data_Model.On_Off.Type = isolette.Isolette_Data_Model.On_Off.byOrdinal(ordinal).get
     if(get_Config_Isolette_Data_ModelOn_OffType.attempts >= 0) {
@@ -2554,7 +2554,7 @@ DataContent.scala
 
   def nextIsolette_Data_ModelRegulator_ModeType(): Isolette_Data_Model.Regulator_Mode.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
 
     var v: Isolette_Data_Model.Regulator_Mode.Type = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
     if(get_Config_Isolette_Data_ModelRegulator_ModeType.attempts >= 0) {
@@ -2649,7 +2649,7 @@ DataContent.scala
 
   def nextIsolette_Data_ModelStatusType(): Isolette_Data_Model.Status.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
 
     var v: Isolette_Data_Model.Status.Type = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
     if(get_Config_Isolette_Data_ModelStatusType.attempts >= 0) {
@@ -2959,7 +2959,7 @@ DataContent.scala
 
   def nextIsolette_Data_ModelValueStatusType(): Isolette_Data_Model.ValueStatus.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.ValueStatus.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.ValueStatus.numOfElements-1)
 
     var v: Isolette_Data_Model.ValueStatus.Type = isolette.Isolette_Data_Model.ValueStatus.byOrdinal(ordinal).get
     if(get_Config_Isolette_Data_ModelValueStatusType.attempts >= 0) {
@@ -3054,7 +3054,7 @@ DataContent.scala
 
   def nextIsolette_EnvironmentHeatType(): Isolette_Environment.Heat.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
 
     var v: Isolette_Environment.Heat.Type = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
     if(get_Config_Isolette_EnvironmentHeatType.attempts >= 0) {
@@ -3149,7 +3149,7 @@ DataContent.scala
 
   def nextIsolette_EnvironmentInterface_InteractionType(): Isolette_Environment.Interface_Interaction.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Interface_Interaction.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Interface_Interaction.numOfElements-1)
 
     var v: Isolette_Environment.Interface_Interaction.Type = isolette.Isolette_Environment.Interface_Interaction.byOrdinal(ordinal).get
     if(get_Config_Isolette_EnvironmentInterface_InteractionType.attempts >= 0) {
