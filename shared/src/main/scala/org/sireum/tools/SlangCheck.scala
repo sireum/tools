@@ -66,7 +66,10 @@ object SlangCheck {
 
   @pure def sortedTypes(types: ISZ[TypeInfo]): ISZ[TypeInfo] = {
     // see Resolver.sortedGlobalTypes
-    return ISZOps(types).sortWith(Resolver.ltTypeInfo(Resolver.uriLt _))
+
+    @pure def sortURI(a: String, b: String): B = { return a < b }
+
+    return ISZOps(types).sortWith(Resolver.ltTypeInfo(sortURI _))
   }
 
   def sortedTyedNames(names: ISZ[AST.Typed.Name]): ISZ[AST.Typed.Name] = {

@@ -262,17 +262,33 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("Isolette_Environment.Heat.Type Output") {
+  test("Isolette_Data_Model.Failure_Flag_impl Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelFailure_Flag_impl(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.Failure_Flag_impl_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelFailure_Flag_impl_Payload(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.Monitor_Mode.Type Output") {
       val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-      val gen = Gen_Isolette_EnvironmentHeatType(randomLib)
+      val gen = Gen_Isolette_Data_ModelMonitor_ModeType(randomLib)
 
       for(r <- gen.take(100))
         println(r)
   }
 
-  test("Isolette_Environment.Heat_Payload Output") {
+  test("Isolette_Data_Model.Monitor_Mode_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_EnvironmentHeat_Payload(randomLib)
+    val gen = Gen_Isolette_Data_ModelMonitor_Mode_Payload(randomLib)
 
     for(r <- gen.take(100))
       println(r)
@@ -286,14 +302,6 @@ class autogenTest extends AnyFunSuite{
         println(r)
   }
 
-  test("Isolette_Data_Model.Status.Type Output") {
-      val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-      val gen = Gen_Isolette_Data_ModelStatusType(randomLib)
-
-      for(r <- gen.take(100))
-        println(r)
-  }
-
   test("Isolette_Data_Model.On_Off_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
     val gen = Gen_Isolette_Data_ModelOn_Off_Payload(randomLib)
@@ -302,9 +310,65 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
+  test("Isolette_Data_Model.PhysicalTemp_impl Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelPhysicalTemp_impl(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.PhysicalTemp_impl_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelPhysicalTemp_impl_Payload(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.Regulator_Mode.Type Output") {
+      val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+      val gen = Gen_Isolette_Data_ModelRegulator_ModeType(randomLib)
+
+      for(r <- gen.take(100))
+        println(r)
+  }
+
+  test("Isolette_Data_Model.Regulator_Mode_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelRegulator_Mode_Payload(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.Status.Type Output") {
+      val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+      val gen = Gen_Isolette_Data_ModelStatusType(randomLib)
+
+      for(r <- gen.take(100))
+        println(r)
+  }
+
   test("Isolette_Data_Model.Status_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
     val gen = Gen_Isolette_Data_ModelStatus_Payload(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.TempWstatus_impl Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelTempWstatus_impl(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Isolette_Data_Model.TempWstatus_impl_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+    val gen = Gen_Isolette_Data_ModelTempWstatus_impl_Payload(randomLib)
 
     for(r <- gen.take(100))
       println(r)
@@ -342,81 +406,17 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("Isolette_Data_Model.Monitor_Mode.Type Output") {
+  test("Isolette_Environment.Heat.Type Output") {
       val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-      val gen = Gen_Isolette_Data_ModelMonitor_ModeType(randomLib)
+      val gen = Gen_Isolette_EnvironmentHeatType(randomLib)
 
       for(r <- gen.take(100))
         println(r)
   }
 
-  test("Isolette_Data_Model.Monitor_Mode_Payload Output") {
+  test("Isolette_Environment.Heat_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelMonitor_Mode_Payload(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.Regulator_Mode.Type Output") {
-      val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-      val gen = Gen_Isolette_Data_ModelRegulator_ModeType(randomLib)
-
-      for(r <- gen.take(100))
-        println(r)
-  }
-
-  test("Isolette_Data_Model.Regulator_Mode_Payload Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelRegulator_Mode_Payload(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.TempWstatus_impl Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelTempWstatus_impl(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.TempWstatus_impl_Payload Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelTempWstatus_impl_Payload(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.Failure_Flag_impl Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelFailure_Flag_impl(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.PhysicalTemp_impl Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelPhysicalTemp_impl(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.Failure_Flag_impl_Payload Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelFailure_Flag_impl_Payload(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("Isolette_Data_Model.PhysicalTemp_impl_Payload Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-    val gen = Gen_Isolette_Data_ModelPhysicalTemp_impl_Payload(randomLib)
+    val gen = Gen_Isolette_EnvironmentHeat_Payload(randomLib)
 
     for(r <- gen.take(100))
       println(r)

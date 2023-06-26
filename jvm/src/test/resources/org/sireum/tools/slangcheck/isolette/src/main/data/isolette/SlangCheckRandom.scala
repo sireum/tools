@@ -2145,85 +2145,43 @@ DataContent.scala
      return None()
   }
 
-  // ============= Isolette_Environment.Heat.Type ===================
+  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
 
-  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit
+  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit
 
-  def nextIsolette_EnvironmentHeatType(): Isolette_Environment.Heat.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1) //is genBetween inclusive
-
-    var v: Isolette_Environment.Heat.Type = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-    if(get_Config_Isolette_EnvironmentHeatType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentHeatType.attempts) {
-       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
-       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
-       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_EnvironmentHeatType(): Option[Isolette_Environment.Heat.Type] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_EnvironmentHeatType())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Environment.Heat_Payload ===================
-
-  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit
-
-  def nextISZIsolette_EnvironmentHeat_Payload(): ISZ[Isolette_Environment.Heat_Payload] = {
+  def nextISZIsolette_Data_ModelFailure_Flag_impl(): ISZ[Isolette_Data_Model.Failure_Flag_impl] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Environment.Heat_Payload] = ISZ()
+        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl] = ISZ()
         for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_EnvironmentHeat_Payload()
+          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl()
         }
 
         return temp
     }
 
-  def nextIsolette_EnvironmentHeat_Payload(): Isolette_Environment.Heat_Payload = {
-    var value: Isolette_Environment.Heat.Type = nextIsolette_EnvironmentHeatType()
+  def nextIsolette_Data_ModelFailure_Flag_impl(): Isolette_Data_Model.Failure_Flag_impl = {
+    var value: B = nextB()
 
-    var v: Isolette_Environment.Heat_Payload = Isolette_Environment.Heat_Payload(value)
+    var v: Isolette_Data_Model.Failure_Flag_impl = Isolette_Data_Model.Failure_Flag_impl(value)
 
-    if(get_Config_Isolette_EnvironmentHeat_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentHeat_Payload.attempts) {
-        if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
+    if(get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts) {
+        if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_EnvironmentHeatType()
-        v = Isolette_Environment.Heat_Payload(value)
+        value = nextB()
+        v = Isolette_Data_Model.Failure_Flag_impl(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
+       if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_EnvironmentHeatType()
-       v = Isolette_Environment.Heat_Payload(value)
+       value = nextB()
+       v = Isolette_Data_Model.Failure_Flag_impl(value)
      }
     }
 
@@ -2231,11 +2189,159 @@ DataContent.scala
     halt("Requirements to strict to generate")
   }
 
-  def nextOptionIsolette_EnvironmentHeat_Payload(): Option[Isolette_Environment.Heat_Payload] = {
+  def nextOptionIsolette_Data_ModelFailure_Flag_impl(): Option[Isolette_Data_Model.Failure_Flag_impl] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(nextIsolette_EnvironmentHeat_Payload())
+     return Some(nextIsolette_Data_ModelFailure_Flag_impl())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
+
+  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit
+
+  def nextISZIsolette_Data_ModelFailure_Flag_impl_Payload(): ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl_Payload()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelFailure_Flag_impl_Payload(): Isolette_Data_Model.Failure_Flag_impl_Payload = {
+    var value: Isolette_Data_Model.Failure_Flag_impl = nextIsolette_Data_ModelFailure_Flag_impl()
+
+    var v: Isolette_Data_Model.Failure_Flag_impl_Payload = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
+
+    if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts) {
+        if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextIsolette_Data_ModelFailure_Flag_impl()
+        v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextIsolette_Data_ModelFailure_Flag_impl()
+       v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelFailure_Flag_impl_Payload(): Option[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelFailure_Flag_impl_Payload())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
+
+  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType
+  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit
+
+  def nextIsolette_Data_ModelMonitor_ModeType(): Isolette_Data_Model.Monitor_Mode.Type = {
+
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1) //is genBetween inclusive
+
+    var v: Isolette_Data_Model.Monitor_Mode.Type = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+    if(get_Config_Isolette_Data_ModelMonitor_ModeType.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_ModeType.attempts) {
+       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+     }
+    } else {
+     while(T){
+       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+     }
+    }
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelMonitor_ModeType(): Option[Isolette_Data_Model.Monitor_Mode.Type] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelMonitor_ModeType())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
+
+  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload
+  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit
+
+  def nextISZIsolette_Data_ModelMonitor_Mode_Payload(): ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelMonitor_Mode_Payload()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelMonitor_Mode_Payload(): Isolette_Data_Model.Monitor_Mode_Payload = {
+    var value: Isolette_Data_Model.Monitor_Mode.Type = nextIsolette_Data_ModelMonitor_ModeType()
+
+    var v: Isolette_Data_Model.Monitor_Mode_Payload = Isolette_Data_Model.Monitor_Mode_Payload(value)
+
+    if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts) {
+        if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextIsolette_Data_ModelMonitor_ModeType()
+        v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextIsolette_Data_ModelMonitor_ModeType()
+       v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelMonitor_Mode_Payload(): Option[Isolette_Data_Model.Monitor_Mode_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelMonitor_Mode_Payload())
     else
      return None()
   }
@@ -2278,48 +2384,6 @@ DataContent.scala
 
     if(none == 0)
      return Some(nextIsolette_Data_ModelOn_OffType())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.Status.Type ===================
-
-  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit
-
-  def nextIsolette_Data_ModelStatusType(): Isolette_Data_Model.Status.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1) //is genBetween inclusive
-
-    var v: Isolette_Data_Model.Status.Type = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelStatusType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelStatusType.attempts) {
-       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelStatusType(): Option[Isolette_Data_Model.Status.Type] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelStatusType())
     else
      return None()
   }
@@ -2377,6 +2441,249 @@ DataContent.scala
      return None()
   }
 
+  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
+
+  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit
+
+  def nextISZIsolette_Data_ModelPhysicalTemp_impl(): ISZ[Isolette_Data_Model.PhysicalTemp_impl] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelPhysicalTemp_impl(): Isolette_Data_Model.PhysicalTemp_impl = {
+    var value: F32 = nextF32()
+
+    var v: Isolette_Data_Model.PhysicalTemp_impl = Isolette_Data_Model.PhysicalTemp_impl(value)
+
+    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts) {
+        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextF32()
+        v = Isolette_Data_Model.PhysicalTemp_impl(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextF32()
+       v = Isolette_Data_Model.PhysicalTemp_impl(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelPhysicalTemp_impl(): Option[Isolette_Data_Model.PhysicalTemp_impl] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelPhysicalTemp_impl())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
+
+  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit
+
+  def nextISZIsolette_Data_ModelPhysicalTemp_impl_Payload(): ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl_Payload()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelPhysicalTemp_impl_Payload(): Isolette_Data_Model.PhysicalTemp_impl_Payload = {
+    var value: Isolette_Data_Model.PhysicalTemp_impl = nextIsolette_Data_ModelPhysicalTemp_impl()
+
+    var v: Isolette_Data_Model.PhysicalTemp_impl_Payload = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+
+    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts) {
+        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextIsolette_Data_ModelPhysicalTemp_impl()
+        v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextIsolette_Data_ModelPhysicalTemp_impl()
+       v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelPhysicalTemp_impl_Payload(): Option[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
+
+  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType
+  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit
+
+  def nextIsolette_Data_ModelRegulator_ModeType(): Isolette_Data_Model.Regulator_Mode.Type = {
+
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1) //is genBetween inclusive
+
+    var v: Isolette_Data_Model.Regulator_Mode.Type = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
+    if(get_Config_Isolette_Data_ModelRegulator_ModeType.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_ModeType.attempts) {
+       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
+     }
+    } else {
+     while(T){
+       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
+     }
+    }
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelRegulator_ModeType(): Option[Isolette_Data_Model.Regulator_Mode.Type] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelRegulator_ModeType())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
+
+  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload
+  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit
+
+  def nextISZIsolette_Data_ModelRegulator_Mode_Payload(): ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelRegulator_Mode_Payload()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelRegulator_Mode_Payload(): Isolette_Data_Model.Regulator_Mode_Payload = {
+    var value: Isolette_Data_Model.Regulator_Mode.Type = nextIsolette_Data_ModelRegulator_ModeType()
+
+    var v: Isolette_Data_Model.Regulator_Mode_Payload = Isolette_Data_Model.Regulator_Mode_Payload(value)
+
+    if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts) {
+        if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextIsolette_Data_ModelRegulator_ModeType()
+        v = Isolette_Data_Model.Regulator_Mode_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextIsolette_Data_ModelRegulator_ModeType()
+       v = Isolette_Data_Model.Regulator_Mode_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelRegulator_Mode_Payload(): Option[Isolette_Data_Model.Regulator_Mode_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelRegulator_Mode_Payload())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.Status.Type ===================
+
+  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType
+  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit
+
+  def nextIsolette_Data_ModelStatusType(): Isolette_Data_Model.Status.Type = {
+
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1) //is genBetween inclusive
+
+    var v: Isolette_Data_Model.Status.Type = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
+    if(get_Config_Isolette_Data_ModelStatusType.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelStatusType.attempts) {
+       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
+     }
+    } else {
+     while(T){
+       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
+        return v
+       }
+       println(s"Retrying for failing value: $v")
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
+       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
+     }
+    }
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelStatusType(): Option[Isolette_Data_Model.Status.Type] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelStatusType())
+    else
+     return None()
+  }
+
   // ============= Isolette_Data_Model.Status_Payload ===================
 
   def get_Config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload
@@ -2426,6 +2733,115 @@ DataContent.scala
 
     if(none == 0)
      return Some(nextIsolette_Data_ModelStatus_Payload())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.TempWstatus_impl ===================
+
+  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl
+  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit
+
+  def nextISZIsolette_Data_ModelTempWstatus_impl(): ISZ[Isolette_Data_Model.TempWstatus_impl] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelTempWstatus_impl(): Isolette_Data_Model.TempWstatus_impl = {
+    var value: F32 = nextF32()
+    var status: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
+
+    var v: Isolette_Data_Model.TempWstatus_impl = Isolette_Data_Model.TempWstatus_impl(value, status)
+
+    if(get_Config_Isolette_Data_ModelTempWstatus_impl.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl.attempts) {
+        if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextF32()
+        status = nextIsolette_Data_ModelValueStatusType()
+        v = Isolette_Data_Model.TempWstatus_impl(value, status)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextF32()
+       status = nextIsolette_Data_ModelValueStatusType()
+       v = Isolette_Data_Model.TempWstatus_impl(value, status)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelTempWstatus_impl(): Option[Isolette_Data_Model.TempWstatus_impl] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelTempWstatus_impl())
+    else
+     return None()
+  }
+
+  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
+
+  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload
+  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit
+
+  def nextISZIsolette_Data_ModelTempWstatus_impl_Payload(): ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = {
+     val length: Z = gen.nextZBetween(0, 256)
+        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = ISZ()
+        for (r <- 0 until length) {
+          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl_Payload()
+        }
+
+        return temp
+    }
+
+  def nextIsolette_Data_ModelTempWstatus_impl_Payload(): Isolette_Data_Model.TempWstatus_impl_Payload = {
+    var value: Isolette_Data_Model.TempWstatus_impl = nextIsolette_Data_ModelTempWstatus_impl()
+
+    var v: Isolette_Data_Model.TempWstatus_impl_Payload = Isolette_Data_Model.TempWstatus_impl_Payload(value)
+
+    if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts) {
+        if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
+          return v
+        }
+        println(s"Retrying for failing value: $v")
+        value = nextIsolette_Data_ModelTempWstatus_impl()
+        v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
+         return v
+       }
+       println(s"Retrying for failing value: $v")
+       value = nextIsolette_Data_ModelTempWstatus_impl()
+       v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
+     }
+    }
+
+    assert(F, "Requirements to strict to generate")
+    halt("Requirements to strict to generate")
+  }
+
+  def nextOptionIsolette_Data_ModelTempWstatus_impl_Payload(): Option[Isolette_Data_Model.TempWstatus_impl_Payload] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0)
+     return Some(nextIsolette_Data_ModelTempWstatus_impl_Payload())
     else
      return None()
   }
@@ -2631,85 +3047,85 @@ DataContent.scala
      return None()
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
+  // ============= Isolette_Environment.Heat.Type ===================
 
-  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit
+  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType
+  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit
 
-  def nextIsolette_Data_ModelMonitor_ModeType(): Isolette_Data_Model.Monitor_Mode.Type = {
+  def nextIsolette_EnvironmentHeatType(): Isolette_Environment.Heat.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1) //is genBetween inclusive
+    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1) //is genBetween inclusive
 
-    var v: Isolette_Data_Model.Monitor_Mode.Type = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelMonitor_ModeType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_ModeType.attempts) {
-       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+    var v: Isolette_Environment.Heat.Type = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
+    if(get_Config_Isolette_EnvironmentHeatType.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_EnvironmentHeatType.attempts) {
+       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
+       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
      }
     } else {
      while(T){
-       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
+       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
      }
     }
     assert(F, "Requirements to strict to generate")
     halt("Requirements to strict to generate")
   }
 
-  def nextOptionIsolette_Data_ModelMonitor_ModeType(): Option[Isolette_Data_Model.Monitor_Mode.Type] = {
+  def nextOptionIsolette_EnvironmentHeatType(): Option[Isolette_Environment.Heat.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(nextIsolette_Data_ModelMonitor_ModeType())
+     return Some(nextIsolette_EnvironmentHeatType())
     else
      return None()
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
+  // ============= Isolette_Environment.Heat_Payload ===================
 
-  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit
+  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload
+  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit
 
-  def nextISZIsolette_Data_ModelMonitor_Mode_Payload(): ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = {
+  def nextISZIsolette_EnvironmentHeat_Payload(): ISZ[Isolette_Environment.Heat_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = ISZ()
+        var temp: ISZ[Isolette_Environment.Heat_Payload] = ISZ()
         for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelMonitor_Mode_Payload()
+          temp = temp :+ nextIsolette_EnvironmentHeat_Payload()
         }
 
         return temp
     }
 
-  def nextIsolette_Data_ModelMonitor_Mode_Payload(): Isolette_Data_Model.Monitor_Mode_Payload = {
-    var value: Isolette_Data_Model.Monitor_Mode.Type = nextIsolette_Data_ModelMonitor_ModeType()
+  def nextIsolette_EnvironmentHeat_Payload(): Isolette_Environment.Heat_Payload = {
+    var value: Isolette_Environment.Heat.Type = nextIsolette_EnvironmentHeatType()
 
-    var v: Isolette_Data_Model.Monitor_Mode_Payload = Isolette_Data_Model.Monitor_Mode_Payload(value)
+    var v: Isolette_Environment.Heat_Payload = Isolette_Environment.Heat_Payload(value)
 
-    if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+    if(get_Config_Isolette_EnvironmentHeat_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_Isolette_EnvironmentHeat_Payload.attempts) {
+        if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelMonitor_ModeType()
-        v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+        value = nextIsolette_EnvironmentHeatType()
+        v = Isolette_Environment.Heat_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+       if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelMonitor_ModeType()
-       v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+       value = nextIsolette_EnvironmentHeatType()
+       v = Isolette_Environment.Heat_Payload(value)
      }
     }
 
@@ -2717,427 +3133,11 @@ DataContent.scala
     halt("Requirements to strict to generate")
   }
 
-  def nextOptionIsolette_Data_ModelMonitor_Mode_Payload(): Option[Isolette_Data_Model.Monitor_Mode_Payload] = {
+  def nextOptionIsolette_EnvironmentHeat_Payload(): Option[Isolette_Environment.Heat_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
     if(none == 0)
-     return Some(nextIsolette_Data_ModelMonitor_Mode_Payload())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
-
-  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit
-
-  def nextIsolette_Data_ModelRegulator_ModeType(): Isolette_Data_Model.Regulator_Mode.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1) //is genBetween inclusive
-
-    var v: Isolette_Data_Model.Regulator_Mode.Type = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelRegulator_ModeType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_ModeType.attempts) {
-       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelRegulator_ModeType(): Option[Isolette_Data_Model.Regulator_Mode.Type] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelRegulator_ModeType())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
-
-  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit
-
-  def nextISZIsolette_Data_ModelRegulator_Mode_Payload(): ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelRegulator_Mode_Payload()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelRegulator_Mode_Payload(): Isolette_Data_Model.Regulator_Mode_Payload = {
-    var value: Isolette_Data_Model.Regulator_Mode.Type = nextIsolette_Data_ModelRegulator_ModeType()
-
-    var v: Isolette_Data_Model.Regulator_Mode_Payload = Isolette_Data_Model.Regulator_Mode_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelRegulator_ModeType()
-        v = Isolette_Data_Model.Regulator_Mode_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelRegulator_ModeType()
-       v = Isolette_Data_Model.Regulator_Mode_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelRegulator_Mode_Payload(): Option[Isolette_Data_Model.Regulator_Mode_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelRegulator_Mode_Payload())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl ===================
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit
-
-  def nextISZIsolette_Data_ModelTempWstatus_impl(): ISZ[Isolette_Data_Model.TempWstatus_impl] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelTempWstatus_impl(): Isolette_Data_Model.TempWstatus_impl = {
-    var value: F32 = nextF32()
-    var status: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
-
-    var v: Isolette_Data_Model.TempWstatus_impl = Isolette_Data_Model.TempWstatus_impl(value, status)
-
-    if(get_Config_Isolette_Data_ModelTempWstatus_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextF32()
-        status = nextIsolette_Data_ModelValueStatusType()
-        v = Isolette_Data_Model.TempWstatus_impl(value, status)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextF32()
-       status = nextIsolette_Data_ModelValueStatusType()
-       v = Isolette_Data_Model.TempWstatus_impl(value, status)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelTempWstatus_impl(): Option[Isolette_Data_Model.TempWstatus_impl] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTempWstatus_impl())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit
-
-  def nextISZIsolette_Data_ModelTempWstatus_impl_Payload(): ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl_Payload()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelTempWstatus_impl_Payload(): Isolette_Data_Model.TempWstatus_impl_Payload = {
-    var value: Isolette_Data_Model.TempWstatus_impl = nextIsolette_Data_ModelTempWstatus_impl()
-
-    var v: Isolette_Data_Model.TempWstatus_impl_Payload = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelTempWstatus_impl()
-        v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelTempWstatus_impl()
-       v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelTempWstatus_impl_Payload(): Option[Isolette_Data_Model.TempWstatus_impl_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTempWstatus_impl_Payload())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
-
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit
-
-  def nextISZIsolette_Data_ModelFailure_Flag_impl(): ISZ[Isolette_Data_Model.Failure_Flag_impl] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelFailure_Flag_impl(): Isolette_Data_Model.Failure_Flag_impl = {
-    var value: B = nextB()
-
-    var v: Isolette_Data_Model.Failure_Flag_impl = Isolette_Data_Model.Failure_Flag_impl(value)
-
-    if(get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextB()
-        v = Isolette_Data_Model.Failure_Flag_impl(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextB()
-       v = Isolette_Data_Model.Failure_Flag_impl(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelFailure_Flag_impl(): Option[Isolette_Data_Model.Failure_Flag_impl] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelFailure_Flag_impl())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
-
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit
-
-  def nextISZIsolette_Data_ModelPhysicalTemp_impl(): ISZ[Isolette_Data_Model.PhysicalTemp_impl] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelPhysicalTemp_impl(): Isolette_Data_Model.PhysicalTemp_impl = {
-    var value: F32 = nextF32()
-
-    var v: Isolette_Data_Model.PhysicalTemp_impl = Isolette_Data_Model.PhysicalTemp_impl(value)
-
-    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextF32()
-        v = Isolette_Data_Model.PhysicalTemp_impl(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextF32()
-       v = Isolette_Data_Model.PhysicalTemp_impl(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelPhysicalTemp_impl(): Option[Isolette_Data_Model.PhysicalTemp_impl] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelPhysicalTemp_impl())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit
-
-  def nextISZIsolette_Data_ModelFailure_Flag_impl_Payload(): ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl_Payload()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelFailure_Flag_impl_Payload(): Isolette_Data_Model.Failure_Flag_impl_Payload = {
-    var value: Isolette_Data_Model.Failure_Flag_impl = nextIsolette_Data_ModelFailure_Flag_impl()
-
-    var v: Isolette_Data_Model.Failure_Flag_impl_Payload = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelFailure_Flag_impl()
-        v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelFailure_Flag_impl()
-       v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelFailure_Flag_impl_Payload(): Option[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelFailure_Flag_impl_Payload())
-    else
-     return None()
-  }
-
-  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit
-
-  def nextISZIsolette_Data_ModelPhysicalTemp_impl_Payload(): ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
-     val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl_Payload()
-        }
-
-        return temp
-    }
-
-  def nextIsolette_Data_ModelPhysicalTemp_impl_Payload(): Isolette_Data_Model.PhysicalTemp_impl_Payload = {
-    var value: Isolette_Data_Model.PhysicalTemp_impl = nextIsolette_Data_ModelPhysicalTemp_impl()
-
-    var v: Isolette_Data_Model.PhysicalTemp_impl_Payload = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelPhysicalTemp_impl()
-        v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelPhysicalTemp_impl()
-       v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
-  }
-
-  def nextOptionIsolette_Data_ModelPhysicalTemp_impl_Payload(): Option[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
+     return Some(nextIsolette_EnvironmentHeat_Payload())
     else
      return None()
   }
@@ -3586,26 +3586,48 @@ DataContent.scala
     config_Base_TypesBits_Payload = config
   }
 
-  // ============= Isolette_Environment.Heat.Type ===================
-  def alwaysTrue_Isolette_EnvironmentHeatType(v: Isolette_Environment.Heat.Type): B = {return T}
+  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
+  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl(v: Isolette_Data_Model.Failure_Flag_impl): B = {return T}
 
-  var config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = Config_Isolette_EnvironmentHeatType(100, alwaysTrue_Isolette_EnvironmentHeatType _)
+  var config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = Config_Isolette_Data_ModelFailure_Flag_impl(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl _)
 
-  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = {return config_Isolette_EnvironmentHeatType}
+  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = {return config_Isolette_Data_ModelFailure_Flag_impl}
 
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit ={
-    config_Isolette_EnvironmentHeatType = config
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit ={
+    config_Isolette_Data_ModelFailure_Flag_impl = config
   }
 
-  // ============= Isolette_Environment.Heat_Payload ===================
-  def alwaysTrue_Isolette_EnvironmentHeat_Payload(v: Isolette_Environment.Heat_Payload): B = {return T}
+  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
+  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload(v: Isolette_Data_Model.Failure_Flag_impl_Payload): B = {return T}
 
-  var config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = Config_Isolette_EnvironmentHeat_Payload(100, alwaysTrue_Isolette_EnvironmentHeat_Payload _)
+  var config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = Config_Isolette_Data_ModelFailure_Flag_impl_Payload(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload _)
 
-  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = {return config_Isolette_EnvironmentHeat_Payload}
+  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = {return config_Isolette_Data_ModelFailure_Flag_impl_Payload}
 
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit ={
-    config_Isolette_EnvironmentHeat_Payload = config
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit ={
+    config_Isolette_Data_ModelFailure_Flag_impl_Payload = config
+  }
+
+  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
+  def alwaysTrue_Isolette_Data_ModelMonitor_ModeType(v: Isolette_Data_Model.Monitor_Mode.Type): B = {return T}
+
+  var config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = Config_Isolette_Data_ModelMonitor_ModeType(100, alwaysTrue_Isolette_Data_ModelMonitor_ModeType _)
+
+  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = {return config_Isolette_Data_ModelMonitor_ModeType}
+
+  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit ={
+    config_Isolette_Data_ModelMonitor_ModeType = config
+  }
+
+  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
+  def alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload(v: Isolette_Data_Model.Monitor_Mode_Payload): B = {return T}
+
+  var config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = Config_Isolette_Data_ModelMonitor_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload _)
+
+  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = {return config_Isolette_Data_ModelMonitor_Mode_Payload}
+
+  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit ={
+    config_Isolette_Data_ModelMonitor_Mode_Payload = config
   }
 
   // ============= Isolette_Data_Model.On_Off.Type ===================
@@ -3619,17 +3641,6 @@ DataContent.scala
     config_Isolette_Data_ModelOn_OffType = config
   }
 
-  // ============= Isolette_Data_Model.Status.Type ===================
-  def alwaysTrue_Isolette_Data_ModelStatusType(v: Isolette_Data_Model.Status.Type): B = {return T}
-
-  var config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = Config_Isolette_Data_ModelStatusType(100, alwaysTrue_Isolette_Data_ModelStatusType _)
-
-  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = {return config_Isolette_Data_ModelStatusType}
-
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit ={
-    config_Isolette_Data_ModelStatusType = config
-  }
-
   // ============= Isolette_Data_Model.On_Off_Payload ===================
   def alwaysTrue_Isolette_Data_ModelOn_Off_Payload(v: Isolette_Data_Model.On_Off_Payload): B = {return T}
 
@@ -3641,6 +3652,61 @@ DataContent.scala
     config_Isolette_Data_ModelOn_Off_Payload = config
   }
 
+  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
+  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl(v: Isolette_Data_Model.PhysicalTemp_impl): B = {return T}
+
+  var config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = Config_Isolette_Data_ModelPhysicalTemp_impl(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl _)
+
+  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = {return config_Isolette_Data_ModelPhysicalTemp_impl}
+
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit ={
+    config_Isolette_Data_ModelPhysicalTemp_impl = config
+  }
+
+  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
+  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload(v: Isolette_Data_Model.PhysicalTemp_impl_Payload): B = {return T}
+
+  var config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload _)
+
+  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = {return config_Isolette_Data_ModelPhysicalTemp_impl_Payload}
+
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit ={
+    config_Isolette_Data_ModelPhysicalTemp_impl_Payload = config
+  }
+
+  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
+  def alwaysTrue_Isolette_Data_ModelRegulator_ModeType(v: Isolette_Data_Model.Regulator_Mode.Type): B = {return T}
+
+  var config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = Config_Isolette_Data_ModelRegulator_ModeType(100, alwaysTrue_Isolette_Data_ModelRegulator_ModeType _)
+
+  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = {return config_Isolette_Data_ModelRegulator_ModeType}
+
+  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit ={
+    config_Isolette_Data_ModelRegulator_ModeType = config
+  }
+
+  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
+  def alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload(v: Isolette_Data_Model.Regulator_Mode_Payload): B = {return T}
+
+  var config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = Config_Isolette_Data_ModelRegulator_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload _)
+
+  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = {return config_Isolette_Data_ModelRegulator_Mode_Payload}
+
+  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit ={
+    config_Isolette_Data_ModelRegulator_Mode_Payload = config
+  }
+
+  // ============= Isolette_Data_Model.Status.Type ===================
+  def alwaysTrue_Isolette_Data_ModelStatusType(v: Isolette_Data_Model.Status.Type): B = {return T}
+
+  var config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = Config_Isolette_Data_ModelStatusType(100, alwaysTrue_Isolette_Data_ModelStatusType _)
+
+  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = {return config_Isolette_Data_ModelStatusType}
+
+  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit ={
+    config_Isolette_Data_ModelStatusType = config
+  }
+
   // ============= Isolette_Data_Model.Status_Payload ===================
   def alwaysTrue_Isolette_Data_ModelStatus_Payload(v: Isolette_Data_Model.Status_Payload): B = {return T}
 
@@ -3650,6 +3716,28 @@ DataContent.scala
 
   def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): Unit ={
     config_Isolette_Data_ModelStatus_Payload = config
+  }
+
+  // ============= Isolette_Data_Model.TempWstatus_impl ===================
+  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl(v: Isolette_Data_Model.TempWstatus_impl): B = {return T}
+
+  var config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = Config_Isolette_Data_ModelTempWstatus_impl(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl _)
+
+  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = {return config_Isolette_Data_ModelTempWstatus_impl}
+
+  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit ={
+    config_Isolette_Data_ModelTempWstatus_impl = config
+  }
+
+  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
+  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload(v: Isolette_Data_Model.TempWstatus_impl_Payload): B = {return T}
+
+  var config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = Config_Isolette_Data_ModelTempWstatus_impl_Payload(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload _)
+
+  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = {return config_Isolette_Data_ModelTempWstatus_impl_Payload}
+
+  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit ={
+    config_Isolette_Data_ModelTempWstatus_impl_Payload = config
   }
 
   // ============= Isolette_Data_Model.Temp_impl ===================
@@ -3696,114 +3784,26 @@ DataContent.scala
     config_Isolette_Data_ModelValueStatus_Payload = config
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
-  def alwaysTrue_Isolette_Data_ModelMonitor_ModeType(v: Isolette_Data_Model.Monitor_Mode.Type): B = {return T}
+  // ============= Isolette_Environment.Heat.Type ===================
+  def alwaysTrue_Isolette_EnvironmentHeatType(v: Isolette_Environment.Heat.Type): B = {return T}
 
-  var config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = Config_Isolette_Data_ModelMonitor_ModeType(100, alwaysTrue_Isolette_Data_ModelMonitor_ModeType _)
+  var config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = Config_Isolette_EnvironmentHeatType(100, alwaysTrue_Isolette_EnvironmentHeatType _)
 
-  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = {return config_Isolette_Data_ModelMonitor_ModeType}
+  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = {return config_Isolette_EnvironmentHeatType}
 
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit ={
-    config_Isolette_Data_ModelMonitor_ModeType = config
+  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit ={
+    config_Isolette_EnvironmentHeatType = config
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload(v: Isolette_Data_Model.Monitor_Mode_Payload): B = {return T}
+  // ============= Isolette_Environment.Heat_Payload ===================
+  def alwaysTrue_Isolette_EnvironmentHeat_Payload(v: Isolette_Environment.Heat_Payload): B = {return T}
 
-  var config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = Config_Isolette_Data_ModelMonitor_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload _)
+  var config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = Config_Isolette_EnvironmentHeat_Payload(100, alwaysTrue_Isolette_EnvironmentHeat_Payload _)
 
-  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = {return config_Isolette_Data_ModelMonitor_Mode_Payload}
+  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = {return config_Isolette_EnvironmentHeat_Payload}
 
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit ={
-    config_Isolette_Data_ModelMonitor_Mode_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
-  def alwaysTrue_Isolette_Data_ModelRegulator_ModeType(v: Isolette_Data_Model.Regulator_Mode.Type): B = {return T}
-
-  var config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = Config_Isolette_Data_ModelRegulator_ModeType(100, alwaysTrue_Isolette_Data_ModelRegulator_ModeType _)
-
-  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = {return config_Isolette_Data_ModelRegulator_ModeType}
-
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit ={
-    config_Isolette_Data_ModelRegulator_ModeType = config
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload(v: Isolette_Data_Model.Regulator_Mode_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = Config_Isolette_Data_ModelRegulator_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload _)
-
-  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = {return config_Isolette_Data_ModelRegulator_Mode_Payload}
-
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit ={
-    config_Isolette_Data_ModelRegulator_Mode_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl ===================
-  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl(v: Isolette_Data_Model.TempWstatus_impl): B = {return T}
-
-  var config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = Config_Isolette_Data_ModelTempWstatus_impl(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl _)
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = {return config_Isolette_Data_ModelTempWstatus_impl}
-
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit ={
-    config_Isolette_Data_ModelTempWstatus_impl = config
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload(v: Isolette_Data_Model.TempWstatus_impl_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = Config_Isolette_Data_ModelTempWstatus_impl_Payload(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload _)
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = {return config_Isolette_Data_ModelTempWstatus_impl_Payload}
-
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit ={
-    config_Isolette_Data_ModelTempWstatus_impl_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
-  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl(v: Isolette_Data_Model.Failure_Flag_impl): B = {return T}
-
-  var config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = Config_Isolette_Data_ModelFailure_Flag_impl(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl _)
-
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = {return config_Isolette_Data_ModelFailure_Flag_impl}
-
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit ={
-    config_Isolette_Data_ModelFailure_Flag_impl = config
-  }
-
-  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
-  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl(v: Isolette_Data_Model.PhysicalTemp_impl): B = {return T}
-
-  var config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = Config_Isolette_Data_ModelPhysicalTemp_impl(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl _)
-
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = {return config_Isolette_Data_ModelPhysicalTemp_impl}
-
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit ={
-    config_Isolette_Data_ModelPhysicalTemp_impl = config
-  }
-
-  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload(v: Isolette_Data_Model.Failure_Flag_impl_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = Config_Isolette_Data_ModelFailure_Flag_impl_Payload(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload _)
-
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = {return config_Isolette_Data_ModelFailure_Flag_impl_Payload}
-
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit ={
-    config_Isolette_Data_ModelFailure_Flag_impl_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload(v: Isolette_Data_Model.PhysicalTemp_impl_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload _)
-
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = {return config_Isolette_Data_ModelPhysicalTemp_impl_Payload}
-
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit ={
-    config_Isolette_Data_ModelPhysicalTemp_impl_Payload = config
+  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit ={
+    config_Isolette_EnvironmentHeat_Payload = config
   }
 
   // ============= Isolette_Environment.Interface_Interaction.Type ===================

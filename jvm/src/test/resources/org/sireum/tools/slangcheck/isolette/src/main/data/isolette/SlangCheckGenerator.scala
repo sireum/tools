@@ -645,12 +645,12 @@ DataContent.scala
   }
 }
 
-@record class Gen_Isolette_EnvironmentHeatType(param: RandomLibI) extends MJen[Isolette_Environment.Heat.Type] {
-  override def generate(f: Isolette_Environment.Heat.Type => Jen.Action): Jen.Action = {
+@record class Gen_Isolette_Data_ModelFailure_Flag_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.Failure_Flag_impl] {
+  override def generate(f: Isolette_Data_Model.Failure_Flag_impl => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.nextIsolette_EnvironmentHeatType())
+      continue = f(param.nextIsolette_Data_ModelFailure_Flag_impl())
 
       if (!continue) {
         return Jen.End
@@ -664,12 +664,50 @@ DataContent.scala
   }
 }
 
-@record class Gen_Isolette_EnvironmentHeat_Payload(param: RandomLibI) extends MJen[Isolette_Environment.Heat_Payload] {
-  override def generate(f: Isolette_Environment.Heat_Payload => Jen.Action): Jen.Action = {
+@record class Gen_Isolette_Data_ModelFailure_Flag_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Failure_Flag_impl_Payload] {
+  override def generate(f: Isolette_Data_Model.Failure_Flag_impl_Payload => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.nextIsolette_EnvironmentHeat_Payload())
+      continue = f(param.nextIsolette_Data_ModelFailure_Flag_impl_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelMonitor_ModeType(param: RandomLibI) extends MJen[Isolette_Data_Model.Monitor_Mode.Type] {
+  override def generate(f: Isolette_Data_Model.Monitor_Mode.Type => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelMonitor_ModeType())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelMonitor_Mode_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Monitor_Mode_Payload] {
+  override def generate(f: Isolette_Data_Model.Monitor_Mode_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelMonitor_Mode_Payload())
 
       if (!continue) {
         return Jen.End
@@ -702,25 +740,6 @@ DataContent.scala
   }
 }
 
-@record class Gen_Isolette_Data_ModelStatusType(param: RandomLibI) extends MJen[Isolette_Data_Model.Status.Type] {
-  override def generate(f: Isolette_Data_Model.Status.Type => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelStatusType())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
 @record class Gen_Isolette_Data_ModelOn_Off_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.On_Off_Payload] {
   override def generate(f: Isolette_Data_Model.On_Off_Payload => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
@@ -740,12 +759,145 @@ DataContent.scala
   }
 }
 
+@record class Gen_Isolette_Data_ModelPhysicalTemp_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.PhysicalTemp_impl] {
+  override def generate(f: Isolette_Data_Model.PhysicalTemp_impl => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelPhysicalTemp_impl())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelPhysicalTemp_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.PhysicalTemp_impl_Payload] {
+  override def generate(f: Isolette_Data_Model.PhysicalTemp_impl_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelRegulator_ModeType(param: RandomLibI) extends MJen[Isolette_Data_Model.Regulator_Mode.Type] {
+  override def generate(f: Isolette_Data_Model.Regulator_Mode.Type => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelRegulator_ModeType())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelRegulator_Mode_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Regulator_Mode_Payload] {
+  override def generate(f: Isolette_Data_Model.Regulator_Mode_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelRegulator_Mode_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelStatusType(param: RandomLibI) extends MJen[Isolette_Data_Model.Status.Type] {
+  override def generate(f: Isolette_Data_Model.Status.Type => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelStatusType())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 @record class Gen_Isolette_Data_ModelStatus_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Status_Payload] {
   override def generate(f: Isolette_Data_Model.Status_Payload => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
       continue = f(param.nextIsolette_Data_ModelStatus_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelTempWstatus_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.TempWstatus_impl] {
+  override def generate(f: Isolette_Data_Model.TempWstatus_impl => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelTempWstatus_impl())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_Isolette_Data_ModelTempWstatus_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.TempWstatus_impl_Payload] {
+  override def generate(f: Isolette_Data_Model.TempWstatus_impl_Payload => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextIsolette_Data_ModelTempWstatus_impl_Payload())
 
       if (!continue) {
         return Jen.End
@@ -835,12 +987,12 @@ DataContent.scala
   }
 }
 
-@record class Gen_Isolette_Data_ModelMonitor_ModeType(param: RandomLibI) extends MJen[Isolette_Data_Model.Monitor_Mode.Type] {
-  override def generate(f: Isolette_Data_Model.Monitor_Mode.Type => Jen.Action): Jen.Action = {
+@record class Gen_Isolette_EnvironmentHeatType(param: RandomLibI) extends MJen[Isolette_Environment.Heat.Type] {
+  override def generate(f: Isolette_Environment.Heat.Type => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.nextIsolette_Data_ModelMonitor_ModeType())
+      continue = f(param.nextIsolette_EnvironmentHeatType())
 
       if (!continue) {
         return Jen.End
@@ -854,164 +1006,12 @@ DataContent.scala
   }
 }
 
-@record class Gen_Isolette_Data_ModelMonitor_Mode_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Monitor_Mode_Payload] {
-  override def generate(f: Isolette_Data_Model.Monitor_Mode_Payload => Jen.Action): Jen.Action = {
+@record class Gen_Isolette_EnvironmentHeat_Payload(param: RandomLibI) extends MJen[Isolette_Environment.Heat_Payload] {
+  override def generate(f: Isolette_Environment.Heat_Payload => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.nextIsolette_Data_ModelMonitor_Mode_Payload())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelRegulator_ModeType(param: RandomLibI) extends MJen[Isolette_Data_Model.Regulator_Mode.Type] {
-  override def generate(f: Isolette_Data_Model.Regulator_Mode.Type => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelRegulator_ModeType())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelRegulator_Mode_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Regulator_Mode_Payload] {
-  override def generate(f: Isolette_Data_Model.Regulator_Mode_Payload => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelRegulator_Mode_Payload())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelTempWstatus_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.TempWstatus_impl] {
-  override def generate(f: Isolette_Data_Model.TempWstatus_impl => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelTempWstatus_impl())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelTempWstatus_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.TempWstatus_impl_Payload] {
-  override def generate(f: Isolette_Data_Model.TempWstatus_impl_Payload => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelTempWstatus_impl_Payload())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelFailure_Flag_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.Failure_Flag_impl] {
-  override def generate(f: Isolette_Data_Model.Failure_Flag_impl => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelFailure_Flag_impl())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelPhysicalTemp_impl(param: RandomLibI) extends MJen[Isolette_Data_Model.PhysicalTemp_impl] {
-  override def generate(f: Isolette_Data_Model.PhysicalTemp_impl => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelPhysicalTemp_impl())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelFailure_Flag_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.Failure_Flag_impl_Payload] {
-  override def generate(f: Isolette_Data_Model.Failure_Flag_impl_Payload => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelFailure_Flag_impl_Payload())
-
-      if (!continue) {
-        return Jen.End
-      }
-    }
-    return continue
-  }
-
-  override def string: String = {
-    return s""
-  }
-}
-
-@record class Gen_Isolette_Data_ModelPhysicalTemp_impl_Payload(param: RandomLibI) extends MJen[Isolette_Data_Model.PhysicalTemp_impl_Payload] {
-  override def generate(f: Isolette_Data_Model.PhysicalTemp_impl_Payload => Jen.Action): Jen.Action = {
-    var continue = Jen.Continue
-    while (T) {
-
-      continue = f(param.nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
+      continue = f(param.nextIsolette_EnvironmentHeat_Payload())
 
       if (!continue) {
         return Jen.End
