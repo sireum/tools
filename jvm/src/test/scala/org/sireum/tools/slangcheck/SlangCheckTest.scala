@@ -8,7 +8,7 @@ import org.sireum.tools.{SlangCheckJvm => SCJVM}
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = F
+  val generateExpected: B = T
 
   val runGeneratedTests: B = F || TestUtil.isCI
 
