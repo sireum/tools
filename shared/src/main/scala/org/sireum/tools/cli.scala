@@ -266,12 +266,30 @@ object cli {
     groups = ISZ()
   )
 
+  val slangCheckGenerator: Tool = Tool(
+    name = "generator",
+    command = "generator",
+    description = "Slang Check generator",
+    header = "Slang Check generator",
+    usage = "<option>* <slang-file>+",
+    usageDescOpt = None(),
+    opts = ISZ(
+      //Opt(name = "license", longKey = "license", shortKey = Some('l'),
+      //  tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
+      Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated Slang Check files"),
+      Opt(name = "testDir", longKey = "test-dir", shortKey = Some('t'),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated unit tests")
+    ),
+    groups = ISZ()
+  )
+
   val slangCheckGroup: Group = Group(
     name = "slangcheck",
     description = "SlangCheck tools",
     header = "SlangCheck Tools",
     unlisted = F,
-    subs = ISZ(slangCheckRunner, slangCheckTester)
+    subs = ISZ(slangCheckRunner, slangCheckTester, slangCheckGenerator)
   )
 
   val group: Group = Group(

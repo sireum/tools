@@ -52,7 +52,7 @@ import org.sireum._
 
 def usage(): Unit = {
   println("Sireum Tools /build")
-  println("Usage: ( compile | test )+")
+  println("Usage: ( compile | test | tipe )+")
 }
 
 
@@ -115,7 +115,8 @@ def tipe(): Unit = {
   if (!didTipe) {
     didTipe = T
     println("Slang type checking ...")
-    Os.proc(ISZ("java", "-jar", sireumJar.string, "slang", "tipe", "--verbose", "-r", "-s", home.string)).
+    val exclude = home / "jvm" / "src" / "test" / "resources"
+    Os.proc(ISZ("java", "-jar", sireumJar.string, "slang", "tipe", "--verbose", "-r", "-x", exclude.toUri, "-s", home.string)).
       at(home).console.runCheck()
     println()
   }
@@ -153,6 +154,7 @@ for (i <- 0 until Os.cliArgs.size) {
   Os.cliArgs(i) match {
     case string"compile" => compile()
     case string"test" => test()
+    case string"tipe" => tipe()
     case cmd =>
       usage()
       eprintln(s"Unrecognized command: $cmd")

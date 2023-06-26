@@ -1,0 +1,6 @@
+*.aaxl2
+**/out
+**/.idea
+**/target/
+**/.bsp/
+*_results/
