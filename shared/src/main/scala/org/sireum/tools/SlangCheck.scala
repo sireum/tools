@@ -10,7 +10,8 @@ import org.sireum.message.Reporter
 import org.sireum.ops.ISZOps
 
 object SlangCheck {
-  def gen(fileUris: ISZ[String],
+  def gen(packageName: ISZ[String],
+          fileUris: ISZ[String],
           programs: ISZ[AST.TopUnit.Program],
           reporter: Reporter,
           typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
@@ -20,7 +21,7 @@ object SlangCheck {
     for (p <- programs) {
       gdr.resolveProgram(p) //get all names and types
     }
-    val packageName = AST.Util.ids2strings(programs(0).packageName.ids)
+    val packageName_ : ISZ[String] = if (packageName.nonEmpty) packageName else AST.Util.ids2strings(programs(0).packageName.ids)
 
     // call the various generators
     var ret: ISZ[(ISZ[String], ST)] = ISZ()
@@ -28,7 +29,7 @@ object SlangCheck {
     val t = RanGen(
       gdr.globalNameMap,
       gdr.globalTypeMap,
-      packageName,
+      packageName_,
       reporter,
       fileUris,
       typeHierarchy)
@@ -36,7 +37,7 @@ object SlangCheck {
     val c = ConfigGen(
       gdr.globalNameMap,
       gdr.globalTypeMap,
-      packageName,
+      packageName_,
       reporter, fileUris, typeHierarchy)
 
     val g = GeneratorGen(
@@ -45,7 +46,7 @@ object SlangCheck {
       packageName,
       reporter, fileUris, typeHierarchy)
 
-    val h = EnumGen(gdr.globalNameMap, gdr.globalTypeMap, packageName, reporter, fileUris, typeHierarchy)
+    val h = EnumGen(gdr.globalNameMap, gdr.globalTypeMap, packageName_, reporter, fileUris, typeHierarchy)
 
     ret = ret :+ t.gen()
     reporter.reports((t.reporter.messages))
@@ -75,10 +76,36 @@ object SlangCheck {
   def sortedTyedNames(names: ISZ[AST.Typed.Name]): ISZ[AST.Typed.Name] = {
     return ISZOps(names).sortWith((a: AST.Typed.Name, b: AST.Typed.Name) => s"${a.ids}${a.args}" < s"${b.ids}${b.args}")
   }
+
+  @pure def typeName(packageName: ISZ[String], name: QName): ST = {
+    val r = ops.StringOps(Resolver.typeName(packageName, name).render)
+    if (r.startsWith("_")) {
+      return st"${r.substring(1, r.size)}"
+    } else {
+      return st"${r.s}"
+    }
+  }
+
+  @pure def astTypeNameString(packageName: ISZ[String], t: AST.Type): ST = {
+    t match {
+      case atn: AST.Type.Named =>
+        return Resolver.typeNameString(packageName, for (i <- atn.name.ids) yield i.value)
+      case _ => halt(s"Need to handle $t")
+    }
+  }
+
+  @pure def astTypeName(packageName: ISZ[String], t: AST.Type): ST = {
+    t match {
+      case atn: AST.Type.Named =>
+        return typeName(packageName, for (i <- atn.name.ids) yield i.value)
+      case _ => halt(s"Need to handle $t")
+    }
+  }
 }
 
 object SlangCheckTest {
-  def gen(fileUris: ISZ[String],
+  def gen(packageName: ISZ[String],
+          fileUris: ISZ[String],
           programs: ISZ[AST.TopUnit.Program],
           reporter: Reporter,
           typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
@@ -87,7 +114,7 @@ object SlangCheckTest {
     for (p <- programs) {
       gdr.resolveProgram(p) //get all names and types
     }
-    val packageName = AST.Util.ids2strings(programs(0).packageName.ids)
+    val packageName_ : ISZ[String] = if (packageName.nonEmpty) packageName else AST.Util.ids2strings(programs(0).packageName.ids)
 
     // call the various generators
     var ret: ISZ[(ISZ[String], ST)] = ISZ()
@@ -95,7 +122,7 @@ object SlangCheckTest {
     val t = TestGen(
       gdr.globalNameMap,
       gdr.globalTypeMap,
-      packageName,
+      packageName_,
       reporter, fileUris, typeHierarchy)
 
     ret = ret :+ t.gen()
@@ -136,7 +163,7 @@ object SlangCheckTest {
       }
     }
 
-    return (packageName :+ "SlangCheckDataTypeId.scala",
+    return (ISZ("SlangCheckDataTypeId.scala"),
       st"""// #Sireum
           |
           |package $packageName
@@ -229,7 +256,7 @@ object SlangCheckTest {
       }
     }
 
-    return (packageName :+ "SlangCheckRandom.scala",
+    return (ISZ("SlangCheckRandom.scala"),
       st"""// #Sireum
           |
           |package $packageName
@@ -353,17 +380,18 @@ object SlangCheckTest {
             |       }
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
     } else if (typ == "Z") {
       return (
@@ -433,17 +461,18 @@ object SlangCheckTest {
             |       }
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
     } else if (typ == "F32") {
       return (
@@ -513,17 +542,18 @@ object SlangCheckTest {
             |       }
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
     } else if (typ == "F64") {
       return (
@@ -593,17 +623,18 @@ object SlangCheckTest {
             |       }
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
     } else if (typ == "R") {
       return (
@@ -673,17 +704,18 @@ object SlangCheckTest {
             |       }
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
     } else {
       return (
@@ -691,7 +723,7 @@ object SlangCheckTest {
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
-            |  def nextISZ$typ(): ISZ[$typ] = {
+            |  def nextISZ_$typ(): ISZ[$typ] = {
             |   val length: Z = gen.nextZBetween(0, get_Size)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
@@ -720,17 +752,18 @@ object SlangCheckTest {
             |       r = gen.next$typ()
             |     }
             |    }
-            |    assert(F, "Requirements to strict to generate")
-            |    halt("Requirements to strict to generate")
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
             |  }
             |
             |  def nextOption$typ(): Option[$typ] = {
-            |     val none: Z = gen.nextZBetween(0,1)
+            |    val none: Z = gen.nextZBetween(0,1)
             |
-            |     if(none == 0)
-            |       return Some(next${typ}())
-            |     else
-            |       return None()
+            |    if(none == 0) {
+            |      return Some(next${typ}())
+            |    } else {
+            |      return None()
+            |    }
             |  }""")
 
     }
@@ -764,21 +797,23 @@ object SlangCheckTest {
     }
   }
 
-  //get the initial call to the args' next functions
+  //get the initial call to the fields' next functions
   def genVar(v: Info.Var): ST = {
-    val typ: ISZ[String] = v.ast.tipeOpt match {
-      case Some(t: AST.Type.Named) =>
-        t.name.ids.map(m => m.value)
-      case x => halt(s"Probably infeasible: $x")
-    }
+    val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+    val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
 
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          st"var ${v.ast.id.value}: ${(typ, ".")}[${(t.typeArgs, "")}] = next${(typ, "")}${(t.typeArgs, "")}()"
+          assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
+
+          val typArgName = SlangCheck.astTypeName(packageName, t.typeArgs(0))
+          val typArgNameString = SlangCheck.astTypeNameString(packageName, t.typeArgs(0))
+
+          st"var ${v.ast.id.value}: $typNameString[$typArgNameString] = next${typName}_$typArgName()"
         }
         else {
-          st"var ${v.ast.id.value}: ${(typ, ".")} = next${(typ, "")}()"
+          st"var ${v.ast.id.value}: $typNameString = next$typName()"
         }
 
       case _ => halt("Probably infeasible")
@@ -791,19 +826,19 @@ object SlangCheckTest {
   //get the second call to the args' next functions when args don't meeting the config
   def genVarRepeat(v: Info.Var): ST = {
 
-    val typ: ISZ[String] = v.ast.tipeOpt match {
-      case Some(t: AST.Type.Named) => //t.prettyST // use the provided 1pretty printer to emit v's type
-        t.name.ids.map(m => m.value)
-      case _ => halt("Probably infeasible")
-    }
+    val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
 
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          st"${v.ast.id.value} = next${(typ, "")}${(t.typeArgs, "")}()"
+          assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
+
+          val typArgName = SlangCheck.astTypeName(packageName, t.typeArgs(0))
+
+          st"${v.ast.id.value} = next${typName}_$typArgName()"
         }
         else {
-          st"${v.ast.id.value} = next${(typ, "")}()"
+          st"${v.ast.id.value} = next$typName()"
         }
 
       case _ => halt("Probably infeasible")
@@ -873,17 +908,18 @@ object SlangCheckTest {
           |     v = ${genShortEnumType(ti.name)}.byOrdinal(ordinal).get
           |   }
           |  }
-          |  assert(F, "Requirements to strict to generate")
-          |  halt("Requirements to strict to generate")
+          |  assert(F, "Requirements too strict to generate")
+          |  halt("Requirements too strict to generate")
           |}
           |
           |def nextOption${adTypeName}(): Option[${adTypeString}] = {
           |  val none: Z = gen.nextZBetween(0,1)
           |
-          |  if(none == 0)
-          |   return Some(next${adTypeName}())
-          |  else
-          |   return None()
+          |  if(none == 0) {
+          |    return Some(next${adTypeName}())
+          |  } else {
+          |    return None()
+          |  }
           |}"""
   }
 
@@ -948,7 +984,7 @@ object SlangCheckTest {
           |     callEnum = get_Config_${adTypeName}.typeFilter
           |  } else {
           |     for(h <- get_Config_${adTypeName}.typeFilter) {
-          |       callEnum = ops.ISZOps(callEnum).filter(h.=!=)
+          |       callEnum = ops.ISZOps(callEnum).filter(f => h =!= f)
           |     }
           |  }
           |
@@ -987,17 +1023,18 @@ object SlangCheckTest {
           |     }
           |   }
           |  }
-          |  assert(F, "Requirements to strict to generate")
-          |  halt("Requirements to strict to generate")
+          |  assert(F, "Requirements too strict to generate")
+          |  halt("Requirements too strict to generate")
           |}
           |
           |def nextOption${adTypeName}(): Option[${adTypeString}] = {
           |  val none: Z = gen.nextZBetween(0,1)
           |
-          |  if(none == 0)
-          |   return Some(next${adTypeName}())
-          |  else
-          |   return None()
+          |  if(none == 0) {
+          |    return Some(next${adTypeName}())
+          |  } else {
+          |    return None()
+          |  }
           |}"""
   }
 
@@ -1031,13 +1068,13 @@ object SlangCheckTest {
           |
           |def nextISZ$adTypeName(): ISZ[$adTypeString] = {
           |   val length: Z = gen.nextZBetween(0, 256)
-          |      var temp: ISZ[$adTypeString] = ISZ()
-          |      for (r <- 0 until length) {
-          |        temp = temp :+ next$adTypeName()
-          |      }
+          |   var temp: ISZ[$adTypeString] = ISZ()
+          |   for (r <- 0 until length) {
+          |     temp = temp :+ next$adTypeName()
+          |   }
           |
-          |      return temp
-          |  }
+          |   return temp
+          |}
           |
           |def next${adTypeName}(): ${adTypeString} = {
           |  ${(vars, "\n")}
@@ -1064,17 +1101,18 @@ object SlangCheckTest {
           |   }
           |  }
           |
-          |  assert(F, "Requirements to strict to generate")
-          |  halt("Requirements to strict to generate")
+          |  assert(F, "Requirements too strict to generate")
+          |  halt("Requirements too strict to generate")
           |}
           |
           |def nextOption${adTypeName}(): Option[${adTypeString}] = {
           |  val none: Z = gen.nextZBetween(0,1)
           |
-          |  if(none == 0)
-          |   return Some(next${adTypeName}())
-          |  else
-          |   return None()
+          |  if(none == 0) {
+          |    return Some(next${adTypeName}())
+          |  } else {
+          |    return None()
+          |  }
           |}"""
   }
 }
@@ -1117,7 +1155,7 @@ object SlangCheckTest {
       }
     }
 
-    return (packageName :+ "SlangCheckConfig.scala",
+    return (ISZ("SlangCheckConfig.scala"),
       st"""// #Sireum
           |
           |package ${packageName}
@@ -1211,7 +1249,7 @@ object SlangCheckTest {
         case _ => {}
       }
     }
-    return (packageName :+ "SlangCheckGenerator.scala",
+    return (ISZ("SlangCheckGenerator.scala"),
       st"""// #Sireum
           |
           |package ${packageName}
@@ -1373,7 +1411,7 @@ object SlangCheckTest {
         case _ => {}
       }
     }
-    return (packageName :+ "SlangCheckTest.scala",
+    return (ISZ("SlangCheckTest.scala"),
       st"""package ${packageName}
           |
           |import org.scalatest.funsuite.AnyFunSuite

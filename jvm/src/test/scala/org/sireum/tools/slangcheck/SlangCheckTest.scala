@@ -10,7 +10,9 @@ class SlangCheckTest extends TestSuite {
 
   val generateExpected: B = F
 
-  val runGeneratedTests: B = F || TestUtil.isCI
+  val runTipe: B = T
+
+  val runGeneratedTests: B = F
 
   val verbose: B = F
 
@@ -32,9 +34,9 @@ class SlangCheckTest extends TestSuite {
   //    test("is_argument", "is")
   //  }
 
-  def test(str: String, pn: String): Unit = {
+  def test(expectedName: String, packageName: String): Unit = {
 
-    val resultsDir = TestUtil.copy(str)
+    val resultsDir = TestUtil.copy(expectedName)
 
     // the following becomes a hyperlink in IVE. You can then use IVE's "Compare Directories"
     // to manually see any changes
@@ -47,7 +49,7 @@ class SlangCheckTest extends TestSuite {
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"
 
-    val results = SCJVM.run(dataFiles, destDir, testDir, reporter)
+    val results = SCJVM.run(ISZ(packageName), dataFiles, reporter)
 
     if (!reporter.hasError) {
       for (r <- results._1) {
@@ -66,12 +68,18 @@ class SlangCheckTest extends TestSuite {
     var passing: B = T
 
     if (generateExpected) {
+      assert (!TestUtil.isCI, "generateExpected should be F when code is pushed to github")
+
       val expectedDir = TestUtil.getExpectedDir(resultsDir)
       expectedDir.removeAll()
       resultsDir.copyOverTo(expectedDir)
       println(s"Replaced: ${expectedDir}")
     } else {
       passing = TestUtil.compare(resultsDir)
+    }
+
+    if (runTipe || TestUtil.isCI) {
+      passing = passing & proc"$sireum proyek tipe .".at(resultsDir).echo.console.run().ok
     }
 
     if (runGeneratedTests && !TestUtil.isCI) {

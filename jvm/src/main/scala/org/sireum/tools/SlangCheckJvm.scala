@@ -8,9 +8,8 @@ import org.sireum.tools.{SlangCheck => SC}
 import org.sireum.lang.tipe.{TypeChecker, TypeHierarchy, TypeOutliner}
 
 object SlangCheckJvm {
-  def run(sources: ISZ[Os.Path],
-          destDir: Os.Path,
-          testDir: Os.Path,
+  def run(packageName: ISZ[String],
+          sources: ISZ[Os.Path],
           reporter: Reporter): (ISZ[(ISZ[String], ST)], ISZ[(ISZ[String], ST)]) = {
     if (sources.isEmpty) { //Checks if files are present
       reporter.error(None(), "SlangCheckGenerator", "Expecting a program input")
@@ -63,9 +62,9 @@ object SlangCheckJvm {
 
     th = TypeChecker.checkComponents(0, T, th, th.nameMap, th.typeMap, reporter)
 
-    val results = SC.gen(for (source <- sources) yield source.toUri, programs, reporter, th)
+    val results = SC.gen(packageName, for (source <- sources) yield source.toUri, programs, reporter, th)
 
-    val testResults = SlangCheckTest.gen(for (source <- sources) yield source.toUri, programs, reporter, th)
+    val testResults = SlangCheckTest.gen(packageName, for (source <- sources) yield source.toUri, programs, reporter, th)
 
 
     return (results, testResults)

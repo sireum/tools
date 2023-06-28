@@ -274,12 +274,14 @@ object cli {
     usage = "<option>* <slang-file>+",
     usageDescOpt = None(),
     opts = ISZ(
-      //Opt(name = "license", longKey = "license", shortKey = Some('l'),
-      //  tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
+      Opt(name = "license", longKey = "license", shortKey = Some('l'),
+        tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
+      Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
+        tpe = Type.Str(sep = Some('.'), default = None()), description = "Package name for generators"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
         tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated Slang Check files"),
       Opt(name = "testDir", longKey = "test-dir", shortKey = Some('t'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated unit tests")
+        tpe = Type.Path(multiple = F, default = None()), description = "Output directory for the generated unit tests")
     ),
     groups = ISZ()
   )
