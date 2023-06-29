@@ -108,24 +108,25 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionZ(): Option[Z] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextZ())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextZ())
+      } else {
+        return None()
+      }
     }
 
   // ========  B ==========
     def get_Config_B: Config_B
     def set_Config_B(config: Config_B): Unit
 
-    def nextISZB(): ISZ[B] = {
+    def nextISZ_B(): ISZ[B] = {
      val length: Z = gen.nextZBetween(0, get_Size)
         var temp: ISZ[B] = ISZ()
         for (r <- 0 until length) {
@@ -154,24 +155,25 @@ DataContent.scala
          r = gen.nextB()
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionB(): Option[B] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextB())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextB())
+      } else {
+        return None()
+      }
     }
 
   // ========  C ==========
     def get_Config_C: Config_C
     def set_Config_C(config: Config_C): Unit
 
-    def nextISZC(): ISZ[C] = {
+    def nextISZ_C(): ISZ[C] = {
      val length: Z = gen.nextZBetween(0, get_Size)
         var temp: ISZ[C] = ISZ()
         for (r <- 0 until length) {
@@ -200,17 +202,18 @@ DataContent.scala
          r = gen.nextC()
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionC(): Option[C] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextC())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextC())
+      } else {
+        return None()
+      }
     }
 
   // ========  R ==========
@@ -279,17 +282,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionR(): Option[R] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextR())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextR())
+      } else {
+        return None()
+      }
     }
 
   // ========  F32 ==========
@@ -358,17 +362,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionF32(): Option[F32] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextF32())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextF32())
+      } else {
+        return None()
+      }
     }
 
   // ========  F64 ==========
@@ -437,17 +442,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionF64(): Option[F64] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextF64())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextF64())
+      } else {
+        return None()
+      }
     }
 
   // ========  S8 ==========
@@ -516,17 +522,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionS8(): Option[S8] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextS8())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextS8())
+      } else {
+        return None()
+      }
     }
 
   // ========  S16 ==========
@@ -595,17 +602,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionS16(): Option[S16] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextS16())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextS16())
+      } else {
+        return None()
+      }
     }
 
   // ========  S32 ==========
@@ -674,17 +682,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionS32(): Option[S32] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextS32())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextS32())
+      } else {
+        return None()
+      }
     }
 
   // ========  S64 ==========
@@ -753,17 +762,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionS64(): Option[S64] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextS64())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextS64())
+      } else {
+        return None()
+      }
     }
 
   // ========  U8 ==========
@@ -832,17 +842,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionU8(): Option[U8] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextU8())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextU8())
+      } else {
+        return None()
+      }
     }
 
   // ========  U16 ==========
@@ -911,17 +922,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionU16(): Option[U16] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextU16())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextU16())
+      } else {
+        return None()
+      }
     }
 
   // ========  U32 ==========
@@ -990,17 +1002,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionU32(): Option[U32] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextU32())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextU32())
+      } else {
+        return None()
+      }
     }
 
   // ========  U64 ==========
@@ -1069,17 +1082,18 @@ DataContent.scala
          }
        }
       }
-      assert(F, "Requirements to strict to generate")
-      halt("Requirements to strict to generate")
+      assert(F, "Requirements too strict to generate")
+      halt("Requirements too strict to generate")
     }
 
     def nextOptionU64(): Option[U64] = {
-       val none: Z = gen.nextZBetween(0,1)
+      val none: Z = gen.nextZBetween(0,1)
 
-       if(none == 0)
-         return Some(nextU64())
-       else
-         return None()
+      if(none == 0) {
+        return Some(nextU64())
+      } else {
+        return None()
+      }
     }
 
   def nextString(): String = {
@@ -1114,7 +1128,7 @@ DataContent.scala
        callEnum = get_Config__artDataContent.typeFilter
     } else {
        for(h <- get_Config__artDataContent.typeFilter) {
-         callEnum = ops.ISZOps(callEnum).filter(h.=!=)
+         callEnum = ops.ISZOps(callEnum).filter(f => h =!= f)
        }
     }
 
@@ -1234,17 +1248,18 @@ DataContent.scala
        }
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOption_artDataContent(): Option[art.DataContent] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(next_artDataContent())
-    else
-     return None()
+    if(none == 0) {
+      return Some(next_artDataContent())
+    } else {
+      return None()
+    }
   }
 
   // ============= art.Empty ===================
@@ -1254,13 +1269,13 @@ DataContent.scala
 
   def nextISZ_artEmpty(): ISZ[art.Empty] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[art.Empty] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ next_artEmpty()
-        }
+     var temp: ISZ[art.Empty] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ next_artEmpty()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def next_artEmpty(): art.Empty = {
 
@@ -1284,17 +1299,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOption_artEmpty(): Option[art.Empty] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(next_artEmpty())
-    else
-     return None()
+    if(none == 0) {
+      return Some(next_artEmpty())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Boolean_Payload ===================
@@ -1304,13 +1320,13 @@ DataContent.scala
 
   def nextISZBase_TypesBoolean_Payload(): ISZ[Base_Types.Boolean_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Boolean_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesBoolean_Payload()
-        }
+     var temp: ISZ[Base_Types.Boolean_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesBoolean_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesBoolean_Payload(): Base_Types.Boolean_Payload = {
     var value: B = nextB()
@@ -1337,17 +1353,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesBoolean_Payload(): Option[Base_Types.Boolean_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesBoolean_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesBoolean_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Integer_Payload ===================
@@ -1357,13 +1374,13 @@ DataContent.scala
 
   def nextISZBase_TypesInteger_Payload(): ISZ[Base_Types.Integer_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Integer_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesInteger_Payload()
-        }
+     var temp: ISZ[Base_Types.Integer_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesInteger_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesInteger_Payload(): Base_Types.Integer_Payload = {
     var value: Z = nextZ()
@@ -1390,17 +1407,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesInteger_Payload(): Option[Base_Types.Integer_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesInteger_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesInteger_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Integer_8_Payload ===================
@@ -1410,13 +1428,13 @@ DataContent.scala
 
   def nextISZBase_TypesInteger_8_Payload(): ISZ[Base_Types.Integer_8_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Integer_8_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesInteger_8_Payload()
-        }
+     var temp: ISZ[Base_Types.Integer_8_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesInteger_8_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesInteger_8_Payload(): Base_Types.Integer_8_Payload = {
     var value: S8 = nextS8()
@@ -1443,17 +1461,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesInteger_8_Payload(): Option[Base_Types.Integer_8_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesInteger_8_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesInteger_8_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Integer_16_Payload ===================
@@ -1463,13 +1482,13 @@ DataContent.scala
 
   def nextISZBase_TypesInteger_16_Payload(): ISZ[Base_Types.Integer_16_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Integer_16_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesInteger_16_Payload()
-        }
+     var temp: ISZ[Base_Types.Integer_16_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesInteger_16_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesInteger_16_Payload(): Base_Types.Integer_16_Payload = {
     var value: S16 = nextS16()
@@ -1496,17 +1515,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesInteger_16_Payload(): Option[Base_Types.Integer_16_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesInteger_16_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesInteger_16_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Integer_32_Payload ===================
@@ -1516,13 +1536,13 @@ DataContent.scala
 
   def nextISZBase_TypesInteger_32_Payload(): ISZ[Base_Types.Integer_32_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Integer_32_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesInteger_32_Payload()
-        }
+     var temp: ISZ[Base_Types.Integer_32_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesInteger_32_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesInteger_32_Payload(): Base_Types.Integer_32_Payload = {
     var value: S32 = nextS32()
@@ -1549,17 +1569,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesInteger_32_Payload(): Option[Base_Types.Integer_32_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesInteger_32_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesInteger_32_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Integer_64_Payload ===================
@@ -1569,13 +1590,13 @@ DataContent.scala
 
   def nextISZBase_TypesInteger_64_Payload(): ISZ[Base_Types.Integer_64_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Integer_64_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesInteger_64_Payload()
-        }
+     var temp: ISZ[Base_Types.Integer_64_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesInteger_64_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesInteger_64_Payload(): Base_Types.Integer_64_Payload = {
     var value: S64 = nextS64()
@@ -1602,17 +1623,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesInteger_64_Payload(): Option[Base_Types.Integer_64_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesInteger_64_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesInteger_64_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Unsigned_8_Payload ===================
@@ -1622,13 +1644,13 @@ DataContent.scala
 
   def nextISZBase_TypesUnsigned_8_Payload(): ISZ[Base_Types.Unsigned_8_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Unsigned_8_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesUnsigned_8_Payload()
-        }
+     var temp: ISZ[Base_Types.Unsigned_8_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesUnsigned_8_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesUnsigned_8_Payload(): Base_Types.Unsigned_8_Payload = {
     var value: U8 = nextU8()
@@ -1655,17 +1677,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesUnsigned_8_Payload(): Option[Base_Types.Unsigned_8_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesUnsigned_8_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesUnsigned_8_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Unsigned_16_Payload ===================
@@ -1675,13 +1698,13 @@ DataContent.scala
 
   def nextISZBase_TypesUnsigned_16_Payload(): ISZ[Base_Types.Unsigned_16_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Unsigned_16_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesUnsigned_16_Payload()
-        }
+     var temp: ISZ[Base_Types.Unsigned_16_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesUnsigned_16_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesUnsigned_16_Payload(): Base_Types.Unsigned_16_Payload = {
     var value: U16 = nextU16()
@@ -1708,17 +1731,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesUnsigned_16_Payload(): Option[Base_Types.Unsigned_16_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesUnsigned_16_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesUnsigned_16_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Unsigned_32_Payload ===================
@@ -1728,13 +1752,13 @@ DataContent.scala
 
   def nextISZBase_TypesUnsigned_32_Payload(): ISZ[Base_Types.Unsigned_32_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Unsigned_32_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesUnsigned_32_Payload()
-        }
+     var temp: ISZ[Base_Types.Unsigned_32_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesUnsigned_32_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesUnsigned_32_Payload(): Base_Types.Unsigned_32_Payload = {
     var value: U32 = nextU32()
@@ -1761,17 +1785,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesUnsigned_32_Payload(): Option[Base_Types.Unsigned_32_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesUnsigned_32_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesUnsigned_32_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Unsigned_64_Payload ===================
@@ -1781,13 +1806,13 @@ DataContent.scala
 
   def nextISZBase_TypesUnsigned_64_Payload(): ISZ[Base_Types.Unsigned_64_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Unsigned_64_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesUnsigned_64_Payload()
-        }
+     var temp: ISZ[Base_Types.Unsigned_64_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesUnsigned_64_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesUnsigned_64_Payload(): Base_Types.Unsigned_64_Payload = {
     var value: U64 = nextU64()
@@ -1814,17 +1839,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesUnsigned_64_Payload(): Option[Base_Types.Unsigned_64_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesUnsigned_64_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesUnsigned_64_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Float_Payload ===================
@@ -1834,13 +1860,13 @@ DataContent.scala
 
   def nextISZBase_TypesFloat_Payload(): ISZ[Base_Types.Float_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Float_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesFloat_Payload()
-        }
+     var temp: ISZ[Base_Types.Float_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesFloat_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesFloat_Payload(): Base_Types.Float_Payload = {
     var value: R = nextR()
@@ -1867,17 +1893,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesFloat_Payload(): Option[Base_Types.Float_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesFloat_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesFloat_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Float_32_Payload ===================
@@ -1887,13 +1914,13 @@ DataContent.scala
 
   def nextISZBase_TypesFloat_32_Payload(): ISZ[Base_Types.Float_32_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Float_32_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesFloat_32_Payload()
-        }
+     var temp: ISZ[Base_Types.Float_32_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesFloat_32_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesFloat_32_Payload(): Base_Types.Float_32_Payload = {
     var value: F32 = nextF32()
@@ -1920,17 +1947,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesFloat_32_Payload(): Option[Base_Types.Float_32_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesFloat_32_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesFloat_32_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Float_64_Payload ===================
@@ -1940,13 +1968,13 @@ DataContent.scala
 
   def nextISZBase_TypesFloat_64_Payload(): ISZ[Base_Types.Float_64_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Float_64_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesFloat_64_Payload()
-        }
+     var temp: ISZ[Base_Types.Float_64_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesFloat_64_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesFloat_64_Payload(): Base_Types.Float_64_Payload = {
     var value: F64 = nextF64()
@@ -1973,17 +2001,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesFloat_64_Payload(): Option[Base_Types.Float_64_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesFloat_64_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesFloat_64_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Character_Payload ===================
@@ -1993,13 +2022,13 @@ DataContent.scala
 
   def nextISZBase_TypesCharacter_Payload(): ISZ[Base_Types.Character_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Character_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesCharacter_Payload()
-        }
+     var temp: ISZ[Base_Types.Character_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesCharacter_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesCharacter_Payload(): Base_Types.Character_Payload = {
     var value: C = nextC()
@@ -2026,17 +2055,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesCharacter_Payload(): Option[Base_Types.Character_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesCharacter_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesCharacter_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.String_Payload ===================
@@ -2046,13 +2076,13 @@ DataContent.scala
 
   def nextISZBase_TypesString_Payload(): ISZ[Base_Types.String_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.String_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesString_Payload()
-        }
+     var temp: ISZ[Base_Types.String_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesString_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesString_Payload(): Base_Types.String_Payload = {
     var value: String = nextString()
@@ -2079,17 +2109,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesString_Payload(): Option[Base_Types.String_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesString_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesString_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Base_Types.Bits_Payload ===================
@@ -2099,16 +2130,16 @@ DataContent.scala
 
   def nextISZBase_TypesBits_Payload(): ISZ[Base_Types.Bits_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Base_Types.Bits_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextBase_TypesBits_Payload()
-        }
+     var temp: ISZ[Base_Types.Bits_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextBase_TypesBits_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextBase_TypesBits_Payload(): Base_Types.Bits_Payload = {
-    var value: ISZ[B] = nextISZB()
+    var value: ISZ[B] = nextISZ_B()
 
     var v: Base_Types.Bits_Payload = Base_Types.Bits_Payload(value)
 
@@ -2118,7 +2149,7 @@ DataContent.scala
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextISZB()
+        value = nextISZ_B()
         v = Base_Types.Bits_Payload(value)
      }
     } else {
@@ -2127,22 +2158,23 @@ DataContent.scala
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextISZB()
+       value = nextISZ_B()
        v = Base_Types.Bits_Payload(value)
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionBase_TypesBits_Payload(): Option[Base_Types.Bits_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextBase_TypesBits_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextBase_TypesBits_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Failure_Flag_impl ===================
@@ -2152,13 +2184,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelFailure_Flag_impl(): ISZ[Isolette_Data_Model.Failure_Flag_impl] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl()
-        }
+     var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelFailure_Flag_impl(): Isolette_Data_Model.Failure_Flag_impl = {
     var value: B = nextB()
@@ -2185,17 +2217,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelFailure_Flag_impl(): Option[Isolette_Data_Model.Failure_Flag_impl] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelFailure_Flag_impl())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelFailure_Flag_impl())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
@@ -2205,13 +2238,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelFailure_Flag_impl_Payload(): ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.Failure_Flag_impl_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelFailure_Flag_impl_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelFailure_Flag_impl_Payload(): Isolette_Data_Model.Failure_Flag_impl_Payload = {
     var value: Isolette_Data_Model.Failure_Flag_impl = nextIsolette_Data_ModelFailure_Flag_impl()
@@ -2238,17 +2271,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelFailure_Flag_impl_Payload(): Option[Isolette_Data_Model.Failure_Flag_impl_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelFailure_Flag_impl_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelFailure_Flag_impl_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
@@ -2280,17 +2314,18 @@ DataContent.scala
        v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelMonitor_ModeType(): Option[Isolette_Data_Model.Monitor_Mode.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelMonitor_ModeType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelMonitor_ModeType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
@@ -2300,13 +2335,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelMonitor_Mode_Payload(): ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelMonitor_Mode_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.Monitor_Mode_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelMonitor_Mode_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelMonitor_Mode_Payload(): Isolette_Data_Model.Monitor_Mode_Payload = {
     var value: Isolette_Data_Model.Monitor_Mode.Type = nextIsolette_Data_ModelMonitor_ModeType()
@@ -2333,17 +2368,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelMonitor_Mode_Payload(): Option[Isolette_Data_Model.Monitor_Mode_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelMonitor_Mode_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelMonitor_Mode_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.On_Off.Type ===================
@@ -2375,17 +2411,18 @@ DataContent.scala
        v = isolette.Isolette_Data_Model.On_Off.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelOn_OffType(): Option[Isolette_Data_Model.On_Off.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelOn_OffType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelOn_OffType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.On_Off_Payload ===================
@@ -2395,13 +2432,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelOn_Off_Payload(): ISZ[Isolette_Data_Model.On_Off_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.On_Off_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelOn_Off_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.On_Off_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelOn_Off_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelOn_Off_Payload(): Isolette_Data_Model.On_Off_Payload = {
     var value: Isolette_Data_Model.On_Off.Type = nextIsolette_Data_ModelOn_OffType()
@@ -2428,17 +2465,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelOn_Off_Payload(): Option[Isolette_Data_Model.On_Off_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelOn_Off_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelOn_Off_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
@@ -2448,13 +2486,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelPhysicalTemp_impl(): ISZ[Isolette_Data_Model.PhysicalTemp_impl] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl()
-        }
+     var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelPhysicalTemp_impl(): Isolette_Data_Model.PhysicalTemp_impl = {
     var value: F32 = nextF32()
@@ -2481,17 +2519,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelPhysicalTemp_impl(): Option[Isolette_Data_Model.PhysicalTemp_impl] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelPhysicalTemp_impl())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelPhysicalTemp_impl())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
@@ -2501,13 +2540,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelPhysicalTemp_impl_Payload(): ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.PhysicalTemp_impl_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelPhysicalTemp_impl_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelPhysicalTemp_impl_Payload(): Isolette_Data_Model.PhysicalTemp_impl_Payload = {
     var value: Isolette_Data_Model.PhysicalTemp_impl = nextIsolette_Data_ModelPhysicalTemp_impl()
@@ -2534,17 +2573,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelPhysicalTemp_impl_Payload(): Option[Isolette_Data_Model.PhysicalTemp_impl_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelPhysicalTemp_impl_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
@@ -2576,17 +2616,18 @@ DataContent.scala
        v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelRegulator_ModeType(): Option[Isolette_Data_Model.Regulator_Mode.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelRegulator_ModeType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelRegulator_ModeType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
@@ -2596,13 +2637,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelRegulator_Mode_Payload(): ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelRegulator_Mode_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.Regulator_Mode_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelRegulator_Mode_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelRegulator_Mode_Payload(): Isolette_Data_Model.Regulator_Mode_Payload = {
     var value: Isolette_Data_Model.Regulator_Mode.Type = nextIsolette_Data_ModelRegulator_ModeType()
@@ -2629,17 +2670,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelRegulator_Mode_Payload(): Option[Isolette_Data_Model.Regulator_Mode_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelRegulator_Mode_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelRegulator_Mode_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Status.Type ===================
@@ -2671,17 +2713,18 @@ DataContent.scala
        v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelStatusType(): Option[Isolette_Data_Model.Status.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelStatusType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelStatusType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Status_Payload ===================
@@ -2691,13 +2734,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelStatus_Payload(): ISZ[Isolette_Data_Model.Status_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Status_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelStatus_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.Status_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelStatus_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelStatus_Payload(): Isolette_Data_Model.Status_Payload = {
     var value: Isolette_Data_Model.Status.Type = nextIsolette_Data_ModelStatusType()
@@ -2724,17 +2767,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelStatus_Payload(): Option[Isolette_Data_Model.Status_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelStatus_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelStatus_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.TempWstatus_impl ===================
@@ -2744,13 +2788,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelTempWstatus_impl(): ISZ[Isolette_Data_Model.TempWstatus_impl] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl()
-        }
+     var temp: ISZ[Isolette_Data_Model.TempWstatus_impl] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelTempWstatus_impl(): Isolette_Data_Model.TempWstatus_impl = {
     var value: F32 = nextF32()
@@ -2780,17 +2824,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelTempWstatus_impl(): Option[Isolette_Data_Model.TempWstatus_impl] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTempWstatus_impl())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelTempWstatus_impl())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
@@ -2800,13 +2845,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelTempWstatus_impl_Payload(): ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.TempWstatus_impl_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelTempWstatus_impl_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelTempWstatus_impl_Payload(): Isolette_Data_Model.TempWstatus_impl_Payload = {
     var value: Isolette_Data_Model.TempWstatus_impl = nextIsolette_Data_ModelTempWstatus_impl()
@@ -2833,17 +2878,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelTempWstatus_impl_Payload(): Option[Isolette_Data_Model.TempWstatus_impl_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTempWstatus_impl_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelTempWstatus_impl_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Temp_impl ===================
@@ -2853,13 +2899,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelTemp_impl(): ISZ[Isolette_Data_Model.Temp_impl] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Temp_impl] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTemp_impl()
-        }
+     var temp: ISZ[Isolette_Data_Model.Temp_impl] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelTemp_impl()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelTemp_impl(): Isolette_Data_Model.Temp_impl = {
     var value: F32 = nextF32()
@@ -2886,17 +2932,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelTemp_impl(): Option[Isolette_Data_Model.Temp_impl] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTemp_impl())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelTemp_impl())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.Temp_impl_Payload ===================
@@ -2906,13 +2953,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelTemp_impl_Payload(): ISZ[Isolette_Data_Model.Temp_impl_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.Temp_impl_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelTemp_impl_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.Temp_impl_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelTemp_impl_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelTemp_impl_Payload(): Isolette_Data_Model.Temp_impl_Payload = {
     var value: Isolette_Data_Model.Temp_impl = nextIsolette_Data_ModelTemp_impl()
@@ -2939,17 +2986,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelTemp_impl_Payload(): Option[Isolette_Data_Model.Temp_impl_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelTemp_impl_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelTemp_impl_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.ValueStatus.Type ===================
@@ -2981,17 +3029,18 @@ DataContent.scala
        v = isolette.Isolette_Data_Model.ValueStatus.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelValueStatusType(): Option[Isolette_Data_Model.ValueStatus.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelValueStatusType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelValueStatusType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Data_Model.ValueStatus_Payload ===================
@@ -3001,13 +3050,13 @@ DataContent.scala
 
   def nextISZIsolette_Data_ModelValueStatus_Payload(): ISZ[Isolette_Data_Model.ValueStatus_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Data_Model.ValueStatus_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_Data_ModelValueStatus_Payload()
-        }
+     var temp: ISZ[Isolette_Data_Model.ValueStatus_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_Data_ModelValueStatus_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_Data_ModelValueStatus_Payload(): Isolette_Data_Model.ValueStatus_Payload = {
     var value: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
@@ -3034,17 +3083,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_Data_ModelValueStatus_Payload(): Option[Isolette_Data_Model.ValueStatus_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_Data_ModelValueStatus_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_Data_ModelValueStatus_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Environment.Heat.Type ===================
@@ -3076,17 +3126,18 @@ DataContent.scala
        v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_EnvironmentHeatType(): Option[Isolette_Environment.Heat.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_EnvironmentHeatType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_EnvironmentHeatType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Environment.Heat_Payload ===================
@@ -3096,13 +3147,13 @@ DataContent.scala
 
   def nextISZIsolette_EnvironmentHeat_Payload(): ISZ[Isolette_Environment.Heat_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Environment.Heat_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_EnvironmentHeat_Payload()
-        }
+     var temp: ISZ[Isolette_Environment.Heat_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_EnvironmentHeat_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_EnvironmentHeat_Payload(): Isolette_Environment.Heat_Payload = {
     var value: Isolette_Environment.Heat.Type = nextIsolette_EnvironmentHeatType()
@@ -3129,17 +3180,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_EnvironmentHeat_Payload(): Option[Isolette_Environment.Heat_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_EnvironmentHeat_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_EnvironmentHeat_Payload())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Environment.Interface_Interaction.Type ===================
@@ -3171,17 +3223,18 @@ DataContent.scala
        v = isolette.Isolette_Environment.Interface_Interaction.byOrdinal(ordinal).get
      }
     }
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_EnvironmentInterface_InteractionType(): Option[Isolette_Environment.Interface_Interaction.Type] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_EnvironmentInterface_InteractionType())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_EnvironmentInterface_InteractionType())
+    } else {
+      return None()
+    }
   }
 
   // ============= Isolette_Environment.Interface_Interaction_Payload ===================
@@ -3191,13 +3244,13 @@ DataContent.scala
 
   def nextISZIsolette_EnvironmentInterface_Interaction_Payload(): ISZ[Isolette_Environment.Interface_Interaction_Payload] = {
      val length: Z = gen.nextZBetween(0, 256)
-        var temp: ISZ[Isolette_Environment.Interface_Interaction_Payload] = ISZ()
-        for (r <- 0 until length) {
-          temp = temp :+ nextIsolette_EnvironmentInterface_Interaction_Payload()
-        }
+     var temp: ISZ[Isolette_Environment.Interface_Interaction_Payload] = ISZ()
+     for (r <- 0 until length) {
+       temp = temp :+ nextIsolette_EnvironmentInterface_Interaction_Payload()
+     }
 
-        return temp
-    }
+     return temp
+  }
 
   def nextIsolette_EnvironmentInterface_Interaction_Payload(): Isolette_Environment.Interface_Interaction_Payload = {
     var value: Isolette_Environment.Interface_Interaction.Type = nextIsolette_EnvironmentInterface_InteractionType()
@@ -3224,17 +3277,18 @@ DataContent.scala
      }
     }
 
-    assert(F, "Requirements to strict to generate")
-    halt("Requirements to strict to generate")
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   def nextOptionIsolette_EnvironmentInterface_Interaction_Payload(): Option[Isolette_Environment.Interface_Interaction_Payload] = {
     val none: Z = gen.nextZBetween(0,1)
 
-    if(none == 0)
-     return Some(nextIsolette_EnvironmentInterface_Interaction_Payload())
-    else
-     return None()
+    if(none == 0) {
+      return Some(nextIsolette_EnvironmentInterface_Interaction_Payload())
+    } else {
+      return None()
+    }
   }
 }
 

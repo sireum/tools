@@ -7,6 +7,11 @@ object TestUtil {
   val isCI: B = Os.env("GITLAB_CI").nonEmpty || Os.env("GITHUB_ACTIONS").nonEmpty || Os.env("BUILD_ID").nonEmpty
   val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
 
+  val willingToWait: B = isCI || (Os.env("USER") match {
+    case Some(string"belt") => true
+    case _ => false
+  })
+
   def resources: scala.collection.Map[scala.Vector[Predef.String], Predef.String] =
     RC.text(Vector("../../../../../resources/org/sireum/tools/slangcheck")) { (p, f) => true }
 
