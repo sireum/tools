@@ -227,6 +227,8 @@ object SlangCheckTest {
   //list of all nextMethods
   var nextMethods: ISZ[ST] = ISZ()
 
+  var extraNextMethods: ISZ[ST] = ISZ()
+
   //list of all base configs for each type
   var nextConfig: ISZ[ST] = ISZ()
 
@@ -283,13 +285,13 @@ object SlangCheckTest {
           |@msig trait RandomLibI {
           |  def gen: org.sireum.Random.Gen
           |
-          |  def get_Size: Z
-          |  def set_Size(s: Z): Unit
+          |  def get_numElement: Z
+          |  def set_numElement(s: Z): Unit
           |
           |  ${(slangTypeRand, "\n\n")}
           |
           |  def nextString(): String = {
-          |    val length: Z = gen.nextZBetween(0, get_Size)
+          |    val length: Z = gen.nextZBetween(0, get_numElement)
           |    var str: String = ""
           |    for(r <- 0 until length){
           |      str = s"$${str}$${gen.nextC().string}"
@@ -299,16 +301,18 @@ object SlangCheckTest {
           |  }
           |
           |  ${(nextMethods, "\n\n")}
+          |
+          |  ${(extraNextMethods, "\n\n")}
           |}
           |
           |@record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {
           |
-          |  var size: Z = 50
+          |  var numElem: Z = 50
           |
-          |  def get_Size: Z = {return size}
+          |  def get_numElement: Z = {return numElem}
           |
-          |  def set_Size(s: Z): Unit ={
-          |    size = s
+          |  def set_numElement(s: Z): Unit ={
+          |    numElem = s
           |  }
           |
           |  ${(slangTypeConf, "\n\n")}
@@ -328,7 +332,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -391,16 +395,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
     } else if (typ == "Z") {
       return (
@@ -409,7 +403,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -472,16 +466,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
     } else if (typ == "F32") {
       return (
@@ -490,7 +474,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -553,16 +537,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
     } else if (typ == "F64") {
       return (
@@ -571,7 +545,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -634,16 +608,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
     } else if (typ == "R") {
       return (
@@ -652,7 +616,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -715,16 +679,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
     } else {
       return (
@@ -733,7 +687,7 @@ object SlangCheckTest {
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
             |  def nextISZ_$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_Size)
+            |   val length: Z = gen.nextZBetween(0, get_numElement)
             |      var temp: ISZ[$typ] = ISZ()
             |      for (r <- 0 until length) {
             |        temp = temp :+ next$typ()
@@ -763,16 +717,6 @@ object SlangCheckTest {
             |    }
             |    assert(F, "Requirements too strict to generate")
             |    halt("Requirements too strict to generate")
-            |  }
-            |
-            |  def nextOption$typ(): Option[$typ] = {
-            |    val none: Z = gen.nextZBetween(0,1)
-            |
-            |    if(none == 0) {
-            |      return Some(next${typ}())
-            |    } else {
-            |      return None()
-            |    }
             |  }""")
 
     }
@@ -815,9 +759,21 @@ object SlangCheckTest {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
           assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
-
           val typArgName = SlangCheck.astTypeName(packageName, t.typeArgs(0))
           val typArgNameString = SlangCheck.astTypeNameString(packageName, t.typeArgs(0))
+
+          if(typNameString.render == "Option") {
+            extraNextMethods = extraNextMethods :+
+              st"""def next${typName}_${typArgName}(): $typNameString[$typArgNameString] = {
+                  |    val none: Z = gen.nextZBetween(0,1)
+                  |
+                  |    if(none == 0) {
+                  |      return Some(next${typArgName}())
+                  |    } else {
+                  |      return None()
+                  |    }
+                  |  }"""
+          }
 
           st"var ${v.ast.id.value}: $typNameString[$typArgNameString] = next${typName}_$typArgName()"
         }
@@ -919,16 +875,6 @@ object SlangCheckTest {
           |  }
           |  assert(F, "Requirements too strict to generate")
           |  halt("Requirements too strict to generate")
-          |}
-          |
-          |def nextOption${adTypeName}(): Option[${adTypeString}] = {
-          |  val none: Z = gen.nextZBetween(0,1)
-          |
-          |  if(none == 0) {
-          |    return Some(next${adTypeName}())
-          |  } else {
-          |    return None()
-          |  }
           |}"""
   }
 
@@ -977,7 +923,7 @@ object SlangCheckTest {
           |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
           |
           |def nextISZ$adTypeName(): ISZ[$adTypeString] = {
-          |  val length: Z = gen.nextZBetween(0, get_Size)
+          |  val length: Z = gen.nextZBetween(0, get_numElement)
           |  var temp: ISZ[$adTypeString] = ISZ()
           |  for (r <- 0 until length) {
           |    temp = temp :+ next$adTypeName()
@@ -1034,16 +980,6 @@ object SlangCheckTest {
           |  }
           |  assert(F, "Requirements too strict to generate")
           |  halt("Requirements too strict to generate")
-          |}
-          |
-          |def nextOption${adTypeName}(): Option[${adTypeString}] = {
-          |  val none: Z = gen.nextZBetween(0,1)
-          |
-          |  if(none == 0) {
-          |    return Some(next${adTypeName}())
-          |  } else {
-          |    return None()
-          |  }
           |}"""
   }
 
@@ -1112,16 +1048,6 @@ object SlangCheckTest {
           |
           |  assert(F, "Requirements too strict to generate")
           |  halt("Requirements too strict to generate")
-          |}
-          |
-          |def nextOption${adTypeName}(): Option[${adTypeString}] = {
-          |  val none: Z = gen.nextZBetween(0,1)
-          |
-          |  if(none == 0) {
-          |    return Some(next${adTypeName}())
-          |  } else {
-          |    return None()
-          |  }
           |}"""
   }
 }
