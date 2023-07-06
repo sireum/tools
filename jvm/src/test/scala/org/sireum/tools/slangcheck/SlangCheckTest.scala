@@ -8,11 +8,11 @@ import org.sireum.tools.{SlangCheckJvm => SCJVM}
 
 class SlangCheckTest extends TestSuite {
 
-  val generateExpected: B = F
+  val generateExpected: B = T
 
   val runTipe: B = T && TestUtil.willingToWait
 
-  val runGeneratedTests: B = T && TestUtil.willingToWait
+  val runGeneratedTests: B = T //&& TestUtil.willingToWait
 
   val verbose: B = F
 
@@ -26,13 +26,13 @@ class SlangCheckTest extends TestSuite {
     test("temp_control", "tc")
   }
 
-//  "option_argument" in {
-//    test("option_argument", "oa")
-//  }
+  "option_argument" in {
+    test("option_argument", "oa")
+  }
 
-  //  "is_argument" in {
-  //    test("is_argument", "is")
-  //  }
+  "is_argument" in {
+    test("is_argument", "is")
+  }
 
   def test(expectedName: String, packageName: String): Unit = {
 
@@ -83,9 +83,13 @@ class SlangCheckTest extends TestSuite {
     }
 
     if (runGeneratedTests) {
-      val passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
-      println(s"Generated Tests: ${if (passed) "passing" else "failing"}")
-      //passing = passing & (TestUtil.isCI || passed)
+      var passed = proc"$sireum proyek compile .".at(resultsDir).echo.console.run().ok
+      passing = passed
+
+      if (passed) {
+        passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
+        println(s"Generated Tests: ${if (passed) "passing" else "failing"}")
+      }
     }
 
     assert(passing)

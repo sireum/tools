@@ -9,6 +9,7 @@ object TestUtil {
 
   val willingToWait: B = isCI || (Os.env("USER") match {
     case Some(string"belt") => true
+    case Some(string"decK") => true
     case _ => false
   })
 
