@@ -30,7 +30,6 @@ object SlangCheck {
       gdr.globalNameMap,
       gdr.globalTypeMap,
       packageName_,
-      reporter,
       fileUris,
       typeHierarchy)
 
@@ -38,15 +37,22 @@ object SlangCheck {
       gdr.globalNameMap,
       gdr.globalTypeMap,
       packageName_,
-      reporter, fileUris, typeHierarchy)
+      fileUris,
+      typeHierarchy)
 
     val g = GeneratorGen(
       gdr.globalNameMap,
       gdr.globalTypeMap,
       packageName,
-      reporter, fileUris, typeHierarchy)
+      fileUris,
+      typeHierarchy)
 
-    val h = EnumGen(gdr.globalNameMap, gdr.globalTypeMap, packageName_, reporter, fileUris, typeHierarchy)
+    val h = EnumGen(
+      gdr.globalNameMap,
+      gdr.globalTypeMap,
+      packageName_,
+      fileUris,
+      typeHierarchy)
 
     ret = ret :+ t.gen()
     reporter.reports((t.reporter.messages))
@@ -123,7 +129,8 @@ object SlangCheckTest {
       gdr.globalNameMap,
       gdr.globalTypeMap,
       packageName_,
-      reporter, fileUris, typeHierarchy)
+      fileUris,
+      typeHierarchy)
 
     ret = ret :+ t.gen()
     reporter.reports((t.reporter.messages))
@@ -136,9 +143,10 @@ object SlangCheckTest {
 @record class EnumGen(val globalNameMap: NameMap,
                       val globalTypeMap: TypeMap,
                       val packageName: QName,
-                      val reporter: Reporter,
                       val fileNames: ISZ[String],
                       val th: TypeHierarchy) {
+
+  val reporter: Reporter = Reporter.create
 
   var enums: ISZ[ST] = ISZ()
 
@@ -211,9 +219,10 @@ object SlangCheckTest {
 @record class RanGen(val globalNameMap: NameMap,
                      val globalTypeMap: TypeMap,
                      val packageName: QName,
-                     val reporter: Reporter,
                      val fileNames: ISZ[String],
                      val th: TypeHierarchy) {
+
+  val reporter: Reporter = Reporter.create
 
   //list of all nextMethods
   var nextMethods: ISZ[ST] = ISZ()
@@ -1120,9 +1129,10 @@ object SlangCheckTest {
 @record class ConfigGen(val globalNameMap: NameMap,
                         val globalTypeMap: TypeMap,
                         val packageName: QName,
-                        val reporter: Reporter,
                         val fileNames: ISZ[String],
                         val th: TypeHierarchy) {
+
+  val reporter: Reporter = Reporter.create
 
   val globalTypes: ISZ[TypeInfo] = Resolver.sortedGlobalTypes(globalTypeMap)
 
@@ -1217,8 +1227,9 @@ object SlangCheckTest {
 @record class GeneratorGen(val globalNameMap: NameMap,
                            val globalTypeMap: TypeMap,
                            val packageName: QName,
-                           val reporter: Reporter,
                            val fileNames: ISZ[String], val th: TypeHierarchy) {
+
+  val reporter: Reporter = Reporter.create
 
   var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
   var slangTypeGen: ISZ[ST] = for (p <- slangTypes) yield genSlangType(p)
@@ -1377,10 +1388,10 @@ object SlangCheckTest {
 @record class TestGen(val globalNameMap: NameMap,
                       val globalTypeMap: TypeMap,
                       val packageName: QName,
-                      val reporter: Reporter,
                       val fileNames: ISZ[String],
                       val th: TypeHierarchy) {
 
+  val reporter: Reporter = Reporter.create
 
   var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
   var slangTypeGen: ISZ[ST] = for (p <- slangTypes) yield genSlangType(p)
