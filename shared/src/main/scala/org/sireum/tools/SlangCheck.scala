@@ -2,7 +2,7 @@
 package org.sireum.tools
 
 import org.sireum._
-import org.sireum.lang.symbol.Resolver.{NameMap, QName, TypeMap}
+import org.sireum.lang.symbol.Resolver.{NameMap, QName, TypeMap, typeNameString}
 import org.sireum.lang.symbol.{GlobalDeclarationResolver, Info, Resolver, TypeInfo}
 import org.sireum.lang.tipe.TypeHierarchy
 import org.sireum.lang.{ast => AST}
@@ -15,7 +15,6 @@ object SlangCheck {
           programs: ISZ[AST.TopUnit.Program],
           reporter: Reporter,
           typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
-
 
     val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
     for (p <- programs) {
@@ -331,16 +330,6 @@ object SlangCheckTest {
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
-            |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
-            |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
             |
@@ -401,16 +390,6 @@ object SlangCheckTest {
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
-            |
-            |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -473,16 +452,6 @@ object SlangCheckTest {
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
-            |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
-            |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
             |
@@ -543,16 +512,6 @@ object SlangCheckTest {
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
-            |
-            |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -615,16 +574,6 @@ object SlangCheckTest {
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
-            |  def nextISZ$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
-            |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
             |
@@ -685,16 +634,6 @@ object SlangCheckTest {
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
-            |
-            |  def nextISZ_$typ(): ISZ[$typ] = {
-            |   val length: Z = gen.nextZBetween(0, get_numElement)
-            |      var temp: ISZ[$typ] = ISZ()
-            |      for (r <- 0 until length) {
-            |        temp = temp :+ next$typ()
-            |      }
-            |
-            |      return temp
-            |  }
             |
             |  def next$typ(): $typ = {
             |    var r = gen.next$typ()
@@ -758,24 +697,40 @@ object SlangCheckTest {
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
-          val typArgName = SlangCheck.astTypeName(packageName, t.typeArgs(0))
-          val typArgNameString = SlangCheck.astTypeNameString(packageName, t.typeArgs(0))
+          //assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
+          val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+          val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
           if(typNameString.render == "Option") {
             extraNextMethods = extraNextMethods :+
-              st"""def next${typName}_${typArgName}(): $typNameString[$typArgNameString] = {
+              st"""def next${typName}_${typArgNames(0)}(): $typNameString[${typArgNameStrings(0)}] = {
                   |    val none: Z = gen.nextZBetween(0,1)
                   |
                   |    if(none == 0) {
-                  |      return Some(next${typArgName}())
+                  |      return Some(next${typArgNames(0)}())
                   |    } else {
                   |      return None()
                   |    }
                   |  }"""
           }
 
-          st"var ${v.ast.id.value}: $typNameString[$typArgNameString] = next${typName}_$typArgName()"
+          if(typNameString.render == "IS" || typNameString.render == "MS") {
+
+            extraNextMethods = extraNextMethods :+
+              st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+                  |
+                  |def next${typName }_${(typArgNames, "")}(): $typNameString[${(typArgNameStrings, ", ")}] = {
+                  |  val length: Z = gen.nextZBetween(0, get_numElement)
+                  |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
+                  |  for (r <- 0 until length) {
+                  |    temp = temp :+ next${typArgNames(1)}()
+                  |  }
+                  |
+                  |  return temp
+                  |}"""
+          }
+
+          st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}_${(typArgNames, "")}()"
         }
         else {
           st"var ${v.ast.id.value}: $typNameString = next$typName()"
@@ -796,11 +751,11 @@ object SlangCheckTest {
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
+          // assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
 
-          val typArgName = SlangCheck.astTypeName(packageName, t.typeArgs(0))
+          val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
 
-          st"${v.ast.id.value} = next${typName}_$typArgName()"
+          st"${v.ast.id.value} = next${typName}_${(typArgNames, "")}()"
         }
         else {
           st"${v.ast.id.value} = next$typName()"
@@ -922,16 +877,6 @@ object SlangCheckTest {
           |def get_Config_${adTypeName}: Config_${adTypeName}
           |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
           |
-          |def nextISZ$adTypeName(): ISZ[$adTypeString] = {
-          |  val length: Z = gen.nextZBetween(0, get_numElement)
-          |  var temp: ISZ[$adTypeString] = ISZ()
-          |  for (r <- 0 until length) {
-          |    temp = temp :+ next$adTypeName()
-          |  }
-          |
-          |  return temp
-          |}
-          |
           |def next${adTypeName}(): ${adTypeString} = {
           |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
           |
@@ -1010,16 +955,6 @@ object SlangCheckTest {
           |
           |def get_Config_${adTypeName}: Config_${adTypeName}
           |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
-          |
-          |def nextISZ$adTypeName(): ISZ[$adTypeString] = {
-          |   val length: Z = gen.nextZBetween(0, 256)
-          |   var temp: ISZ[$adTypeString] = ISZ()
-          |   for (r <- 0 until length) {
-          |     temp = temp :+ next$adTypeName()
-          |   }
-          |
-          |   return temp
-          |}
           |
           |def next${adTypeName}(): ${adTypeString} = {
           |  ${(vars, "\n")}
