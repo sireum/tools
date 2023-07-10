@@ -697,7 +697,6 @@ object SlangCheckTest {
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          //assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
           val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
           val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
