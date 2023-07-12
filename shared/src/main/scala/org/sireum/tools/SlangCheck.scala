@@ -9,6 +9,10 @@ import org.sireum.lang.{ast => AST}
 import org.sireum.message.Reporter
 import org.sireum.ops.ISZOps
 
+//TODO: Generate list better (Not super neccesary right now)
+//TODO: Datatype Traits (Look at Jason's email)
+//TODO: Proyek
+
 object SlangCheck {
   def gen(packageName: ISZ[String],
           fileUris: ISZ[String],
@@ -631,7 +635,7 @@ object SlangCheckTest {
             |  }""")
     } else {
       return (
-        st"""// ========  ${typ} ==========
+        st"""// ========  ${typ} ==========}
             |  def get_Config_${typ}: Config_${typ}
             |  def set_Config_${typ}(config: Config_${typ}): Unit
             |
@@ -713,8 +717,7 @@ object SlangCheckTest {
                   |  }"""
           }
 
-          if(typNameString.render == "IS" || typNameString.render == "MS") {
-
+          if(typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
             extraNextMethods = extraNextMethods :+
               st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
                   |
@@ -722,7 +725,7 @@ object SlangCheckTest {
                   |  val length: Z = gen.nextZBetween(0, get_numElement)
                   |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
                   |  for (r <- 0 until length) {
-                  |    temp = temp :+ next${typArgNames(1)}()
+                  |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
                   |  }
                   |
                   |  return temp

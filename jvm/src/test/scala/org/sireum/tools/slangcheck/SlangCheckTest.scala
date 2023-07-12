@@ -38,6 +38,10 @@ class SlangCheckTest extends TestSuite {
     test("ms_argument", "ms")
   }
 
+  "is_is_argument" in {
+    test("is_is_argument", "ms")
+  }
+
   def test(expectedName: String, packageName: String): Unit = {
 
     val resultsDir = TestUtil.copy(expectedName)
