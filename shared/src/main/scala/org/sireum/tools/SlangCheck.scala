@@ -170,6 +170,8 @@ object SlangCheckTest {
       ti match {
         case ti: TypeInfo.Sig =>
           genSig(ti)
+        case ti: TypeInfo.Adt =>
+          genAdt(ti)
         case _ => {}
       }
     }
@@ -192,6 +194,33 @@ object SlangCheckTest {
           |${(enums, "\n\n")}
           |
           |""")
+  }
+
+  def genAdt(ti: TypeInfo.Adt): Unit = {
+
+    if(ti.ast.isRoot) {
+      val adTypeString = Resolver.typeNameString(packageName, ti.name)
+      val adTypeName = Resolver.typeName(packageName, ti.name)
+      val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
+
+      val pn = packageName(0)
+
+      var enumNames: ISZ[String] = ISZ()
+
+      for (typ <- SlangCheck.sortedTyedNames(leaves)) {
+        val ids = typ.ids
+        if (ids(0) == pn) {
+          enumNames = enumNames :+ st"\"${(ops.ISZOps(typ.ids).drop(1), "")}_Id\"".render
+        } else {
+          enumNames = enumNames :+ st"\"_${(typ.ids, "")}_Id\"".render
+        }
+      }
+
+      enums = enums :+
+        st"""@enum object ${adTypeName}_DataTypeId {
+            |   ${(enumNames, "\n")}
+            |}"""
+    }
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {
@@ -932,60 +961,155 @@ object SlangCheckTest {
 
   //get next methods and base configs for a non-enum type
   def genAdt(ti: TypeInfo.Adt): Unit = {
+
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    val vars: ISZ[ST] = for (v <- ti.vars.values) yield genVar(v)
-    val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
-    val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
+    if(ti.ast.isRoot) {
+      val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
+      val pn = packageName(0)
+
+      var calls: ISZ[String] = ISZ()
+      var enumNames: ISZ[String] = ISZ()
+      var cases: ISZ[String] = ISZ()
+
+      for (typ <- SlangCheck.sortedTyedNames(leaves)) {
+        val ids = typ.ids
+        if (ids(0) == pn) {
+          calls = calls :+ st"next${(ops.ISZOps(typ.ids).drop(1), "")}".render
+          enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id".render
+        } else {
+          calls = calls :+ st"next_${(typ.ids, "")}".render
+          enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id".render
+        }
+      }
+
+      for (i <- 0 to enumNames.size - 1) {
+        cases = cases :+ s"case ${enumNames(i)} => (${calls(i)} _).apply()"
+      }
+
+      nextConfig = nextConfig :+
+        st"""// ============= ${adTypeString} ===================
+            |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
+            |
+            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, F, ISZ(), alwaysTrue_$adTypeName _)
+            |
+            |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
+            |
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+            |  config_${adTypeName} = config
+            |}"""
+
+      nextMethods = nextMethods :+
+        st"""// ============= ${adTypeString} ===================
+            |
+            |def get_Config_${adTypeName}: Config_${adTypeName}
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+            |
+            |def next${adTypeName}(): ${adTypeString} = {
+            |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
+            |
+            |  if(get_Config_${adTypeName}.additiveTypeFiltering) {
+            |     callEnum = get_Config_${adTypeName}.typeFilter
+            |  } else {
+            |     for(h <- get_Config_${adTypeName}.typeFilter) {
+            |       callEnum = ops.ISZOps(callEnum).filter(f => h =!= f)
+            |     }
+            |  }
+            |
+            |  var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+            |
+            |  var v: ${adTypeString} = c match {
+            |    ${(cases, "\n")}
+            |    case _ => halt("Invalid Child")
+            |  }
+            |
+            |
+            |  if(get_Config_${adTypeName}.attempts >= 0) {
+            |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
+            |     if(get_Config_${adTypeName}.filter(v)) {
+            |      return v
+            |     }
+            |     println(s"Retrying for failing value: $$v")
+            |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+            |
+            |     v = c match {
+            |       ${(cases, "\n")}
+            |       case _ => halt("Invalid Child")
+            |     }
+            |   }
+            |  } else {
+            |   while(T) {
+            |     if(get_Config_${adTypeName}.filter(v)) {
+            |       return v
+            |     }
+            |     println(s"Retrying for failing value: $$v")
+            |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+            |
+            |     v = c match {
+            |       ${(cases, "\n")}
+            |       case _ => halt("Invalid Child")
+            |     }
+            |   }
+            |  }
+            |  assert(F, "Requirements too strict to generate")
+            |  halt("Requirements too strict to generate")
+            |}"""
+    }
+    else {
+
+      val vars: ISZ[ST] = for (v <- ti.vars.values) yield genVar(v)
+      val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
+      val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
 
 
-    nextConfig = nextConfig :+
-      st"""// ============= ${adTypeString} ===================
-          |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
-          |
-          |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, ${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"})
-          |
-          |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
-          |
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
-          |  config_${adTypeName} = config
-          |}"""
+      nextConfig = nextConfig :+
+        st"""// ============= ${adTypeString} ===================
+            |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
+            |
+            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, ${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"})
+            |
+            |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
+            |
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+            |  config_${adTypeName} = config
+            |}"""
 
-    nextMethods = nextMethods :+
-      st"""// ============= ${adTypeString} ===================
-          |
-          |def get_Config_${adTypeName}: Config_${adTypeName}
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
-          |
-          |def next${adTypeName}(): ${adTypeString} = {
-          |  ${(vars, "\n")}
-          |
-          |  var v: ${adTypeString} = ${adTypeString}(${(args, ", ")})
-          |
-          |  if(get_Config_${adTypeName}.attempts >= 0) {
-          |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
-          |      if(get_Config_${adTypeName}.filter(v)) {
-          |        return v
-          |      }
-          |      println(s"Retrying for failing value: $$v")
-          |      ${(varsRepeat, "\n")}
-          |      v = ${adTypeString}(${(args, ", ")})
-          |   }
-          |  } else {
-          |   while(T) {
-          |     if(get_Config_${adTypeName}.filter(v)) {
-          |       return v
-          |     }
-          |     println(s"Retrying for failing value: $$v")
-          |     ${(varsRepeat, "\n")}
-          |     v = ${adTypeString}(${(args, ", ")})
-          |   }
-          |  }
-          |
-          |  assert(F, "Requirements too strict to generate")
-          |  halt("Requirements too strict to generate")
-          |}"""
+      nextMethods = nextMethods :+
+        st"""// ============= ${adTypeString} ===================
+            |
+            |def get_Config_${adTypeName}: Config_${adTypeName}
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+            |
+            |def next${adTypeName}(): ${adTypeString} = {
+            |  ${(vars, "\n")}
+            |
+            |  var v: ${adTypeString} = ${adTypeString}(${(args, ", ")})
+            |
+            |  if(get_Config_${adTypeName}.attempts >= 0) {
+            |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
+            |      if(get_Config_${adTypeName}.filter(v)) {
+            |        return v
+            |      }
+            |      println(s"Retrying for failing value: $$v")
+            |      ${(varsRepeat, "\n")}
+            |      v = ${adTypeString}(${(args, ", ")})
+            |   }
+            |  } else {
+            |   while(T) {
+            |     if(get_Config_${adTypeName}.filter(v)) {
+            |       return v
+            |     }
+            |     println(s"Retrying for failing value: $$v")
+            |     ${(varsRepeat, "\n")}
+            |     v = ${adTypeString}(${(args, ", ")})
+            |   }
+            |  }
+            |
+            |  assert(F, "Requirements too strict to generate")
+            |  halt("Requirements too strict to generate")
+            |}"""
+    }
   }
 }
 
@@ -1074,8 +1198,14 @@ object SlangCheckTest {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    nextConfig = nextConfig :+
-      st"""@datatype class Config_${adTypeName}(attempts: Z, filter: ${adTypeString} => B) {}"""
+    if(ti.ast.isRoot) {
+      nextConfig = nextConfig :+
+        st"""@datatype class Config_${adTypeName}(attempts: Z, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
+    }
+    else {
+      nextConfig = nextConfig :+
+        st"""@datatype class Config_${adTypeName}(attempts: Z, filter: ${adTypeString} => B) {}"""
+    }
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {

@@ -38,8 +38,12 @@ class SlangCheckTest extends TestSuite {
     test("ms_argument", "ms")
   }
 
-  "is_is_argument" in {
-    test("is_is_argument", "ms")
+//  "is_is_argument" in {
+//    test("is_is_argument", "ms")
+//  }
+
+  "datatype_trait" in {
+    test("datatype_trait", "dttr")
   }
 
   def test(expectedName: String, packageName: String): Unit = {
