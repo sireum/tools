@@ -1,6 +1,6 @@
 // #Sireum
 
-package isolette
+package tc
 
 import org.sireum._
 import org.sireum.Random.Gen64
@@ -10,27 +10,19 @@ GENERATED FROM
 
 Base_Types.scala
 
-Failure_Flag_impl.scala
+FanAck.scala
 
-Monitor_Mode.scala
+FanCmd.scala
 
-On_Off.scala
+GUMBO__Library.scala
 
-PhysicalTemp_impl.scala
+SetPoint_i.scala
 
-Regulator_Mode.scala
+SetPoint_i_GumboX.scala
 
-Status.scala
+Temperature_i.scala
 
-TempWstatus_impl.scala
-
-Temp_impl.scala
-
-ValueStatus.scala
-
-Heat.scala
-
-Interface_Interaction.scala
+Temperature_i_GumboX.scala
 
 DataContent.scala
 
@@ -832,7 +824,7 @@ DataContent.scala
   def set_Config__artDataContent(config: Config__artDataContent): Unit
 
   def next_artDataContent(): art.DataContent = {
-    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId._artEmpty_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelFailure_Flag_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelMonitor_Mode_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelOn_Off_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelPhysicalTemp_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelRegulator_Mode_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelStatus_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelTempWstatus_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelTemp_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelValueStatus_Payload_Id, _artDataContent_DataTypeId.Isolette_EnvironmentHeat_Payload_Id, _artDataContent_DataTypeId.Isolette_EnvironmentInterface_Interaction_Payload_Id)
+    var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId._artEmpty_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id, _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id, _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id, _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id)
 
     if(get_Config__artDataContent.additiveTypeFiltering) {
        callEnum = get_Config__artDataContent.typeFilter
@@ -862,17 +854,10 @@ DataContent.scala
       case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
       case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelFailure_Flag_impl_Payload_Id => (nextIsolette_Data_ModelFailure_Flag_impl_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelMonitor_Mode_Payload_Id => (nextIsolette_Data_ModelMonitor_Mode_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelOn_Off_Payload_Id => (nextIsolette_Data_ModelOn_Off_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelPhysicalTemp_impl_Payload_Id => (nextIsolette_Data_ModelPhysicalTemp_impl_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelRegulator_Mode_Payload_Id => (nextIsolette_Data_ModelRegulator_Mode_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelStatus_Payload_Id => (nextIsolette_Data_ModelStatus_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelTempWstatus_impl_Payload_Id => (nextIsolette_Data_ModelTempWstatus_impl_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelTemp_impl_Payload_Id => (nextIsolette_Data_ModelTemp_impl_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_Data_ModelValueStatus_Payload_Id => (nextIsolette_Data_ModelValueStatus_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_EnvironmentHeat_Payload_Id => (nextIsolette_EnvironmentHeat_Payload _).apply()
-      case _artDataContent_DataTypeId.Isolette_EnvironmentInterface_Interaction_Payload_Id => (nextIsolette_EnvironmentInterface_Interaction_Payload _).apply()
+      case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+      case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+      case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+      case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
       case _ => halt("Invalid Child")
     }
 
@@ -903,17 +888,10 @@ DataContent.scala
          case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelFailure_Flag_impl_Payload_Id => (nextIsolette_Data_ModelFailure_Flag_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelMonitor_Mode_Payload_Id => (nextIsolette_Data_ModelMonitor_Mode_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelOn_Off_Payload_Id => (nextIsolette_Data_ModelOn_Off_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelPhysicalTemp_impl_Payload_Id => (nextIsolette_Data_ModelPhysicalTemp_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelRegulator_Mode_Payload_Id => (nextIsolette_Data_ModelRegulator_Mode_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelStatus_Payload_Id => (nextIsolette_Data_ModelStatus_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelTempWstatus_impl_Payload_Id => (nextIsolette_Data_ModelTempWstatus_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelTemp_impl_Payload_Id => (nextIsolette_Data_ModelTemp_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelValueStatus_Payload_Id => (nextIsolette_Data_ModelValueStatus_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_EnvironmentHeat_Payload_Id => (nextIsolette_EnvironmentHeat_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_EnvironmentInterface_Interaction_Payload_Id => (nextIsolette_EnvironmentInterface_Interaction_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
          case _ => halt("Invalid Child")
        }
      }
@@ -943,17 +921,10 @@ DataContent.scala
          case _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id => (nextBase_TypesUnsigned_32_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id => (nextBase_TypesUnsigned_64_Payload _).apply()
          case _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id => (nextBase_TypesUnsigned_8_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelFailure_Flag_impl_Payload_Id => (nextIsolette_Data_ModelFailure_Flag_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelMonitor_Mode_Payload_Id => (nextIsolette_Data_ModelMonitor_Mode_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelOn_Off_Payload_Id => (nextIsolette_Data_ModelOn_Off_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelPhysicalTemp_impl_Payload_Id => (nextIsolette_Data_ModelPhysicalTemp_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelRegulator_Mode_Payload_Id => (nextIsolette_Data_ModelRegulator_Mode_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelStatus_Payload_Id => (nextIsolette_Data_ModelStatus_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelTempWstatus_impl_Payload_Id => (nextIsolette_Data_ModelTempWstatus_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelTemp_impl_Payload_Id => (nextIsolette_Data_ModelTemp_impl_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_Data_ModelValueStatus_Payload_Id => (nextIsolette_Data_ModelValueStatus_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_EnvironmentHeat_Payload_Id => (nextIsolette_EnvironmentHeat_Payload _).apply()
-         case _artDataContent_DataTypeId.Isolette_EnvironmentInterface_Interaction_Payload_Id => (nextIsolette_EnvironmentInterface_Interaction_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanAck_Payload_Id => (nextCoolingFanFanAck_Payload _).apply()
+         case _artDataContent_DataTypeId.CoolingFanFanCmd_Payload_Id => (nextCoolingFanFanCmd_Payload _).apply()
+         case _artDataContent_DataTypeId.TempControlSoftwareSystemSetPoint_i_Payload_Id => (nextTempControlSoftwareSystemSetPoint_i_Payload _).apply()
+         case _artDataContent_DataTypeId.TempSensorTemperature_i_Payload_Id => (nextTempSensorTemperature_i_Payload _).apply()
          case _ => halt("Invalid Child")
        }
      }
@@ -1537,134 +1508,66 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
+  // ============= CoolingFan.FanAck.Type ===================
 
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit
+  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType
+  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit
 
-  def nextIsolette_Data_ModelFailure_Flag_impl(): Isolette_Data_Model.Failure_Flag_impl = {
-    var value: B = nextB()
+  def nextCoolingFanFanAckType(): CoolingFan.FanAck.Type = {
 
-    var v: Isolette_Data_Model.Failure_Flag_impl = Isolette_Data_Model.Failure_Flag_impl(value)
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
 
-    if(get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextB()
-        v = Isolette_Data_Model.Failure_Flag_impl(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelFailure_Flag_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextB()
-       v = Isolette_Data_Model.Failure_Flag_impl(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit
-
-  def nextIsolette_Data_ModelFailure_Flag_impl_Payload(): Isolette_Data_Model.Failure_Flag_impl_Payload = {
-    var value: Isolette_Data_Model.Failure_Flag_impl = nextIsolette_Data_ModelFailure_Flag_impl()
-
-    var v: Isolette_Data_Model.Failure_Flag_impl_Payload = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelFailure_Flag_impl()
-        v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelFailure_Flag_impl()
-       v = Isolette_Data_Model.Failure_Flag_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
-
-  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit
-
-  def nextIsolette_Data_ModelMonitor_ModeType(): Isolette_Data_Model.Monitor_Mode.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
-
-    var v: Isolette_Data_Model.Monitor_Mode.Type = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelMonitor_ModeType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_ModeType.attempts) {
-       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+    var v: CoolingFan.FanAck.Type = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
+    if(get_Config_CoolingFanFanAckType.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanAckType.attempts) {
+       if(get_Config_CoolingFanFanAckType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
+       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
      }
     } else {
      while(T){
-       if(get_Config_Isolette_Data_ModelMonitor_ModeType.filter(v)) {
+       if(get_Config_CoolingFanFanAckType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Monitor_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Monitor_Mode.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanAck.numOfElements-1)
+       v = tc.CoolingFan.FanAck.byOrdinal(ordinal).get
      }
     }
     assert(F, "Requirements too strict to generate")
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
+  // ============= CoolingFan.FanAck_Payload ===================
 
-  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit
+  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload
+  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit
 
-  def nextIsolette_Data_ModelMonitor_Mode_Payload(): Isolette_Data_Model.Monitor_Mode_Payload = {
-    var value: Isolette_Data_Model.Monitor_Mode.Type = nextIsolette_Data_ModelMonitor_ModeType()
+  def nextCoolingFanFanAck_Payload(): CoolingFan.FanAck_Payload = {
+    var value: CoolingFan.FanAck.Type = nextCoolingFanFanAckType()
 
-    var v: Isolette_Data_Model.Monitor_Mode_Payload = Isolette_Data_Model.Monitor_Mode_Payload(value)
+    var v: CoolingFan.FanAck_Payload = CoolingFan.FanAck_Payload(value)
 
-    if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelMonitor_Mode_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+    if(get_Config_CoolingFanFanAck_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanAck_Payload.attempts) {
+        if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelMonitor_ModeType()
-        v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+        value = nextCoolingFanFanAckType()
+        v = CoolingFan.FanAck_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelMonitor_Mode_Payload.filter(v)) {
+       if(get_Config_CoolingFanFanAck_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelMonitor_ModeType()
-       v = Isolette_Data_Model.Monitor_Mode_Payload(value)
+       value = nextCoolingFanFanAckType()
+       v = CoolingFan.FanAck_Payload(value)
      }
     }
 
@@ -1672,66 +1575,66 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.On_Off.Type ===================
+  // ============= CoolingFan.FanCmd.Type ===================
 
-  def get_Config_Isolette_Data_ModelOn_OffType: Config_Isolette_Data_ModelOn_OffType
-  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): Unit
+  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType
+  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit
 
-  def nextIsolette_Data_ModelOn_OffType(): Isolette_Data_Model.On_Off.Type = {
+  def nextCoolingFanFanCmdType(): CoolingFan.FanCmd.Type = {
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.On_Off.numOfElements-1)
+    var ordinal: Z = gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
 
-    var v: Isolette_Data_Model.On_Off.Type = isolette.Isolette_Data_Model.On_Off.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelOn_OffType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelOn_OffType.attempts) {
-       if(get_Config_Isolette_Data_ModelOn_OffType.filter(v)) {
+    var v: CoolingFan.FanCmd.Type = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
+    if(get_Config_CoolingFanFanCmdType.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanCmdType.attempts) {
+       if(get_Config_CoolingFanFanCmdType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.On_Off.numOfElements-1)
-       v = isolette.Isolette_Data_Model.On_Off.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
+       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
      }
     } else {
      while(T){
-       if(get_Config_Isolette_Data_ModelOn_OffType.filter(v)) {
+       if(get_Config_CoolingFanFanCmdType.filter(v)) {
         return v
        }
        println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.On_Off.numOfElements-1)
-       v = isolette.Isolette_Data_Model.On_Off.byOrdinal(ordinal).get
+       ordinal= gen.nextZBetween(0, tc.CoolingFan.FanCmd.numOfElements-1)
+       v = tc.CoolingFan.FanCmd.byOrdinal(ordinal).get
      }
     }
     assert(F, "Requirements too strict to generate")
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.On_Off_Payload ===================
+  // ============= CoolingFan.FanCmd_Payload ===================
 
-  def get_Config_Isolette_Data_ModelOn_Off_Payload: Config_Isolette_Data_ModelOn_Off_Payload
-  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): Unit
+  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload
+  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit
 
-  def nextIsolette_Data_ModelOn_Off_Payload(): Isolette_Data_Model.On_Off_Payload = {
-    var value: Isolette_Data_Model.On_Off.Type = nextIsolette_Data_ModelOn_OffType()
+  def nextCoolingFanFanCmd_Payload(): CoolingFan.FanCmd_Payload = {
+    var value: CoolingFan.FanCmd.Type = nextCoolingFanFanCmdType()
 
-    var v: Isolette_Data_Model.On_Off_Payload = Isolette_Data_Model.On_Off_Payload(value)
+    var v: CoolingFan.FanCmd_Payload = CoolingFan.FanCmd_Payload(value)
 
-    if(get_Config_Isolette_Data_ModelOn_Off_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelOn_Off_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelOn_Off_Payload.filter(v)) {
+    if(get_Config_CoolingFanFanCmd_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_CoolingFanFanCmd_Payload.attempts) {
+        if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelOn_OffType()
-        v = Isolette_Data_Model.On_Off_Payload(value)
+        value = nextCoolingFanFanCmdType()
+        v = CoolingFan.FanCmd_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelOn_Off_Payload.filter(v)) {
+       if(get_Config_CoolingFanFanCmd_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelOn_OffType()
-       v = Isolette_Data_Model.On_Off_Payload(value)
+       value = nextCoolingFanFanCmdType()
+       v = CoolingFan.FanCmd_Payload(value)
      }
     }
 
@@ -1739,33 +1642,36 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
+  // ============= TempControlSoftwareSystem.SetPoint_i ===================
 
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit
+  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i
+  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit
 
-  def nextIsolette_Data_ModelPhysicalTemp_impl(): Isolette_Data_Model.PhysicalTemp_impl = {
-    var value: F32 = nextF32()
+  def nextTempControlSoftwareSystemSetPoint_i(): TempControlSoftwareSystem.SetPoint_i = {
+    var low: TempSensor.Temperature_i = nextTempSensorTemperature_i()
+    var high: TempSensor.Temperature_i = nextTempSensorTemperature_i()
 
-    var v: Isolette_Data_Model.PhysicalTemp_impl = Isolette_Data_Model.PhysicalTemp_impl(value)
+    var v: TempControlSoftwareSystem.SetPoint_i = TempControlSoftwareSystem.SetPoint_i(low, high)
 
-    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
+    if(get_Config_TempControlSoftwareSystemSetPoint_i.attempts >= 0) {
+     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i.attempts) {
+        if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextF32()
-        v = Isolette_Data_Model.PhysicalTemp_impl(value)
+        low = nextTempSensorTemperature_i()
+        high = nextTempSensorTemperature_i()
+        v = TempControlSoftwareSystem.SetPoint_i(low, high)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl.filter(v)) {
+       if(get_Config_TempControlSoftwareSystemSetPoint_i.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextF32()
-       v = Isolette_Data_Model.PhysicalTemp_impl(value)
+       low = nextTempSensorTemperature_i()
+       high = nextTempSensorTemperature_i()
+       v = TempControlSoftwareSystem.SetPoint_i(low, high)
      }
     }
 
@@ -1773,33 +1679,33 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
+  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
 
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit
+  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload
+  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit
 
-  def nextIsolette_Data_ModelPhysicalTemp_impl_Payload(): Isolette_Data_Model.PhysicalTemp_impl_Payload = {
-    var value: Isolette_Data_Model.PhysicalTemp_impl = nextIsolette_Data_ModelPhysicalTemp_impl()
+  def nextTempControlSoftwareSystemSetPoint_i_Payload(): TempControlSoftwareSystem.SetPoint_i_Payload = {
+    var value: TempControlSoftwareSystem.SetPoint_i = nextTempControlSoftwareSystemSetPoint_i()
 
-    var v: Isolette_Data_Model.PhysicalTemp_impl_Payload = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+    var v: TempControlSoftwareSystem.SetPoint_i_Payload = TempControlSoftwareSystem.SetPoint_i_Payload(value)
 
-    if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
+    if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_TempControlSoftwareSystemSetPoint_i_Payload.attempts) {
+        if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelPhysicalTemp_impl()
-        v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+        value = nextTempControlSoftwareSystemSetPoint_i()
+        v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload.filter(v)) {
+       if(get_Config_TempControlSoftwareSystemSetPoint_i_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelPhysicalTemp_impl()
-       v = Isolette_Data_Model.PhysicalTemp_impl_Payload(value)
+       value = nextTempControlSoftwareSystemSetPoint_i()
+       v = TempControlSoftwareSystem.SetPoint_i_Payload(value)
      }
     }
 
@@ -1807,66 +1713,33 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
+  // ============= TempSensor.Temperature_i ===================
 
-  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit
+  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i
+  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit
 
-  def nextIsolette_Data_ModelRegulator_ModeType(): Isolette_Data_Model.Regulator_Mode.Type = {
+  def nextTempSensorTemperature_i(): TempSensor.Temperature_i = {
+    var degrees: F32 = nextF32()
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
+    var v: TempSensor.Temperature_i = TempSensor.Temperature_i(degrees)
 
-    var v: Isolette_Data_Model.Regulator_Mode.Type = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelRegulator_ModeType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_ModeType.attempts) {
-       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_Data_ModelRegulator_ModeType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Regulator_Mode.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Regulator_Mode.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
-
-  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit
-
-  def nextIsolette_Data_ModelRegulator_Mode_Payload(): Isolette_Data_Model.Regulator_Mode_Payload = {
-    var value: Isolette_Data_Model.Regulator_Mode.Type = nextIsolette_Data_ModelRegulator_ModeType()
-
-    var v: Isolette_Data_Model.Regulator_Mode_Payload = Isolette_Data_Model.Regulator_Mode_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelRegulator_Mode_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
+    if(get_Config_TempSensorTemperature_i.attempts >= 0) {
+     for(i <- 0 to get_Config_TempSensorTemperature_i.attempts) {
+        if(get_Config_TempSensorTemperature_i.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelRegulator_ModeType()
-        v = Isolette_Data_Model.Regulator_Mode_Payload(value)
+        degrees = nextF32()
+        v = TempSensor.Temperature_i(degrees)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelRegulator_Mode_Payload.filter(v)) {
+       if(get_Config_TempSensorTemperature_i.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelRegulator_ModeType()
-       v = Isolette_Data_Model.Regulator_Mode_Payload(value)
+       degrees = nextF32()
+       v = TempSensor.Temperature_i(degrees)
      }
     }
 
@@ -1874,406 +1747,33 @@ DataContent.scala
     halt("Requirements too strict to generate")
   }
 
-  // ============= Isolette_Data_Model.Status.Type ===================
+  // ============= TempSensor.Temperature_i_Payload ===================
 
-  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit
+  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload
+  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit
 
-  def nextIsolette_Data_ModelStatusType(): Isolette_Data_Model.Status.Type = {
+  def nextTempSensorTemperature_i_Payload(): TempSensor.Temperature_i_Payload = {
+    var value: TempSensor.Temperature_i = nextTempSensorTemperature_i()
 
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
+    var v: TempSensor.Temperature_i_Payload = TempSensor.Temperature_i_Payload(value)
 
-    var v: Isolette_Data_Model.Status.Type = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelStatusType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelStatusType.attempts) {
-       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_Data_ModelStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.Status.numOfElements-1)
-       v = isolette.Isolette_Data_Model.Status.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Status_Payload ===================
-
-  def get_Config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload
-  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): Unit
-
-  def nextIsolette_Data_ModelStatus_Payload(): Isolette_Data_Model.Status_Payload = {
-    var value: Isolette_Data_Model.Status.Type = nextIsolette_Data_ModelStatusType()
-
-    var v: Isolette_Data_Model.Status_Payload = Isolette_Data_Model.Status_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelStatus_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelStatus_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelStatus_Payload.filter(v)) {
+    if(get_Config_TempSensorTemperature_i_Payload.attempts >= 0) {
+     for(i <- 0 to get_Config_TempSensorTemperature_i_Payload.attempts) {
+        if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
           return v
         }
         println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelStatusType()
-        v = Isolette_Data_Model.Status_Payload(value)
+        value = nextTempSensorTemperature_i()
+        v = TempSensor.Temperature_i_Payload(value)
      }
     } else {
      while(T) {
-       if(get_Config_Isolette_Data_ModelStatus_Payload.filter(v)) {
+       if(get_Config_TempSensorTemperature_i_Payload.filter(v)) {
          return v
        }
        println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelStatusType()
-       v = Isolette_Data_Model.Status_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl ===================
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit
-
-  def nextIsolette_Data_ModelTempWstatus_impl(): Isolette_Data_Model.TempWstatus_impl = {
-    var value: F32 = nextF32()
-    var status: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
-
-    var v: Isolette_Data_Model.TempWstatus_impl = Isolette_Data_Model.TempWstatus_impl(value, status)
-
-    if(get_Config_Isolette_Data_ModelTempWstatus_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextF32()
-        status = nextIsolette_Data_ModelValueStatusType()
-        v = Isolette_Data_Model.TempWstatus_impl(value, status)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTempWstatus_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextF32()
-       status = nextIsolette_Data_ModelValueStatusType()
-       v = Isolette_Data_Model.TempWstatus_impl(value, status)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit
-
-  def nextIsolette_Data_ModelTempWstatus_impl_Payload(): Isolette_Data_Model.TempWstatus_impl_Payload = {
-    var value: Isolette_Data_Model.TempWstatus_impl = nextIsolette_Data_ModelTempWstatus_impl()
-
-    var v: Isolette_Data_Model.TempWstatus_impl_Payload = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelTempWstatus_impl()
-        v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTempWstatus_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelTempWstatus_impl()
-       v = Isolette_Data_Model.TempWstatus_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Temp_impl ===================
-
-  def get_Config_Isolette_Data_ModelTemp_impl: Config_Isolette_Data_ModelTemp_impl
-  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): Unit
-
-  def nextIsolette_Data_ModelTemp_impl(): Isolette_Data_Model.Temp_impl = {
-    var value: F32 = nextF32()
-
-    var v: Isolette_Data_Model.Temp_impl = Isolette_Data_Model.Temp_impl(value)
-
-    if(get_Config_Isolette_Data_ModelTemp_impl.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTemp_impl.attempts) {
-        if(get_Config_Isolette_Data_ModelTemp_impl.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextF32()
-        v = Isolette_Data_Model.Temp_impl(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTemp_impl.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextF32()
-       v = Isolette_Data_Model.Temp_impl(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.Temp_impl_Payload ===================
-
-  def get_Config_Isolette_Data_ModelTemp_impl_Payload: Config_Isolette_Data_ModelTemp_impl_Payload
-  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): Unit
-
-  def nextIsolette_Data_ModelTemp_impl_Payload(): Isolette_Data_Model.Temp_impl_Payload = {
-    var value: Isolette_Data_Model.Temp_impl = nextIsolette_Data_ModelTemp_impl()
-
-    var v: Isolette_Data_Model.Temp_impl_Payload = Isolette_Data_Model.Temp_impl_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelTemp_impl_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelTemp_impl_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelTemp_impl_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelTemp_impl()
-        v = Isolette_Data_Model.Temp_impl_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelTemp_impl_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelTemp_impl()
-       v = Isolette_Data_Model.Temp_impl_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.ValueStatus.Type ===================
-
-  def get_Config_Isolette_Data_ModelValueStatusType: Config_Isolette_Data_ModelValueStatusType
-  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): Unit
-
-  def nextIsolette_Data_ModelValueStatusType(): Isolette_Data_Model.ValueStatus.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Data_Model.ValueStatus.numOfElements-1)
-
-    var v: Isolette_Data_Model.ValueStatus.Type = isolette.Isolette_Data_Model.ValueStatus.byOrdinal(ordinal).get
-    if(get_Config_Isolette_Data_ModelValueStatusType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelValueStatusType.attempts) {
-       if(get_Config_Isolette_Data_ModelValueStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.ValueStatus.numOfElements-1)
-       v = isolette.Isolette_Data_Model.ValueStatus.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_Data_ModelValueStatusType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Data_Model.ValueStatus.numOfElements-1)
-       v = isolette.Isolette_Data_Model.ValueStatus.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Data_Model.ValueStatus_Payload ===================
-
-  def get_Config_Isolette_Data_ModelValueStatus_Payload: Config_Isolette_Data_ModelValueStatus_Payload
-  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): Unit
-
-  def nextIsolette_Data_ModelValueStatus_Payload(): Isolette_Data_Model.ValueStatus_Payload = {
-    var value: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
-
-    var v: Isolette_Data_Model.ValueStatus_Payload = Isolette_Data_Model.ValueStatus_Payload(value)
-
-    if(get_Config_Isolette_Data_ModelValueStatus_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_Data_ModelValueStatus_Payload.attempts) {
-        if(get_Config_Isolette_Data_ModelValueStatus_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_Data_ModelValueStatusType()
-        v = Isolette_Data_Model.ValueStatus_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_Data_ModelValueStatus_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_Data_ModelValueStatusType()
-       v = Isolette_Data_Model.ValueStatus_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Environment.Heat.Type ===================
-
-  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit
-
-  def nextIsolette_EnvironmentHeatType(): Isolette_Environment.Heat.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
-
-    var v: Isolette_Environment.Heat.Type = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-    if(get_Config_Isolette_EnvironmentHeatType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentHeatType.attempts) {
-       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
-       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_EnvironmentHeatType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Heat.numOfElements-1)
-       v = isolette.Isolette_Environment.Heat.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Environment.Heat_Payload ===================
-
-  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit
-
-  def nextIsolette_EnvironmentHeat_Payload(): Isolette_Environment.Heat_Payload = {
-    var value: Isolette_Environment.Heat.Type = nextIsolette_EnvironmentHeatType()
-
-    var v: Isolette_Environment.Heat_Payload = Isolette_Environment.Heat_Payload(value)
-
-    if(get_Config_Isolette_EnvironmentHeat_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentHeat_Payload.attempts) {
-        if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_EnvironmentHeatType()
-        v = Isolette_Environment.Heat_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_EnvironmentHeat_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_EnvironmentHeatType()
-       v = Isolette_Environment.Heat_Payload(value)
-     }
-    }
-
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Environment.Interface_Interaction.Type ===================
-
-  def get_Config_Isolette_EnvironmentInterface_InteractionType: Config_Isolette_EnvironmentInterface_InteractionType
-  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): Unit
-
-  def nextIsolette_EnvironmentInterface_InteractionType(): Isolette_Environment.Interface_Interaction.Type = {
-
-    var ordinal: Z = gen.nextZBetween(0, isolette.Isolette_Environment.Interface_Interaction.numOfElements-1)
-
-    var v: Isolette_Environment.Interface_Interaction.Type = isolette.Isolette_Environment.Interface_Interaction.byOrdinal(ordinal).get
-    if(get_Config_Isolette_EnvironmentInterface_InteractionType.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentInterface_InteractionType.attempts) {
-       if(get_Config_Isolette_EnvironmentInterface_InteractionType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Interface_Interaction.numOfElements-1)
-       v = isolette.Isolette_Environment.Interface_Interaction.byOrdinal(ordinal).get
-     }
-    } else {
-     while(T){
-       if(get_Config_Isolette_EnvironmentInterface_InteractionType.filter(v)) {
-        return v
-       }
-       println(s"Retrying for failing value: $v")
-       ordinal= gen.nextZBetween(0, isolette.Isolette_Environment.Interface_Interaction.numOfElements-1)
-       v = isolette.Isolette_Environment.Interface_Interaction.byOrdinal(ordinal).get
-     }
-    }
-    assert(F, "Requirements too strict to generate")
-    halt("Requirements too strict to generate")
-  }
-
-  // ============= Isolette_Environment.Interface_Interaction_Payload ===================
-
-  def get_Config_Isolette_EnvironmentInterface_Interaction_Payload: Config_Isolette_EnvironmentInterface_Interaction_Payload
-  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): Unit
-
-  def nextIsolette_EnvironmentInterface_Interaction_Payload(): Isolette_Environment.Interface_Interaction_Payload = {
-    var value: Isolette_Environment.Interface_Interaction.Type = nextIsolette_EnvironmentInterface_InteractionType()
-
-    var v: Isolette_Environment.Interface_Interaction_Payload = Isolette_Environment.Interface_Interaction_Payload(value)
-
-    if(get_Config_Isolette_EnvironmentInterface_Interaction_Payload.attempts >= 0) {
-     for(i <- 0 to get_Config_Isolette_EnvironmentInterface_Interaction_Payload.attempts) {
-        if(get_Config_Isolette_EnvironmentInterface_Interaction_Payload.filter(v)) {
-          return v
-        }
-        println(s"Retrying for failing value: $v")
-        value = nextIsolette_EnvironmentInterface_InteractionType()
-        v = Isolette_Environment.Interface_Interaction_Payload(value)
-     }
-    } else {
-     while(T) {
-       if(get_Config_Isolette_EnvironmentInterface_Interaction_Payload.filter(v)) {
-         return v
-       }
-       println(s"Retrying for failing value: $v")
-       value = nextIsolette_EnvironmentInterface_InteractionType()
-       v = Isolette_Environment.Interface_Interaction_Payload(value)
+       value = nextTempSensorTemperature_i()
+       v = TempSensor.Temperature_i_Payload(value)
      }
     }
 
@@ -2642,246 +2142,92 @@ DataContent.scala
     config_Base_TypesBits_Payload = config
   }
 
-  // ============= Isolette_Data_Model.Failure_Flag_impl ===================
-  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl(v: Isolette_Data_Model.Failure_Flag_impl): B = {return T}
+  // ============= CoolingFan.FanAck.Type ===================
+  def alwaysTrue_CoolingFanFanAckType(v: CoolingFan.FanAck.Type): B = {return T}
 
-  var config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = Config_Isolette_Data_ModelFailure_Flag_impl(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl _)
+  var config_CoolingFanFanAckType: Config_CoolingFanFanAckType = Config_CoolingFanFanAckType(100, alwaysTrue_CoolingFanFanAckType _)
 
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = {return config_Isolette_Data_ModelFailure_Flag_impl}
+  def get_Config_CoolingFanFanAckType: Config_CoolingFanFanAckType = {return config_CoolingFanFanAckType}
 
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit ={
-    config_Isolette_Data_ModelFailure_Flag_impl = config
+  def set_Config_CoolingFanFanAckType(config: Config_CoolingFanFanAckType): Unit ={
+    config_CoolingFanFanAckType = config
   }
 
-  // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload(v: Isolette_Data_Model.Failure_Flag_impl_Payload): B = {return T}
+  // ============= CoolingFan.FanAck_Payload ===================
+  def alwaysTrue_CoolingFanFanAck_Payload(v: CoolingFan.FanAck_Payload): B = {return T}
 
-  var config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = Config_Isolette_Data_ModelFailure_Flag_impl_Payload(100, alwaysTrue_Isolette_Data_ModelFailure_Flag_impl_Payload _)
+  var config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = Config_CoolingFanFanAck_Payload(100, alwaysTrue_CoolingFanFanAck_Payload _)
 
-  def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = {return config_Isolette_Data_ModelFailure_Flag_impl_Payload}
+  def get_Config_CoolingFanFanAck_Payload: Config_CoolingFanFanAck_Payload = {return config_CoolingFanFanAck_Payload}
 
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit ={
-    config_Isolette_Data_ModelFailure_Flag_impl_Payload = config
+  def set_Config_CoolingFanFanAck_Payload(config: Config_CoolingFanFanAck_Payload): Unit ={
+    config_CoolingFanFanAck_Payload = config
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
-  def alwaysTrue_Isolette_Data_ModelMonitor_ModeType(v: Isolette_Data_Model.Monitor_Mode.Type): B = {return T}
+  // ============= CoolingFan.FanCmd.Type ===================
+  def alwaysTrue_CoolingFanFanCmdType(v: CoolingFan.FanCmd.Type): B = {return T}
 
-  var config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = Config_Isolette_Data_ModelMonitor_ModeType(100, alwaysTrue_Isolette_Data_ModelMonitor_ModeType _)
+  var config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = Config_CoolingFanFanCmdType(100, alwaysTrue_CoolingFanFanCmdType _)
 
-  def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = {return config_Isolette_Data_ModelMonitor_ModeType}
+  def get_Config_CoolingFanFanCmdType: Config_CoolingFanFanCmdType = {return config_CoolingFanFanCmdType}
 
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit ={
-    config_Isolette_Data_ModelMonitor_ModeType = config
+  def set_Config_CoolingFanFanCmdType(config: Config_CoolingFanFanCmdType): Unit ={
+    config_CoolingFanFanCmdType = config
   }
 
-  // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload(v: Isolette_Data_Model.Monitor_Mode_Payload): B = {return T}
+  // ============= CoolingFan.FanCmd_Payload ===================
+  def alwaysTrue_CoolingFanFanCmd_Payload(v: CoolingFan.FanCmd_Payload): B = {return T}
 
-  var config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = Config_Isolette_Data_ModelMonitor_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelMonitor_Mode_Payload _)
+  var config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = Config_CoolingFanFanCmd_Payload(100, alwaysTrue_CoolingFanFanCmd_Payload _)
 
-  def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = {return config_Isolette_Data_ModelMonitor_Mode_Payload}
+  def get_Config_CoolingFanFanCmd_Payload: Config_CoolingFanFanCmd_Payload = {return config_CoolingFanFanCmd_Payload}
 
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit ={
-    config_Isolette_Data_ModelMonitor_Mode_Payload = config
+  def set_Config_CoolingFanFanCmd_Payload(config: Config_CoolingFanFanCmd_Payload): Unit ={
+    config_CoolingFanFanCmd_Payload = config
   }
 
-  // ============= Isolette_Data_Model.On_Off.Type ===================
-  def alwaysTrue_Isolette_Data_ModelOn_OffType(v: Isolette_Data_Model.On_Off.Type): B = {return T}
+  // ============= TempControlSoftwareSystem.SetPoint_i ===================
+  def alwaysTrue_TempControlSoftwareSystemSetPoint_i(v: TempControlSoftwareSystem.SetPoint_i): B = {return T}
 
-  var config_Isolette_Data_ModelOn_OffType: Config_Isolette_Data_ModelOn_OffType = Config_Isolette_Data_ModelOn_OffType(100, alwaysTrue_Isolette_Data_ModelOn_OffType _)
+  var config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = Config_TempControlSoftwareSystemSetPoint_i(100, TempControlSoftwareSystem.SetPoint_i_GumboX.D_Inv_SetPoint_i _)
 
-  def get_Config_Isolette_Data_ModelOn_OffType: Config_Isolette_Data_ModelOn_OffType = {return config_Isolette_Data_ModelOn_OffType}
+  def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = {return config_TempControlSoftwareSystemSetPoint_i}
 
-  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): Unit ={
-    config_Isolette_Data_ModelOn_OffType = config
+  def set_Config_TempControlSoftwareSystemSetPoint_i(config: Config_TempControlSoftwareSystemSetPoint_i): Unit ={
+    config_TempControlSoftwareSystemSetPoint_i = config
   }
 
-  // ============= Isolette_Data_Model.On_Off_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelOn_Off_Payload(v: Isolette_Data_Model.On_Off_Payload): B = {return T}
+  // ============= TempControlSoftwareSystem.SetPoint_i_Payload ===================
+  def alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload(v: TempControlSoftwareSystem.SetPoint_i_Payload): B = {return T}
 
-  var config_Isolette_Data_ModelOn_Off_Payload: Config_Isolette_Data_ModelOn_Off_Payload = Config_Isolette_Data_ModelOn_Off_Payload(100, alwaysTrue_Isolette_Data_ModelOn_Off_Payload _)
+  var config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = Config_TempControlSoftwareSystemSetPoint_i_Payload(100, alwaysTrue_TempControlSoftwareSystemSetPoint_i_Payload _)
 
-  def get_Config_Isolette_Data_ModelOn_Off_Payload: Config_Isolette_Data_ModelOn_Off_Payload = {return config_Isolette_Data_ModelOn_Off_Payload}
+  def get_Config_TempControlSoftwareSystemSetPoint_i_Payload: Config_TempControlSoftwareSystemSetPoint_i_Payload = {return config_TempControlSoftwareSystemSetPoint_i_Payload}
 
-  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): Unit ={
-    config_Isolette_Data_ModelOn_Off_Payload = config
+  def set_Config_TempControlSoftwareSystemSetPoint_i_Payload(config: Config_TempControlSoftwareSystemSetPoint_i_Payload): Unit ={
+    config_TempControlSoftwareSystemSetPoint_i_Payload = config
   }
 
-  // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
-  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl(v: Isolette_Data_Model.PhysicalTemp_impl): B = {return T}
+  // ============= TempSensor.Temperature_i ===================
+  def alwaysTrue_TempSensorTemperature_i(v: TempSensor.Temperature_i): B = {return T}
 
-  var config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = Config_Isolette_Data_ModelPhysicalTemp_impl(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl _)
+  var config_TempSensorTemperature_i: Config_TempSensorTemperature_i = Config_TempSensorTemperature_i(100, TempSensor.Temperature_i_GumboX.D_Inv_Temperature_i _)
 
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = {return config_Isolette_Data_ModelPhysicalTemp_impl}
+  def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i = {return config_TempSensorTemperature_i}
 
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit ={
-    config_Isolette_Data_ModelPhysicalTemp_impl = config
+  def set_Config_TempSensorTemperature_i(config: Config_TempSensorTemperature_i): Unit ={
+    config_TempSensorTemperature_i = config
   }
 
-  // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload(v: Isolette_Data_Model.PhysicalTemp_impl_Payload): B = {return T}
+  // ============= TempSensor.Temperature_i_Payload ===================
+  def alwaysTrue_TempSensorTemperature_i_Payload(v: TempSensor.Temperature_i_Payload): B = {return T}
 
-  var config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(100, alwaysTrue_Isolette_Data_ModelPhysicalTemp_impl_Payload _)
+  var config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = Config_TempSensorTemperature_i_Payload(100, alwaysTrue_TempSensorTemperature_i_Payload _)
 
-  def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = {return config_Isolette_Data_ModelPhysicalTemp_impl_Payload}
+  def get_Config_TempSensorTemperature_i_Payload: Config_TempSensorTemperature_i_Payload = {return config_TempSensorTemperature_i_Payload}
 
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit ={
-    config_Isolette_Data_ModelPhysicalTemp_impl_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
-  def alwaysTrue_Isolette_Data_ModelRegulator_ModeType(v: Isolette_Data_Model.Regulator_Mode.Type): B = {return T}
-
-  var config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = Config_Isolette_Data_ModelRegulator_ModeType(100, alwaysTrue_Isolette_Data_ModelRegulator_ModeType _)
-
-  def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = {return config_Isolette_Data_ModelRegulator_ModeType}
-
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit ={
-    config_Isolette_Data_ModelRegulator_ModeType = config
-  }
-
-  // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload(v: Isolette_Data_Model.Regulator_Mode_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = Config_Isolette_Data_ModelRegulator_Mode_Payload(100, alwaysTrue_Isolette_Data_ModelRegulator_Mode_Payload _)
-
-  def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = {return config_Isolette_Data_ModelRegulator_Mode_Payload}
-
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit ={
-    config_Isolette_Data_ModelRegulator_Mode_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.Status.Type ===================
-  def alwaysTrue_Isolette_Data_ModelStatusType(v: Isolette_Data_Model.Status.Type): B = {return T}
-
-  var config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = Config_Isolette_Data_ModelStatusType(100, alwaysTrue_Isolette_Data_ModelStatusType _)
-
-  def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = {return config_Isolette_Data_ModelStatusType}
-
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit ={
-    config_Isolette_Data_ModelStatusType = config
-  }
-
-  // ============= Isolette_Data_Model.Status_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelStatus_Payload(v: Isolette_Data_Model.Status_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload = Config_Isolette_Data_ModelStatus_Payload(100, alwaysTrue_Isolette_Data_ModelStatus_Payload _)
-
-  def get_Config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload = {return config_Isolette_Data_ModelStatus_Payload}
-
-  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): Unit ={
-    config_Isolette_Data_ModelStatus_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl ===================
-  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl(v: Isolette_Data_Model.TempWstatus_impl): B = {return T}
-
-  var config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = Config_Isolette_Data_ModelTempWstatus_impl(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl _)
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = {return config_Isolette_Data_ModelTempWstatus_impl}
-
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit ={
-    config_Isolette_Data_ModelTempWstatus_impl = config
-  }
-
-  // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload(v: Isolette_Data_Model.TempWstatus_impl_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = Config_Isolette_Data_ModelTempWstatus_impl_Payload(100, alwaysTrue_Isolette_Data_ModelTempWstatus_impl_Payload _)
-
-  def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = {return config_Isolette_Data_ModelTempWstatus_impl_Payload}
-
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit ={
-    config_Isolette_Data_ModelTempWstatus_impl_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.Temp_impl ===================
-  def alwaysTrue_Isolette_Data_ModelTemp_impl(v: Isolette_Data_Model.Temp_impl): B = {return T}
-
-  var config_Isolette_Data_ModelTemp_impl: Config_Isolette_Data_ModelTemp_impl = Config_Isolette_Data_ModelTemp_impl(100, alwaysTrue_Isolette_Data_ModelTemp_impl _)
-
-  def get_Config_Isolette_Data_ModelTemp_impl: Config_Isolette_Data_ModelTemp_impl = {return config_Isolette_Data_ModelTemp_impl}
-
-  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): Unit ={
-    config_Isolette_Data_ModelTemp_impl = config
-  }
-
-  // ============= Isolette_Data_Model.Temp_impl_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelTemp_impl_Payload(v: Isolette_Data_Model.Temp_impl_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelTemp_impl_Payload: Config_Isolette_Data_ModelTemp_impl_Payload = Config_Isolette_Data_ModelTemp_impl_Payload(100, alwaysTrue_Isolette_Data_ModelTemp_impl_Payload _)
-
-  def get_Config_Isolette_Data_ModelTemp_impl_Payload: Config_Isolette_Data_ModelTemp_impl_Payload = {return config_Isolette_Data_ModelTemp_impl_Payload}
-
-  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): Unit ={
-    config_Isolette_Data_ModelTemp_impl_Payload = config
-  }
-
-  // ============= Isolette_Data_Model.ValueStatus.Type ===================
-  def alwaysTrue_Isolette_Data_ModelValueStatusType(v: Isolette_Data_Model.ValueStatus.Type): B = {return T}
-
-  var config_Isolette_Data_ModelValueStatusType: Config_Isolette_Data_ModelValueStatusType = Config_Isolette_Data_ModelValueStatusType(100, alwaysTrue_Isolette_Data_ModelValueStatusType _)
-
-  def get_Config_Isolette_Data_ModelValueStatusType: Config_Isolette_Data_ModelValueStatusType = {return config_Isolette_Data_ModelValueStatusType}
-
-  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): Unit ={
-    config_Isolette_Data_ModelValueStatusType = config
-  }
-
-  // ============= Isolette_Data_Model.ValueStatus_Payload ===================
-  def alwaysTrue_Isolette_Data_ModelValueStatus_Payload(v: Isolette_Data_Model.ValueStatus_Payload): B = {return T}
-
-  var config_Isolette_Data_ModelValueStatus_Payload: Config_Isolette_Data_ModelValueStatus_Payload = Config_Isolette_Data_ModelValueStatus_Payload(100, alwaysTrue_Isolette_Data_ModelValueStatus_Payload _)
-
-  def get_Config_Isolette_Data_ModelValueStatus_Payload: Config_Isolette_Data_ModelValueStatus_Payload = {return config_Isolette_Data_ModelValueStatus_Payload}
-
-  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): Unit ={
-    config_Isolette_Data_ModelValueStatus_Payload = config
-  }
-
-  // ============= Isolette_Environment.Heat.Type ===================
-  def alwaysTrue_Isolette_EnvironmentHeatType(v: Isolette_Environment.Heat.Type): B = {return T}
-
-  var config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = Config_Isolette_EnvironmentHeatType(100, alwaysTrue_Isolette_EnvironmentHeatType _)
-
-  def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = {return config_Isolette_EnvironmentHeatType}
-
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit ={
-    config_Isolette_EnvironmentHeatType = config
-  }
-
-  // ============= Isolette_Environment.Heat_Payload ===================
-  def alwaysTrue_Isolette_EnvironmentHeat_Payload(v: Isolette_Environment.Heat_Payload): B = {return T}
-
-  var config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = Config_Isolette_EnvironmentHeat_Payload(100, alwaysTrue_Isolette_EnvironmentHeat_Payload _)
-
-  def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = {return config_Isolette_EnvironmentHeat_Payload}
-
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit ={
-    config_Isolette_EnvironmentHeat_Payload = config
-  }
-
-  // ============= Isolette_Environment.Interface_Interaction.Type ===================
-  def alwaysTrue_Isolette_EnvironmentInterface_InteractionType(v: Isolette_Environment.Interface_Interaction.Type): B = {return T}
-
-  var config_Isolette_EnvironmentInterface_InteractionType: Config_Isolette_EnvironmentInterface_InteractionType = Config_Isolette_EnvironmentInterface_InteractionType(100, alwaysTrue_Isolette_EnvironmentInterface_InteractionType _)
-
-  def get_Config_Isolette_EnvironmentInterface_InteractionType: Config_Isolette_EnvironmentInterface_InteractionType = {return config_Isolette_EnvironmentInterface_InteractionType}
-
-  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): Unit ={
-    config_Isolette_EnvironmentInterface_InteractionType = config
-  }
-
-  // ============= Isolette_Environment.Interface_Interaction_Payload ===================
-  def alwaysTrue_Isolette_EnvironmentInterface_Interaction_Payload(v: Isolette_Environment.Interface_Interaction_Payload): B = {return T}
-
-  var config_Isolette_EnvironmentInterface_Interaction_Payload: Config_Isolette_EnvironmentInterface_Interaction_Payload = Config_Isolette_EnvironmentInterface_Interaction_Payload(100, alwaysTrue_Isolette_EnvironmentInterface_Interaction_Payload _)
-
-  def get_Config_Isolette_EnvironmentInterface_Interaction_Payload: Config_Isolette_EnvironmentInterface_Interaction_Payload = {return config_Isolette_EnvironmentInterface_Interaction_Payload}
-
-  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): Unit ={
-    config_Isolette_EnvironmentInterface_Interaction_Payload = config
+  def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit ={
+    config_TempSensorTemperature_i_Payload = config
   }
 }
 
