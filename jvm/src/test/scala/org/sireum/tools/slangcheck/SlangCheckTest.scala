@@ -12,7 +12,7 @@ class SlangCheckTest extends TestSuite {
 
   val runTipe: B = T && TestUtil.willingToWait
 
-  val runGeneratedTests: B = T //&& TestUtil.willingToWait
+  val runGeneratedTests: B = T && TestUtil.willingToWait
 
   val verbose: B = F
 
@@ -77,7 +77,7 @@ class SlangCheckTest extends TestSuite {
       }
     }
 
-    var passing: B = T
+    var failureReasons: ISZ[String] = ISZ()
 
     if (generateExpected) {
       assert (!TestUtil.isCI, "generateExpected should be F when code is pushed to github")
@@ -87,23 +87,34 @@ class SlangCheckTest extends TestSuite {
       resultsDir.copyOverTo(expectedDir)
       println(s"Replaced: ${expectedDir}")
     } else {
-      passing = TestUtil.compare(resultsDir)
+      if (!TestUtil.compare(resultsDir)) {
+        failureReasons = failureReasons :+ "Results did not match expected"
+      }
     }
 
     if (runTipe) {
-      passing = passing & proc"$sireum proyek tipe .".at(resultsDir).echo.console.run().ok
+      if(!proc"$sireum proyek tipe .".at(resultsDir).echo.console.run().ok) {
+        failureReasons = failureReasons :+ "Type checking failed"
+      }
     }
 
     if (runGeneratedTests) {
       var passed = proc"$sireum proyek compile .".at(resultsDir).echo.console.run().ok
-      passing = passed
+      if(!passed) {
+        failureReasons = failureReasons :+ "Compilation failed"
+      }
 
       if (passed) {
         passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
         println(s"Generated Tests: ${if (passed) "passing" else "failing"}")
+
+        // TODO: generated test could be failing due to 'requirements too strict'
+        //if (!passed) {
+        //  failureReasons = failureReasons :+ "Generated unit tests produced a failure"
+        //}
       }
     }
 
-    assert(passing)
+    assert (failureReasons.size == 0)
   }
 }

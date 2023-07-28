@@ -44,7 +44,9 @@ DataContent.scala
          if (get_Config_Z.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_Z.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextZ()
@@ -62,7 +64,9 @@ DataContent.scala
          if (get_Config_Z.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_Z.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextZ()
@@ -91,7 +95,9 @@ DataContent.scala
          if (get_Config_B.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_B.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = gen.nextB()
        }
       } else {
@@ -99,7 +105,9 @@ DataContent.scala
          if (get_Config_B.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_B.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = gen.nextB()
        }
       }
@@ -118,7 +126,9 @@ DataContent.scala
          if (get_Config_C.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_C.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = gen.nextC()
        }
       } else {
@@ -126,7 +136,9 @@ DataContent.scala
          if (get_Config_C.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_C.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = gen.nextC()
        }
       }
@@ -158,7 +170,9 @@ DataContent.scala
          if (get_Config_R.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_R.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextR()
@@ -176,7 +190,9 @@ DataContent.scala
          if (get_Config_R.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_R.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextR()
@@ -218,7 +234,9 @@ DataContent.scala
          if (get_Config_F32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_F32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextF32()
@@ -236,7 +254,9 @@ DataContent.scala
          if (get_Config_F32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_F32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextF32()
@@ -278,7 +298,9 @@ DataContent.scala
          if (get_Config_F64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_F64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextF64()
@@ -296,7 +318,9 @@ DataContent.scala
          if (get_Config_F64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_F64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextF64()
@@ -338,7 +362,9 @@ DataContent.scala
          if (get_Config_S8.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S8.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS8()
@@ -356,7 +382,9 @@ DataContent.scala
          if (get_Config_S8.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S8.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS8()
@@ -398,7 +426,9 @@ DataContent.scala
          if (get_Config_S16.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S16.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS16()
@@ -416,7 +446,9 @@ DataContent.scala
          if (get_Config_S16.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S16.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS16()
@@ -458,7 +490,9 @@ DataContent.scala
          if (get_Config_S32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS32()
@@ -476,7 +510,9 @@ DataContent.scala
          if (get_Config_S32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS32()
@@ -518,7 +554,9 @@ DataContent.scala
          if (get_Config_S64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS64()
@@ -536,7 +574,9 @@ DataContent.scala
          if (get_Config_S64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_S64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextS64()
@@ -578,7 +618,9 @@ DataContent.scala
          if (get_Config_U8.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U8.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU8()
@@ -596,7 +638,9 @@ DataContent.scala
          if (get_Config_U8.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U8.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU8()
@@ -638,7 +682,9 @@ DataContent.scala
          if (get_Config_U16.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U16.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU16()
@@ -656,7 +702,9 @@ DataContent.scala
          if (get_Config_U16.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U16.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU16()
@@ -698,7 +746,9 @@ DataContent.scala
          if (get_Config_U32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU32()
@@ -716,7 +766,9 @@ DataContent.scala
          if (get_Config_U32.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U32.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU32()
@@ -758,7 +810,9 @@ DataContent.scala
          if (get_Config_U64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU64()
@@ -776,7 +830,9 @@ DataContent.scala
          if (get_Config_U64.filter(r)) {
            return r
          }
-         println(s"Retrying for failing value: $r")
+         if (get_Config_U64.verbose) {
+           println(s"Retrying for failing value: $r")
+         }
          r = if (conf.low.isEmpty) {
            if (conf.high.isEmpty)
              gen.nextU64()
@@ -833,7 +889,9 @@ DataContent.scala
        if(get_Config__artDataContent.filter(v)) {
         return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config__artDataContent.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
@@ -846,7 +904,9 @@ DataContent.scala
        if(get_Config__artDataContent.filter(v)) {
          return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config__artDataContent.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
@@ -873,7 +933,9 @@ DataContent.scala
         if(get_Config__artEmpty.filter(v)) {
           return v
         }
-        println(s"Retrying for failing value: $v")
+        if (get_Config__artEmpty.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
         v = art.Empty()
      }
     } else {
@@ -881,7 +943,9 @@ DataContent.scala
        if(get_Config__artEmpty.filter(v)) {
          return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config__artEmpty.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        v = art.Empty()
      }
     }
@@ -919,7 +983,9 @@ DataContent.scala
        if(get_Config_TR_T.filter(v)) {
         return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config_TR_T.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
@@ -932,7 +998,9 @@ DataContent.scala
        if(get_Config_TR_T.filter(v)) {
          return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config_TR_T.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        c = callEnum(gen.nextZBetween(0, callEnum.size-1))
 
        v = c match {
@@ -960,7 +1028,9 @@ DataContent.scala
         if(get_Config_L_X.filter(v)) {
           return v
         }
-        println(s"Retrying for failing value: $v")
+        if (get_Config_L_X.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
         value1 = nextZ()
         v = L_X(value1)
      }
@@ -969,7 +1039,9 @@ DataContent.scala
        if(get_Config_L_X.filter(v)) {
          return v
        }
-       println(s"Retrying for failing value: $v")
+       if (get_Config_L_X.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
        value1 = nextZ()
        v = L_X(value1)
      }
@@ -985,6 +1057,12 @@ DataContent.scala
 
   var numElem: Z = 50
 
+  var _verbose: B = F
+  def verbose: RandomLib = {
+    _verbose = !_verbose
+    return this
+  }
+
   def get_numElement: Z = {return numElem}
 
   def set_numElement(s: Z): Unit ={
@@ -994,7 +1072,7 @@ DataContent.scala
   // ============= Z ===================
   def alwaysTrue_Z(v: Z): B = {return T}
 
-  var config_Z: Config_Z = Config_Z(None(), None(), 100, alwaysTrue_Z _)
+  var config_Z: Config_Z = Config_Z(None(), None(), 100, _verbose, alwaysTrue_Z _)
   def get_Config_Z: Config_Z = {return config_Z}
 
   def set_Config_Z(config: Config_Z): Unit ={
@@ -1004,7 +1082,7 @@ DataContent.scala
   // ============= B ===================
   def alwaysTrue_B(v: B): B = {return T}
 
-  var config_B: Config_B = Config_B(100, alwaysTrue_B _)
+  var config_B: Config_B = Config_B(100, _verbose, alwaysTrue_B _)
   def get_Config_B: Config_B = {return config_B}
 
   def set_Config_B(config: Config_B): Unit ={
@@ -1014,7 +1092,7 @@ DataContent.scala
   // ============= C ===================
   def alwaysTrue_C(v: C): B = {return T}
 
-  var config_C: Config_C = Config_C(100, alwaysTrue_C _)
+  var config_C: Config_C = Config_C(100, _verbose, alwaysTrue_C _)
   def get_Config_C: Config_C = {return config_C}
 
   def set_Config_C(config: Config_C): Unit ={
@@ -1024,7 +1102,7 @@ DataContent.scala
   // ============= R ===================
   def alwaysTrue_R(v: R): B = {return T}
 
-  var config_R: Config_R = Config_R(None(), None(), 100, alwaysTrue_R _)
+  var config_R: Config_R = Config_R(None(), None(), 100, _verbose, alwaysTrue_R _)
   def get_Config_R: Config_R = {return config_R}
 
   def set_Config_R(config: Config_R): Unit ={
@@ -1034,7 +1112,7 @@ DataContent.scala
   // ============= F32 ===================
   def alwaysTrue_F32(v: F32): B = {return T}
 
-  var config_F32: Config_F32 = Config_F32(None(), None(), 100, alwaysTrue_F32 _)
+  var config_F32: Config_F32 = Config_F32(None(), None(), 100, _verbose, alwaysTrue_F32 _)
   def get_Config_F32: Config_F32 = {return config_F32}
 
   def set_Config_F32(config: Config_F32): Unit ={
@@ -1044,7 +1122,7 @@ DataContent.scala
   // ============= F64 ===================
   def alwaysTrue_F64(v: F64): B = {return T}
 
-  var config_F64: Config_F64 = Config_F64(None(), None(), 100, alwaysTrue_F64 _)
+  var config_F64: Config_F64 = Config_F64(None(), None(), 100, _verbose, alwaysTrue_F64 _)
   def get_Config_F64: Config_F64 = {return config_F64}
 
   def set_Config_F64(config: Config_F64): Unit ={
@@ -1054,7 +1132,7 @@ DataContent.scala
   // ============= S8 ===================
   def alwaysTrue_S8(v: S8): B = {return T}
 
-  var config_S8: Config_S8 = Config_S8(None(), None(), 100, alwaysTrue_S8 _)
+  var config_S8: Config_S8 = Config_S8(None(), None(), 100, _verbose, alwaysTrue_S8 _)
   def get_Config_S8: Config_S8 = {return config_S8}
 
   def set_Config_S8(config: Config_S8): Unit ={
@@ -1064,7 +1142,7 @@ DataContent.scala
   // ============= S16 ===================
   def alwaysTrue_S16(v: S16): B = {return T}
 
-  var config_S16: Config_S16 = Config_S16(None(), None(), 100, alwaysTrue_S16 _)
+  var config_S16: Config_S16 = Config_S16(None(), None(), 100, _verbose, alwaysTrue_S16 _)
   def get_Config_S16: Config_S16 = {return config_S16}
 
   def set_Config_S16(config: Config_S16): Unit ={
@@ -1074,7 +1152,7 @@ DataContent.scala
   // ============= S32 ===================
   def alwaysTrue_S32(v: S32): B = {return T}
 
-  var config_S32: Config_S32 = Config_S32(None(), None(), 100, alwaysTrue_S32 _)
+  var config_S32: Config_S32 = Config_S32(None(), None(), 100, _verbose, alwaysTrue_S32 _)
   def get_Config_S32: Config_S32 = {return config_S32}
 
   def set_Config_S32(config: Config_S32): Unit ={
@@ -1084,7 +1162,7 @@ DataContent.scala
   // ============= S64 ===================
   def alwaysTrue_S64(v: S64): B = {return T}
 
-  var config_S64: Config_S64 = Config_S64(None(), None(), 100, alwaysTrue_S64 _)
+  var config_S64: Config_S64 = Config_S64(None(), None(), 100, _verbose, alwaysTrue_S64 _)
   def get_Config_S64: Config_S64 = {return config_S64}
 
   def set_Config_S64(config: Config_S64): Unit ={
@@ -1094,7 +1172,7 @@ DataContent.scala
   // ============= U8 ===================
   def alwaysTrue_U8(v: U8): B = {return T}
 
-  var config_U8: Config_U8 = Config_U8(None(), None(), 100, alwaysTrue_U8 _)
+  var config_U8: Config_U8 = Config_U8(None(), None(), 100, _verbose, alwaysTrue_U8 _)
   def get_Config_U8: Config_U8 = {return config_U8}
 
   def set_Config_U8(config: Config_U8): Unit ={
@@ -1104,7 +1182,7 @@ DataContent.scala
   // ============= U16 ===================
   def alwaysTrue_U16(v: U16): B = {return T}
 
-  var config_U16: Config_U16 = Config_U16(None(), None(), 100, alwaysTrue_U16 _)
+  var config_U16: Config_U16 = Config_U16(None(), None(), 100, _verbose, alwaysTrue_U16 _)
   def get_Config_U16: Config_U16 = {return config_U16}
 
   def set_Config_U16(config: Config_U16): Unit ={
@@ -1114,7 +1192,7 @@ DataContent.scala
   // ============= U32 ===================
   def alwaysTrue_U32(v: U32): B = {return T}
 
-  var config_U32: Config_U32 = Config_U32(None(), None(), 100, alwaysTrue_U32 _)
+  var config_U32: Config_U32 = Config_U32(None(), None(), 100, _verbose, alwaysTrue_U32 _)
   def get_Config_U32: Config_U32 = {return config_U32}
 
   def set_Config_U32(config: Config_U32): Unit ={
@@ -1124,7 +1202,7 @@ DataContent.scala
   // ============= U64 ===================
   def alwaysTrue_U64(v: U64): B = {return T}
 
-  var config_U64: Config_U64 = Config_U64(None(), None(), 100, alwaysTrue_U64 _)
+  var config_U64: Config_U64 = Config_U64(None(), None(), 100, _verbose, alwaysTrue_U64 _)
   def get_Config_U64: Config_U64 = {return config_U64}
 
   def set_Config_U64(config: Config_U64): Unit ={
@@ -1134,7 +1212,7 @@ DataContent.scala
   // ============= art.DataContent ===================
   def alwaysTrue__artDataContent(v: art.DataContent): B = {return T}
 
-  var config__artDataContent: Config__artDataContent = Config__artDataContent(100, F, ISZ(), alwaysTrue__artDataContent _)
+  var config__artDataContent: Config__artDataContent = Config__artDataContent(100, _verbose, F, ISZ(), alwaysTrue__artDataContent _)
 
   def get_Config__artDataContent: Config__artDataContent = {return config__artDataContent}
 
@@ -1145,7 +1223,7 @@ DataContent.scala
   // ============= art.Empty ===================
   def alwaysTrue__artEmpty(v: art.Empty): B = {return T}
 
-  var config__artEmpty: Config__artEmpty = Config__artEmpty(100, alwaysTrue__artEmpty _)
+  var config__artEmpty: Config__artEmpty = Config__artEmpty(100, _verbose, alwaysTrue__artEmpty _)
 
   def get_Config__artEmpty: Config__artEmpty = {return config__artEmpty}
 
@@ -1156,7 +1234,7 @@ DataContent.scala
   // ============= TR_T ===================
   def alwaysTrue_TR_T(v: TR_T): B = {return T}
 
-  var config_TR_T: Config_TR_T = Config_TR_T(100, F, ISZ(), alwaysTrue_TR_T _)
+  var config_TR_T: Config_TR_T = Config_TR_T(100, _verbose, F, ISZ(), alwaysTrue_TR_T _)
 
   def get_Config_TR_T: Config_TR_T = {return config_TR_T}
 
@@ -1167,7 +1245,7 @@ DataContent.scala
   // ============= L_X ===================
   def alwaysTrue_L_X(v: L_X): B = {return T}
 
-  var config_L_X: Config_L_X = Config_L_X(100, alwaysTrue_L_X _)
+  var config_L_X: Config_L_X = Config_L_X(100, _verbose, alwaysTrue_L_X _)
 
   def get_Config_L_X: Config_L_X = {return config_L_X}
 
