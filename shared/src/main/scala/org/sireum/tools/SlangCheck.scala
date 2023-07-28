@@ -362,6 +362,12 @@ object SlangCheckTest {
           |
           |  var numElem: Z = 50
           |
+          |  var _verbose: B = F
+          |  def verbose: RandomLib = {
+          |    _verbose = !_verbose
+          |    return this
+          |  }
+          |
           |  def get_numElement: Z = {return numElem}
           |
           |  def set_numElement(s: Z): Unit ={
@@ -404,7 +410,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -422,7 +430,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -465,7 +475,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -483,7 +495,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -526,7 +540,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -544,7 +560,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -587,7 +605,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -605,7 +625,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -648,7 +670,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -666,7 +690,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = if (conf.low.isEmpty) {
             |         if (conf.high.isEmpty)
             |           gen.next$typ()
@@ -696,7 +722,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = gen.next$typ()
             |     }
             |    } else {
@@ -704,7 +732,9 @@ object SlangCheckTest {
             |       if (get_Config_$typ.filter(r)) {
             |         return r
             |       }
-            |       println(s"Retrying for failing value: $$r")
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
             |       r = gen.next$typ()
             |     }
             |    }
@@ -722,7 +752,7 @@ object SlangCheckTest {
         st"""// ============= ${typ} ===================
             |def alwaysTrue_$typ(v: $typ): B = {return T}
             |
-            |var config_${typ}: Config_${typ} = Config_$typ(None(), None(), 100, alwaysTrue_$typ _)
+            |var config_${typ}: Config_${typ} = Config_$typ(None(), None(), 100, _verbose, alwaysTrue_$typ _)
             |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
             |
             |def set_Config_${typ}(config: Config_${typ}): Unit ={
@@ -733,7 +763,7 @@ object SlangCheckTest {
         st"""// ============= ${typ} ===================
             |def alwaysTrue_$typ(v: $typ): B = {return T}
             |
-            |var config_${typ}: Config_${typ} = Config_$typ(100, alwaysTrue_$typ _)
+            |var config_${typ}: Config_${typ} = Config_$typ(100, _verbose, alwaysTrue_$typ _)
             |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
             |
             |def set_Config_${typ}(config: Config_${typ}): Unit ={
@@ -838,7 +868,7 @@ object SlangCheckTest {
       st"""// ============= ${adTypeString} ===================
           |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
           |
-          |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, alwaysTrue_$adTypeName _)
+          |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, alwaysTrue_$adTypeName _)
           |
           |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
           |
@@ -863,7 +893,9 @@ object SlangCheckTest {
           |     if(get_Config_${adTypeName}.filter(v)) {
           |      return v
           |     }
-          |     println(s"Retrying for failing value: $$v")
+          |     if (get_Config_${adTypeName}.verbose) {
+          |       println(s"Retrying for failing value: $$v")
+          |     }
           |     ordinal= gen.nextZBetween(0, ${genShortEnumType(ti.name)}.numOfElements-1)
           |     v = ${genShortEnumType(ti.name)}.byOrdinal(ordinal).get
           |   }
@@ -872,7 +904,9 @@ object SlangCheckTest {
           |     if(get_Config_${adTypeName}.filter(v)) {
           |      return v
           |     }
-          |     println(s"Retrying for failing value: $$v")
+          |     if (get_Config_${adTypeName}.verbose) {
+          |       println(s"Retrying for failing value: $$v")
+          |     }
           |     ordinal= gen.nextZBetween(0, ${genShortEnumType(ti.name)}.numOfElements-1)
           |     v = ${genShortEnumType(ti.name)}.byOrdinal(ordinal).get
           |   }
@@ -906,7 +940,7 @@ object SlangCheckTest {
       st"""// ============= ${adTypeString} ===================
           |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
           |
-          |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, F, ISZ(), alwaysTrue_$adTypeName _)
+          |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, F, ISZ(), alwaysTrue_$adTypeName _)
           |
           |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
           |
@@ -944,7 +978,9 @@ object SlangCheckTest {
           |     if(get_Config_${adTypeName}.filter(v)) {
           |      return v
           |     }
-          |     println(s"Retrying for failing value: $$v")
+          |     if (get_Config_${adTypeName}.verbose) {
+          |       println(s"Retrying for failing value: $$v")
+          |     }
           |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
           |
           |     v = c match {
@@ -957,7 +993,9 @@ object SlangCheckTest {
           |     if(get_Config_${adTypeName}.filter(v)) {
           |       return v
           |     }
-          |     println(s"Retrying for failing value: $$v")
+          |     if (get_Config_${adTypeName}.verbose) {
+          |       println(s"Retrying for failing value: $$v")
+          |     }
           |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
           |
           |     v = c match {
@@ -998,7 +1036,7 @@ object SlangCheckTest {
         st"""// ============= ${adTypeString} ===================
             |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
             |
-            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, F, ISZ(), alwaysTrue_$adTypeName _)
+            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, F, ISZ(), alwaysTrue_$adTypeName _)
             |
             |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
             |
@@ -1036,7 +1074,9 @@ object SlangCheckTest {
             |     if(get_Config_${adTypeName}.filter(v)) {
             |      return v
             |     }
-            |     println(s"Retrying for failing value: $$v")
+            |     if (get_Config_${adTypeName}.verbose) {
+            |       println(s"Retrying for failing value: $$v")
+            |     }
             |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
             |
             |     v = c match {
@@ -1049,7 +1089,9 @@ object SlangCheckTest {
             |     if(get_Config_${adTypeName}.filter(v)) {
             |       return v
             |     }
-            |     println(s"Retrying for failing value: $$v")
+            |     if (get_Config_${adTypeName}.verbose) {
+            |       println(s"Retrying for failing value: $$v")
+            |     }
             |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
             |
             |     v = c match {
@@ -1073,7 +1115,7 @@ object SlangCheckTest {
         st"""// ============= ${adTypeString} ===================
             |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
             |
-            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, ${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"})
+            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, ${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"})
             |
             |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
             |
@@ -1097,7 +1139,9 @@ object SlangCheckTest {
             |      if(get_Config_${adTypeName}.filter(v)) {
             |        return v
             |      }
-            |      println(s"Retrying for failing value: $$v")
+            |      if (get_Config_${adTypeName}.verbose) {
+            |        println(s"Retrying for failing value: $$v")
+            |      }
             |      ${(varsRepeat, "\n")}
             |      v = ${adTypeString}(${(args, ", ")})
             |   }
@@ -1106,7 +1150,9 @@ object SlangCheckTest {
             |     if(get_Config_${adTypeName}.filter(v)) {
             |       return v
             |     }
-            |     println(s"Retrying for failing value: $$v")
+            |     if (get_Config_${adTypeName}.verbose) {
+            |       println(s"Retrying for failing value: $$v")
+            |     }
             |     ${(varsRepeat, "\n")}
             |     v = ${adTypeString}(${(args, ", ")})
             |   }
@@ -1187,15 +1233,15 @@ object SlangCheckTest {
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
     nextConfig = nextConfig :+
-      st"""@datatype class Config_${adTypeName}(attempts: Z, filter: ${adTypeString} => B) {}"""
+      st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, filter: ${adTypeString} => B) {}"""
   }
 
   //get config type for a slang type
   def genSlangBaseTypes(typ: String): ST = {
     return if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "R" || typ == "Z")
-      st"""@datatype class Config_${typ}(low: Option[$typ], high: Option[$typ], attempts: Z, filter: ${typ} => B) {}"""
+      st"""@datatype class Config_${typ}(low: Option[$typ], high: Option[$typ], attempts: Z, verbose: B, filter: ${typ} => B) {}"""
     else
-      st"""@datatype class Config_${typ}(attempts: Z, filter: ${typ} => B) {}"""
+      st"""@datatype class Config_${typ}(attempts: Z, verbose: B, filter: ${typ} => B) {}"""
 
   }
 
@@ -1206,11 +1252,11 @@ object SlangCheckTest {
 
     if(ti.ast.isRoot) {
       nextConfig = nextConfig :+
-        st"""@datatype class Config_${adTypeName}(attempts: Z, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
+        st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
     }
     else {
       nextConfig = nextConfig :+
-        st"""@datatype class Config_${adTypeName}(attempts: Z, filter: ${adTypeString} => B) {}"""
+        st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, filter: ${adTypeString} => B) {}"""
     }
   }
 
@@ -1219,7 +1265,7 @@ object SlangCheckTest {
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
     nextConfig = nextConfig :+
-      st"""@datatype class Config_${adTypeName}(attempts: Z, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
+      st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
   }
 }
 
