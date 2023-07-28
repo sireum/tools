@@ -2,7 +2,7 @@
 package org.sireum.tools
 
 import org.sireum._
-import org.sireum.lang.symbol.Resolver.{NameMap, QName, TypeMap, typeNameString}
+import org.sireum.lang.symbol.Resolver.{NameMap, QName, TypeMap}
 import org.sireum.lang.symbol.{GlobalDeclarationResolver, Info, Resolver, TypeInfo}
 import org.sireum.lang.tipe.TypeHierarchy
 import org.sireum.lang.{ast => AST}
@@ -86,19 +86,14 @@ object SlangCheck {
     return ISZOps(names).sortWith((a: AST.Typed.Name, b: AST.Typed.Name) => s"${a.ids}${a.args}" < s"${b.ids}${b.args}")
   }
 
-  @pure def typeName(packageName: ISZ[String], name: QName): ST = {
-    val r = ops.StringOps(Resolver.typeName(packageName, name).render)
-    if (r.startsWith("_")) {
-      return st"${r.substring(1, r.size)}"
-    } else {
-      return st"${r.s}"
-    }
-  }
-
   @pure def astTypeNameString(packageName: ISZ[String], t: AST.Type): ST = {
     t match {
       case atn: AST.Type.Named =>
-        return Resolver.typeNameString(packageName, for (i <- atn.name.ids) yield i.value)
+        atn.typedOpt match {
+          case Some(typed) if builtIn(typed) => return Resolver.typeNameString(packageName, for (i <- atn.name.ids) yield i.value)
+          case Some(typed) => return astTypedNameString(packageName, typed)
+          case _ => halt("Infeasible")
+        }
       case _ => halt(s"Need to handle $t")
     }
   }
@@ -106,8 +101,34 @@ object SlangCheck {
   @pure def astTypeName(packageName: ISZ[String], t: AST.Type): ST = {
     t match {
       case atn: AST.Type.Named =>
-        return typeName(packageName, for (i <- atn.name.ids) yield i.value)
+        atn.typedOpt match {
+          case Some(t) if builtIn(t) => return Resolver.typeName(packageName, for (i <- atn.name.ids) yield i.value)
+          case Some(t) => return astTypedName(packageName, t)
+          case _ => halt("infeasible")
+        }
       case _ => halt(s"Need to handle $t")
+    }
+  }
+
+  @pure def astTypedNameString(packageName: ISZ[String], t: AST.Typed): ST = {
+    t match {
+      case atn: AST.Typed.Name => return Resolver.typeNameString(packageName, atn.ids)
+      case _ => halt(s"Need to handle $t")
+    }
+  }
+
+  @pure def astTypedName(packageName: ISZ[String], t: AST.Typed): ST = {
+
+    t match {
+      case atn: AST.Typed.Name => return Resolver.typeName(packageName, atn.ids)
+      case _ => halt(s"Need to handle $t")
+    }
+  }
+
+  def builtIn(typed: AST.Typed): B = {
+    typed match {
+      case AST.Typed.Name(ISZ("org", "sireum", _), _) => return T
+      case _ => return F
     }
   }
 }
@@ -735,7 +756,7 @@ object SlangCheckTest {
 
           if(typNameString.render == "Option") {
             extraNextMethods = extraNextMethods :+
-              st"""def next${typName}_${typArgNames(0)}(): $typNameString[${typArgNameStrings(0)}] = {
+              st"""def next${typName}${typArgNames(0)}(): $typNameString[${typArgNameStrings(0)}] = {
                   |    val none: Z = gen.nextZBetween(0,1)
                   |
                   |    if(none == 0) {
@@ -750,7 +771,7 @@ object SlangCheckTest {
             extraNextMethods = extraNextMethods :+
               st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
                   |
-                  |def next${typName }_${(typArgNames, "")}(): $typNameString[${(typArgNameStrings, ", ")}] = {
+                  |def next${typName}${(typArgNames, "")}(): $typNameString[${(typArgNameStrings, ", ")}] = {
                   |  val length: Z = gen.nextZBetween(0, get_numElement)
                   |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
                   |  for (r <- 0 until length) {
@@ -761,7 +782,7 @@ object SlangCheckTest {
                   |}"""
           }
 
-          st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}_${(typArgNames, "")}()"
+          st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}${(typArgNames, "")}()"
         }
         else {
           st"var ${v.ast.id.value}: $typNameString = next$typName()"
@@ -782,11 +803,8 @@ object SlangCheckTest {
     val rs: ST = v.ast.tipeOpt match {
       case Some(t: AST.Type.Named) =>
         if (t.typeArgs.nonEmpty) {
-          // assert(t.typeArgs.size == 1, "TODO: handle multiple type args")
-
           val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
-
-          st"${v.ast.id.value} = next${typName}_${(typArgNames, "")}()"
+          st"${v.ast.id.value} = next${typName}${(typArgNames, "")}()"
         }
         else {
           st"${v.ast.id.value} = next$typName()"
@@ -869,25 +887,19 @@ object SlangCheckTest {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
     val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
-    val pn = packageName(0)
 
-    var calls: ISZ[String] = ISZ()
-    var enumNames: ISZ[String] = ISZ()
-    var cases: ISZ[String] = ISZ()
+    var calls: ISZ[ST] = ISZ()
+    var enumNames: ISZ[ST] = ISZ()
+    var cases: ISZ[ST] = ISZ()
 
     for (typ <- SlangCheck.sortedTyedNames(leaves)) {
-      val ids = typ.ids
-      if (ids(0) == pn) {
-        calls = calls :+ st"next${(ops.ISZOps(typ.ids).drop(1), "")}".render
-        enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id".render
-      } else {
-        calls = calls :+ st"next_${(typ.ids, "")}".render
-        enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id".render
-      }
+      val typName = SlangCheck.astTypedName(packageName, typ)
+      calls = calls :+ st"next$typName"
+      enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${typName}_Id"
     }
 
     for (i <- 0 to enumNames.size - 1) {
-      cases = cases :+ s"case ${enumNames(i)} => (${calls(i)} _).apply()"
+      cases = cases :+ st"case ${enumNames(i)} => (${calls(i)} _).apply()"
     }
 
     nextConfig = nextConfig :+
@@ -967,25 +979,19 @@ object SlangCheckTest {
 
     if(ti.ast.isRoot) {
       val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
-      val pn = packageName(0)
 
-      var calls: ISZ[String] = ISZ()
-      var enumNames: ISZ[String] = ISZ()
-      var cases: ISZ[String] = ISZ()
+      var calls: ISZ[ST] = ISZ()
+      var enumNames: ISZ[ST] = ISZ()
+      var cases: ISZ[ST] = ISZ()
 
       for (typ <- SlangCheck.sortedTyedNames(leaves)) {
-        val ids = typ.ids
-        if (ids(0) == pn) {
-          calls = calls :+ st"next${(ops.ISZOps(typ.ids).drop(1), "")}".render
-          enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id".render
-        } else {
-          calls = calls :+ st"next_${(typ.ids, "")}".render
-          enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id".render
-        }
+        val typName = SlangCheck.astTypedName(packageName, typ)
+        calls = calls :+ st"next$typName"
+        enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${typName}_Id"
       }
 
       for (i <- 0 to enumNames.size - 1) {
-        cases = cases :+ s"case ${enumNames(i)} => (${calls(i)} _).apply()"
+        cases = cases :+ st"case ${enumNames(i)} => (${calls(i)} _).apply()"
       }
 
       nextConfig = nextConfig :+
@@ -1233,7 +1239,6 @@ object SlangCheckTest {
     var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
 
     for (v <- th.typeMap.values) {
-      // println(v.posOpt)
       val temp = v
       v.posOpt match {
         case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
@@ -1395,7 +1400,6 @@ object SlangCheckTest {
     var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
 
     for (v <- th.typeMap.values) {
-      // println(v.posOpt)
       val temp = v
       v.posOpt match {
         case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
