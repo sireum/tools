@@ -1449,7 +1449,7 @@ object SlangCheckTest {
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
           |  val gen = Gen_$adTypeName(randomLib)
           |
           |  for(r <- gen.take(100))
@@ -1461,7 +1461,7 @@ object SlangCheckTest {
   def genSlangType(typ: String): ST = {
     return (
       st"""test("$typ Output") {
-          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
           |  val gen = Gen_$typ(randomLib)
           |
           |  for(r <- gen.take(100))
@@ -1476,7 +1476,7 @@ object SlangCheckTest {
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
           |  val gen = Gen_$adTypeName(randomLib)
           |
           |  for(r <- gen.take(100))
@@ -1490,7 +1490,7 @@ object SlangCheckTest {
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
           |  val gen = Gen_$adTypeName(randomLib)
           |
           |  for(r <- gen.take(100))
