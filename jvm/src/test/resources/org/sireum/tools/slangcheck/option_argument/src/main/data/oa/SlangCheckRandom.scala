@@ -993,14 +993,14 @@ DataContent.scala
   }
 
   def nextOptionC(): Option[C] = {
-      val none: Z = gen.nextZBetween(0,1)
+    val none: Z = gen.nextZBetween(0,1)
 
-      if(none == 0) {
-        return Some(nextC())
-      } else {
-        return None()
-      }
+    if(none == 0) {
+      return Some(nextC())
+    } else {
+      return None()
     }
+  }
 }
 
 @record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {
