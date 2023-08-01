@@ -30,44 +30,49 @@ object SlangCheck {
     var ret: ISZ[(ISZ[String], ST)] = ISZ()
 
     val t = RanGen(
-      gdr.globalNameMap,
-      gdr.globalTypeMap,
       packageName_,
       fileUris,
       typeHierarchy)
 
     val c = ConfigGen(
-      gdr.globalNameMap,
-      gdr.globalTypeMap,
       packageName_,
       fileUris,
       typeHierarchy)
 
     val g = GeneratorGen(
-      gdr.globalNameMap,
-      gdr.globalTypeMap,
       packageName,
       fileUris,
       typeHierarchy)
 
     val h = EnumGen(
-      gdr.globalNameMap,
-      gdr.globalTypeMap,
       packageName_,
       fileUris,
       typeHierarchy)
 
-    ret = ret :+ t.gen()
-    reporter.reports((t.reporter.messages))
+    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
 
-    ret = ret :+ c.gen()
-    reporter.reports((c.reporter.messages))
+    for (v <- typeHierarchy.typeMap.values) {
+      val temp = v
+      v.posOpt match {
+        case Some(v) if ops.ISZOps(fileUris).contains(v.uriOpt.get) =>
+          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
+        case _ =>
+      }
+    }
 
-    ret = ret :+ g.gen()
-    reporter.reports((g.reporter.messages))
+    val sortedTypeInfos = sortedTypes(cleanedTypeMapValues)
 
-    ret = ret :+ h.gen()
-    reporter.reports((h.reporter.messages))
+    ret = ret :+ t.gen(sortedTypeInfos)
+    reporter.reports(t.reporter.messages)
+
+    ret = ret :+ c.gen(sortedTypeInfos)
+    reporter.reports(c.reporter.messages)
+
+    ret = ret :+ g.gen(sortedTypeInfos)
+    reporter.reports(g.reporter.messages)
+
+    ret = ret :+ h.gen(sortedTypeInfos)
+    reporter.reports(h.reporter.messages)
 
     return ret
   }
@@ -77,7 +82,9 @@ object SlangCheck {
   @pure def sortedTypes(types: ISZ[TypeInfo]): ISZ[TypeInfo] = {
     // see Resolver.sortedGlobalTypes
 
-    @pure def sortURI(a: String, b: String): B = { return a < b }
+    @pure def sortURI(a: String, b: String): B = {
+      return a < b
+    }
 
     return ISZOps(types).sortWith(Resolver.ltTypeInfo(sortURI _))
   }
@@ -150,23 +157,19 @@ object SlangCheckTest {
     var ret: ISZ[(ISZ[String], ST)] = ISZ()
 
     val t = TestGen(
-      gdr.globalNameMap,
-      gdr.globalTypeMap,
       packageName_,
       fileUris,
       typeHierarchy)
 
     ret = ret :+ t.gen()
-    reporter.reports((t.reporter.messages))
+    reporter.reports(t.reporter.messages)
 
 
     return ret
   }
 }
 
-@record class EnumGen(val globalNameMap: NameMap,
-                      val globalTypeMap: TypeMap,
-                      val packageName: QName,
+@record class EnumGen(val packageName: QName,
                       val fileNames: ISZ[String],
                       val th: TypeHierarchy) {
 
@@ -174,26 +177,15 @@ object SlangCheckTest {
 
   var enums: ISZ[ST] = ISZ()
 
-  def gen(): (ISZ[String], ST) = {
+  def gen(sortedTypeInfos: ISZ[TypeInfo]): (ISZ[String], ST) = {
 
-    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
-
-    for (v <- th.typeMap.values) {
-      val temp = v
-      v.posOpt match {
-        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
-          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
-        case _ =>
-      }
-    }
-
-    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
+    for (ti <- sortedTypeInfos) {
       ti match {
         case ti: TypeInfo.Sig =>
           genSig(ti)
         case ti: TypeInfo.Adt =>
           genAdt(ti)
-        case _ => {}
+        case _ =>
       }
     }
 
@@ -219,8 +211,7 @@ object SlangCheckTest {
 
   def genAdt(ti: TypeInfo.Adt): Unit = {
 
-    if(ti.ast.isRoot) {
-      val adTypeString = Resolver.typeNameString(packageName, ti.name)
+    if (ti.ast.isRoot) {
       val adTypeName = Resolver.typeName(packageName, ti.name)
       val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
 
@@ -245,7 +236,6 @@ object SlangCheckTest {
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {
-    val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
     val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
     val pn = packageName(0)
@@ -261,7 +251,6 @@ object SlangCheckTest {
       }
     }
 
-
     enums = enums :+
       st"""@enum object ${adTypeName}_DataTypeId {
           |   ${(enumNames, "\n")}
@@ -269,9 +258,7 @@ object SlangCheckTest {
   }
 }
 
-@record class RanGen(val globalNameMap: NameMap,
-                     val globalTypeMap: TypeMap,
-                     val packageName: QName,
+@record class RanGen(val packageName: QName,
                      val fileNames: ISZ[String],
                      val th: TypeHierarchy) {
 
@@ -295,20 +282,9 @@ object SlangCheckTest {
   var slangTypeConf: ISZ[ST] = for (p <- slangTypes) yield genConfigSlangBaseType(p)
 
 
-  def gen(): (ISZ[String], ST) = {
+  def gen(sortedTypeInfos: ISZ[TypeInfo]): (ISZ[String], ST) = {
 
-    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
-
-    for (v <- th.typeMap.values) {
-      val temp = v
-      v.posOpt match {
-        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
-          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
-        case _ =>
-      }
-    }
-
-    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
+    for (ti <- sortedTypeInfos) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -316,7 +292,7 @@ object SlangCheckTest {
           genEnum(ti)
         case ti: TypeInfo.Sig =>
           genSig(ti)
-        case _ => {}
+        case _ =>
       }
     }
 
@@ -773,6 +749,11 @@ object SlangCheckTest {
     }
   }
 
+  // FIXME:
+  //  probably should be looking up the Option[X], etc types in the type hierarchy
+  //  and processing the results if it hasn't been seen yet
+  var seenExtraNextMethods: Set[String] = Set.empty
+
   //get the initial call to the fields' next functions
   def genVar(v: Info.Var): ST = {
     val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
@@ -784,32 +765,39 @@ object SlangCheckTest {
           val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
           val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
-          if(typNameString.render == "Option") {
-            extraNextMethods = extraNextMethods :+
-              st"""def next${typName}${typArgNames(0)}(): $typNameString[${typArgNameStrings(0)}] = {
-                  |    val none: Z = gen.nextZBetween(0,1)
-                  |
-                  |    if(none == 0) {
-                  |      return Some(next${typArgNames(0)}())
-                  |    } else {
-                  |      return None()
-                  |    }
-                  |  }"""
+          if (typNameString.render == "Option") {
+            val nextName = st"next${typName}${typArgNames(0)}".render
+            if (!seenExtraNextMethods.contains(nextName)) {
+              seenExtraNextMethods = seenExtraNextMethods + nextName
+              extraNextMethods = extraNextMethods :+
+                st"""def $nextName(): $typNameString[${typArgNameStrings(0)}] = {
+                    |  val none: Z = gen.nextZBetween(0,1)
+                    |
+                    |  if(none == 0) {
+                    |    return Some(next${typArgNames(0)}())
+                    |  } else {
+                    |    return None()
+                    |  }
+                    |}"""
+            }
           }
 
-          if(typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
-            extraNextMethods = extraNextMethods :+
-              st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
-                  |
-                  |def next${typName}${(typArgNames, "")}(): $typNameString[${(typArgNameStrings, ", ")}] = {
-                  |  val length: Z = gen.nextZBetween(0, get_numElement)
-                  |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
-                  |  for (r <- 0 until length) {
-                  |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
-                  |  }
-                  |
-                  |  return temp
-                  |}"""
+          if (typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
+            val nextName = st"next${typName}${(typArgNames, "")}".render
+            if (!seenExtraNextMethods.contains(nextName)) {
+              extraNextMethods = extraNextMethods :+
+                st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+                    |
+                    |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
+                    |  val length: Z = gen.nextZBetween(0, get_numElement)
+                    |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
+                    |  for (r <- 0 until length) {
+                    |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
+                    |  }
+                    |
+                    |  return temp
+                    |}"""
+            }
           }
 
           st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}${(typArgNames, "")}()"
@@ -1015,7 +1003,7 @@ object SlangCheckTest {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    if(ti.ast.isRoot) {
+    if (ti.ast.isRoot) {
       val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
 
       var calls: ISZ[ST] = ISZ()
@@ -1165,34 +1153,20 @@ object SlangCheckTest {
   }
 }
 
-@record class ConfigGen(val globalNameMap: NameMap,
-                        val globalTypeMap: TypeMap,
-                        val packageName: QName,
+@record class ConfigGen(val packageName: QName,
                         val fileNames: ISZ[String],
                         val th: TypeHierarchy) {
 
   val reporter: Reporter = Reporter.create
-
-  val globalTypes: ISZ[TypeInfo] = Resolver.sortedGlobalTypes(globalTypeMap)
 
   var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
   var slangTypeConf: ISZ[ST] = for (p <- slangTypes) yield genSlangBaseTypes(p)
 
   var nextConfig: ISZ[ST] = ISZ()
 
-  def gen(): (ISZ[String], ST) = {
-    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
+  def gen(sortedTypeInfos: ISZ[TypeInfo]): (ISZ[String], ST) = {
 
-    for (v <- th.typeMap.values) {
-      val temp = v
-      v.posOpt match {
-        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
-          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
-        case _ =>
-      }
-    }
-
-    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
+    for (ti <- sortedTypeInfos) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1250,7 +1224,7 @@ object SlangCheckTest {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    if(ti.ast.isRoot) {
+    if (ti.ast.isRoot) {
       nextConfig = nextConfig :+
         st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
     }
@@ -1269,9 +1243,7 @@ object SlangCheckTest {
   }
 }
 
-@record class GeneratorGen(val globalNameMap: NameMap,
-                           val globalTypeMap: TypeMap,
-                           val packageName: QName,
+@record class GeneratorGen(val packageName: QName,
                            val fileNames: ISZ[String], val th: TypeHierarchy) {
 
   val reporter: Reporter = Reporter.create
@@ -1281,19 +1253,9 @@ object SlangCheckTest {
 
   var nextClass: ISZ[ST] = ISZ()
 
-  def gen(): (ISZ[String], ST) = {
-    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
+  def gen(sortedTypeInfos: ISZ[TypeInfo]): (ISZ[String], ST) = {
 
-    for (v <- th.typeMap.values) {
-      val temp = v
-      v.posOpt match {
-        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
-          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
-        case _ =>
-      }
-    }
-
-    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
+    for (ti <- sortedTypeInfos) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1301,7 +1263,7 @@ object SlangCheckTest {
           genEnum(ti)
         case ti: TypeInfo.Sig =>
           genSig(ti)
-        case _ => {}
+        case _ =>
       }
     }
     return (ISZ("SlangCheckGenerator.scala"),
@@ -1429,9 +1391,7 @@ object SlangCheckTest {
   }
 }
 
-@record class TestGen(val globalNameMap: NameMap,
-                      val globalTypeMap: TypeMap,
-                      val packageName: QName,
+@record class TestGen(val packageName: QName,
                       val fileNames: ISZ[String],
                       val th: TypeHierarchy) {
 
@@ -1443,18 +1403,18 @@ object SlangCheckTest {
   var nextClass: ISZ[ST] = ISZ()
 
   def gen(): (ISZ[String], ST) = {
-    var cleanedTypeMapValues: ISZ[TypeInfo] = ISZ()
+    var cleanedTypeMapValues: Set[TypeInfo] = Set.empty
 
     for (v <- th.typeMap.values) {
       val temp = v
       v.posOpt match {
         case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
-          cleanedTypeMapValues = cleanedTypeMapValues :+ temp
+          cleanedTypeMapValues = cleanedTypeMapValues + temp
         case _ =>
       }
     }
 
-    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues)) {
+    for (ti <- SlangCheck.sortedTypes(cleanedTypeMapValues.elements)) {
       ti match {
         case ti: TypeInfo.Adt =>
           genAdt(ti)
@@ -1462,7 +1422,7 @@ object SlangCheckTest {
           genEnum(ti)
         case ti: TypeInfo.Sig =>
           genSig(ti)
-        case _ => {}
+        case _ =>
       }
     }
     return (ISZ("SlangCheckTest.scala"),
@@ -1489,11 +1449,11 @@ object SlangCheckTest {
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {
-          |    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
-          |    val gen = Gen_$adTypeName(randomLib)
+          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create))
+          |  val gen = Gen_$adTypeName(randomLib)
           |
-          |    for(r <- gen.take(100))
-          |      println(r)
+          |  for(r <- gen.take(100))
+          |    println(r)
           |}"""
   }
 
