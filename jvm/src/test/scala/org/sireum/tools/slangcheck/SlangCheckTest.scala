@@ -19,7 +19,7 @@ class SlangCheckTest extends TestSuite {
   val sireum: Os.Path = Os.path(Os.env("SIREUM_HOME").get) / "bin" / (if (Os.isWin) "sireum.bat" else "sireum")
 
   "isolette" in {
-    test("isolette", "isolette")
+    test("isolette", "isolette", x => !x.value.native.contains("component"))
   }
 
   "temp_control" in {
@@ -46,9 +46,9 @@ class SlangCheckTest extends TestSuite {
     test("datatype_trait", "dttr")
   }
 
-  def test(expectedName: String, packageName: String): Unit = {
+  def test(expectedName: String, packageName: String, filter: Os.Path => B = x => T): Unit = {
 
-    val resultsDir = TestUtil.copy(expectedName)
+    val resultsDir = TestUtil.copy(expectedName, "results", filter)
 
     // the following becomes a hyperlink in IVE. You can then use IVE's "Compare Directories"
     // to manually see any changes
@@ -56,8 +56,7 @@ class SlangCheckTest extends TestSuite {
 
     val reporter = Reporter.create
 
-    val artDir = resultsDir / "src" / "main" / "art" / "DataContent.scala"
-    val dataFiles = Os.Path.walk(resultsDir / "src" / "main" / "data", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck")) :+ artDir
+    val dataFiles = Os.Path.walk(resultsDir / "src" / "main", F, F, p => p.ext == string"scala" && !ops.StringOps(p.name).contains("SlangCheck"))
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"
 
@@ -87,7 +86,7 @@ class SlangCheckTest extends TestSuite {
       resultsDir.copyOverTo(expectedDir)
       println(s"Replaced: ${expectedDir}")
     } else {
-      if (!TestUtil.compare(resultsDir)) {
+      if (!TestUtil.compare(resultsDir, filter)) {
         failureReasons = failureReasons :+ "Results did not match expected"
       }
     }

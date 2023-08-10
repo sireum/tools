@@ -1,6 +1,5 @@
 package org.sireum.tools.slangcheck
 
-import org.sireum.$internal.RC
 import org.sireum._
 
 object TestUtil {
@@ -13,18 +12,14 @@ object TestUtil {
     case _ => false
   })
 
-  def resources: scala.collection.Map[scala.Vector[Predef.String], Predef.String] =
-    RC.text(Vector("../../../../../resources/org/sireum/tools/slangcheck")) { (p, f) => true }
-
-  def copy(s: String): Os.Path = {
-    val resultDir = resourceDir / s"${s}_results"
+  def copy(s: String, resultDirSuffix: String, filter: Os.Path => B = x => T): Os.Path = {
+    val srcDir = resourceDir / s
+    val resultDir = resourceDir / s"${s}_${resultDirSuffix}"
     resultDir.removeAll()
-    for (r <- resources.filter(f => f._1(0) == s.native)) {
-      val f = resultDir /+ ISZ[org.sireum.String](r._1.drop(1).map(f => org.sireum.String(f)): _*)
-      f.writeOver(r._2)
-      if (f.ext.native == "cmd") {
-        f.chmod("700") // make project.cmd executable
-      }
+
+    for (r <- Os.Path.walk(srcDir, F, F, filter)) {
+      val dest = resultDir / srcDir.relativize(r).value
+      r.copyOverTo(dest)
     }
     return resultDir
   }
@@ -32,14 +27,14 @@ object TestUtil {
   def getExpectedDir(resultsDir: Os.Path): Os.Path =
     return resultsDir.up / (ops.StringOps(resultsDir.name).replaceAllLiterally("_results", ""))
 
-  def compare(results: Os.Path): B = {
+  def compare(results: Os.Path, filter: Os.Path => B): B = {
     val expected = getExpectedDir(results)
 
     def toMap(dir: Os.Path): Map[String, Os.Path] = {
       var ret = Map.empty[String, Os.Path]
 
       def iter(d: Os.Path): Unit = {
-        if (d.isFile) ret = ret + dir.relativize(d).value ~> d
+        if (d.isFile && filter(d)) ret = ret + dir.relativize(d).value ~> d
         else for (dd <- d.list) yield iter(dd)
       }
 

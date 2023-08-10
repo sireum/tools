@@ -8,9 +8,9 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
-exampleType.scala
-
 DataContent.scala
+
+exampleType.scala
 
 */
 

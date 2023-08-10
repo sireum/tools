@@ -8,6 +8,8 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
+DataContent.scala
+
 Base_Types.scala
 
 Failure_Flag_impl.scala
@@ -31,8 +33,6 @@ ValueStatus.scala
 Heat.scala
 
 Interface_Interaction.scala
-
-DataContent.scala
 
 */
 
