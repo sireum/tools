@@ -1,18 +1,19 @@
-package org.sireum.tools.slangcheck.resources
+package org.sireum.tools.slangcheck
 
 import org.sireum._
 import org.sireum.message.Reporter
 import org.sireum.test.TestSuite
-import org.sireum.tools.slangcheck.TestUtil
 import org.sireum.tools.{SlangCheckJvm => SCJVM}
 
-class SlangCheckTest extends TestSuite {
+class SlangCheckTest extends TestSuite with TestUtil {
+
+  val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
 
   val generateExpected: B = F
 
-  val runTipe: B = T && TestUtil.willingToWait
+  val runTipe: B = T && willingToWait
 
-  val runGeneratedTests: B = T && TestUtil.willingToWait
+  val runGeneratedTests: B = T && willingToWait
 
   val verbose: B = F
 
@@ -48,7 +49,7 @@ class SlangCheckTest extends TestSuite {
 
   def test(expectedName: String, packageName: String, filter: Os.Path => B = x => T): Unit = {
 
-    val resultsDir = TestUtil.copy(expectedName, "results", filter)
+    val resultsDir = copy(expectedName, "results")
 
     // the following becomes a hyperlink in IVE. You can then use IVE's "Compare Directories"
     // to manually see any changes
@@ -79,14 +80,14 @@ class SlangCheckTest extends TestSuite {
     var failureReasons: ISZ[String] = ISZ()
 
     if (generateExpected) {
-      assert (!TestUtil.isCI, "generateExpected should be F when code is pushed to github")
+      assert (!isCI, "generateExpected should be F when code is pushed to github")
 
-      val expectedDir = TestUtil.getExpectedDir(resultsDir)
+      val expectedDir = getExpectedDir(resultsDir)
       expectedDir.removeAll()
       resultsDir.copyOverTo(expectedDir)
       println(s"Replaced: ${expectedDir}")
     } else {
-      if (!TestUtil.compare(resultsDir, filter)) {
+      if (!compare(resultsDir, filter)) {
         failureReasons = failureReasons :+ "Results did not match expected"
       }
     }

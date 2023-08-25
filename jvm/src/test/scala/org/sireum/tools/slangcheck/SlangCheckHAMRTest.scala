@@ -5,7 +5,8 @@ import org.sireum.message.Reporter
 import org.sireum.test.TestSuite
 import org.sireum.tools.SlangCheckJvm
 
-class SlangCheckHAMRTest extends TestSuite {
+class SlangCheckHAMRTest extends TestSuite with TestUtil {
+  val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck" / "hamr"
 
   val sireum: Os.Path = Os.path(Os.env("SIREUM_HOME").get) / "bin" / (if (Os.isWin) "sireum.bat" else "sireum")
 
@@ -14,20 +15,20 @@ class SlangCheckHAMRTest extends TestSuite {
   }
 
   "temp_control" in {
-    test("temp_control", "tc")
+    test("temp_control_periodic", "tc")
   }
 
   def test(projName: String, packageName: String): Unit = {
 
-    if (!TestUtil.willingToWait) {
+    if (!willingToWait) {
       return
     }
 
-    val resultsDir = TestUtil.copy(projName, "hamr_results", x => x.name != string"project.cmd")
+    val resultsDir = copy(projName, "hamr_results")
 
     println(s"Results: ${resultsDir.toUri}")
 
-    val json = (TestUtil.resourceDir / projName / ".slang").list.filter(p => p.ext == string"json")
+    val json = (resourceDir / projName / "aadl" / ".slang").list.filter(p => p.ext == string"json")
     assert (json.size == 1)
 
     println("Running codegen ...")

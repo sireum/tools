@@ -2,9 +2,10 @@ package org.sireum.tools.slangcheck
 
 import org.sireum._
 
-object TestUtil {
+trait  TestUtil {
   val isCI: B = Os.env("GITLAB_CI").nonEmpty || Os.env("GITHUB_ACTIONS").nonEmpty || Os.env("BUILD_ID").nonEmpty
-  val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
+
+  def resourceDir: Os.Path
 
   val willingToWait: B = isCI || (Os.env("USER") match {
     case Some(string"belt") => true
@@ -27,7 +28,7 @@ object TestUtil {
   def getExpectedDir(resultsDir: Os.Path): Os.Path =
     return resultsDir.up / (ops.StringOps(resultsDir.name).replaceAllLiterally("_results", ""))
 
-  def compare(results: Os.Path, filter: Os.Path => B): B = {
+  def compare(results: Os.Path, filter: Os.Path => B = _ => T): B = {
     val expected = getExpectedDir(results)
 
     def toMap(dir: Os.Path): Map[String, Os.Path] = {
