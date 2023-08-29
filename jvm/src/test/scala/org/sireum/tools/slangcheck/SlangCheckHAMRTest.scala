@@ -32,7 +32,7 @@ class SlangCheckHAMRTest extends TestSuite with TestUtil {
     assert (json.size == 1)
 
     println("Running codegen ...")
-    proc"$sireum hamr codegen --package-name $packageName --output-dir $resultsDir ${json(0)}".echo.console.runCheck()
+    proc"$sireum hamr codegen --no-proyek-ive --package-name $packageName --output-dir $resultsDir ${json(0)}".echo.console.runCheck()
 
     val files = {
       val slangcheckBin = ops.StringOps((resultsDir / "bin" / "slangcheck.cmd").read)
