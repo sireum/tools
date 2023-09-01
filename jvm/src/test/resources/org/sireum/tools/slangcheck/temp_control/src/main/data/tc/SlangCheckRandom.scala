@@ -1941,6 +1941,44 @@ Temperature_i_GumboX.scala
     halt("Requirements too strict to generate")
   }
 
+  // ============= TempSensor.example_type ===================
+
+  def get_Config_TempSensorexample_type: Config_TempSensorexample_type
+  def set_Config_TempSensorexample_type(config: Config_TempSensorexample_type): Unit
+
+  def nextTempSensorexample_type(): TempSensor.example_type = {
+    var value: Option[TempSensor.Temperature_i] = nextOptionTempSensorTemperature_i()
+
+    var v: TempSensor.example_type = TempSensor.example_type(value)
+
+    if(get_Config_TempSensorexample_type.attempts >= 0) {
+     for(i <- 0 to get_Config_TempSensorexample_type.attempts) {
+        if(get_Config_TempSensorexample_type.filter(v)) {
+          return v
+        }
+        if (get_Config_TempSensorexample_type.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+        value = nextOptionTempSensorTemperature_i()
+        v = TempSensor.example_type(value)
+     }
+    } else {
+     while(T) {
+       if(get_Config_TempSensorexample_type.filter(v)) {
+         return v
+       }
+       if (get_Config_TempSensorexample_type.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+       value = nextOptionTempSensorTemperature_i()
+       v = TempSensor.example_type(value)
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
+  }
+
   //=================== ISZ[B] =====================
 
   def nextISZB(): ISZ[B] = {
@@ -1951,6 +1989,16 @@ Temperature_i_GumboX.scala
     }
 
     return temp
+  }
+
+  def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0) {
+      return Some(nextTempSensorTemperature_i())
+    } else {
+      return None()
+    }
   }
 }
 
@@ -2394,6 +2442,17 @@ Temperature_i_GumboX.scala
 
   def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): Unit ={
     config_TempSensorTemperature_i_Payload = config
+  }
+
+  // ============= TempSensor.example_type ===================
+  def alwaysTrue_TempSensorexample_type(v: TempSensor.example_type): B = {return T}
+
+  var config_TempSensorexample_type: Config_TempSensorexample_type = Config_TempSensorexample_type(100, _verbose, alwaysTrue_TempSensorexample_type _)
+
+  def get_Config_TempSensorexample_type: Config_TempSensorexample_type = {return config_TempSensorexample_type}
+
+  def set_Config_TempSensorexample_type(config: Config_TempSensorexample_type): Unit ={
+    config_TempSensorexample_type = config
   }
 }
 

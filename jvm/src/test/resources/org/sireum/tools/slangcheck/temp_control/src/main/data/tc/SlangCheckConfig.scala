@@ -108,4 +108,6 @@ Temperature_i_GumboX.scala
 
 @datatype class Config_TempSensorTemperature_i_Payload(attempts: Z, verbose: B, filter: TempSensor.Temperature_i_Payload => B) {}
 
+@datatype class Config_TempSensorexample_type(attempts: Z, verbose: B, filter: TempSensor.example_type => B) {}
+
 

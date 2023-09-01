@@ -789,4 +789,23 @@ Temperature_i_GumboX.scala
   }
 }
 
+@record class Gen_TempSensorexample_type(param: RandomLibI) extends MJen[TempSensor.example_type] {
+  override def generate(f: TempSensor.example_type => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextTempSensorexample_type())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 

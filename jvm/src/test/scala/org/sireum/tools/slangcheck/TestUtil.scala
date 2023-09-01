@@ -10,6 +10,7 @@ trait  TestUtil {
   val willingToWait: B = isCI || (Os.env("USER") match {
     case Some(string"belt") => true
     case Some(string"deck") => true
+    case Some(string"jdlegg") => true
     case _ => false
   })
 

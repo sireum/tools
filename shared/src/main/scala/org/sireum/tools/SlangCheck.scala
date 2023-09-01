@@ -9,7 +9,6 @@ import org.sireum.lang.{ast => AST}
 import org.sireum.message.Reporter
 import org.sireum.ops.ISZOps
 
-//TODO: Generate list better (Not super neccesary right now)
 //TODO: Datatype Traits (Look at Jason's email)
 //TODO: Proyek
 
@@ -364,7 +363,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -429,7 +428,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -494,7 +493,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -559,7 +558,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -624,7 +623,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    val conf = get_Config_$typ
@@ -689,7 +688,7 @@ object SlangCheckTest {
       return (
         st"""// ========  ${typ} ==========}
             |  def get_Config_${typ}: Config_${typ}
-            |  def set_Config_${typ}(config: Config_${typ}): Unit
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
             |
             |  def next$typ(): $typ = {
             |    var r = gen.next$typ()
@@ -731,8 +730,9 @@ object SlangCheckTest {
             |var config_${typ}: Config_${typ} = Config_$typ(None(), None(), 100, _verbose, alwaysTrue_$typ _)
             |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
             |
-            |def set_Config_${typ}(config: Config_${typ}): Unit ={
+            |def set_Config_${typ}(config: Config_${typ}): RandomLib ={
             |  config_${typ} = config
+            |  return this
             |}""")
     } else {
       return (
@@ -742,8 +742,9 @@ object SlangCheckTest {
             |var config_${typ}: Config_${typ} = Config_$typ(100, _verbose, alwaysTrue_$typ _)
             |def get_Config_${typ}: Config_${typ} = {return config_${typ}}
             |
-            |def set_Config_${typ}(config: Config_${typ}): Unit ={
+            |def set_Config_${typ}(config: Config_${typ}): RandomLib ={
             |  config_${typ} = config
+            |  return this
             |}""")
 
     }
@@ -799,6 +800,47 @@ object SlangCheckTest {
                     |}"""
             }
           }
+//          else {
+//            var concrete = T
+//            for(typ <- t.typeArgs) {
+//              th.typeMap.get(ops.StringOps(typ.string).split((c: C) => c == '.')) match {
+//                case Some(ti: TypeInfo.Adt) =>
+//                case Some(ti: TypeInfo.Enum) =>
+//                case Some(ti: TypeInfo.Sig) => concrete = F
+//                case _ => concrete = F
+//              }
+//            }
+//
+//            if(concrete) {
+//              val nextName = st"next${typName}${(typArgNames, "")}".render
+//              if (!seenExtraNextMethods.contains(nextName)) {
+//                extraNextMethods = extraNextMethods :+
+//                  st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+//                      |
+//                      |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
+//                      |  val length: Z = gen.nextZBetween(0, get_numElement)
+//                      |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
+//                      |  for (r <- 0 until length) {
+//                      |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
+//                      |  }
+//                      |
+//                      |  return temp
+//                      |}"""
+//              }
+//            } else {
+//              val nextName = st"next${typName}${(typArgNames, "")}".render
+//              if (!seenExtraNextMethods.contains(nextName)) {
+//                extraNextMethods = extraNextMethods :+
+//                  st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+//                      |
+//                      |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
+//                      |  halt("Not Implemented")
+//                      |}"""
+//              }
+//            }
+//          }
+
+          print()
 
           st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}${(typArgNames, "")}()"
         }
@@ -860,8 +902,9 @@ object SlangCheckTest {
           |
           |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
           |
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+          |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
           |  config_${adTypeName} = config
+          |  return this
           |}"""
 
 
@@ -869,7 +912,7 @@ object SlangCheckTest {
       st"""// ============= ${adTypeString} ===================
           |
           |def get_Config_${adTypeName}: Config_${adTypeName}
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+          |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
           |
           |def next${adTypeName}(): ${adTypeString} = {
           |
@@ -932,15 +975,16 @@ object SlangCheckTest {
           |
           |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
           |
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+          |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
           |  config_${adTypeName} = config
+          |  return this
           |}"""
 
     nextMethods = nextMethods :+
       st"""// ============= ${adTypeString} ===================
           |
           |def get_Config_${adTypeName}: Config_${adTypeName}
-          |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+          |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
           |
           |def next${adTypeName}(): ${adTypeString} = {
           |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
@@ -1028,15 +1072,16 @@ object SlangCheckTest {
             |
             |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
             |
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
             |  config_${adTypeName} = config
+            |  return this
             |}"""
 
       nextMethods = nextMethods :+
         st"""// ============= ${adTypeString} ===================
             |
             |def get_Config_${adTypeName}: Config_${adTypeName}
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
             |
             |def next${adTypeName}(): ${adTypeString} = {
             |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
@@ -1107,15 +1152,16 @@ object SlangCheckTest {
             |
             |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
             |
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit ={
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
             |  config_${adTypeName} = config
+            |  return this
             |}"""
 
       nextMethods = nextMethods :+
         st"""// ============= ${adTypeString} ===================
             |
             |def get_Config_${adTypeName}: Config_${adTypeName}
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): Unit
+            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
             |
             |def next${adTypeName}(): ${adTypeString} = {
             |  ${(vars, "\n")}

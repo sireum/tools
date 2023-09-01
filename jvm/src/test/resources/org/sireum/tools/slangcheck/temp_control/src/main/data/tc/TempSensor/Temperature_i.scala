@@ -28,3 +28,5 @@ object Temperature_i_Payload {
 }
 
 @datatype class Temperature_i_Payload(value: TempSensor.Temperature_i) extends art.DataContent
+
+@datatype class example_type(value: Option[TempSensor.Temperature_i])

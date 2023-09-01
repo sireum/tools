@@ -326,4 +326,12 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
+  test("TempSensor.example_type Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+    val gen = Gen_TempSensorexample_type(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
 }
