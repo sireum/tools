@@ -44,7 +44,7 @@ Interface_Interaction.scala
 
   // ========  Z ==========
     def get_Config_Z: Config_Z
-    def set_Config_Z(config: Config_Z): Unit
+    def set_Config_Z(config: Config_Z): RandomLib
 
     def nextZ(): Z = {
       val conf = get_Config_Z
@@ -108,7 +108,7 @@ Interface_Interaction.scala
 
   // ========  B ==========}
     def get_Config_B: Config_B
-    def set_Config_B(config: Config_B): Unit
+    def set_Config_B(config: Config_B): RandomLib
 
     def nextB(): B = {
       var r = gen.nextB()
@@ -139,7 +139,7 @@ Interface_Interaction.scala
 
   // ========  C ==========}
     def get_Config_C: Config_C
-    def set_Config_C(config: Config_C): Unit
+    def set_Config_C(config: Config_C): RandomLib
 
     def nextC(): C = {
       var r = gen.nextC()
@@ -170,7 +170,7 @@ Interface_Interaction.scala
 
   // ========  R ==========
     def get_Config_R: Config_R
-    def set_Config_R(config: Config_R): Unit
+    def set_Config_R(config: Config_R): RandomLib
 
     def nextR(): R = {
       val conf = get_Config_R
@@ -234,7 +234,7 @@ Interface_Interaction.scala
 
   // ========  F32 ==========
     def get_Config_F32: Config_F32
-    def set_Config_F32(config: Config_F32): Unit
+    def set_Config_F32(config: Config_F32): RandomLib
 
     def nextF32(): F32 = {
       val conf = get_Config_F32
@@ -298,7 +298,7 @@ Interface_Interaction.scala
 
   // ========  F64 ==========
     def get_Config_F64: Config_F64
-    def set_Config_F64(config: Config_F64): Unit
+    def set_Config_F64(config: Config_F64): RandomLib
 
     def nextF64(): F64 = {
       val conf = get_Config_F64
@@ -362,7 +362,7 @@ Interface_Interaction.scala
 
   // ========  S8 ==========
     def get_Config_S8: Config_S8
-    def set_Config_S8(config: Config_S8): Unit
+    def set_Config_S8(config: Config_S8): RandomLib
 
     def nextS8(): S8 = {
       val conf = get_Config_S8
@@ -426,7 +426,7 @@ Interface_Interaction.scala
 
   // ========  S16 ==========
     def get_Config_S16: Config_S16
-    def set_Config_S16(config: Config_S16): Unit
+    def set_Config_S16(config: Config_S16): RandomLib
 
     def nextS16(): S16 = {
       val conf = get_Config_S16
@@ -490,7 +490,7 @@ Interface_Interaction.scala
 
   // ========  S32 ==========
     def get_Config_S32: Config_S32
-    def set_Config_S32(config: Config_S32): Unit
+    def set_Config_S32(config: Config_S32): RandomLib
 
     def nextS32(): S32 = {
       val conf = get_Config_S32
@@ -554,7 +554,7 @@ Interface_Interaction.scala
 
   // ========  S64 ==========
     def get_Config_S64: Config_S64
-    def set_Config_S64(config: Config_S64): Unit
+    def set_Config_S64(config: Config_S64): RandomLib
 
     def nextS64(): S64 = {
       val conf = get_Config_S64
@@ -618,7 +618,7 @@ Interface_Interaction.scala
 
   // ========  U8 ==========
     def get_Config_U8: Config_U8
-    def set_Config_U8(config: Config_U8): Unit
+    def set_Config_U8(config: Config_U8): RandomLib
 
     def nextU8(): U8 = {
       val conf = get_Config_U8
@@ -682,7 +682,7 @@ Interface_Interaction.scala
 
   // ========  U16 ==========
     def get_Config_U16: Config_U16
-    def set_Config_U16(config: Config_U16): Unit
+    def set_Config_U16(config: Config_U16): RandomLib
 
     def nextU16(): U16 = {
       val conf = get_Config_U16
@@ -746,7 +746,7 @@ Interface_Interaction.scala
 
   // ========  U32 ==========
     def get_Config_U32: Config_U32
-    def set_Config_U32(config: Config_U32): Unit
+    def set_Config_U32(config: Config_U32): RandomLib
 
     def nextU32(): U32 = {
       val conf = get_Config_U32
@@ -810,7 +810,7 @@ Interface_Interaction.scala
 
   // ========  U64 ==========
     def get_Config_U64: Config_U64
-    def set_Config_U64(config: Config_U64): Unit
+    def set_Config_U64(config: Config_U64): RandomLib
 
     def nextU64(): U64 = {
       val conf = get_Config_U64
@@ -885,7 +885,7 @@ Interface_Interaction.scala
   // ============= art.DataContent ===================
 
   def get_Config__artDataContent: Config__artDataContent
-  def set_Config__artDataContent(config: Config__artDataContent): Unit
+  def set_Config__artDataContent(config: Config__artDataContent): RandomLib
 
   def next_artDataContent(): art.DataContent = {
     var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId._artEmpty_Id, _artDataContent_DataTypeId.Base_TypesBits_Payload_Id, _artDataContent_DataTypeId.Base_TypesBoolean_Payload_Id, _artDataContent_DataTypeId.Base_TypesCharacter_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesFloat_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_8_Payload_Id, _artDataContent_DataTypeId.Base_TypesInteger_Payload_Id, _artDataContent_DataTypeId.Base_TypesString_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_16_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_32_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_64_Payload_Id, _artDataContent_DataTypeId.Base_TypesUnsigned_8_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelFailure_Flag_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelMonitor_Mode_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelOn_Off_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelPhysicalTemp_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelRegulator_Mode_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelStatus_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelTempWstatus_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelTemp_impl_Payload_Id, _artDataContent_DataTypeId.Isolette_Data_ModelValueStatus_Payload_Id, _artDataContent_DataTypeId.Isolette_EnvironmentHeat_Payload_Id, _artDataContent_DataTypeId.Isolette_EnvironmentInterface_Interaction_Payload_Id)
@@ -1025,7 +1025,7 @@ Interface_Interaction.scala
   // ============= art.Empty ===================
 
   def get_Config__artEmpty: Config__artEmpty
-  def set_Config__artEmpty(config: Config__artEmpty): Unit
+  def set_Config__artEmpty(config: Config__artEmpty): RandomLib
 
   def next_artEmpty(): art.Empty = {
 
@@ -1060,7 +1060,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Boolean_Payload ===================
 
   def get_Config_Base_TypesBoolean_Payload: Config_Base_TypesBoolean_Payload
-  def set_Config_Base_TypesBoolean_Payload(config: Config_Base_TypesBoolean_Payload): Unit
+  def set_Config_Base_TypesBoolean_Payload(config: Config_Base_TypesBoolean_Payload): RandomLib
 
   def nextBase_TypesBoolean_Payload(): Base_Types.Boolean_Payload = {
     var value: B = nextB()
@@ -1098,7 +1098,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Integer_Payload ===================
 
   def get_Config_Base_TypesInteger_Payload: Config_Base_TypesInteger_Payload
-  def set_Config_Base_TypesInteger_Payload(config: Config_Base_TypesInteger_Payload): Unit
+  def set_Config_Base_TypesInteger_Payload(config: Config_Base_TypesInteger_Payload): RandomLib
 
   def nextBase_TypesInteger_Payload(): Base_Types.Integer_Payload = {
     var value: Z = nextZ()
@@ -1136,7 +1136,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Integer_8_Payload ===================
 
   def get_Config_Base_TypesInteger_8_Payload: Config_Base_TypesInteger_8_Payload
-  def set_Config_Base_TypesInteger_8_Payload(config: Config_Base_TypesInteger_8_Payload): Unit
+  def set_Config_Base_TypesInteger_8_Payload(config: Config_Base_TypesInteger_8_Payload): RandomLib
 
   def nextBase_TypesInteger_8_Payload(): Base_Types.Integer_8_Payload = {
     var value: S8 = nextS8()
@@ -1174,7 +1174,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Integer_16_Payload ===================
 
   def get_Config_Base_TypesInteger_16_Payload: Config_Base_TypesInteger_16_Payload
-  def set_Config_Base_TypesInteger_16_Payload(config: Config_Base_TypesInteger_16_Payload): Unit
+  def set_Config_Base_TypesInteger_16_Payload(config: Config_Base_TypesInteger_16_Payload): RandomLib
 
   def nextBase_TypesInteger_16_Payload(): Base_Types.Integer_16_Payload = {
     var value: S16 = nextS16()
@@ -1212,7 +1212,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Integer_32_Payload ===================
 
   def get_Config_Base_TypesInteger_32_Payload: Config_Base_TypesInteger_32_Payload
-  def set_Config_Base_TypesInteger_32_Payload(config: Config_Base_TypesInteger_32_Payload): Unit
+  def set_Config_Base_TypesInteger_32_Payload(config: Config_Base_TypesInteger_32_Payload): RandomLib
 
   def nextBase_TypesInteger_32_Payload(): Base_Types.Integer_32_Payload = {
     var value: S32 = nextS32()
@@ -1250,7 +1250,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Integer_64_Payload ===================
 
   def get_Config_Base_TypesInteger_64_Payload: Config_Base_TypesInteger_64_Payload
-  def set_Config_Base_TypesInteger_64_Payload(config: Config_Base_TypesInteger_64_Payload): Unit
+  def set_Config_Base_TypesInteger_64_Payload(config: Config_Base_TypesInteger_64_Payload): RandomLib
 
   def nextBase_TypesInteger_64_Payload(): Base_Types.Integer_64_Payload = {
     var value: S64 = nextS64()
@@ -1288,7 +1288,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Unsigned_8_Payload ===================
 
   def get_Config_Base_TypesUnsigned_8_Payload: Config_Base_TypesUnsigned_8_Payload
-  def set_Config_Base_TypesUnsigned_8_Payload(config: Config_Base_TypesUnsigned_8_Payload): Unit
+  def set_Config_Base_TypesUnsigned_8_Payload(config: Config_Base_TypesUnsigned_8_Payload): RandomLib
 
   def nextBase_TypesUnsigned_8_Payload(): Base_Types.Unsigned_8_Payload = {
     var value: U8 = nextU8()
@@ -1326,7 +1326,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Unsigned_16_Payload ===================
 
   def get_Config_Base_TypesUnsigned_16_Payload: Config_Base_TypesUnsigned_16_Payload
-  def set_Config_Base_TypesUnsigned_16_Payload(config: Config_Base_TypesUnsigned_16_Payload): Unit
+  def set_Config_Base_TypesUnsigned_16_Payload(config: Config_Base_TypesUnsigned_16_Payload): RandomLib
 
   def nextBase_TypesUnsigned_16_Payload(): Base_Types.Unsigned_16_Payload = {
     var value: U16 = nextU16()
@@ -1364,7 +1364,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Unsigned_32_Payload ===================
 
   def get_Config_Base_TypesUnsigned_32_Payload: Config_Base_TypesUnsigned_32_Payload
-  def set_Config_Base_TypesUnsigned_32_Payload(config: Config_Base_TypesUnsigned_32_Payload): Unit
+  def set_Config_Base_TypesUnsigned_32_Payload(config: Config_Base_TypesUnsigned_32_Payload): RandomLib
 
   def nextBase_TypesUnsigned_32_Payload(): Base_Types.Unsigned_32_Payload = {
     var value: U32 = nextU32()
@@ -1402,7 +1402,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Unsigned_64_Payload ===================
 
   def get_Config_Base_TypesUnsigned_64_Payload: Config_Base_TypesUnsigned_64_Payload
-  def set_Config_Base_TypesUnsigned_64_Payload(config: Config_Base_TypesUnsigned_64_Payload): Unit
+  def set_Config_Base_TypesUnsigned_64_Payload(config: Config_Base_TypesUnsigned_64_Payload): RandomLib
 
   def nextBase_TypesUnsigned_64_Payload(): Base_Types.Unsigned_64_Payload = {
     var value: U64 = nextU64()
@@ -1440,7 +1440,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Float_Payload ===================
 
   def get_Config_Base_TypesFloat_Payload: Config_Base_TypesFloat_Payload
-  def set_Config_Base_TypesFloat_Payload(config: Config_Base_TypesFloat_Payload): Unit
+  def set_Config_Base_TypesFloat_Payload(config: Config_Base_TypesFloat_Payload): RandomLib
 
   def nextBase_TypesFloat_Payload(): Base_Types.Float_Payload = {
     var value: R = nextR()
@@ -1478,7 +1478,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Float_32_Payload ===================
 
   def get_Config_Base_TypesFloat_32_Payload: Config_Base_TypesFloat_32_Payload
-  def set_Config_Base_TypesFloat_32_Payload(config: Config_Base_TypesFloat_32_Payload): Unit
+  def set_Config_Base_TypesFloat_32_Payload(config: Config_Base_TypesFloat_32_Payload): RandomLib
 
   def nextBase_TypesFloat_32_Payload(): Base_Types.Float_32_Payload = {
     var value: F32 = nextF32()
@@ -1516,7 +1516,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Float_64_Payload ===================
 
   def get_Config_Base_TypesFloat_64_Payload: Config_Base_TypesFloat_64_Payload
-  def set_Config_Base_TypesFloat_64_Payload(config: Config_Base_TypesFloat_64_Payload): Unit
+  def set_Config_Base_TypesFloat_64_Payload(config: Config_Base_TypesFloat_64_Payload): RandomLib
 
   def nextBase_TypesFloat_64_Payload(): Base_Types.Float_64_Payload = {
     var value: F64 = nextF64()
@@ -1554,7 +1554,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Character_Payload ===================
 
   def get_Config_Base_TypesCharacter_Payload: Config_Base_TypesCharacter_Payload
-  def set_Config_Base_TypesCharacter_Payload(config: Config_Base_TypesCharacter_Payload): Unit
+  def set_Config_Base_TypesCharacter_Payload(config: Config_Base_TypesCharacter_Payload): RandomLib
 
   def nextBase_TypesCharacter_Payload(): Base_Types.Character_Payload = {
     var value: C = nextC()
@@ -1592,7 +1592,7 @@ Interface_Interaction.scala
   // ============= Base_Types.String_Payload ===================
 
   def get_Config_Base_TypesString_Payload: Config_Base_TypesString_Payload
-  def set_Config_Base_TypesString_Payload(config: Config_Base_TypesString_Payload): Unit
+  def set_Config_Base_TypesString_Payload(config: Config_Base_TypesString_Payload): RandomLib
 
   def nextBase_TypesString_Payload(): Base_Types.String_Payload = {
     var value: String = nextString()
@@ -1630,7 +1630,7 @@ Interface_Interaction.scala
   // ============= Base_Types.Bits_Payload ===================
 
   def get_Config_Base_TypesBits_Payload: Config_Base_TypesBits_Payload
-  def set_Config_Base_TypesBits_Payload(config: Config_Base_TypesBits_Payload): Unit
+  def set_Config_Base_TypesBits_Payload(config: Config_Base_TypesBits_Payload): RandomLib
 
   def nextBase_TypesBits_Payload(): Base_Types.Bits_Payload = {
     var value: ISZ[B] = nextISZB()
@@ -1668,7 +1668,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Failure_Flag_impl ===================
 
   def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): RandomLib
 
   def nextIsolette_Data_ModelFailure_Flag_impl(): Isolette_Data_Model.Failure_Flag_impl = {
     var value: B = nextB()
@@ -1706,7 +1706,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
 
   def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): RandomLib
 
   def nextIsolette_Data_ModelFailure_Flag_impl_Payload(): Isolette_Data_Model.Failure_Flag_impl_Payload = {
     var value: Isolette_Data_Model.Failure_Flag_impl = nextIsolette_Data_ModelFailure_Flag_impl()
@@ -1744,7 +1744,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
 
   def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit
+  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): RandomLib
 
   def nextIsolette_Data_ModelMonitor_ModeType(): Isolette_Data_Model.Monitor_Mode.Type = {
 
@@ -1781,7 +1781,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
 
   def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit
+  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): RandomLib
 
   def nextIsolette_Data_ModelMonitor_Mode_Payload(): Isolette_Data_Model.Monitor_Mode_Payload = {
     var value: Isolette_Data_Model.Monitor_Mode.Type = nextIsolette_Data_ModelMonitor_ModeType()
@@ -1819,7 +1819,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.On_Off.Type ===================
 
   def get_Config_Isolette_Data_ModelOn_OffType: Config_Isolette_Data_ModelOn_OffType
-  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): Unit
+  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): RandomLib
 
   def nextIsolette_Data_ModelOn_OffType(): Isolette_Data_Model.On_Off.Type = {
 
@@ -1856,7 +1856,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.On_Off_Payload ===================
 
   def get_Config_Isolette_Data_ModelOn_Off_Payload: Config_Isolette_Data_ModelOn_Off_Payload
-  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): Unit
+  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): RandomLib
 
   def nextIsolette_Data_ModelOn_Off_Payload(): Isolette_Data_Model.On_Off_Payload = {
     var value: Isolette_Data_Model.On_Off.Type = nextIsolette_Data_ModelOn_OffType()
@@ -1894,7 +1894,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
 
   def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): RandomLib
 
   def nextIsolette_Data_ModelPhysicalTemp_impl(): Isolette_Data_Model.PhysicalTemp_impl = {
     var value: F32 = nextF32()
@@ -1932,7 +1932,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
 
   def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): RandomLib
 
   def nextIsolette_Data_ModelPhysicalTemp_impl_Payload(): Isolette_Data_Model.PhysicalTemp_impl_Payload = {
     var value: Isolette_Data_Model.PhysicalTemp_impl = nextIsolette_Data_ModelPhysicalTemp_impl()
@@ -1970,7 +1970,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
 
   def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit
+  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): RandomLib
 
   def nextIsolette_Data_ModelRegulator_ModeType(): Isolette_Data_Model.Regulator_Mode.Type = {
 
@@ -2007,7 +2007,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
 
   def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit
+  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): RandomLib
 
   def nextIsolette_Data_ModelRegulator_Mode_Payload(): Isolette_Data_Model.Regulator_Mode_Payload = {
     var value: Isolette_Data_Model.Regulator_Mode.Type = nextIsolette_Data_ModelRegulator_ModeType()
@@ -2045,7 +2045,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Status.Type ===================
 
   def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit
+  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): RandomLib
 
   def nextIsolette_Data_ModelStatusType(): Isolette_Data_Model.Status.Type = {
 
@@ -2082,7 +2082,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Status_Payload ===================
 
   def get_Config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload
-  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): Unit
+  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): RandomLib
 
   def nextIsolette_Data_ModelStatus_Payload(): Isolette_Data_Model.Status_Payload = {
     var value: Isolette_Data_Model.Status.Type = nextIsolette_Data_ModelStatusType()
@@ -2120,7 +2120,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.TempWstatus_impl ===================
 
   def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit
+  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): RandomLib
 
   def nextIsolette_Data_ModelTempWstatus_impl(): Isolette_Data_Model.TempWstatus_impl = {
     var value: F32 = nextF32()
@@ -2161,7 +2161,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
 
   def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit
+  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): RandomLib
 
   def nextIsolette_Data_ModelTempWstatus_impl_Payload(): Isolette_Data_Model.TempWstatus_impl_Payload = {
     var value: Isolette_Data_Model.TempWstatus_impl = nextIsolette_Data_ModelTempWstatus_impl()
@@ -2199,7 +2199,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Temp_impl ===================
 
   def get_Config_Isolette_Data_ModelTemp_impl: Config_Isolette_Data_ModelTemp_impl
-  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): Unit
+  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): RandomLib
 
   def nextIsolette_Data_ModelTemp_impl(): Isolette_Data_Model.Temp_impl = {
     var value: F32 = nextF32()
@@ -2237,7 +2237,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.Temp_impl_Payload ===================
 
   def get_Config_Isolette_Data_ModelTemp_impl_Payload: Config_Isolette_Data_ModelTemp_impl_Payload
-  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): Unit
+  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): RandomLib
 
   def nextIsolette_Data_ModelTemp_impl_Payload(): Isolette_Data_Model.Temp_impl_Payload = {
     var value: Isolette_Data_Model.Temp_impl = nextIsolette_Data_ModelTemp_impl()
@@ -2275,7 +2275,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.ValueStatus.Type ===================
 
   def get_Config_Isolette_Data_ModelValueStatusType: Config_Isolette_Data_ModelValueStatusType
-  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): Unit
+  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): RandomLib
 
   def nextIsolette_Data_ModelValueStatusType(): Isolette_Data_Model.ValueStatus.Type = {
 
@@ -2312,7 +2312,7 @@ Interface_Interaction.scala
   // ============= Isolette_Data_Model.ValueStatus_Payload ===================
 
   def get_Config_Isolette_Data_ModelValueStatus_Payload: Config_Isolette_Data_ModelValueStatus_Payload
-  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): Unit
+  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): RandomLib
 
   def nextIsolette_Data_ModelValueStatus_Payload(): Isolette_Data_Model.ValueStatus_Payload = {
     var value: Isolette_Data_Model.ValueStatus.Type = nextIsolette_Data_ModelValueStatusType()
@@ -2350,7 +2350,7 @@ Interface_Interaction.scala
   // ============= Isolette_Environment.Heat.Type ===================
 
   def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit
+  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): RandomLib
 
   def nextIsolette_EnvironmentHeatType(): Isolette_Environment.Heat.Type = {
 
@@ -2387,7 +2387,7 @@ Interface_Interaction.scala
   // ============= Isolette_Environment.Heat_Payload ===================
 
   def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit
+  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): RandomLib
 
   def nextIsolette_EnvironmentHeat_Payload(): Isolette_Environment.Heat_Payload = {
     var value: Isolette_Environment.Heat.Type = nextIsolette_EnvironmentHeatType()
@@ -2425,7 +2425,7 @@ Interface_Interaction.scala
   // ============= Isolette_Environment.Interface_Interaction.Type ===================
 
   def get_Config_Isolette_EnvironmentInterface_InteractionType: Config_Isolette_EnvironmentInterface_InteractionType
-  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): Unit
+  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): RandomLib
 
   def nextIsolette_EnvironmentInterface_InteractionType(): Isolette_Environment.Interface_Interaction.Type = {
 
@@ -2462,7 +2462,7 @@ Interface_Interaction.scala
   // ============= Isolette_Environment.Interface_Interaction_Payload ===================
 
   def get_Config_Isolette_EnvironmentInterface_Interaction_Payload: Config_Isolette_EnvironmentInterface_Interaction_Payload
-  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): Unit
+  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): RandomLib
 
   def nextIsolette_EnvironmentInterface_Interaction_Payload(): Isolette_Environment.Interface_Interaction_Payload = {
     var value: Isolette_Environment.Interface_Interaction.Type = nextIsolette_EnvironmentInterface_InteractionType()
@@ -2532,8 +2532,9 @@ Interface_Interaction.scala
   var config_Z: Config_Z = Config_Z(None(), None(), 100, _verbose, alwaysTrue_Z _)
   def get_Config_Z: Config_Z = {return config_Z}
 
-  def set_Config_Z(config: Config_Z): Unit ={
+  def set_Config_Z(config: Config_Z): RandomLib ={
     config_Z = config
+    return this
   }
 
   // ============= B ===================
@@ -2542,8 +2543,9 @@ Interface_Interaction.scala
   var config_B: Config_B = Config_B(100, _verbose, alwaysTrue_B _)
   def get_Config_B: Config_B = {return config_B}
 
-  def set_Config_B(config: Config_B): Unit ={
+  def set_Config_B(config: Config_B): RandomLib ={
     config_B = config
+    return this
   }
 
   // ============= C ===================
@@ -2552,8 +2554,9 @@ Interface_Interaction.scala
   var config_C: Config_C = Config_C(100, _verbose, alwaysTrue_C _)
   def get_Config_C: Config_C = {return config_C}
 
-  def set_Config_C(config: Config_C): Unit ={
+  def set_Config_C(config: Config_C): RandomLib ={
     config_C = config
+    return this
   }
 
   // ============= R ===================
@@ -2562,8 +2565,9 @@ Interface_Interaction.scala
   var config_R: Config_R = Config_R(None(), None(), 100, _verbose, alwaysTrue_R _)
   def get_Config_R: Config_R = {return config_R}
 
-  def set_Config_R(config: Config_R): Unit ={
+  def set_Config_R(config: Config_R): RandomLib ={
     config_R = config
+    return this
   }
 
   // ============= F32 ===================
@@ -2572,8 +2576,9 @@ Interface_Interaction.scala
   var config_F32: Config_F32 = Config_F32(None(), None(), 100, _verbose, alwaysTrue_F32 _)
   def get_Config_F32: Config_F32 = {return config_F32}
 
-  def set_Config_F32(config: Config_F32): Unit ={
+  def set_Config_F32(config: Config_F32): RandomLib ={
     config_F32 = config
+    return this
   }
 
   // ============= F64 ===================
@@ -2582,8 +2587,9 @@ Interface_Interaction.scala
   var config_F64: Config_F64 = Config_F64(None(), None(), 100, _verbose, alwaysTrue_F64 _)
   def get_Config_F64: Config_F64 = {return config_F64}
 
-  def set_Config_F64(config: Config_F64): Unit ={
+  def set_Config_F64(config: Config_F64): RandomLib ={
     config_F64 = config
+    return this
   }
 
   // ============= S8 ===================
@@ -2592,8 +2598,9 @@ Interface_Interaction.scala
   var config_S8: Config_S8 = Config_S8(None(), None(), 100, _verbose, alwaysTrue_S8 _)
   def get_Config_S8: Config_S8 = {return config_S8}
 
-  def set_Config_S8(config: Config_S8): Unit ={
+  def set_Config_S8(config: Config_S8): RandomLib ={
     config_S8 = config
+    return this
   }
 
   // ============= S16 ===================
@@ -2602,8 +2609,9 @@ Interface_Interaction.scala
   var config_S16: Config_S16 = Config_S16(None(), None(), 100, _verbose, alwaysTrue_S16 _)
   def get_Config_S16: Config_S16 = {return config_S16}
 
-  def set_Config_S16(config: Config_S16): Unit ={
+  def set_Config_S16(config: Config_S16): RandomLib ={
     config_S16 = config
+    return this
   }
 
   // ============= S32 ===================
@@ -2612,8 +2620,9 @@ Interface_Interaction.scala
   var config_S32: Config_S32 = Config_S32(None(), None(), 100, _verbose, alwaysTrue_S32 _)
   def get_Config_S32: Config_S32 = {return config_S32}
 
-  def set_Config_S32(config: Config_S32): Unit ={
+  def set_Config_S32(config: Config_S32): RandomLib ={
     config_S32 = config
+    return this
   }
 
   // ============= S64 ===================
@@ -2622,8 +2631,9 @@ Interface_Interaction.scala
   var config_S64: Config_S64 = Config_S64(None(), None(), 100, _verbose, alwaysTrue_S64 _)
   def get_Config_S64: Config_S64 = {return config_S64}
 
-  def set_Config_S64(config: Config_S64): Unit ={
+  def set_Config_S64(config: Config_S64): RandomLib ={
     config_S64 = config
+    return this
   }
 
   // ============= U8 ===================
@@ -2632,8 +2642,9 @@ Interface_Interaction.scala
   var config_U8: Config_U8 = Config_U8(None(), None(), 100, _verbose, alwaysTrue_U8 _)
   def get_Config_U8: Config_U8 = {return config_U8}
 
-  def set_Config_U8(config: Config_U8): Unit ={
+  def set_Config_U8(config: Config_U8): RandomLib ={
     config_U8 = config
+    return this
   }
 
   // ============= U16 ===================
@@ -2642,8 +2653,9 @@ Interface_Interaction.scala
   var config_U16: Config_U16 = Config_U16(None(), None(), 100, _verbose, alwaysTrue_U16 _)
   def get_Config_U16: Config_U16 = {return config_U16}
 
-  def set_Config_U16(config: Config_U16): Unit ={
+  def set_Config_U16(config: Config_U16): RandomLib ={
     config_U16 = config
+    return this
   }
 
   // ============= U32 ===================
@@ -2652,8 +2664,9 @@ Interface_Interaction.scala
   var config_U32: Config_U32 = Config_U32(None(), None(), 100, _verbose, alwaysTrue_U32 _)
   def get_Config_U32: Config_U32 = {return config_U32}
 
-  def set_Config_U32(config: Config_U32): Unit ={
+  def set_Config_U32(config: Config_U32): RandomLib ={
     config_U32 = config
+    return this
   }
 
   // ============= U64 ===================
@@ -2662,8 +2675,9 @@ Interface_Interaction.scala
   var config_U64: Config_U64 = Config_U64(None(), None(), 100, _verbose, alwaysTrue_U64 _)
   def get_Config_U64: Config_U64 = {return config_U64}
 
-  def set_Config_U64(config: Config_U64): Unit ={
+  def set_Config_U64(config: Config_U64): RandomLib ={
     config_U64 = config
+    return this
   }
 
   // ============= art.DataContent ===================
@@ -2673,8 +2687,9 @@ Interface_Interaction.scala
 
   def get_Config__artDataContent: Config__artDataContent = {return config__artDataContent}
 
-  def set_Config__artDataContent(config: Config__artDataContent): Unit ={
+  def set_Config__artDataContent(config: Config__artDataContent): RandomLib ={
     config__artDataContent = config
+    return this
   }
 
   // ============= art.Empty ===================
@@ -2684,8 +2699,9 @@ Interface_Interaction.scala
 
   def get_Config__artEmpty: Config__artEmpty = {return config__artEmpty}
 
-  def set_Config__artEmpty(config: Config__artEmpty): Unit ={
+  def set_Config__artEmpty(config: Config__artEmpty): RandomLib ={
     config__artEmpty = config
+    return this
   }
 
   // ============= Base_Types.Boolean_Payload ===================
@@ -2695,8 +2711,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesBoolean_Payload: Config_Base_TypesBoolean_Payload = {return config_Base_TypesBoolean_Payload}
 
-  def set_Config_Base_TypesBoolean_Payload(config: Config_Base_TypesBoolean_Payload): Unit ={
+  def set_Config_Base_TypesBoolean_Payload(config: Config_Base_TypesBoolean_Payload): RandomLib ={
     config_Base_TypesBoolean_Payload = config
+    return this
   }
 
   // ============= Base_Types.Integer_Payload ===================
@@ -2706,8 +2723,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesInteger_Payload: Config_Base_TypesInteger_Payload = {return config_Base_TypesInteger_Payload}
 
-  def set_Config_Base_TypesInteger_Payload(config: Config_Base_TypesInteger_Payload): Unit ={
+  def set_Config_Base_TypesInteger_Payload(config: Config_Base_TypesInteger_Payload): RandomLib ={
     config_Base_TypesInteger_Payload = config
+    return this
   }
 
   // ============= Base_Types.Integer_8_Payload ===================
@@ -2717,8 +2735,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesInteger_8_Payload: Config_Base_TypesInteger_8_Payload = {return config_Base_TypesInteger_8_Payload}
 
-  def set_Config_Base_TypesInteger_8_Payload(config: Config_Base_TypesInteger_8_Payload): Unit ={
+  def set_Config_Base_TypesInteger_8_Payload(config: Config_Base_TypesInteger_8_Payload): RandomLib ={
     config_Base_TypesInteger_8_Payload = config
+    return this
   }
 
   // ============= Base_Types.Integer_16_Payload ===================
@@ -2728,8 +2747,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesInteger_16_Payload: Config_Base_TypesInteger_16_Payload = {return config_Base_TypesInteger_16_Payload}
 
-  def set_Config_Base_TypesInteger_16_Payload(config: Config_Base_TypesInteger_16_Payload): Unit ={
+  def set_Config_Base_TypesInteger_16_Payload(config: Config_Base_TypesInteger_16_Payload): RandomLib ={
     config_Base_TypesInteger_16_Payload = config
+    return this
   }
 
   // ============= Base_Types.Integer_32_Payload ===================
@@ -2739,8 +2759,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesInteger_32_Payload: Config_Base_TypesInteger_32_Payload = {return config_Base_TypesInteger_32_Payload}
 
-  def set_Config_Base_TypesInteger_32_Payload(config: Config_Base_TypesInteger_32_Payload): Unit ={
+  def set_Config_Base_TypesInteger_32_Payload(config: Config_Base_TypesInteger_32_Payload): RandomLib ={
     config_Base_TypesInteger_32_Payload = config
+    return this
   }
 
   // ============= Base_Types.Integer_64_Payload ===================
@@ -2750,8 +2771,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesInteger_64_Payload: Config_Base_TypesInteger_64_Payload = {return config_Base_TypesInteger_64_Payload}
 
-  def set_Config_Base_TypesInteger_64_Payload(config: Config_Base_TypesInteger_64_Payload): Unit ={
+  def set_Config_Base_TypesInteger_64_Payload(config: Config_Base_TypesInteger_64_Payload): RandomLib ={
     config_Base_TypesInteger_64_Payload = config
+    return this
   }
 
   // ============= Base_Types.Unsigned_8_Payload ===================
@@ -2761,8 +2783,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesUnsigned_8_Payload: Config_Base_TypesUnsigned_8_Payload = {return config_Base_TypesUnsigned_8_Payload}
 
-  def set_Config_Base_TypesUnsigned_8_Payload(config: Config_Base_TypesUnsigned_8_Payload): Unit ={
+  def set_Config_Base_TypesUnsigned_8_Payload(config: Config_Base_TypesUnsigned_8_Payload): RandomLib ={
     config_Base_TypesUnsigned_8_Payload = config
+    return this
   }
 
   // ============= Base_Types.Unsigned_16_Payload ===================
@@ -2772,8 +2795,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesUnsigned_16_Payload: Config_Base_TypesUnsigned_16_Payload = {return config_Base_TypesUnsigned_16_Payload}
 
-  def set_Config_Base_TypesUnsigned_16_Payload(config: Config_Base_TypesUnsigned_16_Payload): Unit ={
+  def set_Config_Base_TypesUnsigned_16_Payload(config: Config_Base_TypesUnsigned_16_Payload): RandomLib ={
     config_Base_TypesUnsigned_16_Payload = config
+    return this
   }
 
   // ============= Base_Types.Unsigned_32_Payload ===================
@@ -2783,8 +2807,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesUnsigned_32_Payload: Config_Base_TypesUnsigned_32_Payload = {return config_Base_TypesUnsigned_32_Payload}
 
-  def set_Config_Base_TypesUnsigned_32_Payload(config: Config_Base_TypesUnsigned_32_Payload): Unit ={
+  def set_Config_Base_TypesUnsigned_32_Payload(config: Config_Base_TypesUnsigned_32_Payload): RandomLib ={
     config_Base_TypesUnsigned_32_Payload = config
+    return this
   }
 
   // ============= Base_Types.Unsigned_64_Payload ===================
@@ -2794,8 +2819,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesUnsigned_64_Payload: Config_Base_TypesUnsigned_64_Payload = {return config_Base_TypesUnsigned_64_Payload}
 
-  def set_Config_Base_TypesUnsigned_64_Payload(config: Config_Base_TypesUnsigned_64_Payload): Unit ={
+  def set_Config_Base_TypesUnsigned_64_Payload(config: Config_Base_TypesUnsigned_64_Payload): RandomLib ={
     config_Base_TypesUnsigned_64_Payload = config
+    return this
   }
 
   // ============= Base_Types.Float_Payload ===================
@@ -2805,8 +2831,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesFloat_Payload: Config_Base_TypesFloat_Payload = {return config_Base_TypesFloat_Payload}
 
-  def set_Config_Base_TypesFloat_Payload(config: Config_Base_TypesFloat_Payload): Unit ={
+  def set_Config_Base_TypesFloat_Payload(config: Config_Base_TypesFloat_Payload): RandomLib ={
     config_Base_TypesFloat_Payload = config
+    return this
   }
 
   // ============= Base_Types.Float_32_Payload ===================
@@ -2816,8 +2843,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesFloat_32_Payload: Config_Base_TypesFloat_32_Payload = {return config_Base_TypesFloat_32_Payload}
 
-  def set_Config_Base_TypesFloat_32_Payload(config: Config_Base_TypesFloat_32_Payload): Unit ={
+  def set_Config_Base_TypesFloat_32_Payload(config: Config_Base_TypesFloat_32_Payload): RandomLib ={
     config_Base_TypesFloat_32_Payload = config
+    return this
   }
 
   // ============= Base_Types.Float_64_Payload ===================
@@ -2827,8 +2855,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesFloat_64_Payload: Config_Base_TypesFloat_64_Payload = {return config_Base_TypesFloat_64_Payload}
 
-  def set_Config_Base_TypesFloat_64_Payload(config: Config_Base_TypesFloat_64_Payload): Unit ={
+  def set_Config_Base_TypesFloat_64_Payload(config: Config_Base_TypesFloat_64_Payload): RandomLib ={
     config_Base_TypesFloat_64_Payload = config
+    return this
   }
 
   // ============= Base_Types.Character_Payload ===================
@@ -2838,8 +2867,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesCharacter_Payload: Config_Base_TypesCharacter_Payload = {return config_Base_TypesCharacter_Payload}
 
-  def set_Config_Base_TypesCharacter_Payload(config: Config_Base_TypesCharacter_Payload): Unit ={
+  def set_Config_Base_TypesCharacter_Payload(config: Config_Base_TypesCharacter_Payload): RandomLib ={
     config_Base_TypesCharacter_Payload = config
+    return this
   }
 
   // ============= Base_Types.String_Payload ===================
@@ -2849,8 +2879,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesString_Payload: Config_Base_TypesString_Payload = {return config_Base_TypesString_Payload}
 
-  def set_Config_Base_TypesString_Payload(config: Config_Base_TypesString_Payload): Unit ={
+  def set_Config_Base_TypesString_Payload(config: Config_Base_TypesString_Payload): RandomLib ={
     config_Base_TypesString_Payload = config
+    return this
   }
 
   // ============= Base_Types.Bits_Payload ===================
@@ -2860,8 +2891,9 @@ Interface_Interaction.scala
 
   def get_Config_Base_TypesBits_Payload: Config_Base_TypesBits_Payload = {return config_Base_TypesBits_Payload}
 
-  def set_Config_Base_TypesBits_Payload(config: Config_Base_TypesBits_Payload): Unit ={
+  def set_Config_Base_TypesBits_Payload(config: Config_Base_TypesBits_Payload): RandomLib ={
     config_Base_TypesBits_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Failure_Flag_impl ===================
@@ -2871,8 +2903,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelFailure_Flag_impl: Config_Isolette_Data_ModelFailure_Flag_impl = {return config_Isolette_Data_ModelFailure_Flag_impl}
 
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): Unit ={
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl(config: Config_Isolette_Data_ModelFailure_Flag_impl): RandomLib ={
     config_Isolette_Data_ModelFailure_Flag_impl = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Failure_Flag_impl_Payload ===================
@@ -2882,8 +2915,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelFailure_Flag_impl_Payload: Config_Isolette_Data_ModelFailure_Flag_impl_Payload = {return config_Isolette_Data_ModelFailure_Flag_impl_Payload}
 
-  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelFailure_Flag_impl_Payload(config: Config_Isolette_Data_ModelFailure_Flag_impl_Payload): RandomLib ={
     config_Isolette_Data_ModelFailure_Flag_impl_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Monitor_Mode.Type ===================
@@ -2893,8 +2927,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelMonitor_ModeType: Config_Isolette_Data_ModelMonitor_ModeType = {return config_Isolette_Data_ModelMonitor_ModeType}
 
-  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): Unit ={
+  def set_Config_Isolette_Data_ModelMonitor_ModeType(config: Config_Isolette_Data_ModelMonitor_ModeType): RandomLib ={
     config_Isolette_Data_ModelMonitor_ModeType = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Monitor_Mode_Payload ===================
@@ -2904,8 +2939,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelMonitor_Mode_Payload: Config_Isolette_Data_ModelMonitor_Mode_Payload = {return config_Isolette_Data_ModelMonitor_Mode_Payload}
 
-  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelMonitor_Mode_Payload(config: Config_Isolette_Data_ModelMonitor_Mode_Payload): RandomLib ={
     config_Isolette_Data_ModelMonitor_Mode_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.On_Off.Type ===================
@@ -2915,8 +2951,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelOn_OffType: Config_Isolette_Data_ModelOn_OffType = {return config_Isolette_Data_ModelOn_OffType}
 
-  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): Unit ={
+  def set_Config_Isolette_Data_ModelOn_OffType(config: Config_Isolette_Data_ModelOn_OffType): RandomLib ={
     config_Isolette_Data_ModelOn_OffType = config
+    return this
   }
 
   // ============= Isolette_Data_Model.On_Off_Payload ===================
@@ -2926,8 +2963,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelOn_Off_Payload: Config_Isolette_Data_ModelOn_Off_Payload = {return config_Isolette_Data_ModelOn_Off_Payload}
 
-  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelOn_Off_Payload(config: Config_Isolette_Data_ModelOn_Off_Payload): RandomLib ={
     config_Isolette_Data_ModelOn_Off_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.PhysicalTemp_impl ===================
@@ -2937,8 +2975,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelPhysicalTemp_impl: Config_Isolette_Data_ModelPhysicalTemp_impl = {return config_Isolette_Data_ModelPhysicalTemp_impl}
 
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): Unit ={
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl(config: Config_Isolette_Data_ModelPhysicalTemp_impl): RandomLib ={
     config_Isolette_Data_ModelPhysicalTemp_impl = config
+    return this
   }
 
   // ============= Isolette_Data_Model.PhysicalTemp_impl_Payload ===================
@@ -2948,8 +2987,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload = {return config_Isolette_Data_ModelPhysicalTemp_impl_Payload}
 
-  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelPhysicalTemp_impl_Payload(config: Config_Isolette_Data_ModelPhysicalTemp_impl_Payload): RandomLib ={
     config_Isolette_Data_ModelPhysicalTemp_impl_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Regulator_Mode.Type ===================
@@ -2959,8 +2999,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelRegulator_ModeType: Config_Isolette_Data_ModelRegulator_ModeType = {return config_Isolette_Data_ModelRegulator_ModeType}
 
-  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): Unit ={
+  def set_Config_Isolette_Data_ModelRegulator_ModeType(config: Config_Isolette_Data_ModelRegulator_ModeType): RandomLib ={
     config_Isolette_Data_ModelRegulator_ModeType = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Regulator_Mode_Payload ===================
@@ -2970,8 +3011,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelRegulator_Mode_Payload: Config_Isolette_Data_ModelRegulator_Mode_Payload = {return config_Isolette_Data_ModelRegulator_Mode_Payload}
 
-  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelRegulator_Mode_Payload(config: Config_Isolette_Data_ModelRegulator_Mode_Payload): RandomLib ={
     config_Isolette_Data_ModelRegulator_Mode_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Status.Type ===================
@@ -2981,8 +3023,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelStatusType: Config_Isolette_Data_ModelStatusType = {return config_Isolette_Data_ModelStatusType}
 
-  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): Unit ={
+  def set_Config_Isolette_Data_ModelStatusType(config: Config_Isolette_Data_ModelStatusType): RandomLib ={
     config_Isolette_Data_ModelStatusType = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Status_Payload ===================
@@ -2992,8 +3035,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelStatus_Payload: Config_Isolette_Data_ModelStatus_Payload = {return config_Isolette_Data_ModelStatus_Payload}
 
-  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelStatus_Payload(config: Config_Isolette_Data_ModelStatus_Payload): RandomLib ={
     config_Isolette_Data_ModelStatus_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.TempWstatus_impl ===================
@@ -3003,8 +3047,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelTempWstatus_impl: Config_Isolette_Data_ModelTempWstatus_impl = {return config_Isolette_Data_ModelTempWstatus_impl}
 
-  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): Unit ={
+  def set_Config_Isolette_Data_ModelTempWstatus_impl(config: Config_Isolette_Data_ModelTempWstatus_impl): RandomLib ={
     config_Isolette_Data_ModelTempWstatus_impl = config
+    return this
   }
 
   // ============= Isolette_Data_Model.TempWstatus_impl_Payload ===================
@@ -3014,8 +3059,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelTempWstatus_impl_Payload: Config_Isolette_Data_ModelTempWstatus_impl_Payload = {return config_Isolette_Data_ModelTempWstatus_impl_Payload}
 
-  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelTempWstatus_impl_Payload(config: Config_Isolette_Data_ModelTempWstatus_impl_Payload): RandomLib ={
     config_Isolette_Data_ModelTempWstatus_impl_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Temp_impl ===================
@@ -3025,8 +3071,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelTemp_impl: Config_Isolette_Data_ModelTemp_impl = {return config_Isolette_Data_ModelTemp_impl}
 
-  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): Unit ={
+  def set_Config_Isolette_Data_ModelTemp_impl(config: Config_Isolette_Data_ModelTemp_impl): RandomLib ={
     config_Isolette_Data_ModelTemp_impl = config
+    return this
   }
 
   // ============= Isolette_Data_Model.Temp_impl_Payload ===================
@@ -3036,8 +3083,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelTemp_impl_Payload: Config_Isolette_Data_ModelTemp_impl_Payload = {return config_Isolette_Data_ModelTemp_impl_Payload}
 
-  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelTemp_impl_Payload(config: Config_Isolette_Data_ModelTemp_impl_Payload): RandomLib ={
     config_Isolette_Data_ModelTemp_impl_Payload = config
+    return this
   }
 
   // ============= Isolette_Data_Model.ValueStatus.Type ===================
@@ -3047,8 +3095,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelValueStatusType: Config_Isolette_Data_ModelValueStatusType = {return config_Isolette_Data_ModelValueStatusType}
 
-  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): Unit ={
+  def set_Config_Isolette_Data_ModelValueStatusType(config: Config_Isolette_Data_ModelValueStatusType): RandomLib ={
     config_Isolette_Data_ModelValueStatusType = config
+    return this
   }
 
   // ============= Isolette_Data_Model.ValueStatus_Payload ===================
@@ -3058,8 +3107,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_Data_ModelValueStatus_Payload: Config_Isolette_Data_ModelValueStatus_Payload = {return config_Isolette_Data_ModelValueStatus_Payload}
 
-  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): Unit ={
+  def set_Config_Isolette_Data_ModelValueStatus_Payload(config: Config_Isolette_Data_ModelValueStatus_Payload): RandomLib ={
     config_Isolette_Data_ModelValueStatus_Payload = config
+    return this
   }
 
   // ============= Isolette_Environment.Heat.Type ===================
@@ -3069,8 +3119,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_EnvironmentHeatType: Config_Isolette_EnvironmentHeatType = {return config_Isolette_EnvironmentHeatType}
 
-  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): Unit ={
+  def set_Config_Isolette_EnvironmentHeatType(config: Config_Isolette_EnvironmentHeatType): RandomLib ={
     config_Isolette_EnvironmentHeatType = config
+    return this
   }
 
   // ============= Isolette_Environment.Heat_Payload ===================
@@ -3080,8 +3131,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_EnvironmentHeat_Payload: Config_Isolette_EnvironmentHeat_Payload = {return config_Isolette_EnvironmentHeat_Payload}
 
-  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): Unit ={
+  def set_Config_Isolette_EnvironmentHeat_Payload(config: Config_Isolette_EnvironmentHeat_Payload): RandomLib ={
     config_Isolette_EnvironmentHeat_Payload = config
+    return this
   }
 
   // ============= Isolette_Environment.Interface_Interaction.Type ===================
@@ -3091,8 +3143,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_EnvironmentInterface_InteractionType: Config_Isolette_EnvironmentInterface_InteractionType = {return config_Isolette_EnvironmentInterface_InteractionType}
 
-  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): Unit ={
+  def set_Config_Isolette_EnvironmentInterface_InteractionType(config: Config_Isolette_EnvironmentInterface_InteractionType): RandomLib ={
     config_Isolette_EnvironmentInterface_InteractionType = config
+    return this
   }
 
   // ============= Isolette_Environment.Interface_Interaction_Payload ===================
@@ -3102,8 +3155,9 @@ Interface_Interaction.scala
 
   def get_Config_Isolette_EnvironmentInterface_Interaction_Payload: Config_Isolette_EnvironmentInterface_Interaction_Payload = {return config_Isolette_EnvironmentInterface_Interaction_Payload}
 
-  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): Unit ={
+  def set_Config_Isolette_EnvironmentInterface_Interaction_Payload(config: Config_Isolette_EnvironmentInterface_Interaction_Payload): RandomLib ={
     config_Isolette_EnvironmentInterface_Interaction_Payload = config
+    return this
   }
 }
 

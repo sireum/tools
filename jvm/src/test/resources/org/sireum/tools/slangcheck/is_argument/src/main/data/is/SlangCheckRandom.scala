@@ -22,7 +22,7 @@ exampleType.scala
 
   // ========  Z ==========
     def get_Config_Z: Config_Z
-    def set_Config_Z(config: Config_Z): Unit
+    def set_Config_Z(config: Config_Z): RandomLib
 
     def nextZ(): Z = {
       val conf = get_Config_Z
@@ -86,7 +86,7 @@ exampleType.scala
 
   // ========  B ==========}
     def get_Config_B: Config_B
-    def set_Config_B(config: Config_B): Unit
+    def set_Config_B(config: Config_B): RandomLib
 
     def nextB(): B = {
       var r = gen.nextB()
@@ -117,7 +117,7 @@ exampleType.scala
 
   // ========  C ==========}
     def get_Config_C: Config_C
-    def set_Config_C(config: Config_C): Unit
+    def set_Config_C(config: Config_C): RandomLib
 
     def nextC(): C = {
       var r = gen.nextC()
@@ -148,7 +148,7 @@ exampleType.scala
 
   // ========  R ==========
     def get_Config_R: Config_R
-    def set_Config_R(config: Config_R): Unit
+    def set_Config_R(config: Config_R): RandomLib
 
     def nextR(): R = {
       val conf = get_Config_R
@@ -212,7 +212,7 @@ exampleType.scala
 
   // ========  F32 ==========
     def get_Config_F32: Config_F32
-    def set_Config_F32(config: Config_F32): Unit
+    def set_Config_F32(config: Config_F32): RandomLib
 
     def nextF32(): F32 = {
       val conf = get_Config_F32
@@ -276,7 +276,7 @@ exampleType.scala
 
   // ========  F64 ==========
     def get_Config_F64: Config_F64
-    def set_Config_F64(config: Config_F64): Unit
+    def set_Config_F64(config: Config_F64): RandomLib
 
     def nextF64(): F64 = {
       val conf = get_Config_F64
@@ -340,7 +340,7 @@ exampleType.scala
 
   // ========  S8 ==========
     def get_Config_S8: Config_S8
-    def set_Config_S8(config: Config_S8): Unit
+    def set_Config_S8(config: Config_S8): RandomLib
 
     def nextS8(): S8 = {
       val conf = get_Config_S8
@@ -404,7 +404,7 @@ exampleType.scala
 
   // ========  S16 ==========
     def get_Config_S16: Config_S16
-    def set_Config_S16(config: Config_S16): Unit
+    def set_Config_S16(config: Config_S16): RandomLib
 
     def nextS16(): S16 = {
       val conf = get_Config_S16
@@ -468,7 +468,7 @@ exampleType.scala
 
   // ========  S32 ==========
     def get_Config_S32: Config_S32
-    def set_Config_S32(config: Config_S32): Unit
+    def set_Config_S32(config: Config_S32): RandomLib
 
     def nextS32(): S32 = {
       val conf = get_Config_S32
@@ -532,7 +532,7 @@ exampleType.scala
 
   // ========  S64 ==========
     def get_Config_S64: Config_S64
-    def set_Config_S64(config: Config_S64): Unit
+    def set_Config_S64(config: Config_S64): RandomLib
 
     def nextS64(): S64 = {
       val conf = get_Config_S64
@@ -596,7 +596,7 @@ exampleType.scala
 
   // ========  U8 ==========
     def get_Config_U8: Config_U8
-    def set_Config_U8(config: Config_U8): Unit
+    def set_Config_U8(config: Config_U8): RandomLib
 
     def nextU8(): U8 = {
       val conf = get_Config_U8
@@ -660,7 +660,7 @@ exampleType.scala
 
   // ========  U16 ==========
     def get_Config_U16: Config_U16
-    def set_Config_U16(config: Config_U16): Unit
+    def set_Config_U16(config: Config_U16): RandomLib
 
     def nextU16(): U16 = {
       val conf = get_Config_U16
@@ -724,7 +724,7 @@ exampleType.scala
 
   // ========  U32 ==========
     def get_Config_U32: Config_U32
-    def set_Config_U32(config: Config_U32): Unit
+    def set_Config_U32(config: Config_U32): RandomLib
 
     def nextU32(): U32 = {
       val conf = get_Config_U32
@@ -788,7 +788,7 @@ exampleType.scala
 
   // ========  U64 ==========
     def get_Config_U64: Config_U64
-    def set_Config_U64(config: Config_U64): Unit
+    def set_Config_U64(config: Config_U64): RandomLib
 
     def nextU64(): U64 = {
       val conf = get_Config_U64
@@ -863,7 +863,7 @@ exampleType.scala
   // ============= art.DataContent ===================
 
   def get_Config__artDataContent: Config__artDataContent
-  def set_Config__artDataContent(config: Config__artDataContent): Unit
+  def set_Config__artDataContent(config: Config__artDataContent): RandomLib
 
   def next_artDataContent(): art.DataContent = {
     var callEnum: ISZ[_artDataContent_DataTypeId.Type] = ISZ(_artDataContent_DataTypeId._artEmpty_Id)
@@ -922,7 +922,7 @@ exampleType.scala
   // ============= art.Empty ===================
 
   def get_Config__artEmpty: Config__artEmpty
-  def set_Config__artEmpty(config: Config__artEmpty): Unit
+  def set_Config__artEmpty(config: Config__artEmpty): RandomLib
 
   def next_artEmpty(): art.Empty = {
 
@@ -957,7 +957,7 @@ exampleType.scala
   // ============= example ===================
 
   def get_Config_example: Config_example
-  def set_Config_example(config: Config_example): Unit
+  def set_Config_example(config: Config_example): RandomLib
 
   def nextexample(): example = {
     var arg: IS[U32, testThing] = nextISU32testThing()
@@ -995,7 +995,7 @@ exampleType.scala
   // ============= testThing ===================
 
   def get_Config_testThing: Config_testThing
-  def set_Config_testThing(config: Config_testThing): Unit
+  def set_Config_testThing(config: Config_testThing): RandomLib
 
   def nexttestThing(): testThing = {
 
@@ -1062,8 +1062,9 @@ exampleType.scala
   var config_Z: Config_Z = Config_Z(None(), None(), 100, _verbose, alwaysTrue_Z _)
   def get_Config_Z: Config_Z = {return config_Z}
 
-  def set_Config_Z(config: Config_Z): Unit ={
+  def set_Config_Z(config: Config_Z): RandomLib ={
     config_Z = config
+    return this
   }
 
   // ============= B ===================
@@ -1072,8 +1073,9 @@ exampleType.scala
   var config_B: Config_B = Config_B(100, _verbose, alwaysTrue_B _)
   def get_Config_B: Config_B = {return config_B}
 
-  def set_Config_B(config: Config_B): Unit ={
+  def set_Config_B(config: Config_B): RandomLib ={
     config_B = config
+    return this
   }
 
   // ============= C ===================
@@ -1082,8 +1084,9 @@ exampleType.scala
   var config_C: Config_C = Config_C(100, _verbose, alwaysTrue_C _)
   def get_Config_C: Config_C = {return config_C}
 
-  def set_Config_C(config: Config_C): Unit ={
+  def set_Config_C(config: Config_C): RandomLib ={
     config_C = config
+    return this
   }
 
   // ============= R ===================
@@ -1092,8 +1095,9 @@ exampleType.scala
   var config_R: Config_R = Config_R(None(), None(), 100, _verbose, alwaysTrue_R _)
   def get_Config_R: Config_R = {return config_R}
 
-  def set_Config_R(config: Config_R): Unit ={
+  def set_Config_R(config: Config_R): RandomLib ={
     config_R = config
+    return this
   }
 
   // ============= F32 ===================
@@ -1102,8 +1106,9 @@ exampleType.scala
   var config_F32: Config_F32 = Config_F32(None(), None(), 100, _verbose, alwaysTrue_F32 _)
   def get_Config_F32: Config_F32 = {return config_F32}
 
-  def set_Config_F32(config: Config_F32): Unit ={
+  def set_Config_F32(config: Config_F32): RandomLib ={
     config_F32 = config
+    return this
   }
 
   // ============= F64 ===================
@@ -1112,8 +1117,9 @@ exampleType.scala
   var config_F64: Config_F64 = Config_F64(None(), None(), 100, _verbose, alwaysTrue_F64 _)
   def get_Config_F64: Config_F64 = {return config_F64}
 
-  def set_Config_F64(config: Config_F64): Unit ={
+  def set_Config_F64(config: Config_F64): RandomLib ={
     config_F64 = config
+    return this
   }
 
   // ============= S8 ===================
@@ -1122,8 +1128,9 @@ exampleType.scala
   var config_S8: Config_S8 = Config_S8(None(), None(), 100, _verbose, alwaysTrue_S8 _)
   def get_Config_S8: Config_S8 = {return config_S8}
 
-  def set_Config_S8(config: Config_S8): Unit ={
+  def set_Config_S8(config: Config_S8): RandomLib ={
     config_S8 = config
+    return this
   }
 
   // ============= S16 ===================
@@ -1132,8 +1139,9 @@ exampleType.scala
   var config_S16: Config_S16 = Config_S16(None(), None(), 100, _verbose, alwaysTrue_S16 _)
   def get_Config_S16: Config_S16 = {return config_S16}
 
-  def set_Config_S16(config: Config_S16): Unit ={
+  def set_Config_S16(config: Config_S16): RandomLib ={
     config_S16 = config
+    return this
   }
 
   // ============= S32 ===================
@@ -1142,8 +1150,9 @@ exampleType.scala
   var config_S32: Config_S32 = Config_S32(None(), None(), 100, _verbose, alwaysTrue_S32 _)
   def get_Config_S32: Config_S32 = {return config_S32}
 
-  def set_Config_S32(config: Config_S32): Unit ={
+  def set_Config_S32(config: Config_S32): RandomLib ={
     config_S32 = config
+    return this
   }
 
   // ============= S64 ===================
@@ -1152,8 +1161,9 @@ exampleType.scala
   var config_S64: Config_S64 = Config_S64(None(), None(), 100, _verbose, alwaysTrue_S64 _)
   def get_Config_S64: Config_S64 = {return config_S64}
 
-  def set_Config_S64(config: Config_S64): Unit ={
+  def set_Config_S64(config: Config_S64): RandomLib ={
     config_S64 = config
+    return this
   }
 
   // ============= U8 ===================
@@ -1162,8 +1172,9 @@ exampleType.scala
   var config_U8: Config_U8 = Config_U8(None(), None(), 100, _verbose, alwaysTrue_U8 _)
   def get_Config_U8: Config_U8 = {return config_U8}
 
-  def set_Config_U8(config: Config_U8): Unit ={
+  def set_Config_U8(config: Config_U8): RandomLib ={
     config_U8 = config
+    return this
   }
 
   // ============= U16 ===================
@@ -1172,8 +1183,9 @@ exampleType.scala
   var config_U16: Config_U16 = Config_U16(None(), None(), 100, _verbose, alwaysTrue_U16 _)
   def get_Config_U16: Config_U16 = {return config_U16}
 
-  def set_Config_U16(config: Config_U16): Unit ={
+  def set_Config_U16(config: Config_U16): RandomLib ={
     config_U16 = config
+    return this
   }
 
   // ============= U32 ===================
@@ -1182,8 +1194,9 @@ exampleType.scala
   var config_U32: Config_U32 = Config_U32(None(), None(), 100, _verbose, alwaysTrue_U32 _)
   def get_Config_U32: Config_U32 = {return config_U32}
 
-  def set_Config_U32(config: Config_U32): Unit ={
+  def set_Config_U32(config: Config_U32): RandomLib ={
     config_U32 = config
+    return this
   }
 
   // ============= U64 ===================
@@ -1192,8 +1205,9 @@ exampleType.scala
   var config_U64: Config_U64 = Config_U64(None(), None(), 100, _verbose, alwaysTrue_U64 _)
   def get_Config_U64: Config_U64 = {return config_U64}
 
-  def set_Config_U64(config: Config_U64): Unit ={
+  def set_Config_U64(config: Config_U64): RandomLib ={
     config_U64 = config
+    return this
   }
 
   // ============= art.DataContent ===================
@@ -1203,8 +1217,9 @@ exampleType.scala
 
   def get_Config__artDataContent: Config__artDataContent = {return config__artDataContent}
 
-  def set_Config__artDataContent(config: Config__artDataContent): Unit ={
+  def set_Config__artDataContent(config: Config__artDataContent): RandomLib ={
     config__artDataContent = config
+    return this
   }
 
   // ============= art.Empty ===================
@@ -1214,8 +1229,9 @@ exampleType.scala
 
   def get_Config__artEmpty: Config__artEmpty = {return config__artEmpty}
 
-  def set_Config__artEmpty(config: Config__artEmpty): Unit ={
+  def set_Config__artEmpty(config: Config__artEmpty): RandomLib ={
     config__artEmpty = config
+    return this
   }
 
   // ============= example ===================
@@ -1225,8 +1241,9 @@ exampleType.scala
 
   def get_Config_example: Config_example = {return config_example}
 
-  def set_Config_example(config: Config_example): Unit ={
+  def set_Config_example(config: Config_example): RandomLib ={
     config_example = config
+    return this
   }
 
   // ============= testThing ===================
@@ -1236,8 +1253,9 @@ exampleType.scala
 
   def get_Config_testThing: Config_testThing = {return config_testThing}
 
-  def set_Config_testThing(config: Config_testThing): Unit ={
+  def set_Config_testThing(config: Config_testThing): RandomLib ={
     config_testThing = config
+    return this
   }
 }
 
