@@ -19,10 +19,10 @@ object SlangCheck {
           reporter: Reporter,
           typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
 
-    val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
-    for (p <- programs) {
-      gdr.resolveProgram(p) //get all names and types
-    }
+//    val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
+//    for (p <- programs) {
+//      gdr.resolveProgram(p) //get all names and types
+//    }
     val packageName_ : ISZ[String] = if (packageName.nonEmpty) packageName else AST.Util.ids2strings(programs(0).packageName.ids)
 
     // call the various generators
