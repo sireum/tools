@@ -129,12 +129,25 @@ Temperature_i_GumboX.scala
       halt("Requirements too strict to generate")
     }
 
-  // ========  C ==========}
+  // ========  C ==========
     def get_Config_C: Config_C
     def set_Config_C(config: Config_C): RandomLib
 
     def nextC(): C = {
-      var r = gen.nextC()
+      val conf = get_Config_C
+
+      var r: C = if (conf.low.isEmpty) {
+          if (conf.high.isEmpty)
+            gen.nextC()
+          else
+            gen.nextCBetween(C.fromZ(0), conf.high.get)
+        } else {
+          if (conf.high.isEmpty)
+            gen.nextCBetween(conf.low.get, C.fromZ(1114111))
+          else
+            gen.nextCBetween(conf.low.get, conf.high.get)
+        }
+
       if(get_Config_C.attempts >= 0) {
        for (i <- 0 to get_Config_C.attempts) {
          if (get_Config_C.filter(r)) {
@@ -143,7 +156,17 @@ Temperature_i_GumboX.scala
          if (get_Config_C.verbose) {
            println(s"Retrying for failing value: $r")
          }
-         r = gen.nextC()
+         r = if (conf.low.isEmpty) {
+           if (conf.high.isEmpty)
+             gen.nextC()
+           else
+              gen.nextCBetween(C.fromZ(0), conf.high.get)
+          } else {
+            if (conf.high.isEmpty)
+              gen.nextCBetween(conf.low.get, C.fromZ(1114111))
+            else
+             gen.nextCBetween(conf.low.get, conf.high.get)
+         }
        }
       } else {
        while(T) {
@@ -153,7 +176,17 @@ Temperature_i_GumboX.scala
          if (get_Config_C.verbose) {
            println(s"Retrying for failing value: $r")
          }
-         r = gen.nextC()
+         r = if (conf.low.isEmpty) {
+           if (conf.high.isEmpty)
+             gen.nextC()
+           else
+              gen.nextCBetween(C.fromZ(0), conf.high.get)
+          } else {
+            if (conf.high.isEmpty)
+              gen.nextCBetween(conf.low.get, C.fromZ(1114111))
+            else
+             gen.nextCBetween(conf.low.get, conf.high.get)
+         }
        }
       }
       assert(F, "Requirements too strict to generate")
@@ -2043,7 +2076,7 @@ Temperature_i_GumboX.scala
   // ============= C ===================
   def alwaysTrue_C(v: C): B = {return T}
 
-  var config_C: Config_C = Config_C(100, _verbose, alwaysTrue_C _)
+  var config_C: Config_C = Config_C(None(), None(), 100, _verbose, alwaysTrue_C _)
   def get_Config_C: Config_C = {return config_C}
 
   def set_Config_C(config: Config_C): RandomLib ={

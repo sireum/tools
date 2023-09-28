@@ -191,7 +191,7 @@ object SlangCheckTest {
     return (ISZ("SlangCheckDataTypeId.scala"),
       st"""// #Sireum
           |
-          |package $packageName
+          |package ${(packageName, ".")}
           |
           |import org.sireum._
           |import org.sireum.Random.Gen64
@@ -298,7 +298,7 @@ object SlangCheckTest {
     return (ISZ("SlangCheckRandom.scala"),
       st"""// #Sireum
           |
-          |package $packageName
+          |package ${(packageName, ".")}
           |
           |import org.sireum._
           |import org.sireum.Random.Gen64
@@ -359,6 +359,7 @@ object SlangCheckTest {
 
   // get the next function for the slang base types
   def genNextSlangBaseTypes(typ: String): ST = {
+
     if (th.isSubZName(ISZ("org", "sireum", typ))) {
       return (
         st"""// ========  ${typ} ==========
@@ -481,6 +482,71 @@ object SlangCheckTest {
             |        } else {
             |          if (conf.high.isEmpty)
             |            gen.next${typ}Between(conf.low.get, S64.Max.toZ)
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    }
+            |    assert(F, "Requirements too strict to generate")
+            |    halt("Requirements too strict to generate")
+            |  }""")
+    } else if (typ == "C") {
+      return (
+        st"""// ========  ${typ} ==========
+            |  def get_Config_${typ}: Config_${typ}
+            |  def set_Config_${typ}(config: Config_${typ}): RandomLib
+            |
+            |  def next$typ(): $typ = {
+            |    val conf = get_Config_$typ
+            |
+            |    var r: $typ = if (conf.low.isEmpty) {
+            |        if (conf.high.isEmpty)
+            |          gen.next$typ()
+            |        else
+            |          gen.next${typ}Between(C.fromZ(0), conf.high.get)
+            |      } else {
+            |        if (conf.high.isEmpty)
+            |          gen.next${typ}Between(conf.low.get, C.fromZ(1114111))
+            |        else
+            |          gen.next${typ}Between(conf.low.get, conf.high.get)
+            |      }
+            |
+            |    if(get_Config_$typ.attempts >= 0) {
+            |     for (i <- 0 to get_Config_$typ.attempts) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(C.fromZ(0), conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, C.fromZ(1114111))
+            |          else
+            |           gen.next${typ}Between(conf.low.get, conf.high.get)
+            |       }
+            |     }
+            |    } else {
+            |     while(T) {
+            |       if (get_Config_$typ.filter(r)) {
+            |         return r
+            |       }
+            |       if (get_Config_$typ.verbose) {
+            |         println(s"Retrying for failing value: $$r")
+            |       }
+            |       r = if (conf.low.isEmpty) {
+            |         if (conf.high.isEmpty)
+            |           gen.next$typ()
+            |         else
+            |            gen.next${typ}Between(C.fromZ(0), conf.high.get)
+            |        } else {
+            |          if (conf.high.isEmpty)
+            |            gen.next${typ}Between(conf.low.get, C.fromZ(1114111))
             |          else
             |           gen.next${typ}Between(conf.low.get, conf.high.get)
             |       }
@@ -722,7 +788,7 @@ object SlangCheckTest {
 
   // get the base definition for the config for the Slang Base Types
   def genConfigSlangBaseType(typ: String): ST = {
-    if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "Z" || typ == "R") {
+    if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "Z" || typ == "R" || typ == "C") {
       return (
         st"""// ============= ${typ} ===================
             |def alwaysTrue_$typ(v: $typ): B = {return T}
@@ -786,6 +852,7 @@ object SlangCheckTest {
           if (typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
             val nextName = st"next${typName}${(typArgNames, "")}".render
             if (!seenExtraNextMethods.contains(nextName)) {
+              seenExtraNextMethods = seenExtraNextMethods + nextName
               extraNextMethods = extraNextMethods :+
                 st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
                     |
@@ -839,8 +906,6 @@ object SlangCheckTest {
 //              }
 //            }
 //          }
-
-          print()
 
           st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}${(typArgNames, "")}()"
         }
@@ -960,7 +1025,12 @@ object SlangCheckTest {
     for (typ <- SlangCheck.sortedTyedNames(leaves)) {
       val typName = SlangCheck.astTypedName(packageName, typ)
       calls = calls :+ st"next$typName"
-      enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${typName}_Id"
+
+      if (typ.ids(0) == packageName(0)) {
+        enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id"
+      } else {
+        enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id"
+      }
     }
 
     for (i <- 0 to enumNames.size - 1) {
@@ -1057,7 +1127,12 @@ object SlangCheckTest {
       for (typ <- SlangCheck.sortedTyedNames(leaves)) {
         val typName = SlangCheck.astTypedName(packageName, typ)
         calls = calls :+ st"next$typName"
-        enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${typName}_Id"
+
+        if (typ.ids(0) == packageName(0)) {
+          enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id"
+        } else {
+          enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id"
+        }
       }
 
       for (i <- 0 to enumNames.size - 1) {
@@ -1144,11 +1219,40 @@ object SlangCheckTest {
       val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
 
 
+//      val filter: ST = ti.invariants.get("SpecialSlangCheckInvId") match {
+//        case Some (inv) =>
+//          val invoke = inv.ast.claims(0).asInstanceOf[AST.Exp.Invoke]
+//          val receiver: Option[String] = if (invoke.receiverOpt.nonEmpty) Some(s"${invoke.receiverOpt.get}.") else None()
+//          val fname: ST = st"$receiver${invoke.ident.string}H"
+//          st"$fname _"
+//        case _ => st"alwaysTrue_$adTypeName _"
+//      }
+
+//      val filter: ST = if(ti.invariants.nonEmpty) {
+//
+//        var invISZ: ISZ[ST] = ISZ()
+//
+//        for(inv <- ti.invariants.values) {
+//          val invoke = inv.ast.claims(0).asInstanceOf[AST.Exp.Invoke]
+//          val receiver: Option[String] = if (invoke.receiverOpt.nonEmpty) Some(s"${invoke.receiverOpt.get}.") else None()
+//          val fname: ST = st"$receiver${invoke.ident.string}H"
+//
+//          if(invoke.receiverOpt.nonEmpty)
+//
+//        }
+//        st"_"
+//      } else {
+//        st"alwaysTrue_$adTypeName _"
+//      }
+
+
+      val filter = st"${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"}"
+
       nextConfig = nextConfig :+
         st"""// ============= ${adTypeString} ===================
             |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
             |
-            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, ${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"})
+            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, $filter)
             |
             |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
             |
@@ -1227,7 +1331,7 @@ object SlangCheckTest {
     return (ISZ("SlangCheckConfig.scala"),
       st"""// #Sireum
           |
-          |package ${packageName}
+          |package ${(packageName, ".")}
           |
           |import org.sireum._
           |import org.sireum.Random.Gen64
@@ -1258,7 +1362,7 @@ object SlangCheckTest {
 
   //get config type for a slang type
   def genSlangBaseTypes(typ: String): ST = {
-    return if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "R" || typ == "Z")
+    return if (th.isSubZName(ISZ("org", "sireum", typ)) || typ == "F32" || typ == "F64" || typ == "R" || typ == "Z" || typ =="C")
       st"""@datatype class Config_${typ}(low: Option[$typ], high: Option[$typ], attempts: Z, verbose: B, filter: ${typ} => B) {}"""
     else
       st"""@datatype class Config_${typ}(attempts: Z, verbose: B, filter: ${typ} => B) {}"""
@@ -1315,7 +1419,7 @@ object SlangCheckTest {
     return (ISZ("SlangCheckGenerator.scala"),
       st"""// #Sireum
           |
-          |package ${packageName}
+          |package ${(packageName, ".")}
           |
           |import org.sireum._
           |import org.sireum.Random.Gen64
@@ -1472,7 +1576,7 @@ object SlangCheckTest {
       }
     }
     return (ISZ("SlangCheckTest.scala"),
-      st"""package ${packageName}
+      st"""package ${(packageName, ".")}
           |
           |import org.scalatest.funsuite.AnyFunSuite
           |import org.sireum.Random.Impl.Xoshiro256
