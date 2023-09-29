@@ -13,16 +13,14 @@ import org.sireum.ops.ISZOps
 //TODO: Proyek
 
 object SlangCheck {
+  val toolName: String = "SlangCheck"
+
   def gen(packageName: ISZ[String],
           fileUris: ISZ[String],
           programs: ISZ[AST.TopUnit.Program],
           reporter: Reporter,
           typeHierarchy: TypeHierarchy): ISZ[(ISZ[String], ST)] = {
 
-//    val gdr = GlobalDeclarationResolver(HashSMap.empty, HashSMap.empty, reporter)
-//    for (p <- programs) {
-//      gdr.resolveProgram(p) //get all names and types
-//    }
     val packageName_ : ISZ[String] = if (packageName.nonEmpty) packageName else AST.Util.ids2strings(programs(0).packageName.ids)
 
     // call the various generators
@@ -1218,35 +1216,44 @@ object SlangCheckTest {
       val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
       val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
 
+      val defaultFilter = st"alwaysTrue_$adTypeName _"
 
-//      val filter: ST = ti.invariants.get("SpecialSlangCheckInvId") match {
-//        case Some (inv) =>
-//          val invoke = inv.ast.claims(0).asInstanceOf[AST.Exp.Invoke]
-//          val receiver: Option[String] = if (invoke.receiverOpt.nonEmpty) Some(s"${invoke.receiverOpt.get}.") else None()
-//          val fname: ST = st"$receiver${invoke.ident.string}H"
-//          st"$fname _"
-//        case _ => st"alwaysTrue_$adTypeName _"
-//      }
+      val filter: ST = {
+        var resolvedMethods: ISZ[AST.Stmt.Method] = ISZ()
+        for (inv <- ti.invariants.entries) {
+          val invH = s"${inv._1}_InvariantH"
+          def lookup(): Option[AST.Stmt.Method] = {
+            th.nameMap.get(ti.name) match {
+              case Some(companionObject: Info.Object) =>
+                for (stmt <- companionObject.ast.stmts) {
+                  stmt match {
+                    case m: AST.Stmt.Method if m.sig.id.value == invH =>
+                      // TODO also ensure only one param whose type matches the datatype
+                      return Some(m)
+                    case _ =>
+                  }
+                }
+              case _ =>
+            }
+            return None()
+          }
+          lookup() match {
+            case Some(m) => resolvedMethods = resolvedMethods :+ m
+            case _ =>
+          }
+        }
 
-//      val filter: ST = if(ti.invariants.nonEmpty) {
-//
-//        var invISZ: ISZ[ST] = ISZ()
-//
-//        for(inv <- ti.invariants.values) {
-//          val invoke = inv.ast.claims(0).asInstanceOf[AST.Exp.Invoke]
-//          val receiver: Option[String] = if (invoke.receiverOpt.nonEmpty) Some(s"${invoke.receiverOpt.get}.") else None()
-//          val fname: ST = st"$receiver${invoke.ident.string}H"
-//
-//          if(invoke.receiverOpt.nonEmpty)
-//
-//        }
-//        st"_"
-//      } else {
-//        st"alwaysTrue_$adTypeName _"
-//      }
-
-
-      val filter = st"${if (ti.invariants.nonEmpty) st"${adTypeString}_GumboX.D_Inv_${ISZOps(ti.name).last} _" else st"alwaysTrue_$adTypeName _"}"
+        if (resolvedMethods.size == 1) {
+          val receiver = st"${(ISZOps(ti.name).drop(1), ".")}"
+          val method = st"${resolvedMethods(0).sig.id.value}"
+          st"$receiver.$method _"
+        } else {
+          if (resolvedMethods.nonEmpty) {
+            reporter.warn(None(), SlangCheck.toolName, s"Found ${resolvedMethods.size} companion object methods that are SlangCheck filter compatible. Currently only support 1 so default filter will be used instead")
+          }
+          defaultFilter
+        }
+      }
 
       nextConfig = nextConfig :+
         st"""// ============= ${adTypeString} ===================
