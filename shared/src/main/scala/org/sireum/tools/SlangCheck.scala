@@ -1216,31 +1216,28 @@ object SlangCheckTest {
       val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
       val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
 
-      val defaultFilter = st"alwaysTrue_$adTypeName _"
-
       val filter: ST = {
         var resolvedMethods: ISZ[AST.Stmt.Method] = ISZ()
-        for (inv <- ti.invariants.entries) {
-          val invH = s"${inv._1}_InvariantH"
-          def lookup(): Option[AST.Stmt.Method] = {
-            th.nameMap.get(ti.name) match {
-              case Some(companionObject: Info.Object) =>
-                for (stmt <- companionObject.ast.stmts) {
-                  stmt match {
-                    case m: AST.Stmt.Method if m.sig.id.value == invH =>
-                      // TODO also ensure only one param whose type matches the datatype
-                      return Some(m)
+
+        th.nameMap.get(ti.name) match {
+          case Some(companionObj: Info.Object) =>
+            val gumboXMethodName = s"D_Inv_${ops.ISZOps(ti.name).last}"
+            for (stmt <- companionObj.ast.stmts) {
+              stmt match {
+                case m: AST.Stmt.Method if m.sig.id.value == gumboXMethodName =>
+                  m.sig.params match {
+                    case ISZ(AST.Param(_, _, typ: AST.Type.Named)) =>
+                      typ.attr.typedOpt match {
+                        case Some(typed: AST.Typed.Name) if typed.ids == ti.name =>
+                          resolvedMethods = resolvedMethods :+ m
+                        case _ =>
+                      }
                     case _ =>
                   }
-                }
-              case _ =>
+                case _ =>
+              }
             }
-            return None()
-          }
-          lookup() match {
-            case Some(m) => resolvedMethods = resolvedMethods :+ m
-            case _ =>
-          }
+          case _ =>
         }
 
         if (resolvedMethods.size == 1) {
@@ -1249,9 +1246,9 @@ object SlangCheckTest {
           st"$receiver.$method _"
         } else {
           if (resolvedMethods.nonEmpty) {
-            reporter.warn(None(), SlangCheck.toolName, s"Found ${resolvedMethods.size} companion object methods that are SlangCheck filter compatible. Currently only support 1 so default filter will be used instead")
+            reporter.warn(None(), SlangCheck.toolName, s"Found ${resolvedMethods.size} companion object methods that are SlangCheck filter compatible. Currently only supporting 1 so default filter will be used instead")
           }
-          defaultFilter
+          st"alwaysTrue_$adTypeName _"
         }
       }
 
