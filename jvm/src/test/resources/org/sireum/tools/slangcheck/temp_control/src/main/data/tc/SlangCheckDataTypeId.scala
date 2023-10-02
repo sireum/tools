@@ -20,11 +20,7 @@ FanCmd.scala
 
 SetPoint_i.scala
 
-SetPoint_i_GumboX.scala
-
 Temperature_i.scala
-
-Temperature_i_GumboX.scala
 
 */
 

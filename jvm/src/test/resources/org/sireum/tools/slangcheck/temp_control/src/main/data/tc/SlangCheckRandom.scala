@@ -20,11 +20,7 @@ FanCmd.scala
 
 SetPoint_i.scala
 
-SetPoint_i_GumboX.scala
-
 Temperature_i.scala
-
-Temperature_i_GumboX.scala
 
 */
 
@@ -2472,7 +2468,7 @@ Temperature_i_GumboX.scala
   // ============= TempControlSoftwareSystem.SetPoint_i ===================
   def alwaysTrue_TempControlSoftwareSystemSetPoint_i(v: TempControlSoftwareSystem.SetPoint_i): B = {return T}
 
-  var config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = Config_TempControlSoftwareSystemSetPoint_i(100, _verbose, TempControlSoftwareSystem.SetPoint_i_GumboX.D_Inv_SetPoint_i _)
+  var config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = Config_TempControlSoftwareSystemSetPoint_i(100, _verbose, TempControlSoftwareSystem.SetPoint_i.D_Inv_SetPoint_i _)
 
   def get_Config_TempControlSoftwareSystemSetPoint_i: Config_TempControlSoftwareSystemSetPoint_i = {return config_TempControlSoftwareSystemSetPoint_i}
 
@@ -2496,7 +2492,7 @@ Temperature_i_GumboX.scala
   // ============= TempSensor.Temperature_i ===================
   def alwaysTrue_TempSensorTemperature_i(v: TempSensor.Temperature_i): B = {return T}
 
-  var config_TempSensorTemperature_i: Config_TempSensorTemperature_i = Config_TempSensorTemperature_i(100, _verbose, TempSensor.Temperature_i_GumboX.D_Inv_Temperature_i _)
+  var config_TempSensorTemperature_i: Config_TempSensorTemperature_i = Config_TempSensorTemperature_i(100, _verbose, TempSensor.Temperature_i.D_Inv_Temperature_i _)
 
   def get_Config_TempSensorTemperature_i: Config_TempSensorTemperature_i = {return config_TempSensorTemperature_i}
 
