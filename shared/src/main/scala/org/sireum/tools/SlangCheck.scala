@@ -1241,7 +1241,7 @@ object SlangCheckTest {
         }
 
         if (resolvedMethods.size == 1) {
-          val receiver = st"${(ISZOps(ti.name).drop(1), ".")}"
+          val receiver = st"${(ti.name, ".")}"
           val method = st"${resolvedMethods(0).sig.id.value}"
           st"$receiver.$method _"
         } else {
