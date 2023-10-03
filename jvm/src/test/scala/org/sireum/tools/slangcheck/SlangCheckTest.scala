@@ -66,13 +66,13 @@ class SlangCheckTest extends TestSuite with TestUtil {
     if (!reporter.hasError) {
       for (r <- results._1) {
         val destFile = destDir / packageName /+ r._1
-        destFile.writeOver(ops.StringOps(r._2.render).replaceAllLiterally("\r\n", "\n"))
+        destFile.writeOver(r._2.render)
         println(s"Wrote: $destFile")
       }
 
       for (r <- results._2) {
         val destFile = testDir /packageName /+ r._1
-        destFile.writeOver(ops.StringOps(r._2.render).replaceAllLiterally("\r\n", "\n"))
+        destFile.writeOver(r._2.render)
         println(s"Wrote: $destFile")
       }
     }

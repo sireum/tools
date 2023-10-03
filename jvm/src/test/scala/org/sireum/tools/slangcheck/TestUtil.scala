@@ -62,8 +62,8 @@ trait  TestUtil {
       for (e <- eMap.keys) {
         val ef = expected / e
         val rf = results / e
-        val expectedText = ef.read
-        val resultsText = rf.read
+        val expectedText = ops.StringOps(ef.read).replaceAllLiterally("\r\n", "\n")
+        val resultsText = ops.StringOps(rf.read).replaceAllLiterally("\r\n", "\n")
         if (expectedText != resultsText) {
           sameContent = F
           val dmp = new DiffMatchPatch()
