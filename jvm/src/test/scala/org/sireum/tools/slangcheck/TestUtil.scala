@@ -5,6 +5,10 @@ import org.sireum._
 trait  TestUtil {
   val isCI: B = Os.env("GITLAB_CI").nonEmpty || Os.env("GITHUB_ACTIONS").nonEmpty || Os.env("BUILD_ID").nonEmpty
 
+  def verbose: B
+
+  assert (!isCI || !verbose, "verbose must be F when pushed to github")
+
   def resourceDir: Os.Path
 
   val willingToWait: B = isCI || (Os.env("USER") match {

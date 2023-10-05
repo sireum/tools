@@ -61,19 +61,24 @@ class SlangCheckTest extends TestSuite with TestUtil {
     val destDir = resultsDir / "src" / "main" / "data"
     val testDir = resultsDir / "src" / "test"
 
+    println("Generating SlangCheck artifacts ...")
     val results = SCJVM.run(ISZ(packageName), dataFiles, reporter)
 
     if (!reporter.hasError) {
       for (r <- results._1) {
         val destFile = destDir / packageName /+ r._1
         destFile.writeOver(r._2.render)
-        println(s"Wrote: $destFile")
+        if (verbose) {
+          println(s"Wrote: $destFile")
+        }
       }
 
       for (r <- results._2) {
         val destFile = testDir /packageName /+ r._1
         destFile.writeOver(r._2.render)
-        println(s"Wrote: $destFile")
+        if (verbose) {
+          println(s"Wrote: $destFile")
+        }
       }
     }
 
@@ -93,19 +98,25 @@ class SlangCheckTest extends TestSuite with TestUtil {
     }
 
     if (runTipe) {
-      if(!proc"$sireum proyek tipe .".at(resultsDir).echo.console.run().ok) {
+      println("Running tipe ...")
+      val tproc = proc"$sireum proyek tipe .".at(resultsDir)
+      if(!(if (verbose) tproc.console else tproc).at(resultsDir).run().ok) {
         failureReasons = failureReasons :+ "Type checking failed"
       }
     }
 
     if (runGeneratedTests) {
-      var passed = proc"$sireum proyek compile .".at(resultsDir).echo.console.run().ok
+      println("Compiling via proyek ...")
+      val cproc = proc"$sireum proyek compile ."
+      var passed = (if (verbose) cproc.console else cproc).at(resultsDir).run().ok
       if(!passed) {
         failureReasons = failureReasons :+ "Compilation failed"
       }
 
       if (passed) {
-        passed = proc"$sireum proyek test .".at(resultsDir).echo.console.run().ok
+        println("Running generated test cases ...")
+        val tproc = proc"$sireum proyek test ."
+        passed = (if (verbose) tproc.console else tproc).at(resultsDir).run().ok
         println(s"Generated Tests: ${if (passed) "passing" else "failing"}")
 
         // TODO: generated test could be failing due to 'requirements too strict'
