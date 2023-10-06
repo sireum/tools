@@ -49,6 +49,8 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
   def test(expectedName: String, packageName: String, filter: Os.Path => B = x => T): Unit = {
 
+    var failureReasons: ISZ[String] = ISZ()
+
     val resultsDir = copy(expectedName, "results")
 
     // the following becomes a hyperlink in IVE. You can then use IVE's "Compare Directories"
@@ -63,6 +65,8 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
     println("Generating SlangCheck artifacts ...")
     val results = SCJVM.run(ISZ(packageName), dataFiles, reporter)
+
+    failureReasons = failureReasons ++ (for(e <- reporter.errors) yield e.text)
 
     if (!reporter.hasError) {
       for (r <- results._1) {
@@ -82,8 +86,6 @@ class SlangCheckTest extends TestSuite with TestUtil {
       }
     }
 
-    var failureReasons: ISZ[String] = ISZ()
-
     if (generateExpected) {
       assert (!isCI, "generateExpected should be F when code is pushed to github")
 
@@ -99,25 +101,27 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
     if (runTipe) {
       println("Running tipe ...")
-      val tproc = proc"$sireum proyek tipe .".at(resultsDir)
-      if(!(if (verbose) tproc.console else tproc).at(resultsDir).run().ok) {
+      val tresults = proc"$sireum proyek tipe .".at(resultsDir).run()
+      if(!tresults.ok) {
         failureReasons = failureReasons :+ "Type checking failed"
+        println(tresults.out)
+        println(tresults.err)
       }
     }
 
     if (runGeneratedTests) {
       println("Compiling via proyek ...")
-      val cproc = proc"$sireum proyek compile ."
-      var passed = (if (verbose) cproc.console else cproc).at(resultsDir).run().ok
-      if(!passed) {
+      val cresults = proc"$sireum proyek compile .".at(resultsDir).run()
+      if(!cresults.ok) {
         failureReasons = failureReasons :+ "Compilation failed"
+        println(cresults.out)
+        println(cresults.err)
       }
 
-      if (passed) {
+      if (cresults.ok) {
         println("Running generated test cases ...")
-        val tproc = proc"$sireum proyek test ."
-        passed = (if (verbose) tproc.console else tproc).at(resultsDir).run().ok
-        println(s"Generated Tests: ${if (passed) "passing" else "failing"}")
+        val ttresults = proc"$sireum proyek test .".at(resultsDir).run()
+        println(s"Generated Tests: ${if (ttresults.ok) "passing" else "failing"}")
 
         // TODO: generated test could be failing due to 'requirements too strict'
         //if (!passed) {
