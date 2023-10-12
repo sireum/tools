@@ -887,7 +887,7 @@ exampleType.scala
     val length: Z = gen.nextZBetween(0, get_numElement)
     var str: String = ""
     for(r <- 0 until length){
-      str = s"${str}${gen.nextC().string}"
+      str = s"${str}${nextC().string}"
     }
 
     return str
