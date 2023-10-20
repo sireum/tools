@@ -883,14 +883,52 @@ exampleType.scala
       halt("Requirements too strict to generate")
     }
 
+  // ============= String ===================
+
+  def get_Config_String: Config_String
+  def set_Config_String(config: Config_String): RandomLib
+
   def nextString(): String = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
+
+    var length: Z = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
     var str: String = ""
     for(r <- 0 until length){
       str = s"${str}${nextC().string}"
     }
 
-    return str
+    if(get_Config_String.attempts >= 0) {
+      for (i <- 0 to get_Config_String.attempts) {
+        if(get_Config_String.filter(str)) {
+          return str
+        }
+        if(get_Config_String.verbose) {
+          println(s"Retrying for failing value: $str")
+        }
+
+        length = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
+        str = ""
+        for (r <- 0 until length) {
+          str = s"${str}${nextC().string}"
+        }
+      }
+    } else {
+      while(T) {
+        if (get_Config_String.filter(str)) {
+          return str
+        }
+        if (get_Config_String.verbose) {
+          println(s"Retrying for failing value: $str")
+        }
+
+        length = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
+        str = ""
+        for (r <- 0 until length) {
+          str = s"${str}${nextC().string}"
+        }
+      }
+    }
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= art.DataContent ===================
@@ -1087,6 +1125,19 @@ exampleType.scala
 
   def set_numElement(s: Z): Unit ={
     numElem = s
+  }
+
+  // ============= String =============
+
+  def alwaysTrue_String(v: String): B = {return T}
+
+  var config_String: Config_String = Config_String(0, numElem, 100, _verbose, alwaysTrue_String _)
+
+  def get_Config_String: Config_String = {return config_String}
+
+  def set_Config_String(config: Config_String): RandomLib = {
+    config_String = config
+    return this
   }
 
   // ============= Z ===================

@@ -316,14 +316,52 @@ object SlangCheckTest {
           |
           |  ${(slangTypeRand, "\n\n")}
           |
+          |  // ============= String ===================
+          |
+          |  def get_Config_String: Config_String
+          |  def set_Config_String(config: Config_String): RandomLib
+          |
           |  def nextString(): String = {
-          |    val length: Z = gen.nextZBetween(0, get_numElement)
+          |
+          |    var length: Z = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
           |    var str: String = ""
           |    for(r <- 0 until length){
           |      str = s"$${str}$${nextC().string}"
           |    }
           |
-          |    return str
+          |    if(get_Config_String.attempts >= 0) {
+          |      for (i <- 0 to get_Config_String.attempts) {
+          |        if(get_Config_String.filter(str)) {
+          |          return str
+          |        }
+          |        if(get_Config_String.verbose) {
+          |          println(s"Retrying for failing value: $$str")
+          |        }
+          |
+          |        length = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
+          |        str = ""
+          |        for (r <- 0 until length) {
+          |          str = s"$${str}$${nextC().string}"
+          |        }
+          |      }
+          |    } else {
+          |      while(T) {
+          |        if (get_Config_String.filter(str)) {
+          |          return str
+          |        }
+          |        if (get_Config_String.verbose) {
+          |          println(s"Retrying for failing value: $$str")
+          |        }
+          |
+          |        length = gen.nextZBetween(get_Config_String.minSize, get_Config_String.maxSize)
+          |        str = ""
+          |        for (r <- 0 until length) {
+          |          str = s"$${str}$${nextC().string}"
+          |        }
+          |      }
+          |    }
+          |    assert(F, "Requirements too strict to generate")
+          |    halt("Requirements too strict to generate")
           |  }
           |
           |  ${(nextMethods, "\n\n")}
@@ -345,6 +383,19 @@ object SlangCheckTest {
           |
           |  def set_numElement(s: Z): Unit ={
           |    numElem = s
+          |  }
+          |
+          |  // ============= String =============
+          |
+          |  def alwaysTrue_String(v: String): B = {return T}
+          |
+          |  var config_String: Config_String = Config_String(0, numElem, 100, _verbose, alwaysTrue_String _)
+          |
+          |  def get_Config_String: Config_String = {return config_String}
+          |
+          |  def set_Config_String(config: Config_String): RandomLib = {
+          |    config_String = config
+          |    return this
           |  }
           |
           |  ${(slangTypeConf, "\n\n")}
@@ -1346,7 +1397,7 @@ object SlangCheckTest {
           |${(SlangCheck.toSimpleNames(fileNames), "\n\n")}
           |
           |*/
-          |
+          |@datatype class Config_String(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: String => B) {}
           |${(slangTypeConf, "\n\n")}
           |
           |${(nextConfig, "\n\n")}
@@ -1402,7 +1453,7 @@ object SlangCheckTest {
 
   val reporter: Reporter = Reporter.create
 
-  var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
+  var slangTypes: ISZ[String] = ISZ("String", "Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
   var slangTypeGen: ISZ[ST] = for (p <- slangTypes) yield genSlangType(p)
 
   var nextClass: ISZ[ST] = ISZ()
@@ -1551,7 +1602,7 @@ object SlangCheckTest {
 
   val reporter: Reporter = Reporter.create
 
-  var slangTypes: ISZ[String] = ISZ("Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
+  var slangTypes: ISZ[String] = ISZ("String", "Z", "B", "C", "R", "F32", "F64", "S8", "S16", "S32", "S64", "U8", "U16", "U32", "U64")
   var slangTypeGen: ISZ[ST] = for (p <- slangTypes) yield genSlangType(p)
 
   var nextClass: ISZ[ST] = ISZ()
