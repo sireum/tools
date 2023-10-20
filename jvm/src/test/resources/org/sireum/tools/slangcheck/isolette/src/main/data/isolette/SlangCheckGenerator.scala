@@ -36,6 +36,25 @@ Interface_Interaction.scala
 
 */
 
+@record class Gen_String(param: RandomLibI) extends MJen[String] {
+  override def generate(f: String => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextString())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 @record class Gen_Z(param: RandomLibI) extends MJen[Z] {
   override def generate(f: Z => Jen.Action): Jen.Action = {
     var continue = Jen.Continue

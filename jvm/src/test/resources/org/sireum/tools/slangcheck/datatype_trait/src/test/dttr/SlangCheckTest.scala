@@ -6,6 +6,14 @@ import org.sireum._
 
 class autogenTest extends AnyFunSuite{
 
+  test("String Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+    val gen = Gen_String(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
   test("Z Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_Z(randomLib)

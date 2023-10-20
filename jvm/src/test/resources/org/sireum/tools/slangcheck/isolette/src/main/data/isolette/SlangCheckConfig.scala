@@ -35,7 +35,7 @@ Heat.scala
 Interface_Interaction.scala
 
 */
-
+@datatype class Config_String(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: String => B) {}
 @datatype class Config_Z(low: Option[Z], high: Option[Z], attempts: Z, verbose: B, filter: Z => B) {}
 
 @datatype class Config_B(attempts: Z, verbose: B, filter: B => B) {}
