@@ -9,11 +9,11 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
   val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
 
-  val generateExpected: B = T
+  val generateExpected: B = F
 
-  val runTipe: B = T //&& willingToWait
+  val runTipe: B = T && willingToWait
 
-  val runGeneratedTests: B = T //&& willingToWait
+  val runGeneratedTests: B = T && willingToWait
 
   val verbose: B = F
 
