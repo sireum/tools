@@ -1025,6 +1025,18 @@ exampleType.scala
     halt("Requirements too strict to generate")
   }
 
+  //=================== MS[U32, U8] =====================
+
+  def nextMSU32U8(): MS[U32, U8] = {
+    val length: Z = gen.nextZBetween(0, get_numElement)
+    var temp: MS[U32, U8] = MS()
+    for (r <- 0 until length) {
+      temp = temp :+ nextU8()
+    }
+
+    return temp
+  }
+
   // ============= example ===================
 
   def get_Config_example: Config_example
@@ -1098,17 +1110,6 @@ exampleType.scala
     halt("Requirements too strict to generate")
   }
 
-  //=================== MS[U32, U8] =====================
-
-  def nextMSU32U8(): MS[U32, U8] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: MS[U32, U8] = MS()
-    for (r <- 0 until length) {
-      temp = temp :+ nextU8()
-    }
-
-    return temp
-  }
 }
 
 @record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {

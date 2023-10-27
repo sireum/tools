@@ -366,7 +366,6 @@ object SlangCheckTest {
           |
           |  ${(nextMethods, "\n\n")}
           |
-          |  ${(extraNextMethods, "\n\n")}
           |}
           |
           |@record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {
@@ -885,8 +884,12 @@ object SlangCheckTest {
             val nextName = st"next${typName}${typArgNames(0)}".render
             if (!seenExtraNextMethods.contains(nextName)) {
               seenExtraNextMethods = seenExtraNextMethods + nextName
-              extraNextMethods = extraNextMethods :+
-                st"""def $nextName(): $typNameString[${typArgNameStrings(0)}] = {
+              nextMethods = nextMethods :+
+                st""" //=================== $typNameString[${typArgNameStrings(0)}] ===================
+                    |def get_Config_${typName}${typArgNames(0)}: Config_${typName}${typArgNames(0)}
+                    |def set_Config_${typName}${typArgNames(0)}(config: Config_${typName}${typArgNames(0)}): RandomLib
+                    |
+                    |def $nextName(): $typNameString[${typArgNameStrings(0)}] = {
                     |  val none: Z = gen.nextZBetween(0,1)
                     |
                     |  if(none == 0) {
@@ -895,6 +898,18 @@ object SlangCheckTest {
                     |    return None()
                     |  }
                     |}"""
+
+              nextConfig = nextConfig :+
+                st"""// ============= $typNameString[${typArgNameStrings(0)}] ===================
+                    |def alwaysTrue_${typName}${typArgNames(0)}(v: $typNameString[${typArgNameStrings(0)}]): B = {return T}
+                    |
+                    |var config_${typName}${typArgNames(0)}: Config_${typName}${typArgNames(0)} = Config_${typName}${typArgNames(0)}(0, 20, 100, _verbose, alwaysTrue_${typName}${typArgNames(0)} _)
+                    |def get_Config_${typName}${typArgNames(0)}: Config_${typName}${typArgNames(0)} = {return config_${typName}${typArgNames(0)}}
+                    |
+                    |def set_Config_${typName}${typArgNames(0)}(config: Config_${typName}${typArgNames(0)}): RandomLib ={
+                    |  config_${typName}${typArgNames(0)} = config
+                    |  return this
+                    |}"""
             }
           }
 
@@ -902,7 +917,7 @@ object SlangCheckTest {
             val nextName = st"next${typName}${(typArgNames, "")}".render
             if (!seenExtraNextMethods.contains(nextName)) {
               seenExtraNextMethods = seenExtraNextMethods + nextName
-              extraNextMethods = extraNextMethods :+
+              nextMethods = nextMethods :+
                 st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
                     |
                     |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {

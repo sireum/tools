@@ -1665,6 +1665,18 @@ Temperature_i.scala
     halt("Requirements too strict to generate")
   }
 
+  //=================== ISZ[B] =====================
+
+  def nextISZB(): ISZ[B] = {
+    val length: Z = gen.nextZBetween(0, get_numElement)
+    var temp: ISZ[B] = ISZ()
+    for (r <- 0 until length) {
+      temp = temp :+ nextB()
+    }
+
+    return temp
+  }
+
   // ============= Base_Types.Bits_Payload ===================
 
   def get_Config_Base_TypesBits_Payload: Config_Base_TypesBits_Payload
@@ -2008,6 +2020,20 @@ Temperature_i.scala
     halt("Requirements too strict to generate")
   }
 
+   //=================== Option[TempSensor.Temperature_i] ===================
+  def get_Config_OptionTempSensorTemperature_i: Config_OptionTempSensorTemperature_i
+  def set_Config_OptionTempSensorTemperature_i(config: Config_OptionTempSensorTemperature_i): RandomLib
+
+  def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0) {
+      return Some(nextTempSensorTemperature_i())
+    } else {
+      return None()
+    }
+  }
+
   // ============= TempSensor.example_type ===================
 
   def get_Config_TempSensorexample_type: Config_TempSensorexample_type
@@ -2046,27 +2072,6 @@ Temperature_i.scala
     halt("Requirements too strict to generate")
   }
 
-  //=================== ISZ[B] =====================
-
-  def nextISZB(): ISZ[B] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: ISZ[B] = ISZ()
-    for (r <- 0 until length) {
-      temp = temp :+ nextB()
-    }
-
-    return temp
-  }
-
-  def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0) {
-      return Some(nextTempSensorTemperature_i())
-    } else {
-      return None()
-    }
-  }
 }
 
 @record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {
@@ -2561,6 +2566,17 @@ Temperature_i.scala
 
   def set_Config_TempSensorTemperature_i_Payload(config: Config_TempSensorTemperature_i_Payload): RandomLib ={
     config_TempSensorTemperature_i_Payload = config
+    return this
+  }
+
+  // ============= Option[TempSensor.Temperature_i] ===================
+  def alwaysTrue_OptionTempSensorTemperature_i(v: Option[TempSensor.Temperature_i]): B = {return T}
+
+  var config_OptionTempSensorTemperature_i: Config_OptionTempSensorTemperature_i = Config_OptionTempSensorTemperature_i(0, 20, 100, _verbose, alwaysTrue_OptionTempSensorTemperature_i _)
+  def get_Config_OptionTempSensorTemperature_i: Config_OptionTempSensorTemperature_i = {return config_OptionTempSensorTemperature_i}
+
+  def set_Config_OptionTempSensorTemperature_i(config: Config_OptionTempSensorTemperature_i): RandomLib ={
+    config_OptionTempSensorTemperature_i = config
     return this
   }
 

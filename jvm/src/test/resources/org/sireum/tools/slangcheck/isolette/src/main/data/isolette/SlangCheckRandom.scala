@@ -1698,6 +1698,18 @@ Interface_Interaction.scala
     halt("Requirements too strict to generate")
   }
 
+  //=================== ISZ[B] =====================
+
+  def nextISZB(): ISZ[B] = {
+    val length: Z = gen.nextZBetween(0, get_numElement)
+    var temp: ISZ[B] = ISZ()
+    for (r <- 0 until length) {
+      temp = temp :+ nextB()
+    }
+
+    return temp
+  }
+
   // ============= Base_Types.Bits_Payload ===================
 
   def get_Config_Base_TypesBits_Payload: Config_Base_TypesBits_Payload
@@ -2568,17 +2580,6 @@ Interface_Interaction.scala
     halt("Requirements too strict to generate")
   }
 
-  //=================== ISZ[B] =====================
-
-  def nextISZB(): ISZ[B] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: ISZ[B] = ISZ()
-    for (r <- 0 until length) {
-      temp = temp :+ nextB()
-    }
-
-    return temp
-  }
 }
 
 @record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {

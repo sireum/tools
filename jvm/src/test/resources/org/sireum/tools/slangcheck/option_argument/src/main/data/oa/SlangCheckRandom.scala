@@ -1025,6 +1025,20 @@ exampleType.scala
     halt("Requirements too strict to generate")
   }
 
+   //=================== Option[C] ===================
+  def get_Config_OptionC: Config_OptionC
+  def set_Config_OptionC(config: Config_OptionC): RandomLib
+
+  def nextOptionC(): Option[C] = {
+    val none: Z = gen.nextZBetween(0,1)
+
+    if(none == 0) {
+      return Some(nextC())
+    } else {
+      return None()
+    }
+  }
+
   // ============= example ===================
 
   def get_Config_example: Config_example
@@ -1063,15 +1077,6 @@ exampleType.scala
     halt("Requirements too strict to generate")
   }
 
-  def nextOptionC(): Option[C] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0) {
-      return Some(nextC())
-    } else {
-      return None()
-    }
-  }
 }
 
 @record class RandomLib(val gen: org.sireum.Random.Gen) extends RandomLibI {
@@ -1278,6 +1283,17 @@ exampleType.scala
 
   def set_Config__artEmpty(config: Config__artEmpty): RandomLib ={
     config__artEmpty = config
+    return this
+  }
+
+  // ============= Option[C] ===================
+  def alwaysTrue_OptionC(v: Option[C]): B = {return T}
+
+  var config_OptionC: Config_OptionC = Config_OptionC(0, 20, 100, _verbose, alwaysTrue_OptionC _)
+  def get_Config_OptionC: Config_OptionC = {return config_OptionC}
+
+  def set_Config_OptionC(config: Config_OptionC): RandomLib ={
+    config_OptionC = config
     return this
   }
 
