@@ -1424,10 +1424,34 @@ object SlangCheckTest {
 
   }
 
+  var seenExtraConfigs: Set[String] = Set.empty
+
   //get config type for everything else
   def genAdt(ti: TypeInfo.Adt): Unit = {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    for (v <- ti.vars.values) {
+      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+
+      v.ast.tipeOpt match {
+        case Some(t: AST.Type.Named) =>
+          if(t.typeArgs.nonEmpty) {
+            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+
+            val conf: ST = st"@datatype class Config_${typName}${(typArgNames, "")}(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: $typNameString[${(typArgNameStrings, ", ")}] => B) {}"
+
+            if (!seenExtraConfigs.contains(conf.render)) {
+              seenExtraConfigs = seenExtraConfigs + conf.render
+              nextConfig = nextConfig :+ conf
+            }
+
+          }
+        case _ => halt("Probably infeasible")
+      }
+    }
 
     if (ti.ast.isRoot) {
       nextConfig = nextConfig :+
@@ -1544,10 +1568,52 @@ object SlangCheckTest {
           |}""")
   }
 
+  var seenExtraGenerators: Set[String] = Set.empty
+
   //get a generator for a everything else
   def genAdt(ti: TypeInfo.Adt): Unit = {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    for (v <- ti.vars.values) {
+      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+
+      v.ast.tipeOpt match {
+        case Some(t: AST.Type.Named) =>
+          if (t.typeArgs.nonEmpty) {
+            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+
+            val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
+
+            if (!seenExtraGenerators.contains(genName)) {
+              seenExtraGenerators = seenExtraGenerators + genName
+              nextClass = nextClass :+
+                st"""@record class $genName(param: RandomLibI) extends MJen[${typNameString}[${(typArgNameStrings, ", ")}]] {
+                    |  override def generate(f: ${typNameString}[${(typArgNameStrings, ", ")}] => Jen.Action): Jen.Action = {
+                    |    var continue = Jen.Continue
+                    |    while (T) {
+                    |
+                    |      continue = f(param.next${typName}${(typArgNames, "")}())
+                    |
+                    |      if (!continue) {
+                    |        return Jen.End
+                    |      }
+                    |    }
+                    |    return continue
+                    |  }
+                    |
+                    |  override def string: String = {
+                    |    return s""
+                    |  }
+                    |}"""
+            }
+
+          }
+        case _ => halt("Probably infeasible")
+      }
+    }
 
     nextClass = nextClass :+
       st"""@record class Gen_${adTypeName}(param: RandomLibI) extends MJen[${adTypeString}] {

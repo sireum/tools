@@ -46,6 +46,8 @@ exampleType.scala
 
 @datatype class Config__artEmpty(attempts: Z, verbose: B, filter: art.Empty => B) {}
 
+@datatype class Config_ISU32testThing(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: IS[U32, testThing] => B) {}
+
 @datatype class Config_example(attempts: Z, verbose: B, filter: example => B) {}
 
 @datatype class Config_testThing(attempts: Z, verbose: B, filter: testThing => B) {}

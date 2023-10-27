@@ -46,6 +46,8 @@ exampleType.scala
 
 @datatype class Config__artEmpty(attempts: Z, verbose: B, filter: art.Empty => B) {}
 
+@datatype class Config_OptionC(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: Option[C] => B) {}
+
 @datatype class Config_example(attempts: Z, verbose: B, filter: example => B) {}
 
 

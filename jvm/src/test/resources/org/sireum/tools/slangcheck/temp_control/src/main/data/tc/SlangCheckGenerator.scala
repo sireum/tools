@@ -633,6 +633,25 @@ Temperature_i.scala
   }
 }
 
+@record class Gen_ISZB(param: RandomLibI) extends MJen[ISZ[B]] {
+  override def generate(f: ISZ[B] => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextISZB())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 @record class Gen_Base_TypesBits_Payload(param: RandomLibI) extends MJen[Base_Types.Bits_Payload] {
   override def generate(f: Base_Types.Bits_Payload => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
@@ -791,6 +810,25 @@ Temperature_i.scala
     while (T) {
 
       continue = f(param.nextTempSensorTemperature_i_Payload())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_OptionTempSensorTemperature_i(param: RandomLibI) extends MJen[Option[TempSensor.Temperature_i]] {
+  override def generate(f: Option[TempSensor.Temperature_i] => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextOptionTempSensorTemperature_i())
 
       if (!continue) {
         return Jen.End

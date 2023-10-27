@@ -338,6 +338,25 @@ exampleType.scala
   }
 }
 
+@record class Gen_ISU32testThing(param: RandomLibI) extends MJen[IS[U32, testThing]] {
+  override def generate(f: IS[U32, testThing] => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextISU32testThing())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
 @record class Gen_example(param: RandomLibI) extends MJen[example] {
   override def generate(f: example => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
