@@ -144,6 +144,14 @@ class autogenTest extends AnyFunSuite{
 
   test("example Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+    val gen = Gen_MSU32U8(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("example Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_example(randomLib)
 
     for(r <- gen.take(100))

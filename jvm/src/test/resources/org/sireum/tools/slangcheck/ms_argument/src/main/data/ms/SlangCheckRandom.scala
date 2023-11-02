@@ -1319,6 +1319,17 @@ exampleType.scala
     return this
   }
 
+  // ============= MS[U32] ===================
+  def alwaysTrue_MSU32U8(v: MS[U32, U8]): B = {return T}
+
+  var config_MSU32U8: Config_MSU32U8 = Config_MSU32U8(0, 20, 100, _verbose, alwaysTrue_MSU32U8 _)
+  def get_Config_MSU32U8: Config_MSU32U8 = {return config_MSU32U8}
+
+  def set_Config_MSU32U8(config: Config_MSU32U8): RandomLib ={
+    config_MSU32U8 = config
+    return this
+  }
+
   // ============= example ===================
   def alwaysTrue_example(v: example): B = {return T}
 

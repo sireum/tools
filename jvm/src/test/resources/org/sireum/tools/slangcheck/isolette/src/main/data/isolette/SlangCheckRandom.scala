@@ -2969,6 +2969,17 @@ Interface_Interaction.scala
     return this
   }
 
+  // ============= ISZ[B] ===================
+  def alwaysTrue_ISZB(v: ISZ[B]): B = {return T}
+
+  var config_ISZB: Config_ISZB = Config_ISZB(0, 20, 100, _verbose, alwaysTrue_ISZB _)
+  def get_Config_ISZB: Config_ISZB = {return config_ISZB}
+
+  def set_Config_ISZB(config: Config_ISZB): RandomLib ={
+    config_ISZB = config
+    return this
+  }
+
   // ============= Base_Types.Bits_Payload ===================
   def alwaysTrue_Base_TypesBits_Payload(v: Base_Types.Bits_Payload): B = {return T}
 

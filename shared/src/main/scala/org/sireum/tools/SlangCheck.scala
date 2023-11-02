@@ -10,7 +10,6 @@ import org.sireum.message.Reporter
 import org.sireum.ops.ISZOps
 
 //TODO: Datatype Traits (Look at Jason's email)
-//TODO: Proyek
 
 object SlangCheck {
   val toolName: String = "SlangCheck"
@@ -898,18 +897,6 @@ object SlangCheckTest {
                     |    return None()
                     |  }
                     |}"""
-
-              nextConfig = nextConfig :+
-                st"""// ============= $typNameString[${typArgNameStrings(0)}] ===================
-                    |def alwaysTrue_${typName}${typArgNames(0)}(v: $typNameString[${typArgNameStrings(0)}]): B = {return T}
-                    |
-                    |var config_${typName}${typArgNames(0)}: Config_${typName}${typArgNames(0)} = Config_${typName}${typArgNames(0)}(0, 20, 100, _verbose, alwaysTrue_${typName}${typArgNames(0)} _)
-                    |def get_Config_${typName}${typArgNames(0)}: Config_${typName}${typArgNames(0)} = {return config_${typName}${typArgNames(0)}}
-                    |
-                    |def set_Config_${typName}${typArgNames(0)}(config: Config_${typName}${typArgNames(0)}): RandomLib ={
-                    |  config_${typName}${typArgNames(0)} = config
-                    |  return this
-                    |}"""
             }
           }
 
@@ -970,6 +957,18 @@ object SlangCheckTest {
 //              }
 //            }
 //          }
+
+          nextConfig = nextConfig :+
+            st"""// ============= $typNameString[${typArgNameStrings(0)}] ===================
+                |def alwaysTrue_${typName}${(typArgNames, "")}(v: $typNameString[${(typArgNameStrings, ", ")}]): B = {return T}
+                |
+                |var config_${typName}${(typArgNames, "")}: Config_${typName}${(typArgNames, "")} = Config_${typName}${(typArgNames, "")}(0, 20, 100, _verbose, alwaysTrue_${typName}${(typArgNames, "")} _)
+                |def get_Config_${typName}${(typArgNames, "")}: Config_${typName}${(typArgNames, "")} = {return config_${typName}${(typArgNames, "")}}
+                |
+                |def set_Config_${typName}${(typArgNames, "")}(config: Config_${typName}${(typArgNames, "")}): RandomLib ={
+                |  config_${typName}${(typArgNames, "")} = config
+                |  return this
+                |}"""
 
           st"var ${v.ast.id.value}: $typNameString[${(typArgNameStrings, ", ")}] = next${typName}${(typArgNames, "")}()"
         }
@@ -1756,9 +1755,42 @@ object SlangCheckTest {
   }
 
   //get a generator for a everything else
+
+  var seenExtraTest: Set[String] = Set.empty
+
   def genAdt(ti: TypeInfo.Adt): Unit = {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
+
+    for (v <- ti.vars.values) {
+      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+
+      v.ast.tipeOpt match {
+        case Some(t: AST.Type.Named) =>
+          if (t.typeArgs.nonEmpty) {
+            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+
+            val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
+
+            if (!seenExtraTest.contains(genName)) {
+              seenExtraTest = seenExtraTest + genName
+              nextClass = nextClass :+
+                st"""test("$adTypeString Output") {
+                    |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+                    |  val gen = Gen_${typName}${(typArgNames, "")}(randomLib)
+                    |
+                    |  for(r <- gen.take(100))
+                    |    println(r)
+                    |}"""
+            }
+
+          }
+        case _ => halt("Probably infeasible")
+      }
+    }
+
 
     nextClass = nextClass :+
       st"""test("$adTypeString Output") {

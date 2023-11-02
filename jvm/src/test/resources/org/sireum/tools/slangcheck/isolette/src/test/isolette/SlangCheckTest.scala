@@ -264,6 +264,14 @@ class autogenTest extends AnyFunSuite{
 
   test("Base_Types.Bits_Payload Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+    val gen = Gen_ISZB(randomLib)
+
+    for(r <- gen.take(100))
+      println(r)
+  }
+
+  test("Base_Types.Bits_Payload Output") {
+    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_Base_TypesBits_Payload(randomLib)
 
     for(r <- gen.take(100))

@@ -1319,6 +1319,17 @@ exampleType.scala
     return this
   }
 
+  // ============= IS[U32] ===================
+  def alwaysTrue_ISU32testThing(v: IS[U32, testThing]): B = {return T}
+
+  var config_ISU32testThing: Config_ISU32testThing = Config_ISU32testThing(0, 20, 100, _verbose, alwaysTrue_ISU32testThing _)
+  def get_Config_ISU32testThing: Config_ISU32testThing = {return config_ISU32testThing}
+
+  def set_Config_ISU32testThing(config: Config_ISU32testThing): RandomLib ={
+    config_ISU32testThing = config
+    return this
+  }
+
   // ============= example ===================
   def alwaysTrue_example(v: example): B = {return T}
 
