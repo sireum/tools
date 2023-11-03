@@ -900,7 +900,7 @@ object SlangCheckTest {
             }
           }
 
-          if (typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
+          else if (typNameString.render == "IS" || typNameString.render == "MS" || typNameString.render == "ISZ" || typNameString.render == "MSZ") {
             val nextName = st"next${typName}${(typArgNames, "")}".render
             if (!seenExtraNextMethods.contains(nextName)) {
               seenExtraNextMethods = seenExtraNextMethods + nextName
@@ -915,6 +915,20 @@ object SlangCheckTest {
                     |  }
                     |
                     |  return temp
+                    |}"""
+            }
+          }
+
+          else {
+            val nextName = st"next${typName}${(typArgNames, "")}".render
+            if (!seenExtraNextMethods.contains(nextName)) {
+              seenExtraNextMethods = seenExtraNextMethods + nextName
+              nextMethods = nextMethods :+
+                st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+                    |
+                    |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
+                    |  assert(F, "$nextName needs to be implemented")
+                    |  halt("$nextName needs to be implemented")
                     |}"""
             }
           }
