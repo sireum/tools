@@ -989,6 +989,13 @@ object SlangCheckTest {
             }
           }
 
+//          else if(typNameString.render == "Map") {
+//            val nextName = st"next${typName}${(typArgNames, "")}".render
+//            if (!seenExtraNextMethods.contains(nextName)) {
+//
+//            }
+//          }
+
           else {
             val nextName = st"next${typName}${(typArgNames, "")}".render
             if (!seenExtraNextMethods.contains(nextName)) {
@@ -1822,7 +1829,7 @@ object SlangCheckTest {
             if (!seenExtraTest.contains(genName)) {
               seenExtraTest = seenExtraTest + genName
               nextClass = nextClass :+
-                st"""test("$adTypeString Output") {
+                st"""test("$typNameString[${(typArgNameStrings, ", ")}] Output") {
                     |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
                     |  val gen = Gen_${typName}${(typArgNames, "")}(randomLib)
                     |

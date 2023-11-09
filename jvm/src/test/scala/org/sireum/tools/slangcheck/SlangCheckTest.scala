@@ -27,6 +27,10 @@ class SlangCheckTest extends TestSuite with TestUtil {
     test("temp_control", "tc")
   }
 
+  "map_argument" in {
+    test("map_argument", "ma")
+  }
+
   "option_argument" in {
     test("option_argument", "oa")
   }

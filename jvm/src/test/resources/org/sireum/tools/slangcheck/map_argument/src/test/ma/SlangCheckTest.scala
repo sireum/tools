@@ -1,4 +1,4 @@
-package is
+package ma
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.sireum.Random.Impl.Xoshiro256
@@ -142,9 +142,9 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("IS[U32, testThing] Output") {
+  test("Map[Z, String] Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
-    val gen = Gen_ISU32testThing(randomLib)
+    val gen = Gen_MapZString(randomLib)
 
     for(r <- gen.take(100))
       println(r)
@@ -153,14 +153,6 @@ class autogenTest extends AnyFunSuite{
   test("example Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_example(randomLib)
-
-    for(r <- gen.take(100))
-      println(r)
-  }
-
-  test("testThing Output") {
-    val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
-    val gen = Gen_testThing(randomLib)
 
     for(r <- gen.take(100))
       println(r)

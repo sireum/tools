@@ -142,7 +142,7 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("example Output") {
+  test("Option[C] Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_OptionC(randomLib)
 

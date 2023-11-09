@@ -142,7 +142,7 @@ class autogenTest extends AnyFunSuite{
       println(r)
   }
 
-  test("example Output") {
+  test("MS[U32, U8] Output") {
     val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
     val gen = Gen_MSU32U8(randomLib)
 
