@@ -1030,13 +1030,48 @@ exampleType.scala
   def set_Config_OptionC(config: Config_OptionC): RandomLib
 
   def nextOptionC(): Option[C] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0) {
-      return Some(nextC())
+    var none: Z = gen.nextZBetween(0,1)
+    var v: Option[C] = if(none == 0) {
+      Some(nextC())
     } else {
-      return None()
+      None()
     }
+
+    if(get_Config_OptionC.attempts >= 0) {
+     for(i <- 0 to get_Config_OptionC.attempts) {
+        if(get_Config_OptionC.filter(v)) {
+          return v
+        }
+        if (get_Config_OptionC.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+        none = gen.nextZBetween(0,1)
+        v = if(none == 0) {
+           Some(nextC())
+         } else {
+           None()
+         }
+     }
+    } else {
+     while(T) {
+       if(get_Config_OptionC.filter(v)) {
+         return v
+       }
+       if (get_Config_OptionC.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+
+       none = gen.nextZBetween(0,1)
+        v = if(none == 0) {
+           Some(nextC())
+         } else {
+           None()
+         }
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= example ===================

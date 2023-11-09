@@ -1026,15 +1026,50 @@ exampleType.scala
   }
 
   //=================== IS[U32, testThing] =====================
+  def get_Config_ISU32testThing: Config_ISU32testThing
+  def set_Config_ISU32testThing(config: Config_ISU32testThing): RandomLib
 
   def nextISU32testThing(): IS[U32, testThing] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: IS[U32, testThing] = IS()
+    var length: Z = gen.nextZBetween(0, get_numElement)
+    var v: IS[U32, testThing] = IS()
     for (r <- 0 until length) {
-      temp = temp :+ nexttestThing()
+      v = v :+ nexttestThing()
     }
 
-    return temp
+    if(get_Config_ISU32testThing.attempts >= 0) {
+     for(i <- 0 to get_Config_ISU32testThing.attempts) {
+        if(get_Config_ISU32testThing.filter(v)) {
+          return v
+        }
+        if (get_Config_ISU32testThing.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+
+        length = gen.nextZBetween(0, get_numElement)
+        v = IS()
+        for (r <- 0 until length) {
+           v = v :+ nexttestThing()
+        }
+     }
+    } else {
+     while(T) {
+       if(get_Config_ISU32testThing.filter(v)) {
+         return v
+       }
+       if (get_Config_ISU32testThing.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+
+       length = gen.nextZBetween(0, get_numElement)
+       v = IS()
+       for (r <- 0 until length) {
+          v = v :+ nexttestThing()
+       }
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= example ===================

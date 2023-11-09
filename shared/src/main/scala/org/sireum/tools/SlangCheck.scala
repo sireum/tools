@@ -889,13 +889,48 @@ object SlangCheckTest {
                     |def set_Config_${typName}${typArgNames(0)}(config: Config_${typName}${typArgNames(0)}): RandomLib
                     |
                     |def $nextName(): $typNameString[${typArgNameStrings(0)}] = {
-                    |  val none: Z = gen.nextZBetween(0,1)
-                    |
-                    |  if(none == 0) {
-                    |    return Some(next${typArgNames(0)}())
+                    |  var none: Z = gen.nextZBetween(0,1)
+                    |  var v: $typNameString[${typArgNameStrings(0)}] = if(none == 0) {
+                    |    Some(next${typArgNames(0)}())
                     |  } else {
-                    |    return None()
+                    |    None()
                     |  }
+                    |
+                    |  if(get_Config_${typName}${typArgNames(0)}.attempts >= 0) {
+                    |   for(i <- 0 to get_Config_${typName}${typArgNames(0)}.attempts) {
+                    |      if(get_Config_${typName}${typArgNames(0)}.filter(v)) {
+                    |        return v
+                    |      }
+                    |      if (get_Config_${typName}${typArgNames(0)}.verbose) {
+                    |        println(s"Retrying for failing value: $$v")
+                    |      }
+                    |      none = gen.nextZBetween(0,1)
+                    |      v = if(none == 0) {
+                    |         Some(next${typArgNames(0)}())
+                    |       } else {
+                    |         None()
+                    |       }
+                    |   }
+                    |  } else {
+                    |   while(T) {
+                    |     if(get_Config_${typName}${typArgNames(0)}.filter(v)) {
+                    |       return v
+                    |     }
+                    |     if (get_Config_${typName}${typArgNames(0)}.verbose) {
+                    |       println(s"Retrying for failing value: $$v")
+                    |     }
+                    |
+                    |     none = gen.nextZBetween(0,1)
+                    |      v = if(none == 0) {
+                    |         Some(next${typArgNames(0)}())
+                    |       } else {
+                    |         None()
+                    |       }
+                    |   }
+                    |  }
+                    |
+                    |  assert(F, "Requirements too strict to generate")
+                    |  halt("Requirements too strict to generate")
                     |}"""
             }
           }
@@ -906,15 +941,50 @@ object SlangCheckTest {
               seenExtraNextMethods = seenExtraNextMethods + nextName
               nextMethods = nextMethods :+
                 st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
+                    |def get_Config_${typName}${(typArgNames, "")}: Config_${typName}${(typArgNames, "")}
+                    |def set_Config_${typName}${(typArgNames, "")}(config: Config_${typName}${(typArgNames, "")}): RandomLib
                     |
                     |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
-                    |  val length: Z = gen.nextZBetween(0, get_numElement)
-                    |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
+                    |  var length: Z = gen.nextZBetween(0, get_numElement)
+                    |  var v: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
                     |  for (r <- 0 until length) {
-                    |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
+                    |    v = v :+ next${typArgNames(typArgNames.lastIndex)}()
                     |  }
                     |
-                    |  return temp
+                    |  if(get_Config_${typName}${(typArgNames, "")}.attempts >= 0) {
+                    |   for(i <- 0 to get_Config_${typName}${(typArgNames, "")}.attempts) {
+                    |      if(get_Config_${typName}${(typArgNames, "")}.filter(v)) {
+                    |        return v
+                    |      }
+                    |      if (get_Config_${typName}${(typArgNames, "")}.verbose) {
+                    |        println(s"Retrying for failing value: $$v")
+                    |      }
+                    |
+                    |      length = gen.nextZBetween(0, get_numElement)
+                    |      v = $typNameString()
+                    |      for (r <- 0 until length) {
+                    |         v = v :+ next${typArgNames(typArgNames.lastIndex)}()
+                    |      }
+                    |   }
+                    |  } else {
+                    |   while(T) {
+                    |     if(get_Config_${typName}${(typArgNames, "")}.filter(v)) {
+                    |       return v
+                    |     }
+                    |     if (get_Config_${typName}${(typArgNames, "")}.verbose) {
+                    |       println(s"Retrying for failing value: $$v")
+                    |     }
+                    |
+                    |     length = gen.nextZBetween(0, get_numElement)
+                    |     v = $typNameString()
+                    |     for (r <- 0 until length) {
+                    |        v = v :+ next${typArgNames(typArgNames.lastIndex)}()
+                    |     }
+                    |   }
+                    |  }
+                    |
+                    |  assert(F, "Requirements too strict to generate")
+                    |  halt("Requirements too strict to generate")
                     |}"""
             }
           }
@@ -932,45 +1002,6 @@ object SlangCheckTest {
                     |}"""
             }
           }
-//          else {
-//            var concrete = T
-//            for(typ <- t.typeArgs) {
-//              th.typeMap.get(ops.StringOps(typ.string).split((c: C) => c == '.')) match {
-//                case Some(ti: TypeInfo.Adt) =>
-//                case Some(ti: TypeInfo.Enum) =>
-//                case Some(ti: TypeInfo.Sig) => concrete = F
-//                case _ => concrete = F
-//              }
-//            }
-//
-//            if(concrete) {
-//              val nextName = st"next${typName}${(typArgNames, "")}".render
-//              if (!seenExtraNextMethods.contains(nextName)) {
-//                extraNextMethods = extraNextMethods :+
-//                  st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
-//                      |
-//                      |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
-//                      |  val length: Z = gen.nextZBetween(0, get_numElement)
-//                      |  var temp: $typNameString[${(typArgNameStrings, ", ")}] = $typNameString()
-//                      |  for (r <- 0 until length) {
-//                      |    temp = temp :+ next${typArgNames(typArgNames.lastIndex)}()
-//                      |  }
-//                      |
-//                      |  return temp
-//                      |}"""
-//              }
-//            } else {
-//              val nextName = st"next${typName}${(typArgNames, "")}".render
-//              if (!seenExtraNextMethods.contains(nextName)) {
-//                extraNextMethods = extraNextMethods :+
-//                  st"""//=================== $typNameString[${(typArgNameStrings, ", ")}] =====================
-//                      |
-//                      |def $nextName(): $typNameString[${(typArgNameStrings, ", ")}] = {
-//                      |  halt("Not Implemented")
-//                      |}"""
-//              }
-//            }
-//          }
 
           nextConfig = nextConfig :+
             st"""// ============= $typNameString[${typArgNameStrings(0)}] ===================

@@ -1666,15 +1666,50 @@ Temperature_i.scala
   }
 
   //=================== ISZ[B] =====================
+  def get_Config_ISZB: Config_ISZB
+  def set_Config_ISZB(config: Config_ISZB): RandomLib
 
   def nextISZB(): ISZ[B] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: ISZ[B] = ISZ()
+    var length: Z = gen.nextZBetween(0, get_numElement)
+    var v: ISZ[B] = ISZ()
     for (r <- 0 until length) {
-      temp = temp :+ nextB()
+      v = v :+ nextB()
     }
 
-    return temp
+    if(get_Config_ISZB.attempts >= 0) {
+     for(i <- 0 to get_Config_ISZB.attempts) {
+        if(get_Config_ISZB.filter(v)) {
+          return v
+        }
+        if (get_Config_ISZB.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+
+        length = gen.nextZBetween(0, get_numElement)
+        v = ISZ()
+        for (r <- 0 until length) {
+           v = v :+ nextB()
+        }
+     }
+    } else {
+     while(T) {
+       if(get_Config_ISZB.filter(v)) {
+         return v
+       }
+       if (get_Config_ISZB.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+
+       length = gen.nextZBetween(0, get_numElement)
+       v = ISZ()
+       for (r <- 0 until length) {
+          v = v :+ nextB()
+       }
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= Base_Types.Bits_Payload ===================
@@ -2025,13 +2060,48 @@ Temperature_i.scala
   def set_Config_OptionTempSensorTemperature_i(config: Config_OptionTempSensorTemperature_i): RandomLib
 
   def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
-    val none: Z = gen.nextZBetween(0,1)
-
-    if(none == 0) {
-      return Some(nextTempSensorTemperature_i())
+    var none: Z = gen.nextZBetween(0,1)
+    var v: Option[TempSensor.Temperature_i] = if(none == 0) {
+      Some(nextTempSensorTemperature_i())
     } else {
-      return None()
+      None()
     }
+
+    if(get_Config_OptionTempSensorTemperature_i.attempts >= 0) {
+     for(i <- 0 to get_Config_OptionTempSensorTemperature_i.attempts) {
+        if(get_Config_OptionTempSensorTemperature_i.filter(v)) {
+          return v
+        }
+        if (get_Config_OptionTempSensorTemperature_i.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+        none = gen.nextZBetween(0,1)
+        v = if(none == 0) {
+           Some(nextTempSensorTemperature_i())
+         } else {
+           None()
+         }
+     }
+    } else {
+     while(T) {
+       if(get_Config_OptionTempSensorTemperature_i.filter(v)) {
+         return v
+       }
+       if (get_Config_OptionTempSensorTemperature_i.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+
+       none = gen.nextZBetween(0,1)
+        v = if(none == 0) {
+           Some(nextTempSensorTemperature_i())
+         } else {
+           None()
+         }
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= TempSensor.example_type ===================

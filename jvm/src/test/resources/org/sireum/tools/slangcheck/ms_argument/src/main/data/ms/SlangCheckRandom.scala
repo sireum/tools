@@ -1026,15 +1026,50 @@ exampleType.scala
   }
 
   //=================== MS[U32, U8] =====================
+  def get_Config_MSU32U8: Config_MSU32U8
+  def set_Config_MSU32U8(config: Config_MSU32U8): RandomLib
 
   def nextMSU32U8(): MS[U32, U8] = {
-    val length: Z = gen.nextZBetween(0, get_numElement)
-    var temp: MS[U32, U8] = MS()
+    var length: Z = gen.nextZBetween(0, get_numElement)
+    var v: MS[U32, U8] = MS()
     for (r <- 0 until length) {
-      temp = temp :+ nextU8()
+      v = v :+ nextU8()
     }
 
-    return temp
+    if(get_Config_MSU32U8.attempts >= 0) {
+     for(i <- 0 to get_Config_MSU32U8.attempts) {
+        if(get_Config_MSU32U8.filter(v)) {
+          return v
+        }
+        if (get_Config_MSU32U8.verbose) {
+          println(s"Retrying for failing value: $v")
+        }
+
+        length = gen.nextZBetween(0, get_numElement)
+        v = MS()
+        for (r <- 0 until length) {
+           v = v :+ nextU8()
+        }
+     }
+    } else {
+     while(T) {
+       if(get_Config_MSU32U8.filter(v)) {
+         return v
+       }
+       if (get_Config_MSU32U8.verbose) {
+         println(s"Retrying for failing value: $v")
+       }
+
+       length = gen.nextZBetween(0, get_numElement)
+       v = MS()
+       for (r <- 0 until length) {
+          v = v :+ nextU8()
+       }
+     }
+    }
+
+    assert(F, "Requirements too strict to generate")
+    halt("Requirements too strict to generate")
   }
 
   // ============= example ===================
