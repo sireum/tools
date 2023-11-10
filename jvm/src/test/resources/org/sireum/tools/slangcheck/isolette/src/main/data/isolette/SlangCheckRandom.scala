@@ -1703,6 +1703,7 @@ Interface_Interaction.scala
   def set_Config_ISZB(config: Config_ISZB): RandomLib
 
   def nextISZB(): ISZ[B] = {
+
     var length: Z = gen.nextZBetween(0, get_numElement)
     var v: ISZ[B] = ISZ()
     for (r <- 0 until length) {

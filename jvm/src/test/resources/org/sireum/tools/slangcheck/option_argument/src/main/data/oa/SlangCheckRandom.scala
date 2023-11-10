@@ -1025,11 +1025,12 @@ exampleType.scala
     halt("Requirements too strict to generate")
   }
 
-   //=================== Option[C] ===================
+  //=================== Option[C] =====================
   def get_Config_OptionC: Config_OptionC
   def set_Config_OptionC(config: Config_OptionC): RandomLib
 
   def nextOptionC(): Option[C] = {
+
     var none: Z = gen.nextZBetween(0,1)
     var v: Option[C] = if(none == 0) {
       Some(nextC())
@@ -1045,12 +1046,13 @@ exampleType.scala
         if (get_Config_OptionC.verbose) {
           println(s"Retrying for failing value: $v")
         }
+
         none = gen.nextZBetween(0,1)
         v = if(none == 0) {
            Some(nextC())
-         } else {
+        } else {
            None()
-         }
+        }
      }
     } else {
      while(T) {
@@ -1062,11 +1064,11 @@ exampleType.scala
        }
 
        none = gen.nextZBetween(0,1)
-        v = if(none == 0) {
-           Some(nextC())
-         } else {
-           None()
-         }
+       v = if(none == 0) {
+          Some(nextC())
+       } else {
+          None()
+       }
      }
     }
 

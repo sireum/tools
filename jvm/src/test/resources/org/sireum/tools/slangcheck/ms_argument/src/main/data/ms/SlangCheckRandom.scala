@@ -1030,6 +1030,7 @@ exampleType.scala
   def set_Config_MSU32U8(config: Config_MSU32U8): RandomLib
 
   def nextMSU32U8(): MS[U32, U8] = {
+
     var length: Z = gen.nextZBetween(0, get_numElement)
     var v: MS[U32, U8] = MS()
     for (r <- 0 until length) {

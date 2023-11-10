@@ -1030,6 +1030,7 @@ exampleType.scala
   def set_Config_ISU32testThing(config: Config_ISU32testThing): RandomLib
 
   def nextISU32testThing(): IS[U32, testThing] = {
+
     var length: Z = gen.nextZBetween(0, get_numElement)
     var v: IS[U32, testThing] = IS()
     for (r <- 0 until length) {

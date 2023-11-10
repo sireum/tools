@@ -1670,6 +1670,7 @@ Temperature_i.scala
   def set_Config_ISZB(config: Config_ISZB): RandomLib
 
   def nextISZB(): ISZ[B] = {
+
     var length: Z = gen.nextZBetween(0, get_numElement)
     var v: ISZ[B] = ISZ()
     for (r <- 0 until length) {
@@ -2055,11 +2056,12 @@ Temperature_i.scala
     halt("Requirements too strict to generate")
   }
 
-   //=================== Option[TempSensor.Temperature_i] ===================
+  //=================== Option[TempSensor.Temperature_i] =====================
   def get_Config_OptionTempSensorTemperature_i: Config_OptionTempSensorTemperature_i
   def set_Config_OptionTempSensorTemperature_i(config: Config_OptionTempSensorTemperature_i): RandomLib
 
   def nextOptionTempSensorTemperature_i(): Option[TempSensor.Temperature_i] = {
+
     var none: Z = gen.nextZBetween(0,1)
     var v: Option[TempSensor.Temperature_i] = if(none == 0) {
       Some(nextTempSensorTemperature_i())
@@ -2075,12 +2077,13 @@ Temperature_i.scala
         if (get_Config_OptionTempSensorTemperature_i.verbose) {
           println(s"Retrying for failing value: $v")
         }
+
         none = gen.nextZBetween(0,1)
         v = if(none == 0) {
            Some(nextTempSensorTemperature_i())
-         } else {
+        } else {
            None()
-         }
+        }
      }
     } else {
      while(T) {
@@ -2092,11 +2095,11 @@ Temperature_i.scala
        }
 
        none = gen.nextZBetween(0,1)
-        v = if(none == 0) {
-           Some(nextTempSensorTemperature_i())
-         } else {
-           None()
-         }
+       v = if(none == 0) {
+          Some(nextTempSensorTemperature_i())
+       } else {
+          None()
+       }
      }
     }
 
