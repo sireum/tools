@@ -71,6 +71,7 @@ object SlangCheck {
     reporter.reports(h.reporter.messages)
 
     return ret
+    return ret
   }
 
   @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for (uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
@@ -1201,194 +1202,196 @@ object SlangCheckTest {
     val adTypeString = Resolver.typeNameString(packageName, ti.name)
     val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    if (ti.ast.isRoot) {
-      val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
+    if (ti.ast.typeParams.size == 0) {
+      if (ti.ast.isRoot) {
+        val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
 
-      var calls: ISZ[ST] = ISZ()
-      var enumNames: ISZ[ST] = ISZ()
-      var cases: ISZ[ST] = ISZ()
+        var calls: ISZ[ST] = ISZ()
+        var enumNames: ISZ[ST] = ISZ()
+        var cases: ISZ[ST] = ISZ()
 
-      for (typ <- SlangCheck.sortedTyedNames(leaves)) {
-        val typName = SlangCheck.astTypedName(packageName, typ)
-        calls = calls :+ st"next$typName"
+        for (typ <- SlangCheck.sortedTyedNames(leaves)) {
+          val typName = SlangCheck.astTypedName(packageName, typ)
+          calls = calls :+ st"next$typName"
 
-        if (typ.ids(0) == packageName(0)) {
-          enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id"
-        } else {
-          enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id"
-        }
-      }
-
-      for (i <- 0 to enumNames.size - 1) {
-        cases = cases :+ st"case ${enumNames(i)} => (${calls(i)} _).apply()"
-      }
-
-      nextConfig = nextConfig :+
-        st"""// ============= ${adTypeString} ===================
-            |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
-            |
-            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, F, ISZ(), alwaysTrue_$adTypeName _)
-            |
-            |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
-            |
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
-            |  config_${adTypeName} = config
-            |  return this
-            |}"""
-
-      nextMethods = nextMethods :+
-        st"""// ============= ${adTypeString} ===================
-            |
-            |def get_Config_${adTypeName}: Config_${adTypeName}
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
-            |
-            |def next${adTypeName}(): ${adTypeString} = {
-            |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
-            |
-            |  if(get_Config_${adTypeName}.additiveTypeFiltering) {
-            |     callEnum = get_Config_${adTypeName}.typeFilter
-            |  } else {
-            |     for(h <- get_Config_${adTypeName}.typeFilter) {
-            |       callEnum = ops.ISZOps(callEnum).filter(f => h =!= f)
-            |     }
-            |  }
-            |
-            |  var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-            |
-            |  var v: ${adTypeString} = c match {
-            |    ${(cases, "\n")}
-            |    case _ => halt("Invalid Child")
-            |  }
-            |
-            |
-            |  if(get_Config_${adTypeName}.attempts >= 0) {
-            |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
-            |     if(get_Config_${adTypeName}.filter(v)) {
-            |      return v
-            |     }
-            |     if (get_Config_${adTypeName}.verbose) {
-            |       println(s"Retrying for failing value: $$v")
-            |     }
-            |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-            |
-            |     v = c match {
-            |       ${(cases, "\n")}
-            |       case _ => halt("Invalid Child")
-            |     }
-            |   }
-            |  } else {
-            |   while(T) {
-            |     if(get_Config_${adTypeName}.filter(v)) {
-            |       return v
-            |     }
-            |     if (get_Config_${adTypeName}.verbose) {
-            |       println(s"Retrying for failing value: $$v")
-            |     }
-            |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
-            |
-            |     v = c match {
-            |       ${(cases, "\n")}
-            |       case _ => halt("Invalid Child")
-            |     }
-            |   }
-            |  }
-            |  assert(F, "Requirements too strict to generate")
-            |  halt("Requirements too strict to generate")
-            |}"""
-    }
-    else {
-
-      val vars: ISZ[ST] = for (v <- ti.vars.values) yield genVar(v)
-      val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
-      val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
-
-      val filter: ST = {
-        var resolvedMethods: ISZ[AST.Stmt.Method] = ISZ()
-
-        th.nameMap.get(ti.name) match {
-          case Some(companionObj: Info.Object) =>
-            val gumboXMethodName = s"D_Inv_${ops.ISZOps(ti.name).last}"
-            for (stmt <- companionObj.ast.stmts) {
-              stmt match {
-                case m: AST.Stmt.Method if m.sig.id.value == gumboXMethodName =>
-                  m.sig.params match {
-                    case ISZ(AST.Param(_, _, typ: AST.Type.Named)) =>
-                      typ.attr.typedOpt match {
-                        case Some(typed: AST.Typed.Name) if typed.ids == ti.name =>
-                          resolvedMethods = resolvedMethods :+ m
-                        case _ =>
-                      }
-                    case _ =>
-                  }
-                case _ =>
-              }
-            }
-          case _ =>
-        }
-
-        if (resolvedMethods.size == 1) {
-          val receiver = st"${(ti.name, ".")}"
-          val method = st"${resolvedMethods(0).sig.id.value}"
-          st"$receiver.$method _"
-        } else {
-          if (resolvedMethods.nonEmpty) {
-            reporter.warn(None(), SlangCheck.toolName, s"Found ${resolvedMethods.size} companion object methods that are SlangCheck filter compatible. Currently only supporting 1 so default filter will be used instead")
+          if (typ.ids(0) == packageName(0)) {
+            enumNames = enumNames :+ st"${adTypeName}_DataTypeId.${(ops.ISZOps(typ.ids).drop(1), "")}_Id"
+          } else {
+            enumNames = enumNames :+ st"${adTypeName}_DataTypeId._${(typ.ids, "")}_Id"
           }
-          st"alwaysTrue_$adTypeName _"
         }
+
+        for (i <- 0 to enumNames.size - 1) {
+          cases = cases :+ st"case ${enumNames(i)} => (${calls(i)} _).apply()"
+        }
+
+        nextConfig = nextConfig :+
+          st"""// ============= ${adTypeString} ===================
+              |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
+              |
+              |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, F, ISZ(), alwaysTrue_$adTypeName _)
+              |
+              |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
+              |
+              |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
+              |  config_${adTypeName} = config
+              |  return this
+              |}"""
+
+        nextMethods = nextMethods :+
+          st"""// ============= ${adTypeString} ===================
+              |
+              |def get_Config_${adTypeName}: Config_${adTypeName}
+              |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
+              |
+              |def next${adTypeName}(): ${adTypeString} = {
+              |  var callEnum: ISZ[${adTypeName}_DataTypeId.Type] = ISZ(${(enumNames, ", ")})
+              |
+              |  if(get_Config_${adTypeName}.additiveTypeFiltering) {
+              |     callEnum = get_Config_${adTypeName}.typeFilter
+              |  } else {
+              |     for(h <- get_Config_${adTypeName}.typeFilter) {
+              |       callEnum = ops.ISZOps(callEnum).filter(f => h =!= f)
+              |     }
+              |  }
+              |
+              |  var c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+              |
+              |  var v: ${adTypeString} = c match {
+              |    ${(cases, "\n")}
+              |    case _ => halt("Invalid Child")
+              |  }
+              |
+              |
+              |  if(get_Config_${adTypeName}.attempts >= 0) {
+              |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
+              |     if(get_Config_${adTypeName}.filter(v)) {
+              |      return v
+              |     }
+              |     if (get_Config_${adTypeName}.verbose) {
+              |       println(s"Retrying for failing value: $$v")
+              |     }
+              |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+              |
+              |     v = c match {
+              |       ${(cases, "\n")}
+              |       case _ => halt("Invalid Child")
+              |     }
+              |   }
+              |  } else {
+              |   while(T) {
+              |     if(get_Config_${adTypeName}.filter(v)) {
+              |       return v
+              |     }
+              |     if (get_Config_${adTypeName}.verbose) {
+              |       println(s"Retrying for failing value: $$v")
+              |     }
+              |     c = callEnum(gen.nextZBetween(0, callEnum.size-1))
+              |
+              |     v = c match {
+              |       ${(cases, "\n")}
+              |       case _ => halt("Invalid Child")
+              |     }
+              |   }
+              |  }
+              |  assert(F, "Requirements too strict to generate")
+              |  halt("Requirements too strict to generate")
+              |}"""
       }
+      else {
 
-      nextConfig = nextConfig :+
-        st"""// ============= ${adTypeString} ===================
-            |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
-            |
-            |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, $filter)
-            |
-            |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
-            |
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
-            |  config_${adTypeName} = config
-            |  return this
-            |}"""
+        val vars: ISZ[ST] = for (v <- ti.vars.values) yield genVar(v)
+        val args: ISZ[ST] = for (v <- ti.vars.values) yield genArgs(v)
+        val varsRepeat: ISZ[ST] = for (v <- ti.vars.values) yield genVarRepeat(v)
 
-      nextMethods = nextMethods :+
-        st"""// ============= ${adTypeString} ===================
-            |
-            |def get_Config_${adTypeName}: Config_${adTypeName}
-            |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
-            |
-            |def next${adTypeName}(): ${adTypeString} = {
-            |  ${(vars, "\n")}
-            |
-            |  var v: ${adTypeString} = ${adTypeString}(${(args, ", ")})
-            |
-            |  if(get_Config_${adTypeName}.attempts >= 0) {
-            |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
-            |      if(get_Config_${adTypeName}.filter(v)) {
-            |        return v
-            |      }
-            |      if (get_Config_${adTypeName}.verbose) {
-            |        println(s"Retrying for failing value: $$v")
-            |      }
-            |      ${(varsRepeat, "\n")}
-            |      v = ${adTypeString}(${(args, ", ")})
-            |   }
-            |  } else {
-            |   while(T) {
-            |     if(get_Config_${adTypeName}.filter(v)) {
-            |       return v
-            |     }
-            |     if (get_Config_${adTypeName}.verbose) {
-            |       println(s"Retrying for failing value: $$v")
-            |     }
-            |     ${(varsRepeat, "\n")}
-            |     v = ${adTypeString}(${(args, ", ")})
-            |   }
-            |  }
-            |
-            |  assert(F, "Requirements too strict to generate")
-            |  halt("Requirements too strict to generate")
-            |}"""
+        val filter: ST = {
+          var resolvedMethods: ISZ[AST.Stmt.Method] = ISZ()
+
+          th.nameMap.get(ti.name) match {
+            case Some(companionObj: Info.Object) =>
+              val gumboXMethodName = s"D_Inv_${ops.ISZOps(ti.name).last}"
+              for (stmt <- companionObj.ast.stmts) {
+                stmt match {
+                  case m: AST.Stmt.Method if m.sig.id.value == gumboXMethodName =>
+                    m.sig.params match {
+                      case ISZ(AST.Param(_, _, typ: AST.Type.Named)) =>
+                        typ.attr.typedOpt match {
+                          case Some(typed: AST.Typed.Name) if typed.ids == ti.name =>
+                            resolvedMethods = resolvedMethods :+ m
+                          case _ =>
+                        }
+                      case _ =>
+                    }
+                  case _ =>
+                }
+              }
+            case _ =>
+          }
+
+          if (resolvedMethods.size == 1) {
+            val receiver = st"${(ti.name, ".")}"
+            val method = st"${resolvedMethods(0).sig.id.value}"
+            st"$receiver.$method _"
+          } else {
+            if (resolvedMethods.nonEmpty) {
+              reporter.warn(None(), SlangCheck.toolName, s"Found ${resolvedMethods.size} companion object methods that are SlangCheck filter compatible. Currently only supporting 1 so default filter will be used instead")
+            }
+            st"alwaysTrue_$adTypeName _"
+          }
+        }
+
+        nextConfig = nextConfig :+
+          st"""// ============= ${adTypeString} ===================
+              |def alwaysTrue_$adTypeName(v: $adTypeString): B = {return T}
+              |
+              |var config_${adTypeName}: Config_${adTypeName} = Config_$adTypeName(100, _verbose, $filter)
+              |
+              |def get_Config_${adTypeName}: Config_${adTypeName} = {return config_${adTypeName}}
+              |
+              |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib ={
+              |  config_${adTypeName} = config
+              |  return this
+              |}"""
+
+        nextMethods = nextMethods :+
+          st"""// ============= ${adTypeString} ===================
+              |
+              |def get_Config_${adTypeName}: Config_${adTypeName}
+              |def set_Config_${adTypeName}(config: Config_${adTypeName}): RandomLib
+              |
+              |def next${adTypeName}(): ${adTypeString} = {
+              |  ${(vars, "\n")}
+              |
+              |  var v: ${adTypeString} = ${adTypeString}(${(args, ", ")})
+              |
+              |  if(get_Config_${adTypeName}.attempts >= 0) {
+              |   for(i <- 0 to get_Config_${adTypeName}.attempts) {
+              |      if(get_Config_${adTypeName}.filter(v)) {
+              |        return v
+              |      }
+              |      if (get_Config_${adTypeName}.verbose) {
+              |        println(s"Retrying for failing value: $$v")
+              |      }
+              |      ${(varsRepeat, "\n")}
+              |      v = ${adTypeString}(${(args, ", ")})
+              |   }
+              |  } else {
+              |   while(T) {
+              |     if(get_Config_${adTypeName}.filter(v)) {
+              |       return v
+              |     }
+              |     if (get_Config_${adTypeName}.verbose) {
+              |       println(s"Retrying for failing value: $$v")
+              |     }
+              |     ${(varsRepeat, "\n")}
+              |     v = ${adTypeString}(${(args, ", ")})
+              |   }
+              |  }
+              |
+              |  assert(F, "Requirements too strict to generate")
+              |  halt("Requirements too strict to generate")
+              |}"""
+      }
     }
   }
 }
