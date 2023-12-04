@@ -114,23 +114,28 @@ class SlangCheckTest extends TestSuite with TestUtil {
     }
 
     if (runGeneratedTests) {
-      println("Compiling via proyek ...")
-      val cresults = proc"$sireum proyek compile .".at(resultsDir).run()
-      if(!cresults.ok) {
-        failureReasons = failureReasons :+ "Compilation failed"
-        println(cresults.out)
-        println(cresults.err)
-      }
+      val versionsProps = resultsDir / "versions.properties"
+      if (!versionsProps.exists) {
+        failureReasons = failureReasons :+ s"${versionsProps} does not exist."
+      } else {
+        println("Compiling via proyek ...")
+        val cresults = proc"$sireum proyek compile .".at(resultsDir).run()
+        if (!cresults.ok) {
+          failureReasons = failureReasons :+ "Compilation failed"
+          println(cresults.out)
+          println(cresults.err)
+        }
 
-      if (cresults.ok) {
-        println("Running generated test cases ...")
-        val ttresults = proc"$sireum proyek test .".at(resultsDir).run()
-        println(s"Generated Tests: ${if (ttresults.ok) "passing" else "failing"}")
+        if (cresults.ok) {
+          println("Running generated test cases ...")
+          val ttresults = proc"$sireum proyek test .".at(resultsDir).run()
+          println(s"Generated Tests: ${if (ttresults.ok) "passing" else "failing"}")
 
-        // TODO: generated test could be failing due to 'requirements too strict'
-        //if (!passed) {
-        //  failureReasons = failureReasons :+ "Generated unit tests produced a failure"
-        //}
+          // TODO: generated test could be failing due to 'requirements too strict'
+          //if (!passed) {
+          //  failureReasons = failureReasons :+ "Generated unit tests produced a failure"
+          //}
+        }
       }
     }
 

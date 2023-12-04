@@ -71,7 +71,6 @@ object SlangCheck {
     reporter.reports(h.reporter.messages)
 
     return ret
-    return ret
   }
 
   @strictpure def toSimpleNames(fileUris: ISZ[String]): ISZ[String] = for (uri <- fileUris) yield ops.ISZOps(ops.StringOps(uri).split(c => c == '/')).last
