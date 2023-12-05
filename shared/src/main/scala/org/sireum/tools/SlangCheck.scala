@@ -207,27 +207,29 @@ object SlangCheckTest {
 
   def genAdt(ti: TypeInfo.Adt): Unit = {
 
-    if (ti.ast.isRoot) {
-      val adTypeName = Resolver.typeName(packageName, ti.name)
-      val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
+    if (ti.ast.typeParams.size == 0) {
+      if (ti.ast.isRoot) {
+        val adTypeName = Resolver.typeName(packageName, ti.name)
+        val leaves: ISZ[AST.Typed.Name] = SlangCheck.sortedTyedNames(th.substLeavesOfType(ti.posOpt, ti.tpe).left)
 
-      val pn = packageName(0)
+        val pn = packageName(0)
 
-      var enumNames: ISZ[String] = ISZ()
+        var enumNames: ISZ[String] = ISZ()
 
-      for (typ <- SlangCheck.sortedTyedNames(leaves)) {
-        val ids = typ.ids
-        if (ids(0) == pn) {
-          enumNames = enumNames :+ st"\"${(ops.ISZOps(typ.ids).drop(1), "")}_Id\"".render
-        } else {
-          enumNames = enumNames :+ st"\"_${(typ.ids, "")}_Id\"".render
+        for (typ <- SlangCheck.sortedTyedNames(leaves)) {
+          val ids = typ.ids
+          if (ids(0) == pn) {
+            enumNames = enumNames :+ st"\"${(ops.ISZOps(typ.ids).drop(1), "")}_Id\"".render
+          } else {
+            enumNames = enumNames :+ st"\"_${(typ.ids, "")}_Id\"".render
+          }
         }
-      }
 
-      enums = enums :+
-        st"""@enum object ${adTypeName}_DataTypeId {
-            |   ${(enumNames, "\n")}
-            |}"""
+        enums = enums :+
+          st"""@enum object ${adTypeName}_DataTypeId {
+              |   ${(enumNames, "\n")}
+              |}"""
+      }
     }
   }
 
@@ -1465,38 +1467,40 @@ object SlangCheckTest {
 
   //get config type for everything else
   def genAdt(ti: TypeInfo.Adt): Unit = {
-    val adTypeString = Resolver.typeNameString(packageName, ti.name)
-    val adTypeName = Resolver.typeName(packageName, ti.name)
+    if (ti.ast.typeParams.size == 0) {
+      val adTypeString = Resolver.typeNameString(packageName, ti.name)
+      val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    for (v <- ti.vars.values) {
-      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
-      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+      for (v <- ti.vars.values) {
+        val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+        val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
 
-      v.ast.tipeOpt match {
-        case Some(t: AST.Type.Named) =>
-          if(t.typeArgs.nonEmpty) {
-            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
-            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+        v.ast.tipeOpt match {
+          case Some(t: AST.Type.Named) =>
+            if (t.typeArgs.nonEmpty) {
+              val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+              val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
-            val conf: ST = st"@datatype class Config_${typName}${(typArgNames, "")}(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: $typNameString[${(typArgNameStrings, ", ")}] => B) {}"
+              val conf: ST = st"@datatype class Config_${typName}${(typArgNames, "")}(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: $typNameString[${(typArgNameStrings, ", ")}] => B) {}"
 
-            if (!seenExtraConfigs.contains(conf.render)) {
-              seenExtraConfigs = seenExtraConfigs + conf.render
-              nextConfig = nextConfig :+ conf
+              if (!seenExtraConfigs.contains(conf.render)) {
+                seenExtraConfigs = seenExtraConfigs + conf.render
+                nextConfig = nextConfig :+ conf
+              }
+
             }
-
-          }
-        case _ => halt("Probably infeasible")
+          case _ => halt("Probably infeasible")
+        }
       }
-    }
 
-    if (ti.ast.isRoot) {
-      nextConfig = nextConfig :+
-        st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
-    }
-    else {
-      nextConfig = nextConfig :+
-        st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, filter: ${adTypeString} => B) {}"""
+      if (ti.ast.isRoot) {
+        nextConfig = nextConfig :+
+          st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[${adTypeName}_DataTypeId.Type], filter: ${adTypeString} => B) {}"""
+      }
+      else {
+        nextConfig = nextConfig :+
+          st"""@datatype class Config_${adTypeName}(attempts: Z, verbose: B, filter: ${adTypeString} => B) {}"""
+      }
     }
   }
 
@@ -1609,68 +1613,70 @@ object SlangCheckTest {
 
   //get a generator for a everything else
   def genAdt(ti: TypeInfo.Adt): Unit = {
-    val adTypeString = Resolver.typeNameString(packageName, ti.name)
-    val adTypeName = Resolver.typeName(packageName, ti.name)
+    if (ti.ast.typeParams.size == 0) {
+      val adTypeString = Resolver.typeNameString(packageName, ti.name)
+      val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    for (v <- ti.vars.values) {
-      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
-      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+      for (v <- ti.vars.values) {
+        val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+        val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
 
-      v.ast.tipeOpt match {
-        case Some(t: AST.Type.Named) =>
-          if (t.typeArgs.nonEmpty) {
-            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
-            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+        v.ast.tipeOpt match {
+          case Some(t: AST.Type.Named) =>
+            if (t.typeArgs.nonEmpty) {
+              val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+              val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
-            val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
+              val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
 
-            if (!seenExtraGenerators.contains(genName)) {
-              seenExtraGenerators = seenExtraGenerators + genName
-              nextClass = nextClass :+
-                st"""@record class $genName(param: RandomLibI) extends MJen[${typNameString}[${(typArgNameStrings, ", ")}]] {
-                    |  override def generate(f: ${typNameString}[${(typArgNameStrings, ", ")}] => Jen.Action): Jen.Action = {
-                    |    var continue = Jen.Continue
-                    |    while (T) {
-                    |
-                    |      continue = f(param.next${typName}${(typArgNames, "")}())
-                    |
-                    |      if (!continue) {
-                    |        return Jen.End
-                    |      }
-                    |    }
-                    |    return continue
-                    |  }
-                    |
-                    |  override def string: String = {
-                    |    return s""
-                    |  }
-                    |}"""
+              if (!seenExtraGenerators.contains(genName)) {
+                seenExtraGenerators = seenExtraGenerators + genName
+                nextClass = nextClass :+
+                  st"""@record class $genName(param: RandomLibI) extends MJen[${typNameString}[${(typArgNameStrings, ", ")}]] {
+                      |  override def generate(f: ${typNameString}[${(typArgNameStrings, ", ")}] => Jen.Action): Jen.Action = {
+                      |    var continue = Jen.Continue
+                      |    while (T) {
+                      |
+                      |      continue = f(param.next${typName}${(typArgNames, "")}())
+                      |
+                      |      if (!continue) {
+                      |        return Jen.End
+                      |      }
+                      |    }
+                      |    return continue
+                      |  }
+                      |
+                      |  override def string: String = {
+                      |    return s""
+                      |  }
+                      |}"""
+              }
+
             }
-
-          }
-        case _ => halt("Probably infeasible")
+          case _ => halt("Probably infeasible")
+        }
       }
-    }
 
-    nextClass = nextClass :+
-      st"""@record class Gen_${adTypeName}(param: RandomLibI) extends MJen[${adTypeString}] {
-          |  override def generate(f: ${adTypeString} => Jen.Action): Jen.Action = {
-          |    var continue = Jen.Continue
-          |    while (T) {
-          |
-          |      continue = f(param.next${adTypeName}())
-          |
-          |      if (!continue) {
-          |        return Jen.End
-          |      }
-          |    }
-          |    return continue
-          |  }
-          |
-          |  override def string: String = {
-          |    return s""
-          |  }
-          |}"""
+      nextClass = nextClass :+
+        st"""@record class Gen_${adTypeName}(param: RandomLibI) extends MJen[${adTypeString}] {
+            |  override def generate(f: ${adTypeString} => Jen.Action): Jen.Action = {
+            |    var continue = Jen.Continue
+            |    while (T) {
+            |
+            |      continue = f(param.next${adTypeName}())
+            |
+            |      if (!continue) {
+            |        return Jen.End
+            |      }
+            |    }
+            |    return continue
+            |  }
+            |
+            |  override def string: String = {
+            |    return s""
+            |  }
+            |}"""
+    }
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {
@@ -1782,47 +1788,49 @@ object SlangCheckTest {
   var seenExtraTest: Set[String] = Set.empty
 
   def genAdt(ti: TypeInfo.Adt): Unit = {
-    val adTypeString = Resolver.typeNameString(packageName, ti.name)
-    val adTypeName = Resolver.typeName(packageName, ti.name)
+    if (ti.ast.typeParams.size == 0) {
+      val adTypeString = Resolver.typeNameString(packageName, ti.name)
+      val adTypeName = Resolver.typeName(packageName, ti.name)
 
-    for (v <- ti.vars.values) {
-      val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
-      val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
+      for (v <- ti.vars.values) {
+        val typName = SlangCheck.astTypeName(packageName, v.ast.tipeOpt.get)
+        val typNameString = SlangCheck.astTypeNameString(packageName, v.ast.tipeOpt.get)
 
-      v.ast.tipeOpt match {
-        case Some(t: AST.Type.Named) =>
-          if (t.typeArgs.nonEmpty) {
-            val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
-            val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
+        v.ast.tipeOpt match {
+          case Some(t: AST.Type.Named) =>
+            if (t.typeArgs.nonEmpty) {
+              val typArgNames: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeName(packageName, l))
+              val typArgNameStrings: ISZ[ST] = t.typeArgs.map(l => SlangCheck.astTypeNameString(packageName, l))
 
-            val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
+              val genName: String = st"Gen_${typName}${(typArgNames, "")}".render
 
-            if (!seenExtraTest.contains(genName)) {
-              seenExtraTest = seenExtraTest + genName
-              nextClass = nextClass :+
-                st"""test("$typNameString[${(typArgNameStrings, ", ")}] Output") {
-                    |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
-                    |  val gen = Gen_${typName}${(typArgNames, "")}(randomLib)
-                    |
-                    |  for(r <- gen.take(100))
-                    |    println(r)
-                    |}"""
+              if (!seenExtraTest.contains(genName)) {
+                seenExtraTest = seenExtraTest + genName
+                nextClass = nextClass :+
+                  st"""test("$typNameString[${(typArgNameStrings, ", ")}] Output") {
+                      |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+                      |  val gen = Gen_${typName}${(typArgNames, "")}(randomLib)
+                      |
+                      |  for(r <- gen.take(100))
+                      |    println(r)
+                      |}"""
+              }
+
             }
-
-          }
-        case _ => halt("Probably infeasible")
+          case _ => halt("Probably infeasible")
+        }
       }
+
+
+      nextClass = nextClass :+
+        st"""test("$adTypeString Output") {
+            |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
+            |  val gen = Gen_$adTypeName(randomLib)
+            |
+            |  for(r <- gen.take(100))
+            |    println(r)
+            |}"""
     }
-
-
-    nextClass = nextClass :+
-      st"""test("$adTypeString Output") {
-          |  val randomLib: RandomLib = new RandomLib(new Random.Gen64Impl(Xoshiro256.create)).verbose
-          |  val gen = Gen_$adTypeName(randomLib)
-          |
-          |  for(r <- gen.take(100))
-          |    println(r)
-          |}"""
   }
 
   def genSig(ti: TypeInfo.Sig): Unit = {
