@@ -9,7 +9,7 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
   val resourceDir: Os.Path = Os.path(implicitly[sourcecode.File].value).up.up.up.up.up.up / "resources" / "org" / "sireum" / "tools" / "slangcheck"
 
-  val generateExpected: B = F
+  val generateExpected: B = T
 
   val runTipe: B = T && willingToWait
 
@@ -53,6 +53,10 @@ class SlangCheckTest extends TestSuite with TestUtil {
 
   "generic_datatype" in {
     test("generic_datatype", "gt")
+  }
+
+  "multiple_generic_datatype" in {
+    test("multiple_generic_datatype", "mgt")
   }
 
   "trait_no_children" in {
