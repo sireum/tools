@@ -44,11 +44,19 @@ class SlangCheckTest extends TestSuite with TestUtil {
   }
 
 //  "is_is_argument" in {
-//    test("is_is_argument", "ms")
+//    test("is_is_argument", "iia")
 //  }
 
   "datatype_trait" in {
     test("datatype_trait", "dttr")
+  }
+
+  "generic_datatype" in {
+    test("generic_datatype", "gt")
+  }
+
+  "trait_no_children" in {
+    test("trait_no_children", "gt")
   }
 
   def test(expectedName: String, packageName: String, filter: Os.Path => B = x => T): Unit = {

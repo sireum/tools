@@ -1,6 +1,6 @@
 // #Sireum
 
-package ms
+package gt
 
 import org.sireum._
 import org.sireum.Random.Gen64
@@ -8,13 +8,16 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
-exampleType.scala
-
 DataContent.scala
+
+exampleType.scala
 
 */
 
 @enum object _artDataContent_DataTypeId {
    "_artEmpty_Id"
+}
+
+@enum object t_A_DataTypeId {
 }
 

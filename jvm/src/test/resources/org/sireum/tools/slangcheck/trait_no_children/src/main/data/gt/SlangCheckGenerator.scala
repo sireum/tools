@@ -1,6 +1,6 @@
 // #Sireum
 
-package ms
+package gt
 
 import org.sireum._
 import org.sireum.Random.Gen64
@@ -8,11 +8,30 @@ import org.sireum.Random.Gen64
 /*
 GENERATED FROM
 
-exampleType.scala
-
 DataContent.scala
 
+exampleType.scala
+
 */
+
+@record class Gen_String(param: RandomLibI) extends MJen[String] {
+  override def generate(f: String => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextString())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
 
 @record class Gen_Z(param: RandomLibI) extends MJen[Z] {
   override def generate(f: Z => Jen.Action): Jen.Action = {
@@ -319,12 +338,12 @@ DataContent.scala
   }
 }
 
-@record class Gen__isisexample(param: RandomLibI) extends MJen[isis.example] {
-  override def generate(f: isis.example => Jen.Action): Jen.Action = {
+@record class Gen_t_A(param: RandomLibI) extends MJen[t_A] {
+  override def generate(f: t_A => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.next_isisexample())
+      continue = f(param.nextt_A())
 
       if (!continue) {
         return Jen.End
@@ -338,12 +357,12 @@ DataContent.scala
   }
 }
 
-@record class Gen__isistestThing(param: RandomLibI) extends MJen[isis.testThing] {
-  override def generate(f: isis.testThing => Jen.Action): Jen.Action = {
+@record class Gen_example(param: RandomLibI) extends MJen[example] {
+  override def generate(f: example => Jen.Action): Jen.Action = {
     var continue = Jen.Continue
     while (T) {
 
-      continue = f(param.next_isistestThing())
+      continue = f(param.nextexample())
 
       if (!continue) {
         return Jen.End

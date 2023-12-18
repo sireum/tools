@@ -1,6 +1,6 @@
 // #Sireum
 
-package isis
+package iia
 
 import org.sireum._
 
