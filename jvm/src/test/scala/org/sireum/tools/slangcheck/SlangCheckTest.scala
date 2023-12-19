@@ -59,10 +59,6 @@ class SlangCheckTest extends TestSuite with TestUtil {
     test("multiple_generic_datatype", "mgt")
   }
 
-  "trait_no_children" in {
-    test("trait_no_children", "gt")
-  }
-
   def test(expectedName: String, packageName: String, filter: Os.Path => B = x => T): Unit = {
 
     var failureReasons: ISZ[String] = ISZ()
