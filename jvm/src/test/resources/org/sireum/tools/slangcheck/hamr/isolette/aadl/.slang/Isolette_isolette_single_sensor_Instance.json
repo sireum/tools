@@ -1,4 +1,4 @@
-{
+
   "type" : "Aadl",
   "components" : [
     {
@@ -3042,7 +3042,10 @@
                               "modifiers" : [],
                               "sig" : {
                                 "type" : "org.sireum.lang.ast.MethodSig",
-                                "isPure" : true,
+                                "purity" : {
+                                  "type" : "org.sireum.lang.ast.Purity",
+                                  "value" : "StrictPure"
+                                },
                                 "id" : {
                                   "type" : "org.sireum.lang.ast.Id",
                                   "value" : "ROUND",
@@ -25892,7 +25895,10 @@
                               "modifiers" : [],
                               "sig" : {
                                 "type" : "org.sireum.lang.ast.MethodSig",
-                                "isPure" : true,
+                                "purity" : {
+                                  "type" : "org.sireum.lang.ast.Purity",
+                                  "value" : "StrictPure"
+                                },
                                 "id" : {
                                   "type" : "org.sireum.lang.ast.Id",
                                   "value" : "timeout_condition_satisfied",
@@ -31060,7 +31066,10 @@
                               "modifiers" : [],
                               "sig" : {
                                 "type" : "org.sireum.lang.ast.MethodSig",
-                                "isPure" : true,
+                                "purity" : {
+                                  "type" : "org.sireum.lang.ast.Purity",
+                                  "value" : "StrictPure"
+                                },
                                 "id" : {
                                   "type" : "org.sireum.lang.ast.Id",
                                   "value" : "timeout_condition_satisfied",
@@ -39555,7 +39564,10 @@
                               "modifiers" : [],
                               "sig" : {
                                 "type" : "org.sireum.lang.ast.MethodSig",
-                                "isPure" : true,
+                                "purity" : {
+                                  "type" : "org.sireum.lang.ast.Purity",
+                                  "value" : "StrictPure"
+                                },
                                 "id" : {
                                   "type" : "org.sireum.lang.ast.Id",
                                   "value" : "timeout_condition_satisfied",

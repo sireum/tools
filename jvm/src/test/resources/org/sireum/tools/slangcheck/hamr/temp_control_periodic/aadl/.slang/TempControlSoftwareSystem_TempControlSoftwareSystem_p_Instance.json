@@ -10620,7 +10620,10 @@
             "modifiers" : [],
             "sig" : {
               "type" : "org.sireum.lang.ast.MethodSig",
-              "isPure" : true,
+              "purity" : {
+                "type" : "org.sireum.lang.ast.Purity",
+                "value" : "StrictPure"
+              },
               "id" : {
                 "type" : "org.sireum.lang.ast.Id",
                 "value" : "absoluteZero",
@@ -10935,7 +10938,10 @@
             "modifiers" : [],
             "sig" : {
               "type" : "org.sireum.lang.ast.MethodSig",
-              "isPure" : true,
+              "purity" : {
+                "type" : "org.sireum.lang.ast.Purity",
+                "value" : "StrictPure"
+              },
               "id" : {
                 "type" : "org.sireum.lang.ast.Id",
                 "value" : "inRange",
