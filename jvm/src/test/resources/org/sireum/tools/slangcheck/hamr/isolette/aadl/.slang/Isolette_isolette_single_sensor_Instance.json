@@ -6896,7 +6896,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 227,
+                                        "beginColumn" : 16,
+                                        "endLine" : 227,
+                                        "endColumn" : 169,
+                                        "offset" : 12500,
+                                        "length" : 153
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -7789,7 +7802,20 @@
                                       "attr" : {
                                         "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
-                                          "type" : "None"
+                                          "type" : "Some",
+                                          "value" : {
+                                            "type" : "Position",
+                                            "uriOpt" : {
+                                              "type" : "Some",
+                                              "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                            },
+                                            "beginLine" : 235,
+                                            "beginColumn" : 49,
+                                            "endLine" : 235,
+                                            "endColumn" : 202,
+                                            "offset" : 13087,
+                                            "length" : 153
+                                          }
                                         },
                                         "resOpt" : {
                                           "type" : "None"
@@ -7844,9 +7870,9 @@
                                         "beginLine" : 235,
                                         "beginColumn" : 18,
                                         "endLine" : 235,
-                                        "endColumn" : 41,
+                                        "endColumn" : 204,
                                         "offset" : 13056,
-                                        "length" : 23
+                                        "length" : 186
                                       }
                                     },
                                     "resOpt" : {
@@ -8550,7 +8576,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 244,
+                                          "beginColumn" : 11,
+                                          "endLine" : 244,
+                                          "endColumn" : 134,
+                                          "offset" : 13562,
+                                          "length" : 123
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -8566,7 +8605,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 243,
+                                        "beginColumn" : 9,
+                                        "endLine" : 244,
+                                        "endColumn" : 134,
+                                        "offset" : 13521,
+                                        "length" : 164
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -11534,7 +11586,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 460,
+                                        "beginColumn" : 15,
+                                        "endLine" : 461,
+                                        "endColumn" : 63,
+                                        "offset" : 24974,
+                                        "length" : 139
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -12315,7 +12380,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 467,
+                                        "beginColumn" : 15,
+                                        "endLine" : 468,
+                                        "endColumn" : 63,
+                                        "offset" : 25499,
+                                        "length" : 139
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -13345,7 +13423,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 477,
+                                          "beginColumn" : 11,
+                                          "endLine" : 478,
+                                          "endColumn" : 63,
+                                          "offset" : 26209,
+                                          "length" : 116
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -13361,7 +13452,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 476,
+                                        "beginColumn" : 15,
+                                        "endLine" : 478,
+                                        "endColumn" : 63,
+                                        "offset" : 26122,
+                                        "length" : 203
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -15877,7 +15981,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 323,
+                                          "beginColumn" : 10,
+                                          "endLine" : 324,
+                                          "endColumn" : 77,
+                                          "offset" : 17479,
+                                          "length" : 134
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -16389,7 +16506,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 325,
+                                          "beginColumn" : 9,
+                                          "endLine" : 326,
+                                          "endColumn" : 87,
+                                          "offset" : 17629,
+                                          "length" : 165
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -16405,7 +16535,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 323,
+                                        "beginColumn" : 10,
+                                        "endLine" : 326,
+                                        "endColumn" : 87,
+                                        "offset" : 17479,
+                                        "length" : 315
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -17279,7 +17422,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 339,
+                                          "beginColumn" : 10,
+                                          "endLine" : 340,
+                                          "endColumn" : 77,
+                                          "offset" : 18485,
+                                          "length" : 134
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -17791,7 +17947,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 341,
+                                          "beginColumn" : 9,
+                                          "endLine" : 342,
+                                          "endColumn" : 87,
+                                          "offset" : 18634,
+                                          "length" : 165
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -17807,7 +17976,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 339,
+                                        "beginColumn" : 10,
+                                        "endLine" : 342,
+                                        "endColumn" : 87,
+                                        "offset" : 18485,
+                                        "length" : 314
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -18646,7 +18828,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 353,
+                                          "beginColumn" : 10,
+                                          "endLine" : 354,
+                                          "endColumn" : 77,
+                                          "offset" : 19408,
+                                          "length" : 130
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -19158,7 +19353,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 355,
+                                          "beginColumn" : 9,
+                                          "endLine" : 356,
+                                          "endColumn" : 87,
+                                          "offset" : 19553,
+                                          "length" : 165
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -19174,7 +19382,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 353,
+                                        "beginColumn" : 10,
+                                        "endLine" : 356,
+                                        "endColumn" : 87,
+                                        "offset" : 19408,
+                                        "length" : 310
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -20013,7 +20234,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 367,
+                                          "beginColumn" : 10,
+                                          "endLine" : 368,
+                                          "endColumn" : 77,
+                                          "offset" : 20346,
+                                          "length" : 131
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -20525,7 +20759,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                          },
+                                          "beginLine" : 369,
+                                          "beginColumn" : 9,
+                                          "endLine" : 370,
+                                          "endColumn" : 87,
+                                          "offset" : 20493,
+                                          "length" : 165
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -20541,7 +20788,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 367,
+                                        "beginColumn" : 10,
+                                        "endLine" : 370,
+                                        "endColumn" : 87,
+                                        "offset" : 20346,
+                                        "length" : 312
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -21322,7 +21582,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Regulate.aadl"
+                                        },
+                                        "beginLine" : 377,
+                                        "beginColumn" : 18,
+                                        "endLine" : 378,
+                                        "endColumn" : 86,
+                                        "offset" : 21153,
+                                        "length" : 164
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -28629,7 +28902,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 174,
+                                        "beginColumn" : 15,
+                                        "endLine" : 175,
+                                        "endColumn" : 83,
+                                        "offset" : 9535,
+                                        "length" : 159
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -29383,7 +29669,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 182,
+                                        "beginColumn" : 15,
+                                        "endLine" : 184,
+                                        "endColumn" : 81,
+                                        "offset" : 10078,
+                                        "length" : 163
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -30228,7 +30527,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 195,
+                                          "beginColumn" : 11,
+                                          "endLine" : 197,
+                                          "endColumn" : 65,
+                                          "offset" : 10709,
+                                          "length" : 131
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -30244,7 +30556,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 194,
+                                        "beginColumn" : 10,
+                                        "endLine" : 197,
+                                        "endColumn" : 65,
+                                        "offset" : 10667,
+                                        "length" : 173
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -31862,7 +32187,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 333,
+                                        "beginColumn" : 6,
+                                        "endLine" : 334,
+                                        "endColumn" : 48,
+                                        "offset" : 17489,
+                                        "length" : 98
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -32197,11 +32535,11 @@
                                           "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
                                         },
                                         "beginLine" : 343,
-                                        "beginColumn" : 57,
+                                        "beginColumn" : 6,
                                         "endLine" : 343,
                                         "endColumn" : 61,
-                                        "offset" : 18083,
-                                        "length" : 4
+                                        "offset" : 18032,
+                                        "length" : 55
                                       }
                                     },
                                     "resOpt" : {
@@ -32569,7 +32907,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 347,
+                                        "beginColumn" : 6,
+                                        "endLine" : 347,
+                                        "endColumn" : 73,
+                                        "offset" : 18283,
+                                        "length" : 67
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -32936,7 +33287,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 351,
+                                        "beginColumn" : 6,
+                                        "endLine" : 351,
+                                        "endColumn" : 73,
+                                        "offset" : 18545,
+                                        "length" : 67
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -33719,7 +34083,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 359,
+                                        "beginColumn" : 17,
+                                        "endLine" : 361,
+                                        "endColumn" : 50,
+                                        "offset" : 18955,
+                                        "length" : 107
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -34503,7 +34880,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 369,
+                                          "beginColumn" : 9,
+                                          "endLine" : 369,
+                                          "endColumn" : 113,
+                                          "offset" : 19515,
+                                          "length" : 104
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -34519,7 +34909,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 367,
+                                        "beginColumn" : 14,
+                                        "endLine" : 369,
+                                        "endColumn" : 113,
+                                        "offset" : 19428,
+                                        "length" : 191
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -35030,7 +35433,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 370,
+                                        "beginColumn" : 17,
+                                        "endLine" : 372,
+                                        "endColumn" : 50,
+                                        "offset" : 19638,
+                                        "length" : 107
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -35852,9 +36268,9 @@
                                               "beginLine" : 384,
                                               "beginColumn" : 9,
                                               "endLine" : 384,
-                                              "endColumn" : 34,
+                                              "endColumn" : 70,
                                               "offset" : 20477,
-                                              "length" : 25
+                                              "length" : 61
                                             }
                                           },
                                           "resOpt" : {
@@ -35871,7 +36287,20 @@
                                       "attr" : {
                                         "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
-                                          "type" : "None"
+                                          "type" : "Some",
+                                          "value" : {
+                                            "type" : "Position",
+                                            "uriOpt" : {
+                                              "type" : "Some",
+                                              "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                            },
+                                            "beginLine" : 383,
+                                            "beginColumn" : 10,
+                                            "endLine" : 384,
+                                            "endColumn" : 70,
+                                            "offset" : 20414,
+                                            "length" : 124
+                                          }
                                         },
                                         "resOpt" : {
                                           "type" : "None"
@@ -36172,9 +36601,9 @@
                                               "beginLine" : 385,
                                               "beginColumn" : 10,
                                               "endLine" : 385,
-                                              "endColumn" : 35,
+                                              "endColumn" : 71,
                                               "offset" : 20552,
-                                              "length" : 25
+                                              "length" : 61
                                             }
                                           },
                                           "resOpt" : {
@@ -36438,7 +36867,20 @@
                                       "attr" : {
                                         "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
-                                          "type" : "None"
+                                          "type" : "Some",
+                                          "value" : {
+                                            "type" : "Position",
+                                            "uriOpt" : {
+                                              "type" : "Some",
+                                              "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                            },
+                                            "beginLine" : 385,
+                                            "beginColumn" : 10,
+                                            "endLine" : 386,
+                                            "endColumn" : 60,
+                                            "offset" : 20552,
+                                            "length" : 125
+                                          }
                                         },
                                         "resOpt" : {
                                           "type" : "None"
@@ -36454,7 +36896,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 383,
+                                          "beginColumn" : 10,
+                                          "endLine" : 386,
+                                          "endColumn" : 60,
+                                          "offset" : 20414,
+                                          "length" : 263
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -36470,7 +36925,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 381,
+                                        "beginColumn" : 14,
+                                        "endLine" : 386,
+                                        "endColumn" : 60,
+                                        "offset" : 20325,
+                                        "length" : 352
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -36801,7 +37269,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 387,
+                                        "beginColumn" : 17,
+                                        "endLine" : 389,
+                                        "endColumn" : 30,
+                                        "offset" : 20697,
+                                        "length" : 67
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -37374,9 +37855,9 @@
                                             "beginLine" : 398,
                                             "beginColumn" : 8,
                                             "endLine" : 398,
-                                            "endColumn" : 33,
+                                            "endColumn" : 70,
                                             "offset" : 21295,
-                                            "length" : 25
+                                            "length" : 62
                                           }
                                         },
                                         "resOpt" : {
@@ -37393,7 +37874,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 396,
+                                          "beginColumn" : 14,
+                                          "endLine" : 398,
+                                          "endColumn" : 70,
+                                          "offset" : 21209,
+                                          "length" : 148
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -37692,9 +38186,9 @@
                                           "beginLine" : 399,
                                           "beginColumn" : 8,
                                           "endLine" : 399,
-                                          "endColumn" : 33,
+                                          "endColumn" : 70,
                                           "offset" : 21367,
-                                          "length" : 25
+                                          "length" : 62
                                         }
                                       },
                                       "resOpt" : {
@@ -37711,7 +38205,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 396,
+                                        "beginColumn" : 14,
+                                        "endLine" : 399,
+                                        "endColumn" : 70,
+                                        "offset" : 21209,
+                                        "length" : 220
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -38222,7 +38729,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 400,
+                                        "beginColumn" : 17,
+                                        "endLine" : 402,
+                                        "endColumn" : 50,
+                                        "offset" : 21447,
+                                        "length" : 107
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -39003,7 +39523,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 408,
+                                        "beginColumn" : 17,
+                                        "endLine" : 410,
+                                        "endColumn" : 50,
+                                        "offset" : 21888,
+                                        "length" : 107
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -40931,7 +41464,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 264,
+                                          "beginColumn" : 11,
+                                          "endLine" : 264,
+                                          "endColumn" : 136,
+                                          "offset" : 13908,
+                                          "length" : 125
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -41194,7 +41740,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 264,
+                                        "beginColumn" : 11,
+                                        "endLine" : 265,
+                                        "endColumn" : 80,
+                                        "offset" : 13908,
+                                        "length" : 212
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -42033,7 +42592,20 @@
                                     "attr" : {
                                       "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
-                                        "type" : "None"
+                                        "type" : "Some",
+                                        "value" : {
+                                          "type" : "Position",
+                                          "uriOpt" : {
+                                            "type" : "Some",
+                                            "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                          },
+                                          "beginLine" : 275,
+                                          "beginColumn" : 11,
+                                          "endLine" : 275,
+                                          "endColumn" : 133,
+                                          "offset" : 14659,
+                                          "length" : 122
+                                        }
                                       },
                                       "resOpt" : {
                                         "type" : "None"
@@ -42296,7 +42868,20 @@
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
-                                      "type" : "None"
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "Position",
+                                        "uriOpt" : {
+                                          "type" : "Some",
+                                          "value" : "\/isolette-tools\/aadl\/packages\/Monitor.aadl"
+                                        },
+                                        "beginLine" : 275,
+                                        "beginColumn" : 11,
+                                        "endLine" : 276,
+                                        "endColumn" : 80,
+                                        "offset" : 14659,
+                                        "length" : 209
+                                      }
                                     },
                                     "resOpt" : {
                                       "type" : "None"
@@ -42927,9 +43512,9 @@
                                         "beginLine" : 284,
                                         "beginColumn" : 18,
                                         "endLine" : 284,
-                                        "endColumn" : 47,
+                                        "endColumn" : 121,
                                         "offset" : 15325,
-                                        "length" : 29
+                                        "length" : 103
                                       }
                                     },
                                     "resOpt" : {
