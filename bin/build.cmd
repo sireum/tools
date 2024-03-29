@@ -65,19 +65,9 @@ if (Os.cliArgs.isEmpty) {
 val homeBin = Os.slashDir
 val home = homeBin.up
 val sireumJar = homeBin / "sireum.jar"
-val mill = homeBin / "mill.bat"
 var didTipe = F
 var didCompile = F
-
-
-def downloadMill(): Unit = {
-  if (!mill.exists) {
-    println("Downloading mill ...")
-    mill.downloadFrom("https://github.com/sireum/rolling/releases/download/mill/standalone")
-    mill.chmod("+x")
-    println()
-  }
-}
+val projectStandalone = home / "bin" / "project-standalone.cmd"
 
 
 def downloadLicense(): Unit = {
@@ -128,7 +118,7 @@ def compile(): Unit = {
     didCompile = T
     tipe()
     println("Compiling ...")
-    mill.call(ISZ("tools.jvm.tests.compile")).at(home).console.runCheck()
+    proc"java -jar $sireumJar proyek compile --project $projectStandalone $home".console.echo.runCheck()
     println()
   }
 }
@@ -137,12 +127,11 @@ def compile(): Unit = {
 def test(): Unit = {
   compile()
   println("Running jvm tests ...")
-  mill.call(ISZ("tools.jvm.tests")).at(home).console.runCheck()
+  proc"java -jar $sireumJar proyek test --java -Xss2M --project $projectStandalone $home org.sireum.tools".
+    console.echo.runCheck()
   println()
 }
 
-
-downloadMill()
 
 downloadLicense()
 
