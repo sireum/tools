@@ -72,7 +72,7 @@ object CliGenJvm {
                 |  echo Please set SIREUM_HOME env var
                 |  exit /B -1
                 |)
-                |"%SIREUM_HOME%\bin\sireum.bat" slang run "%0" %*
+                |"%SIREUM_HOME%\bin\sireum.bat" slang run %0 %*
                 |exit /B %errorlevel%
                 |::!#*/
                 |""".render)
