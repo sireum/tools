@@ -480,7 +480,7 @@ import org.sireum.cli.CliOpt._
     val elements: ISZ[String] = for (e <- c.elements) yield ops.StringOps(e).firstToUpper
     decls = decls :+
       st"""@enum object $name {
-      |  ${(elements.map((e: String) => s"'$e"), "\n")}
+      |  ${(elements.map((e: String) => s"\"$e\""), "\n")}
       |}"""
     val cases: ISZ[String] = for (e <- c.elements)
       yield s"""case "$e" => return Some($name.${ops.StringOps(e).firstToUpper})"""
