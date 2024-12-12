@@ -42,7 +42,7 @@ object SlangCheckJvm {
 
     var th: TypeHierarchy = {
       val (thl, rep): (TypeHierarchy, Reporter) = {
-        val p = FrontEnd.libraryReporter
+        val p = FrontEnd.checkedLibraryReporter
         (p._1.typeHierarchy, p._2)
       }
 

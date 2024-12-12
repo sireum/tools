@@ -805,7 +805,7 @@ object SerializerGen {
         case _ => missingUri = T
       }
     }
-    val tc = FrontEnd.libraryReporter._1
+    val tc = FrontEnd.checkedLibraryReporter._1
     val (rep, programs, globalNameMap, globalTypeMap) =
       FrontEnd.parseProgramAndGloballyResolve(0, for (p <- sources) yield FrontEnd.Input(p._2, p._1), tc.nameMap,
         tc.typeMap)
