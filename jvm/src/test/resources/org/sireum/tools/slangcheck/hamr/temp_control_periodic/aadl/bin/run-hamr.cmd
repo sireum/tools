@@ -60,13 +60,13 @@ var codegenArgs = ISZ("hamr", "codegen",
   "--package-name", packageName,
   "--output-dir", (aadlDir.up / "hamr" / "slang").string,
   "--output-c-dir", (aadlDir.up / "hamr" / "c").string,
-  "--camkes-output-dir", (aadlDir.up / "hamr" / "camkes").string,  
+  "--sel4-output-dir", (aadlDir.up / "hamr" / "camkes").string,
   "--run-transpiler",
   "--bit-width", "32",
   "--max-string-size", "256",
   "--max-array-size", "1",
   "--verbose",
-  "--aadl-root-dir", aadlDir.string)
+  "--workspace-root-dir", aadlDir.string)
 
 if (excludeComponentImpl) {
   codegenArgs = codegenArgs :+ "--exclude-component-impl"
