@@ -145,6 +145,28 @@ object cli {
     groups = ISZ()
   )
 
+  val jsonSchema2slangGenTool: Tool = Tool(
+    name = "jsons",
+    command = "jsons",
+    description = "JSON schema to slang binding generator",
+    header = "Sireum JSON Schema to Slang Binding Generator",
+    usage = "<option>* <json-schema-file>+",
+    usageDescOpt = None(),
+    opts = ISZ(
+      Opt(name = "packageName", longKey = "package", shortKey = Some('p'),
+        tpe = Type.Str(sep = Some('.'), default = None()),
+        description = "Package name for the binding"),
+      Opt(name = "name", longKey = "name", shortKey = Some('n'),
+        tpe = Type.Str(sep = None(), default = None()),
+        description = "Type simple name for the binding (default is based on the JSON schema filename)"),
+      Opt(name = "license", longKey = "license", shortKey = Some('l'),
+        tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
+      Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated Slang files")
+    ),
+    groups = ISZ()
+  )
+
   val checkstackTool: Tool = Tool(
     name = "checkstack",
     command = "checkstack",
@@ -299,6 +321,7 @@ object cli {
     description = "Utility tools",
     header = "Sireum Utility Tools",
     unlisted = F,
-    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, objectPrinterTool, serializerGenTool, slangCheckGroup, transformerGenTool)
+    subs = ISZ(bcGenTool, checkstackTool, cliGenTool, jsonSchema2slangGenTool, objectPrinterTool, serializerGenTool,
+      slangCheckGroup, transformerGenTool)
   )
 }
