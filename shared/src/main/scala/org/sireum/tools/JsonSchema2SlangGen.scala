@@ -18,7 +18,7 @@ object JsonSchema2SlangGen {
     @datatype class Null(val descOpt: Option[String]) extends Type
     @datatype class Any(val jsonTypes: ISZ[String], val descOpt: Option[String]) extends Type
     @datatype class Str(val descOpt: Option[String]) extends Type
-    @datatype class Object(val fields: ISZ[Field], val descOpt: Option[String], pos: message.Position) extends Type
+    @datatype class Object(val fields: ISZ[Field], val descOpt: Option[String], val pos: message.Position) extends Type
     @datatype class Ref(val ref: String, val descOpt: Option[String]) extends Type
     @datatype class Array(val elementType: Type, val descOpt: Option[String]) extends Type
     @datatype class Number(val descOpt: Option[String]) extends Type
@@ -26,7 +26,9 @@ object JsonSchema2SlangGen {
     @datatype class Raw(val descOpt: Option[String]) extends Type
   }
 
-  @datatype class Field(val defnIdOpt: Option[String], val opt: Field.Opt.Type, val id: String, val tipe: Type)
+  @datatype class Field(val defnIdOpt: Option[String], val opt: Field.Opt.Type, val id: String, val tipe: Type) {
+    @strictpure def isRequired: B = opt != Field.Opt.Optional
+  }
 
   object Field {
     @enum object Opt {
@@ -40,7 +42,8 @@ object JsonSchema2SlangGen {
                              val titleOpt: Option[String],
                              val supers: ISZ[String],
                              val descOpt: Option[String],
-                             val fields: ISZ[Field])
+                             val fields: ISZ[Field],
+                             val requiredFields: ISZ[String])
 
   val kind: String = "JsonSchema2SlangGen"
   val schemaId: String = "$schema"
@@ -81,6 +84,7 @@ object JsonSchema2SlangGen {
 
     var defnMap = HashSMap.empty[String, Definition]
     var refs = HashSMap.empty[String, HashSSet[message.Position]]
+    var toArrayElementSet = HashSSet.empty[String]
 
     def isDefnTrait(id: String): B = {
       return refs.contains(id)
@@ -107,7 +111,7 @@ object JsonSchema2SlangGen {
             case `stringId` => Type.Str(descOpt)
             case `objectId` =>
               m.getOpt(propertiesId) match {
-                case Some(_) => Type.Object(objectField(None(), m), descOpt, pos)
+                case Some(_) => Type.Object(objectField(None(), m, requiredSet(m)), descOpt, pos)
                 case _ => Type.Raw(descOpt)
               }
             case `arrayId` =>
@@ -143,18 +147,10 @@ object JsonSchema2SlangGen {
       return Field(defnIdOpt, requiredOpt(isRequired), id, typeOf(o.asMap, o.pos))
     }
 
-    def objectField(defnIdOpt: Option[String], objectMap: AST.Map): ISZ[Field] = {
+    def objectField(defnIdOpt: Option[String], objectMap: AST.Map, required: HashSSet[String]): ISZ[Field] = {
       var r = ISZ[Field]()
       objectMap.getOpt(propertiesId) match {
         case Some(obj: AST.Obj) =>
-          var required = HashSet.empty[String]
-          objectMap.getOpt(requiredId) match {
-            case Some(arr: AST.Arr) =>
-              for (e <- arr.values) {
-                required = required + e.asInstanceOf[AST.Str].value
-              }
-            case _ =>
-          }
           for (kv <- obj.keyValues) {
             r = r :+ propertyField(defnIdOpt, required.contains(kv.id.value),
               kv.id.value, kv.value.asInstanceOf[AST.Obj])
@@ -165,7 +161,20 @@ object JsonSchema2SlangGen {
       return r
     }
 
+    def requiredSet(m: AST.Map): HashSSet[String] = {
+      var required = HashSSet.empty[String]
+      m.getOpt(requiredId) match {
+        case Some(arr: AST.Arr) =>
+          for (e <- arr.values) {
+            required = required + e.asInstanceOf[AST.Str].value
+          }
+        case _ =>
+      }
+      return required
+    }
+
     def processDef(id: String, defn: AST.Map, pos: message.Position): Unit = {
+      val required = requiredSet(defn)
       defn.getOpt(typeId) match {
         case Some(v: AST.Str) =>
           v.value match {
@@ -175,7 +184,8 @@ object JsonSchema2SlangGen {
                 titleOpt = defn.getStrValueOpt(titleId),
                 supers = ISZ(),
                 descOpt = defn.getStrValueOpt(descId),
-                fields = objectField(Some(id), defn)
+                fields = objectField(Some(id), defn, required),
+                requiredFields = required.elements
               )
               return
             case _ =>
@@ -184,7 +194,8 @@ object JsonSchema2SlangGen {
                 titleOpt = defn.getStrValueOpt(titleId),
                 supers = ISZ(),
                 descOpt = defn.getStrValueOpt(descId),
-                fields = ISZ(Field(Some(id), requiredOpt(F), "value", typeOf(defn, pos)))
+                fields = ISZ(Field(Some(id), requiredOpt(F), "value", typeOf(defn, pos))),
+                requiredFields = required.elements
               )
               return
           }
@@ -203,13 +214,15 @@ object JsonSchema2SlangGen {
             i = i + 1
             allOfMap = vs(i).asInstanceOf[AST.Obj].asMap
           }
+          val allOfRequired = requiredSet(allOfMap)
+          val fields = objectField(Some(id), allOfMap, allOfRequired)
           defnMap = defnMap + defnId(id) ~> Definition(
             id = id,
             titleOpt = None(),
             supers = supers,
             descOpt = allOfMap.getStrValueOpt(descId),
-            fields = objectField(Some(id), allOfMap)
-          )
+            fields = fields,
+            requiredFields = allOfRequired.elements)
           return
         case _ =>
       }
@@ -242,22 +255,204 @@ object JsonSchema2SlangGen {
     @strictpure def pathIdST(path: ISZ[String]): ST =
       st"${(for (p <- path) yield ops.StringOps(p).firstToUpper, "")}"
 
-    @strictpure def esc(id: String): ST = if (ops.StringOps.scalaKeywords.contains(id)) st"`$id`" else st"$id"
+    @strictpure def escField(isVal: B, f: Field): ST = {
+      val fId: String = if (isVal && !f.isRequired) s"${f.id}Opt" else f.id
+      if (ops.StringOps.scalaKeywords.contains(fId)) st"`$fId`" else st"$fId"
+    }
+    @strictpure def escId(id: String): ST = if (ops.StringOps.scalaKeywords.contains(id)) st"`$id`" else st"$id"
 
-    def genTypeH(opt: Field.Opt.Type, t: Type, path: ISZ[String]): (ST, ISZ[String]) = {
+    @pure def genToArray(t: Type.Array, etST: ST): ST = {
+      val r = st"toISZ$etST"
+      val etString = etST.render
+      if (toArrayElementSet.contains(etString)) {
+        return r
+      }
+      toArrayElementSet = toArrayElementSet + etString
+
+      val vST: ST = t.elementType match {
+        case _: Type.Bool => st"v.asInstanceOf[AST.Bool].value"
+        case _: Type.Integer => st"v.asInstanceOf[AST.Int].value"
+        case _: Type.Number => st"v.asInstanceOf[AST.Dbl].value"
+        case _: Type.Str => st"v.asInstanceOf[AST.Str].value"
+        case _: Type.Enum => st"v.asInstanceOf[AST.Str].value"
+        case _: Type.Raw => st"$topTypeId.$rawTypeId(v)"
+        case _: Type.OneOf => st"$topTypeId.$rawTypeId(v)"
+        case _: Type.Any => st"$topTypeId.$rawTypeId(v)"
+        case _: Type.Null => st"$topTypeId.$nullTypeId()"
+        case _: Type.Ref => st"to$etST(v.asInstanceOf[AST.Obj])"
+        case et: Type.Array => genToArray(et, st"ISZ$etST")
+        case _: Type.Object => st"to$etST(v.asInstanceOf[AST.Obj])"
+      }
+
+      sts = sts :+
+        st"""@pure def $r(ast: AST.Arr): ISZ[$etST] = {
+            |  var r = ISZ[$etST]()
+            |  for (v <- ast.values) {
+            |    r = r :+ $vST
+            |  }
+            |  return r
+            |}"""
+
+      return r
+    }
+
+    @pure def toObjST(id: ST, fields: ISZ[Field], path: ISZ[String]): ST = {
+      var fieldIds = ISZ[ST]()
+      var fieldStmts = ISZ[ST]()
+      for (f <- fields) {
+        val fId = escField(T, f)
+        fieldIds = fieldIds :+ fId
+        val fKey = st"${ops.StringOps(f.id).escapeST}"
+        f.tipe match {
+          case _: Type.Bool =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getBool("$fKey").value"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getBoolValueOpt("$fKey")"""
+            }
+          case _: Type.Integer =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getInt("$fKey").value"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getIntValueOpt("$fKey")"""
+            }
+          case _: Type.Number =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getDbl("$fKey").value"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getDblValueOpt("$fKey")"""
+            }
+          case _: Type.Str =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getStr("$fKey").value"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getStrValueOpt("$fKey")"""
+            }
+          case _: Type.Raw =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = $topTypeId.$rawTypeId(map.get("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getOpt("$fKey").map((o: AST) => $topTypeId.$rawTypeId(o))"""
+            }
+          case _: Type.Any =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = $topTypeId.$rawTypeId(map.get("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getOpt("$fKey").map((o: AST) => $topTypeId.$rawTypeId(o).asInstanceOf[$topTypeId])"""
+            }
+          case _: Type.Null =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getNull("$fKey")"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getNullOpt("$fKey").map((_: AST.Null) => $topTypeId.$nullTypeId())"""
+            }
+          case _: Type.OneOf =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = $topTypeId.$rawTypeId(map.get("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getOpt("$fKey").map((o: AST) => $topTypeId.$rawTypeId(o))"""
+            }
+          case ft: Type.Enum =>
+            @strictpure def assertST(fIdST: ST): ST =
+              st"""assert(${(for (e <- ft.elements) yield st"""$fIdST == "${ops.StringOps(e).escapeST}"""", " || ")})"""
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getStr("$fKey").value"""
+              fieldStmts = fieldStmts :+ assertST(fId)
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getStrValueOpt("$fKey")"""
+              fieldStmts = fieldStmts :+
+                st"""$fId match {
+                    |  case Some(s) => ${assertST(st"s")}
+                    |  case _ =>
+                    |}"""
+            }
+          case ft: Type.Ref =>
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = to${defnMap.get(ft.ref).get.id}(map.getObj("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getObjOpt("$fKey").map((o: AST.Obj) => to${defnMap.get(ft.ref).get.id}(o))"""
+            }
+          case ft: Type.Array =>
+            val etST = genTypeH(T, T, ft.elementType, path :+ "Array")._1
+            val toArray = genToArray(ft, etST)
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = $toArray(map.getArr("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getArrOpt("$fKey").map((o: AST.Arr) => $toArray(o))"""
+            }
+          case ft: Type.Object =>
+            val p: ISZ[String] = f.defnIdOpt match {
+              case Some(defn) => ISZ(defn, f.id)
+              case _ => path :+ f.id
+            }
+            if (f.isRequired) {
+              fieldStmts = fieldStmts :+ st"""val $fId = to${genTypeH(T, f.isRequired, ft, p)._1}(map.getObj("$fKey"))"""
+            } else {
+              fieldStmts = fieldStmts :+ st"""val $fId = map.getObjOpt("$fKey").map((o: AST.Obj) => to${genTypeH(T, T, ft, p)._1}(o))"""
+            }
+        }
+      }
+      val r =
+        st"""@pure def to$id(ast: AST.Obj): $id = {
+            |  val map = ast.asMap
+            |  ${(fieldStmts, "\n")}
+            |  return $id(${(fieldIds, ", ")})
+            |}"""
+      return r
+    }
+    @strictpure def fPath(f: Field): ISZ[String] = f.defnIdOpt match {
+      case Some(defn) => ISZ(defn, f.id)
+      case _ => ISZ(f.id)
+    }
+    @pure def mkObjST(id: ST, fields: ISZ[Field]): ST = {
+      @pure def isParam(f: Field): B = {
+        if (!f.isRequired) {
+          return F
+        }
+        f.tipe match {
+          case ft: Type.Enum if ft.elements.size == 1 => return F
+          case _ =>
+        }
+        return T
+      }
+
+      @pure def arg(f: Field): ST = {
+        f.tipe match {
+          case ft: Type.Enum if ft.elements.size == 1 =>
+            var r = st"\"${ops.StringOps(ft.elements(0)).escapeST}\""
+            if (!f.isRequired) {
+              r = st"Some($r)"
+            }
+            return r
+          case _ =>
+        }
+        if (f.isRequired) {
+          return escField(F, f)
+        }
+        return st"None()"
+      }
+
+      st"""@pure def mk$id(
+          |  ${(for (f <- fields if isParam(f)) yield st"${escField(F, f)}: ${genType(T, f.isRequired, f.tipe, fPath(f))}", ",\n")}
+          |): $id = {
+          |  return $id(${(for (f <- fields) yield arg(f), ", ")})
+          |}"""
+    }
+    def genTypeH(isVal: B, isRequired: B, t: Type, path: ISZ[String]): (ST, ISZ[String]) = {
       var descs: ISZ[String] = t.descOpt match {
         case Some(desc) => ISZ(desc)
         case _ => ISZ()
       }
-      val r: ST = t match {
+      var r: ST = t match {
         case _: Type.Bool => st"B"
         case _: Type.Integer => st"Z"
         case _: Type.Number => st"F64"
         case _: Type.Str => st"String"
-        case _: Type.Null => st"None[$topTypeId]"
+        case _: Type.Null => st"$topTypeId.$nullTypeId"
         case t: Type.Ref => st"${defnMap.get(t.ref).get.id}"
+        case _: Type.OneOf => st"$topTypeId.$rawTypeId"
         case t: Type.Array =>
-          val (eST, ds) = genTypeH(requiredOpt(F), t.elementType, path :+ "Array")
+          val (eST, ds) = genTypeH(isVal, T, t.elementType, path :+ "Array")
           descs = descs ++ ds
           st"ISZ[$eST]"
         case t: Type.Enum =>
@@ -277,30 +472,30 @@ object JsonSchema2SlangGen {
         case t: Type.Object =>
           val id = pathIdST(path)
           if (!objectMap.contains(t)) {
-            sts = sts :+
-              st"""@datatype class $id(
-                  |  ${(for (f <- t.fields) yield st"val ${esc(f.id)}: ${genType(f.opt, f.tipe, path :+ f.id)}", ",\n")}
-                  |) extends $topTypeId"""
             objectMap = objectMap + t ~> id
+            val tST =
+              st"""@datatype class $id(
+                  |  ${(for (f <- t.fields) yield st"val ${escField(T, f)}: ${genType(T, f.isRequired, f.tipe, path :+ f.id)}", ",\n")}
+                  |) extends $topTypeId"""
+            sts = sts :+ tST
+            val toST = toObjST(id, t.fields, path)
+            sts = sts :+ toST
+            val mkST = mkObjST(id, t.fields)
+            sts = sts :+ mkST
           }
           id
-        case t: Type.OneOf =>
-          var (r, descs) = genTypeH(requiredOpt(F), t.types(0), path :+ "OneOf0")
-          for (i <- 1 until t.types.size) {
-            val (rt, ds) = genTypeH(requiredOpt(F), t.types(i), path :+ "OneOf$i")
-            r = st"Either[$r, $rt]"
-            descs = descs ++ ds
-          }
-          r
         case t: Type.Any =>
           descs = descs :+ st"Has to be any of { ${(t.jsonTypes, ", ")} }".render
           st"$topTypeId"
       }
+      if (isVal && !isRequired) {
+        r = st"Option[$r]"
+      }
       return (r, descs)
     }
 
-    def genType(opt: Field.Opt.Type, t: Type, path: ISZ[String]): ST = {
-      val (tST, tDescs) = genTypeH(opt, t, path)
+    def genType(isVal: B, isRequired: B, t: Type, path: ISZ[String]): ST = {
+      val (tST, tDescs) = genTypeH(isVal, isRequired, t, path)
       var ds = ISZ[String]()
       for (desc <- tDescs; d <- ops.StringOps(desc).split((c: C) => c == '\n')) {
         ds = ds :+ d
@@ -327,15 +522,26 @@ object JsonSchema2SlangGen {
       return None()
     }
 
+    var poset = Poset.empty[String]
+    for (p <- defnMap.entries) {
+      poset = poset.addParents(p._1, p._2.supers)
+    }
+
     for (p <- defnMap.entries) {
       val (dId, defn) = p
-      @strictpure def fPath(f: Field): ISZ[String] = f.defnIdOpt match {
-        case Some(defn) => ISZ(defn, f.id)
-        case _ => ISZ(f.id)
-      }
       var fields = HashSMap.empty[String, Field]
       def addField(f: Field): Unit = {
-        fields = fields + f.id ~> f
+        fields.get(f.id) match {
+          case Some(pf) =>
+            val opt: Field.Opt.Type = (pf.opt, f.opt) match {
+              case (Field.Opt.Optional, Field.Opt.Required) => Field.Opt.Some
+              case (Field.Opt.Required, _) => Field.Opt.Required
+              case (Field.Opt.Some, _) => Field.Opt.Some
+              case (_, _) => f.opt
+            }
+            fields = fields + f.id ~> f(opt = opt)
+          case _ => fields = fields + f.id ~> f
+        }
       }
       def rec(supers: ISZ[String]): Unit = {
         for (s <- supers) {
@@ -350,24 +556,55 @@ object JsonSchema2SlangGen {
       for (f <- defn.fields) {
         addField(f)
       }
-      val st: ST = if (isDefnTrait(dId)) {
+      if (isDefnTrait(dId)) {
         fields = fields -- (fields.keys -- (for (f <- defn.fields) yield f.id))
-        st"""${mlCommentSTOpt(defn.titleOpt)}
-            |${mlCommentSTOpt(defn.descOpt)}
-            |@datatype trait ${esc(defn.id)}${extendsSTOpt(if (defn.supers.isEmpty) ISZ(topTypeId) else defn.supers)} {
-            |
-            |  ${(for (f <- fields.values) yield st"def ${esc(f.id)}: ${genType(f.opt, f.tipe, fPath(f))}", "\n\n")}
-            |
-            |}"""
+        val id = escId(defn.id)
+        val defnST =
+          st"""${mlCommentSTOpt(defn.titleOpt)}
+              |${mlCommentSTOpt(defn.descOpt)}
+              |@datatype trait $id${extendsSTOpt(if (defn.supers.isEmpty) ISZ(topTypeId) else defn.supers)} {
+              |
+              |  ${(for (f <- fields.values) yield st"def ${escField(F, f)}: ${genType(F, f.isRequired, f.tipe, fPath(f))}", "\n\n")}
+              |
+              |}"""
+        sts = sts :+ defnST
+        @pure def simpleId(defId: String): String = {
+          val i = ops.StringOps(defId).lastIndexOf('/')
+          return ops.StringOps(defId).substring(i + 1, defId.size)
+        }
+        val impls: ISZ[String] = for (descendant <- poset.descendantsOf(dId).elements if poset.childrenOf(descendant).isEmpty) yield simpleId(descendant)
+        impls.size match {
+          case z"0" =>
+          case z"1" =>
+            sts = sts :+
+              st"""def to$id(ast: AST.Obj): $id = {
+                  |  return to${escId(impls(0))}(ast)
+                  |}"""
+          case _ =>
+        }
       } else {
         fields = fields ++ (for (f <- defn.fields) yield (f.id, f))
-        st"""${mlCommentSTOpt(defn.titleOpt)}
-            |${mlCommentSTOpt(defn.descOpt)}
-            |@datatype class ${esc(defn.id)}(
-            |  ${(for (f <- fields.values) yield st"val ${esc(f.id)}: ${genType(f.opt, f.tipe, fPath(f))}", ",\n")}
-            |)${extendsSTOpt(if (defn.supers.isEmpty) ISZ(topTypeId) else defn.supers)}"""
+        val id = escId(defn.id)
+        var defs = ISZ[ST]()
+        for (f <- fields.values if !f.isRequired) {
+          defs = defs :+ st"""@strictpure def ${escField(F, f)}: ${genTypeH(T, T, f.tipe, fPath(f))._1} = ${escField(T, f)}.get"""
+        }
+        val defnST =
+          st"""${mlCommentSTOpt(defn.titleOpt)}
+              |${mlCommentSTOpt(defn.descOpt)}
+              |@datatype class $id(
+              |  ${(for (f <- fields.values) yield st"val ${escField(T, f)}: ${genType(T, f.isRequired, f.tipe, fPath(f))}", ",\n")}
+              |)${extendsSTOpt(if (defn.supers.isEmpty) ISZ(topTypeId) else defn.supers)} {
+              |  ${(defs, "\n")}
+              |}"""
+        sts = sts :+ defnST
+
+        val toDefnST = toObjST(id, fields.values, ISZ())
+        sts = sts :+ toDefnST
+
+        val mkDefnST = mkObjST(id, fields.values)
+        sts = sts :+ mkDefnST
       }
-      sts = sts :+ st
     }
 
     val pOpt: Option[ST] = if (packageName.isEmpty) None() else Some(st"package ${(packageName, ".")}")
@@ -384,6 +621,7 @@ object JsonSchema2SlangGen {
           |$licenseOpt
           |$pOpt
           |import org.sireum._
+          |import org.sireum.parser.json.AST
           |
           |$sourceOpt
           |
@@ -393,8 +631,8 @@ object JsonSchema2SlangGen {
           |
           |  @datatype trait $topTypeId
           |  object $topTypeId {
-          |    @datatype class $rawTypeId(ast: parser.json.AST) extends $topTypeId
           |    @datatype class $nullTypeId extends $topTypeId
+          |    @datatype class $rawTypeId(ast: parser.json.AST) extends $topTypeId
           |  }
           |
           |  ${(sts, "\n\n")}
