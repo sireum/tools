@@ -13,12 +13,12 @@ object JsonSchema2SlangGen {
 
   object Type {
     @datatype class Bool(val descOpt: Option[String]) extends Type
-    @datatype class Enum(val elements: ISZ[String], val elementDescs: ISZ[String], val descOpt: Option[String], val pos: message.Position) extends Type
+    @datatype class Enum(val elements: ISZ[String], val elementDescs: ISZ[String], val descOpt: Option[String], val posOpt: Option[message.Position]) extends Type
     @datatype class Integer(val descOpt: Option[String]) extends Type
     @datatype class Null(val descOpt: Option[String]) extends Type
     @datatype class Any(val jsonTypes: ISZ[String], val descOpt: Option[String]) extends Type
     @datatype class Str(val descOpt: Option[String]) extends Type
-    @datatype class Object(val fields: ISZ[Field], val descOpt: Option[String], val pos: message.Position) extends Type
+    @datatype class Object(val fields: ISZ[Field], val descOpt: Option[String], val posOpt: Option[message.Position]) extends Type
     @datatype class Ref(val ref: String, val descOpt: Option[String]) extends Type
     @datatype class Array(val elementType: Type, val descOpt: Option[String]) extends Type
     @datatype class Number(val descOpt: Option[String]) extends Type
@@ -71,6 +71,7 @@ object JsonSchema2SlangGen {
   val topTypeId: String = "`.Node`"
   val rawTypeId: String = "Raw"
   val nullTypeId: String = "Null"
+  val arrayPathId: String = "Array"
 
   def gen(uriOpt: Option[String],
           licenseOpt: Option[String],
@@ -83,8 +84,9 @@ object JsonSchema2SlangGen {
     assert(map.getStr(typeId).value == objectId, map.getStr(typeId).value)
 
     var defnMap = HashSMap.empty[String, Definition]
-    var refs = HashSMap.empty[String, HashSSet[message.Position]]
+    var refs = HashSMap.empty[String, HashSSet[Option[message.Position]]]
     var toArrayElementSet = HashSSet.empty[String]
+    var fromArrayElementSet = HashSSet.empty[String]
 
     def isDefnTrait(id: String): B = {
       return refs.contains(id)
@@ -92,7 +94,7 @@ object JsonSchema2SlangGen {
 
     @strictpure def defnId(id: String): String = s"#/definitions/$id"
 
-    def typeOf(m: AST.Map, pos: message.Position): Type = {
+    def typeOf(m: AST.Map, pos: Option[message.Position]): Type = {
       val descOpt = m.getStrValueOpt(descId)
       m.getOpt(typeId) match {
         case Some(v: AST.Str) =>
@@ -116,7 +118,7 @@ object JsonSchema2SlangGen {
               }
             case `arrayId` =>
               val arr = m.getObj(itemsId)
-              Type.Array(typeOf(arr.asMap, arr.pos), descOpt)
+              Type.Array(typeOf(arr.asMap, arr.posOpt), descOpt)
             case `nullId` => Type.Null(descOpt)
             case _ => halt(s"TODO: ${v.value}")
           }
@@ -129,7 +131,7 @@ object JsonSchema2SlangGen {
               var ts = ISZ[Type]()
               for (e <- v.values) {
                 val eObj = e.asInstanceOf[AST.Obj]
-                ts = ts :+ typeOf(eObj.asMap, eObj.pos)
+                ts = ts :+ typeOf(eObj.asMap, eObj.posOpt)
               }
               return Type.OneOf(ts, descOpt)
             case _ =>
@@ -144,7 +146,7 @@ object JsonSchema2SlangGen {
       if (isRequired) Field.Opt.Required else Field.Opt.Optional
 
     def propertyField(defnIdOpt: Option[String], isRequired: B, id: String, o: AST.Obj): Field = {
-      return Field(defnIdOpt, requiredOpt(isRequired), id, typeOf(o.asMap, o.pos))
+      return Field(defnIdOpt, requiredOpt(isRequired), id, typeOf(o.asMap, o.posOpt))
     }
 
     def objectField(defnIdOpt: Option[String], objectMap: AST.Map, required: HashSSet[String]): ISZ[Field] = {
@@ -173,7 +175,7 @@ object JsonSchema2SlangGen {
       return required
     }
 
-    def processDef(id: String, defn: AST.Map, pos: message.Position): Unit = {
+    def processDef(id: String, defn: AST.Map, posOpt: Option[message.Position]): Unit = {
       val required = requiredSet(defn)
       defn.getOpt(typeId) match {
         case Some(v: AST.Str) =>
@@ -194,7 +196,7 @@ object JsonSchema2SlangGen {
                 titleOpt = defn.getStrValueOpt(titleId),
                 supers = ISZ(),
                 descOpt = defn.getStrValueOpt(descId),
-                fields = ISZ(Field(Some(id), requiredOpt(F), "value", typeOf(defn, pos))),
+                fields = ISZ(Field(Some(id), requiredOpt(F), "value", typeOf(defn, posOpt))),
                 requiredFields = required.elements
               )
               return
@@ -209,7 +211,7 @@ object JsonSchema2SlangGen {
           var allOfMap = vs(i).asInstanceOf[AST.Obj].asMap
           while (i < vs.size && allOfMap.value.contains(refId)) {
             val ref = allOfMap.getStr(refId)
-            refs = refs + ref.value ~> (refs.get(ref.value).getOrElse(HashSSet.empty) + ref.pos)
+            refs = refs + ref.value ~> (refs.get(ref.value).getOrElse(HashSSet.empty) + ref.posOpt)
             supers = supers :+ ref.value
             i = i + 1
             allOfMap = vs(i).asInstanceOf[AST.Obj].asMap
@@ -231,7 +233,7 @@ object JsonSchema2SlangGen {
 
     for (kv <- map.getObj(definitionsId).keyValues) {
       val v = kv.value.asInstanceOf[AST.Obj]
-      processDef(kv.id.value, v.asMap, v.pos)
+      processDef(kv.id.value, v.asMap, v.posOpt)
     }
 
     var sts = ISZ[ST]()
@@ -296,7 +298,91 @@ object JsonSchema2SlangGen {
       return r
     }
 
-    @pure def toObjST(id: ST, fields: ISZ[Field], path: ISZ[String]): ST = {
+    @pure def genFromArray(t: Type.Array, etST: ST): ST = {
+      val r = st"fromISZ$etST"
+      val etString = etST.render
+      if (fromArrayElementSet.contains(etString)) {
+        return r
+      }
+      fromArrayElementSet = fromArrayElementSet + etString
+
+      val vST: ST = t.elementType match {
+        case _: Type.Bool => st"AST.Bool(v, None())"
+        case _: Type.Integer => st"AST.Int(v, None())"
+        case _: Type.Number => st"AST.Dbl(v, None())"
+        case _: Type.Str => st"AST.Str(v, None())"
+        case _: Type.Enum => st"AST.Str(v, None())"
+        case _: Type.Raw => st"v.value"
+        case _: Type.OneOf => st"v.value"
+        case _: Type.Any => st"v.toAST"
+        case _: Type.Null => st"AST.Null(None())"
+        case _: Type.Ref => st"v.toAST"
+        case _: Type.Object => st"v.toAST"
+        case et: Type.Array => genFromArray(et, st"ISZ$etST")
+      }
+
+      sts = sts :+
+        st"""@pure def $r(seq: ISZ[$etST]): AST.Arr = {
+            |  var elements = ISZ[AST]()
+            |  for (v <- seq) {
+            |    elements = elements :+ $vST
+            |  }
+            |  return AST.Arr(elements, None())
+            |}"""
+
+      return r
+    }
+
+    @pure def fromBindingST(fields: ISZ[Field], path: ISZ[String]): ST = {
+      var fieldStmts = ISZ[ST]()
+      for (f <- fields) {
+        @strictpure def fieldStmt(value: ST): ST =
+          st"kvs = kvs :+ AST.KeyValue(AST.Str(\"${ops.StringOps(escField(F, f).render).escapeST}\", None()), $value)"
+        val fId = escField(T, f)
+        val fValue: ST = if (f.isRequired) fId else escField(F, f)
+        val valueST: ST = f.tipe match {
+          case _: Type.Bool => st"AST.Bool($fValue, None())"
+          case _: Type.Integer => st"AST.Int($fValue, None())"
+          case _: Type.Number => st"AST.Dbl($fValue, None())"
+          case _: Type.Str => st"AST.Str($fValue, None())"
+          case _: Type.Ref => st"$fValue.toAST"
+          case _: Type.Null => st"AST.Null(None())"
+          case _: Type.OneOf => st"$fValue.value"
+          case _: Type.Any => st"$fValue.toAST"
+          case _: Type.Raw => st"$fValue.value"
+          case ft: Type.Enum =>
+            fieldStmts = fieldStmts :+
+              st"assert(${(for (e <- ft.elements) yield st"$fValue == \"${ops.StringOps(e).escapeST}\"", " || ")})"
+            st"AST.Str($fValue, None())"
+          case _: Type.Object => st"$fValue.toAST"
+          case ft: Type.Array =>
+            val p: ISZ[String] = f.defnIdOpt match {
+              case Some(defn) => ISZ(defn, f.id)
+              case _ => path :+ f.id
+            }
+            val etST = genTypeH(T, T, ft.elementType, p :+ arrayPathId)._1
+            val fromArray = genFromArray(ft, etST)
+            st"$fromArray($fValue)"
+        }
+        if (f.isRequired) {
+          fieldStmts = fieldStmts :+ fieldStmt(valueST)
+        } else {
+          fieldStmts = fieldStmts :+
+            st"""if ($fId.nonEmpty) {
+                |  ${fieldStmt(valueST)}
+                |}"""
+        }
+      }
+      val r =
+        st"""@pure def toAST: AST.Obj = {
+            |  var kvs = ISZ[AST.KeyValue]()
+            |  ${(fieldStmts, "\n")}
+            |  return AST.Obj(kvs, None())
+            |}"""
+      return r
+    }
+
+    @pure def toBindingST(id: ST, fields: ISZ[Field], path: ISZ[String]): ST = {
       var fieldIds = ISZ[ST]()
       var fieldStmts = ISZ[ST]()
       for (f <- fields) {
@@ -373,7 +459,11 @@ object JsonSchema2SlangGen {
               fieldStmts = fieldStmts :+ st"""val $fId = map.getObjOpt("$fKey").map((o: AST.Obj) => to${defnMap.get(ft.ref).get.id}(o))"""
             }
           case ft: Type.Array =>
-            val etST = genTypeH(T, T, ft.elementType, path :+ "Array")._1
+            val p: ISZ[String] = f.defnIdOpt match {
+              case Some(defn) => ISZ(defn, f.id)
+              case _ => path :+ f.id
+            }
+            val etST = genTypeH(T, T, ft.elementType, p :+ arrayPathId)._1
             val toArray = genToArray(ft, etST)
             if (f.isRequired) {
               fieldStmts = fieldStmts :+ st"""val $fId = $toArray(map.getArr("$fKey"))"""
@@ -432,11 +522,13 @@ object JsonSchema2SlangGen {
         return st"None()"
       }
 
-      st"""@pure def mk$id(
-          |  ${(for (f <- fields if isParam(f)) yield st"${escField(F, f)}: ${genType(T, f.isRequired, f.tipe, fPath(f))}", ",\n")}
-          |): $id = {
-          |  return $id(${(for (f <- fields) yield arg(f), ", ")})
-          |}"""
+      val r =
+        st"""@pure def mk$id(
+            |  ${(for (f <- fields if isParam(f)) yield st"${escField(F, f)}: ${genType(T, f.isRequired, f.tipe, fPath(f))}", ",\n")}
+            |): $id = {
+            |  return $id(${(for (f <- fields) yield arg(f), ", ")})
+            |}"""
+      return r
     }
     def genTypeH(isVal: B, isRequired: B, t: Type, path: ISZ[String]): (ST, ISZ[String]) = {
       var descs: ISZ[String] = t.descOpt match {
@@ -452,7 +544,7 @@ object JsonSchema2SlangGen {
         case t: Type.Ref => st"${defnMap.get(t.ref).get.id}"
         case _: Type.OneOf => st"$topTypeId.$rawTypeId"
         case t: Type.Array =>
-          val (eST, ds) = genTypeH(isVal, T, t.elementType, path :+ "Array")
+          val (eST, ds) = genTypeH(isVal, T, t.elementType, path :+ arrayPathId)
           descs = descs ++ ds
           st"ISZ[$eST]"
         case t: Type.Enum =>
@@ -473,12 +565,19 @@ object JsonSchema2SlangGen {
           val id = pathIdST(path)
           if (!objectMap.contains(t)) {
             objectMap = objectMap + t ~> id
+            var defs = ISZ[ST]()
+            for (f <- t.fields if !f.isRequired) {
+              defs = defs :+ st"@strictpure def ${escField(F, f)}: ${genType(F, f.isRequired, f.tipe, path :+ f.id)} = ${escField(T, f)}.get"
+            }
+            defs = defs :+ fromBindingST(t.fields, path)
             val tST =
               st"""@datatype class $id(
                   |  ${(for (f <- t.fields) yield st"val ${escField(T, f)}: ${genType(T, f.isRequired, f.tipe, path :+ f.id)}", ",\n")}
-                  |) extends $topTypeId"""
+                  |) extends $topTypeId {
+                  |  ${(defs, "\n")}
+                  |}"""
             sts = sts :+ tST
-            val toST = toObjST(id, t.fields, path)
+            val toST = toBindingST(id, t.fields, path)
             sts = sts :+ toST
             val mkST = mkObjST(id, t.fields)
             sts = sts :+ mkST
@@ -514,8 +613,8 @@ object JsonSchema2SlangGen {
       st" extends ${(for (s <- supers) yield if (defnMap.contains(s)) defnMap.get(s).get.id else s, " with ")}"
     )
 
-    for (p <- refs.entries if !defnMap.contains(p._1); pos <- p._2.elements) {
-      reporter.error(Some(pos), kind, s"Could not find $$ref: ${p._1}")
+    for (p <- refs.entries if !defnMap.contains(p._1); posOpt <- p._2.elements) {
+      reporter.error(posOpt, kind, s"Could not find $$ref: ${p._1}")
     }
 
     if (reporter.hasError) {
@@ -589,6 +688,7 @@ object JsonSchema2SlangGen {
         for (f <- fields.values if !f.isRequired) {
           defs = defs :+ st"""@strictpure def ${escField(F, f)}: ${genTypeH(T, T, f.tipe, fPath(f))._1} = ${escField(T, f)}.get"""
         }
+        defs = defs :+ fromBindingST(fields.values, ISZ())
         val defnST =
           st"""${mlCommentSTOpt(defn.titleOpt)}
               |${mlCommentSTOpt(defn.descOpt)}
@@ -599,7 +699,7 @@ object JsonSchema2SlangGen {
               |}"""
         sts = sts :+ defnST
 
-        val toDefnST = toObjST(id, fields.values, ISZ())
+        val toDefnST = toBindingST(id, fields.values, ISZ())
         sts = sts :+ toDefnST
 
         val mkDefnST = mkObjST(id, fields.values)
@@ -629,10 +729,16 @@ object JsonSchema2SlangGen {
           |${mlCommentSTOpt(map.getStrValueOpt(descId))}
           |object $objectName {
           |
-          |  @datatype trait $topTypeId
+          |  @datatype trait $topTypeId {
+          |    @pure def toAST: AST
+          |  }
           |  object $topTypeId {
-          |    @datatype class $nullTypeId extends $topTypeId
-          |    @datatype class $rawTypeId(ast: parser.json.AST) extends $topTypeId
+          |    @datatype class $nullTypeId extends $topTypeId {
+          |      @strictpure def toAST: AST = AST.Null(None())
+          |    }
+          |    @datatype class $rawTypeId(value: parser.json.AST) extends $topTypeId {
+          |      @strictpure def toAST: AST = value
+          |    }
           |  }
           |
           |  ${(sts, "\n\n")}
