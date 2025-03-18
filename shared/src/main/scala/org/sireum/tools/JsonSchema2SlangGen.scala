@@ -265,7 +265,7 @@ object JsonSchema2SlangGen {
             st"${t.elements(i)} ${mlCommentSTOpt(Some(t.elementDescs(i)))}"
           descs = descs :+
             st"""Has to be one of {
-                |  ${(for (i <- t.elements.indices) yield element(i), ", ")}
+                |  ${(for (i <- t.elements.indices) yield element(i), ",\n")}
                 |}""".render
           st"String"
         case t: Type.Raw =>
