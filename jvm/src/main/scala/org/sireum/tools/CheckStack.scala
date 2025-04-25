@@ -340,7 +340,7 @@ object CheckStack {
           return F
         }
       }
-      if (!Os.isLinux) {
+      if (!Os.isLinuxAmd) {
         eprintln("Binary mode is only available under Linux")
         return NOT_LINUX
       }

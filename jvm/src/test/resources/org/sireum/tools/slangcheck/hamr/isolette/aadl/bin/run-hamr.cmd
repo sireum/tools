@@ -26,7 +26,7 @@ val sireum = sireumBin / (if(Os.isWin) "sireum.bat" else "sireum")
 
 var osate : Os.Path = 
   if(Os.isWin) sireumBin / "win" / "fmide" / "fmide.exe"
-  else if(Os.isLinux) sireumBin / "linux" / "fmide" / "fmide"
+  else if(Os.isLinuxAmd) sireumBin / "linux" / "fmide" / "fmide"
   else if(Os.isMac) sireumBin / "mac" / "fmide.app" / "Contents" / "MacOS" / "osate"
   else sireum / "unsupported-OS"
 
