@@ -436,11 +436,11 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                                         },
                                         "beginLine" : 67,
-                                        "beginColumn" : 25,
+                                        "beginColumn" : 24,
                                         "endLine" : 67,
                                         "endColumn" : 32,
-                                        "offset" : 2926,
-                                        "length" : 7
+                                        "offset" : 2925,
+                                        "length" : 8
                                       }
                                     }
                                   }
@@ -531,7 +531,7 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                                   },
                                   "beginLine" : 67,
-                                  "beginColumn" : 52,
+                                  "beginColumn" : 33,
                                   "endLine" : 67,
                                   "endColumn" : 35,
                                   "offset" : 2934,
@@ -2445,7 +2445,7 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 148,
-                                  "beginColumn" : 36,
+                                  "beginColumn" : 24,
                                   "endLine" : 148,
                                   "endColumn" : 26,
                                   "offset" : 7932,
@@ -2731,7 +2731,7 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 152,
-                                  "beginColumn" : 25,
+                                  "beginColumn" : 19,
                                   "endLine" : 152,
                                   "endColumn" : 21,
                                   "offset" : 8112,
@@ -2868,11 +2868,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 142,
-                                          "beginColumn" : 24,
+                                          "beginColumn" : 23,
                                           "endLine" : 142,
                                           "endColumn" : 31,
-                                          "offset" : 7649,
-                                          "length" : 7
+                                          "offset" : 7648,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -2963,7 +2963,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 142,
-                                    "beginColumn" : 51,
+                                    "beginColumn" : 32,
                                     "endLine" : 142,
                                     "endColumn" : 34,
                                     "offset" : 7657,
@@ -3044,11 +3044,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 142,
-                                          "beginColumn" : 62,
+                                          "beginColumn" : 61,
                                           "endLine" : 142,
                                           "endColumn" : 69,
-                                          "offset" : 7687,
-                                          "length" : 7
+                                          "offset" : 7686,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -3139,7 +3139,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 142,
-                                    "beginColumn" : 89,
+                                    "beginColumn" : 70,
                                     "endLine" : 142,
                                     "endColumn" : 72,
                                     "offset" : 7695,
@@ -3158,11 +3158,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 142,
-                                    "beginColumn" : 12,
+                                    "beginColumn" : 32,
                                     "endLine" : 142,
-                                    "endColumn" : 82,
-                                    "offset" : 7637,
-                                    "length" : 70
+                                    "endColumn" : 72,
+                                    "offset" : 7657,
+                                    "length" : 40
                                   }
                                 },
                                 "resOpt" : {
@@ -3181,11 +3181,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 142,
-                                  "beginColumn" : 37,
+                                  "beginColumn" : 47,
                                   "endLine" : 142,
-                                  "endColumn" : 88,
-                                  "offset" : 7660,
-                                  "length" : 34
+                                  "endColumn" : 48,
+                                  "offset" : 7672,
+                                  "length" : 1
                                 }
                               }
                             },
@@ -3288,7 +3288,9 @@
                             }
                           }
                         ],
-                        "specs" : [
+                        "assumes" : [
+                        ],
+                        "guarantees" : [
                           {
                             "type" : "GclGuarantee",
                             "id" : "altCurrentTempLTSetPoint",
@@ -3370,11 +3372,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 160,
-                                          "beginColumn" : 26,
+                                          "beginColumn" : 25,
                                           "endLine" : 160,
                                           "endColumn" : 33,
-                                          "offset" : 8449,
-                                          "length" : 7
+                                          "offset" : 8448,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -3482,11 +3484,11 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 160,
-                                              "beginColumn" : 45,
+                                              "beginColumn" : 44,
                                               "endLine" : 160,
-                                              "endColumn" : 56,
-                                              "offset" : 8468,
-                                              "length" : 11
+                                              "endColumn" : 48,
+                                              "offset" : 8467,
+                                              "length" : 4
                                             }
                                           }
                                         }
@@ -3506,9 +3508,9 @@
                                             "beginLine" : 160,
                                             "beginColumn" : 36,
                                             "endLine" : 160,
-                                            "endColumn" : 56,
+                                            "endColumn" : 48,
                                             "offset" : 8459,
-                                            "length" : 20
+                                            "length" : 12
                                           }
                                         },
                                         "resOpt" : {
@@ -3534,11 +3536,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 160,
-                                          "beginColumn" : 49,
+                                          "beginColumn" : 48,
                                           "endLine" : 160,
                                           "endColumn" : 56,
-                                          "offset" : 8472,
-                                          "length" : 7
+                                          "offset" : 8471,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -3605,7 +3607,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 160,
-                                    "beginColumn" : 53,
+                                    "beginColumn" : 34,
                                     "endLine" : 160,
                                     "endColumn" : 35,
                                     "offset" : 8457,
@@ -3867,7 +3869,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 161,
-                                      "beginColumn" : 43,
+                                      "beginColumn" : 31,
                                       "endLine" : 161,
                                       "endColumn" : 33,
                                       "offset" : 8517,
@@ -4127,7 +4129,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 161,
-                                      "beginColumn" : 75,
+                                      "beginColumn" : 69,
                                       "endLine" : 161,
                                       "endColumn" : 71,
                                       "offset" : 8555,
@@ -4146,11 +4148,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 161,
-                                      "beginColumn" : 18,
+                                      "beginColumn" : 31,
                                       "endLine" : 161,
-                                      "endColumn" : 94,
-                                      "offset" : 8504,
-                                      "length" : 76
+                                      "endColumn" : 71,
+                                      "offset" : 8517,
+                                      "length" : 40
                                     }
                                   },
                                   "resOpt" : {
@@ -4169,11 +4171,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 161,
-                                    "beginColumn" : 36,
+                                    "beginColumn" : 58,
                                     "endLine" : 161,
-                                    "endColumn" : 74,
-                                    "offset" : 8520,
-                                    "length" : 34
+                                    "endColumn" : 60,
+                                    "offset" : 8544,
+                                    "length" : 2
                                   }
                                 }
                               },
@@ -4188,11 +4190,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 160,
-                                    "beginColumn" : 14,
+                                    "beginColumn" : 34,
                                     "endLine" : 161,
-                                    "endColumn" : 94,
-                                    "offset" : 8437,
-                                    "length" : 143
+                                    "endColumn" : 60,
+                                    "offset" : 8457,
+                                    "length" : 89
                                   }
                                 },
                                 "resOpt" : {
@@ -4211,11 +4213,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 160,
-                                  "beginColumn" : 37,
-                                  "endLine" : 161,
-                                  "endColumn" : 35,
-                                  "offset" : 8459,
-                                  "length" : 60
+                                  "beginColumn" : 58,
+                                  "endLine" : 160,
+                                  "endColumn" : 61,
+                                  "offset" : 8481,
+                                  "length" : 3
                                 }
                               }
                             },
@@ -4320,11 +4322,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 165,
-                                          "beginColumn" : 27,
+                                          "beginColumn" : 26,
                                           "endLine" : 165,
                                           "endColumn" : 34,
-                                          "offset" : 8803,
-                                          "length" : 7
+                                          "offset" : 8802,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -4432,11 +4434,11 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 165,
-                                              "beginColumn" : 46,
+                                              "beginColumn" : 45,
                                               "endLine" : 165,
-                                              "endColumn" : 58,
-                                              "offset" : 8822,
-                                              "length" : 12
+                                              "endColumn" : 50,
+                                              "offset" : 8821,
+                                              "length" : 5
                                             }
                                           }
                                         }
@@ -4456,9 +4458,9 @@
                                             "beginLine" : 165,
                                             "beginColumn" : 37,
                                             "endLine" : 165,
-                                            "endColumn" : 58,
+                                            "endColumn" : 50,
                                             "offset" : 8813,
-                                            "length" : 21
+                                            "length" : 13
                                           }
                                         },
                                         "resOpt" : {
@@ -4484,11 +4486,11 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 165,
-                                          "beginColumn" : 51,
+                                          "beginColumn" : 50,
                                           "endLine" : 165,
                                           "endColumn" : 58,
-                                          "offset" : 8827,
-                                          "length" : 7
+                                          "offset" : 8826,
+                                          "length" : 8
                                         }
                                       }
                                     }
@@ -4555,7 +4557,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 165,
-                                    "beginColumn" : 54,
+                                    "beginColumn" : 35,
                                     "endLine" : 165,
                                     "endColumn" : 36,
                                     "offset" : 8811,
@@ -4817,7 +4819,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 166,
-                                      "beginColumn" : 43,
+                                      "beginColumn" : 31,
                                       "endLine" : 166,
                                       "endColumn" : 33,
                                       "offset" : 8870,
@@ -5077,7 +5079,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 166,
-                                      "beginColumn" : 73,
+                                      "beginColumn" : 67,
                                       "endLine" : 166,
                                       "endColumn" : 69,
                                       "offset" : 8906,
@@ -5096,11 +5098,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 166,
-                                      "beginColumn" : 18,
+                                      "beginColumn" : 31,
                                       "endLine" : 166,
-                                      "endColumn" : 91,
-                                      "offset" : 8857,
-                                      "length" : 73
+                                      "endColumn" : 69,
+                                      "offset" : 8870,
+                                      "length" : 38
                                     }
                                   },
                                   "resOpt" : {
@@ -5119,11 +5121,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 166,
-                                    "beginColumn" : 36,
+                                    "beginColumn" : 57,
                                     "endLine" : 166,
-                                    "endColumn" : 72,
-                                    "offset" : 8873,
-                                    "length" : 32
+                                    "endColumn" : 58,
+                                    "offset" : 8896,
+                                    "length" : 1
                                   }
                                 }
                               },
@@ -5138,11 +5140,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 165,
-                                    "beginColumn" : 15,
+                                    "beginColumn" : 35,
                                     "endLine" : 166,
-                                    "endColumn" : 91,
-                                    "offset" : 8791,
-                                    "length" : 139
+                                    "endColumn" : 58,
+                                    "offset" : 8811,
+                                    "length" : 86
                                   }
                                 },
                                 "resOpt" : {
@@ -5161,11 +5163,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 165,
-                                  "beginColumn" : 38,
-                                  "endLine" : 166,
-                                  "endColumn" : 35,
-                                  "offset" : 8813,
-                                  "length" : 59
+                                  "beginColumn" : 60,
+                                  "endLine" : 165,
+                                  "endColumn" : 63,
+                                  "offset" : 8836,
+                                  "length" : 3
                                 }
                               }
                             },
@@ -5272,11 +5274,11 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 171,
-                                            "beginColumn" : 27,
+                                            "beginColumn" : 26,
                                             "endLine" : 171,
                                             "endColumn" : 34,
-                                            "offset" : 9268,
-                                            "length" : 7
+                                            "offset" : 9267,
+                                            "length" : 8
                                           }
                                         }
                                       }
@@ -5384,11 +5386,11 @@
                                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                                 },
                                                 "beginLine" : 171,
-                                                "beginColumn" : 47,
+                                                "beginColumn" : 46,
                                                 "endLine" : 171,
-                                                "endColumn" : 58,
-                                                "offset" : 9288,
-                                                "length" : 11
+                                                "endColumn" : 50,
+                                                "offset" : 9287,
+                                                "length" : 4
                                               }
                                             }
                                           }
@@ -5408,9 +5410,9 @@
                                               "beginLine" : 171,
                                               "beginColumn" : 38,
                                               "endLine" : 171,
-                                              "endColumn" : 58,
+                                              "endColumn" : 50,
                                               "offset" : 9279,
-                                              "length" : 20
+                                              "length" : 12
                                             }
                                           },
                                           "resOpt" : {
@@ -5436,11 +5438,11 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 171,
-                                            "beginColumn" : 51,
+                                            "beginColumn" : 50,
                                             "endLine" : 171,
                                             "endColumn" : 58,
-                                            "offset" : 9292,
-                                            "length" : 7
+                                            "offset" : 9291,
+                                            "length" : 8
                                           }
                                         }
                                       }
@@ -5507,7 +5509,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 171,
-                                      "beginColumn" : 54,
+                                      "beginColumn" : 35,
                                       "endLine" : 171,
                                       "endColumn" : 37,
                                       "offset" : 9276,
@@ -5588,11 +5590,11 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 171,
-                                            "beginColumn" : 75,
+                                            "beginColumn" : 74,
                                             "endLine" : 171,
                                             "endColumn" : 82,
-                                            "offset" : 9316,
-                                            "length" : 7
+                                            "offset" : 9315,
+                                            "length" : 8
                                           }
                                         }
                                       }
@@ -5700,11 +5702,11 @@
                                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                                 },
                                                 "beginLine" : 171,
-                                                "beginColumn" : 95,
+                                                "beginColumn" : 94,
                                                 "endLine" : 171,
-                                                "endColumn" : 107,
-                                                "offset" : 9336,
-                                                "length" : 12
+                                                "endColumn" : 99,
+                                                "offset" : 9335,
+                                                "length" : 5
                                               }
                                             }
                                           }
@@ -5724,9 +5726,9 @@
                                               "beginLine" : 171,
                                               "beginColumn" : 86,
                                               "endLine" : 171,
-                                              "endColumn" : 107,
+                                              "endColumn" : 99,
                                               "offset" : 9327,
-                                              "length" : 21
+                                              "length" : 13
                                             }
                                           },
                                           "resOpt" : {
@@ -5752,11 +5754,11 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 171,
-                                            "beginColumn" : 100,
+                                            "beginColumn" : 99,
                                             "endLine" : 171,
                                             "endColumn" : 107,
-                                            "offset" : 9341,
-                                            "length" : 7
+                                            "offset" : 9340,
+                                            "length" : 8
                                           }
                                         }
                                       }
@@ -5823,7 +5825,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 171,
-                                      "beginColumn" : 102,
+                                      "beginColumn" : 83,
                                       "endLine" : 171,
                                       "endColumn" : 85,
                                       "offset" : 9324,
@@ -5842,11 +5844,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 171,
-                                      "beginColumn" : 15,
+                                      "beginColumn" : 35,
                                       "endLine" : 171,
-                                      "endColumn" : 107,
-                                      "offset" : 9256,
-                                      "length" : 92
+                                      "endColumn" : 85,
+                                      "offset" : 9276,
+                                      "length" : 50
                                     }
                                   },
                                   "resOpt" : {
@@ -5865,11 +5867,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 171,
-                                    "beginColumn" : 40,
+                                    "beginColumn" : 60,
                                     "endLine" : 171,
-                                    "endColumn" : 101,
-                                    "offset" : 9279,
-                                    "length" : 44
+                                    "endColumn" : 61,
+                                    "offset" : 9301,
+                                    "length" : 1
                                   }
                                 }
                               },
@@ -6037,7 +6039,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 172,
-                                      "beginColumn" : 42,
+                                      "beginColumn" : 30,
                                       "endLine" : 172,
                                       "endColumn" : 32,
                                       "offset" : 9385,
@@ -6185,7 +6187,7 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 172,
-                                      "beginColumn" : 67,
+                                      "beginColumn" : 61,
                                       "endLine" : 172,
                                       "endColumn" : 63,
                                       "offset" : 9416,
@@ -6204,11 +6206,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 172,
-                                      "beginColumn" : 17,
+                                      "beginColumn" : 30,
                                       "endLine" : 172,
-                                      "endColumn" : 76,
-                                      "offset" : 9372,
-                                      "length" : 59
+                                      "endColumn" : 63,
+                                      "offset" : 9385,
+                                      "length" : 33
                                     }
                                   },
                                   "resOpt" : {
@@ -6227,11 +6229,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 172,
-                                    "beginColumn" : 35,
+                                    "beginColumn" : 51,
                                     "endLine" : 172,
-                                    "endColumn" : 66,
-                                    "offset" : 9388,
-                                    "length" : 27
+                                    "endColumn" : 52,
+                                    "offset" : 9406,
+                                    "length" : 1
                                   }
                                 }
                               },
@@ -6246,11 +6248,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 171,
-                                    "beginColumn" : 15,
+                                    "beginColumn" : 60,
                                     "endLine" : 172,
-                                    "endColumn" : 76,
-                                    "offset" : 9256,
-                                    "length" : 175
+                                    "endColumn" : 52,
+                                    "offset" : 9301,
+                                    "length" : 106
                                   }
                                 },
                                 "resOpt" : {
@@ -6269,11 +6271,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 171,
-                                  "beginColumn" : 146,
-                                  "endLine" : 172,
-                                  "endColumn" : 34,
-                                  "offset" : 9324,
-                                  "length" : 63
+                                  "beginColumn" : 110,
+                                  "endLine" : 171,
+                                  "endColumn" : 114,
+                                  "offset" : 9351,
+                                  "length" : 4
                                 }
                               }
                             },
@@ -6307,18 +6309,40 @@
                               "value" : "If current temperature is less than\n                                     |the current low set point, then the fan state shall be Off"
                             },
                             "assumes" : {
-                              "type" : "org.sireum.lang.ast.Exp.Binary",
-                              "left" : {
-                                "type" : "org.sireum.lang.ast.Exp.Select",
-                                "receiverOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "org.sireum.lang.ast.Exp.Ident",
-                                    "id" : {
-                                      "type" : "org.sireum.lang.ast.Id",
-                                      "value" : "currentTemp",
+                              "type" : "Some",
+                              "value" : {
+                                "type" : "org.sireum.lang.ast.Exp.Binary",
+                                "left" : {
+                                  "type" : "org.sireum.lang.ast.Exp.Select",
+                                  "receiverOpt" : {
+                                    "type" : "Some",
+                                    "value" : {
+                                      "type" : "org.sireum.lang.ast.Exp.Ident",
+                                      "id" : {
+                                        "type" : "org.sireum.lang.ast.Id",
+                                        "value" : "currentTemp",
+                                        "attr" : {
+                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "posOpt" : {
+                                            "type" : "Some",
+                                            "value" : {
+                                              "type" : "Position",
+                                              "uriOpt" : {
+                                                "type" : "Some",
+                                                "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                              },
+                                              "beginLine" : 179,
+                                              "beginColumn" : 20,
+                                              "endLine" : 179,
+                                              "endColumn" : 31,
+                                              "offset" : 9711,
+                                              "length" : 11
+                                            }
+                                          }
+                                        }
+                                      },
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.Attr",
+                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -6334,11 +6358,21 @@
                                             "offset" : 9711,
                                             "length" : 11
                                           }
+                                        },
+                                        "resOpt" : {
+                                          "type" : "None"
+                                        },
+                                        "typedOpt" : {
+                                          "type" : "None"
                                         }
                                       }
-                                    },
+                                    }
+                                  },
+                                  "id" : {
+                                    "type" : "org.sireum.lang.ast.Id",
+                                    "value" : "degrees",
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                      "type" : "org.sireum.lang.ast.Attr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -6348,27 +6382,19 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 179,
-                                          "beginColumn" : 20,
+                                          "beginColumn" : 31,
                                           "endLine" : 179,
-                                          "endColumn" : 31,
-                                          "offset" : 9711,
-                                          "length" : 11
+                                          "endColumn" : 39,
+                                          "offset" : 9722,
+                                          "length" : 8
                                         }
-                                      },
-                                      "resOpt" : {
-                                        "type" : "None"
-                                      },
-                                      "typedOpt" : {
-                                        "type" : "None"
                                       }
                                     }
-                                  }
-                                },
-                                "id" : {
-                                  "type" : "org.sireum.lang.ast.Id",
-                                  "value" : "degrees",
+                                  },
+                                  "targs" : [
+                                  ],
                                   "attr" : {
-                                    "type" : "org.sireum.lang.ast.Attr",
+                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
                                       "type" : "Some",
                                       "value" : {
@@ -6378,59 +6404,57 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 179,
-                                        "beginColumn" : 32,
+                                        "beginColumn" : 20,
                                         "endLine" : 179,
                                         "endColumn" : 39,
-                                        "offset" : 9723,
-                                        "length" : 7
+                                        "offset" : 9711,
+                                        "length" : 19
                                       }
+                                    },
+                                    "resOpt" : {
+                                      "type" : "None"
+                                    },
+                                    "typedOpt" : {
+                                      "type" : "None"
                                     }
                                   }
                                 },
-                                "targs" : [
-                                ],
-                                "attr" : {
-                                  "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                  "posOpt" : {
+                                "op" : "<",
+                                "right" : {
+                                  "type" : "org.sireum.lang.ast.Exp.Select",
+                                  "receiverOpt" : {
                                     "type" : "Some",
                                     "value" : {
-                                      "type" : "Position",
-                                      "uriOpt" : {
+                                      "type" : "org.sireum.lang.ast.Exp.Select",
+                                      "receiverOpt" : {
                                         "type" : "Some",
-                                        "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                      },
-                                      "beginLine" : 179,
-                                      "beginColumn" : 20,
-                                      "endLine" : 179,
-                                      "endColumn" : 39,
-                                      "offset" : 9711,
-                                      "length" : 19
-                                    }
-                                  },
-                                  "resOpt" : {
-                                    "type" : "None"
-                                  },
-                                  "typedOpt" : {
-                                    "type" : "None"
-                                  }
-                                }
-                              },
-                              "op" : "<",
-                              "right" : {
-                                "type" : "org.sireum.lang.ast.Exp.Select",
-                                "receiverOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "org.sireum.lang.ast.Exp.Select",
-                                    "receiverOpt" : {
-                                      "type" : "Some",
-                                      "value" : {
-                                        "type" : "org.sireum.lang.ast.Exp.Ident",
-                                        "id" : {
-                                          "type" : "org.sireum.lang.ast.Id",
-                                          "value" : "setPoint",
+                                        "value" : {
+                                          "type" : "org.sireum.lang.ast.Exp.Ident",
+                                          "id" : {
+                                            "type" : "org.sireum.lang.ast.Id",
+                                            "value" : "setPoint",
+                                            "attr" : {
+                                              "type" : "org.sireum.lang.ast.Attr",
+                                              "posOpt" : {
+                                                "type" : "Some",
+                                                "value" : {
+                                                  "type" : "Position",
+                                                  "uriOpt" : {
+                                                    "type" : "Some",
+                                                    "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                  },
+                                                  "beginLine" : 179,
+                                                  "beginColumn" : 42,
+                                                  "endLine" : 179,
+                                                  "endColumn" : 50,
+                                                  "offset" : 9733,
+                                                  "length" : 8
+                                                }
+                                              }
+                                            }
+                                          },
                                           "attr" : {
-                                            "type" : "org.sireum.lang.ast.Attr",
+                                            "type" : "org.sireum.lang.ast.ResolvedAttr",
                                             "posOpt" : {
                                               "type" : "Some",
                                               "value" : {
@@ -6446,11 +6470,21 @@
                                                 "offset" : 9733,
                                                 "length" : 8
                                               }
+                                            },
+                                            "resOpt" : {
+                                              "type" : "None"
+                                            },
+                                            "typedOpt" : {
+                                              "type" : "None"
                                             }
                                           }
-                                        },
+                                        }
+                                      },
+                                      "id" : {
+                                        "type" : "org.sireum.lang.ast.Id",
+                                        "value" : "low",
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                          "type" : "org.sireum.lang.ast.Attr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -6460,27 +6494,19 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 179,
-                                              "beginColumn" : 42,
+                                              "beginColumn" : 50,
                                               "endLine" : 179,
-                                              "endColumn" : 50,
-                                              "offset" : 9733,
-                                              "length" : 8
+                                              "endColumn" : 54,
+                                              "offset" : 9741,
+                                              "length" : 4
                                             }
-                                          },
-                                          "resOpt" : {
-                                            "type" : "None"
-                                          },
-                                          "typedOpt" : {
-                                            "type" : "None"
                                           }
                                         }
-                                      }
-                                    },
-                                    "id" : {
-                                      "type" : "org.sireum.lang.ast.Id",
-                                      "value" : "low",
+                                      },
+                                      "targs" : [
+                                      ],
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.Attr",
+                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -6490,19 +6516,27 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 179,
-                                            "beginColumn" : 51,
+                                            "beginColumn" : 42,
                                             "endLine" : 179,
-                                            "endColumn" : 62,
-                                            "offset" : 9742,
-                                            "length" : 11
+                                            "endColumn" : 54,
+                                            "offset" : 9733,
+                                            "length" : 12
                                           }
+                                        },
+                                        "resOpt" : {
+                                          "type" : "None"
+                                        },
+                                        "typedOpt" : {
+                                          "type" : "None"
                                         }
                                       }
-                                    },
-                                    "targs" : [
-                                    ],
+                                    }
+                                  },
+                                  "id" : {
+                                    "type" : "org.sireum.lang.ast.Id",
+                                    "value" : "degrees",
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                      "type" : "org.sireum.lang.ast.Attr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -6512,27 +6546,19 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 179,
-                                          "beginColumn" : 42,
+                                          "beginColumn" : 54,
                                           "endLine" : 179,
                                           "endColumn" : 62,
-                                          "offset" : 9733,
-                                          "length" : 20
+                                          "offset" : 9745,
+                                          "length" : 8
                                         }
-                                      },
-                                      "resOpt" : {
-                                        "type" : "None"
-                                      },
-                                      "typedOpt" : {
-                                        "type" : "None"
                                       }
                                     }
-                                  }
-                                },
-                                "id" : {
-                                  "type" : "org.sireum.lang.ast.Id",
-                                  "value" : "degrees",
+                                  },
+                                  "targs" : [
+                                  ],
                                   "attr" : {
-                                    "type" : "org.sireum.lang.ast.Attr",
+                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
                                       "type" : "Some",
                                       "value" : {
@@ -6542,17 +6568,21 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 179,
-                                        "beginColumn" : 55,
+                                        "beginColumn" : 42,
                                         "endLine" : 179,
                                         "endColumn" : 62,
-                                        "offset" : 9746,
-                                        "length" : 7
+                                        "offset" : 9733,
+                                        "length" : 20
                                       }
+                                    },
+                                    "resOpt" : {
+                                      "type" : "None"
+                                    },
+                                    "typedOpt" : {
+                                      "type" : "None"
                                     }
                                   }
                                 },
-                                "targs" : [
-                                ],
                                 "attr" : {
                                   "type" : "org.sireum.lang.ast.ResolvedAttr",
                                   "posOpt" : {
@@ -6564,11 +6594,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 179,
-                                      "beginColumn" : 42,
+                                      "beginColumn" : 20,
                                       "endLine" : 179,
                                       "endColumn" : 62,
-                                      "offset" : 9733,
-                                      "length" : 20
+                                      "offset" : 9711,
+                                      "length" : 42
                                     }
                                   },
                                   "resOpt" : {
@@ -6577,11 +6607,8 @@
                                   "typedOpt" : {
                                     "type" : "None"
                                   }
-                                }
-                              },
-                              "attr" : {
-                                "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                "posOpt" : {
+                                },
+                                "opPosOpt" : {
                                   "type" : "Some",
                                   "value" : {
                                     "type" : "Position",
@@ -6590,34 +6617,12 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 179,
-                                    "beginColumn" : 20,
+                                    "beginColumn" : 40,
                                     "endLine" : 179,
-                                    "endColumn" : 62,
-                                    "offset" : 9711,
-                                    "length" : 42
+                                    "endColumn" : 41,
+                                    "offset" : 9731,
+                                    "length" : 1
                                   }
-                                },
-                                "resOpt" : {
-                                  "type" : "None"
-                                },
-                                "typedOpt" : {
-                                  "type" : "None"
-                                }
-                              },
-                              "opPosOpt" : {
-                                "type" : "Some",
-                                "value" : {
-                                  "type" : "Position",
-                                  "uriOpt" : {
-                                    "type" : "Some",
-                                    "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                  },
-                                  "beginLine" : 179,
-                                  "beginColumn" : 59,
-                                  "endLine" : 179,
-                                  "endColumn" : 41,
-                                  "offset" : 9731,
-                                  "length" : 1
                                 }
                               }
                             },
@@ -6874,7 +6879,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 180,
-                                    "beginColumn" : 49,
+                                    "beginColumn" : 37,
                                     "endLine" : 180,
                                     "endColumn" : 39,
                                     "offset" : 9792,
@@ -7134,7 +7139,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 180,
-                                    "beginColumn" : 80,
+                                    "beginColumn" : 74,
                                     "endLine" : 180,
                                     "endColumn" : 76,
                                     "offset" : 9829,
@@ -7153,11 +7158,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 180,
-                                    "beginColumn" : 24,
+                                    "beginColumn" : 37,
                                     "endLine" : 180,
-                                    "endColumn" : 99,
-                                    "offset" : 9779,
-                                    "length" : 75
+                                    "endColumn" : 76,
+                                    "offset" : 9792,
+                                    "length" : 39
                                   }
                                 },
                                 "resOpt" : {
@@ -7176,11 +7181,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 180,
-                                  "beginColumn" : 42,
+                                  "beginColumn" : 64,
                                   "endLine" : 180,
-                                  "endColumn" : 79,
-                                  "offset" : 9795,
-                                  "length" : 33
+                                  "endColumn" : 65,
+                                  "offset" : 9819,
+                                  "length" : 1
                                 }
                               }
                             },
@@ -7212,18 +7217,40 @@
                               "value" : "If current temperature is greater than\n                                     |the current high set point, then the fan state shall be On"
                             },
                             "assumes" : {
-                              "type" : "org.sireum.lang.ast.Exp.Binary",
-                              "left" : {
-                                "type" : "org.sireum.lang.ast.Exp.Select",
-                                "receiverOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "org.sireum.lang.ast.Exp.Ident",
-                                    "id" : {
-                                      "type" : "org.sireum.lang.ast.Id",
-                                      "value" : "currentTemp",
+                              "type" : "Some",
+                              "value" : {
+                                "type" : "org.sireum.lang.ast.Exp.Binary",
+                                "left" : {
+                                  "type" : "org.sireum.lang.ast.Exp.Select",
+                                  "receiverOpt" : {
+                                    "type" : "Some",
+                                    "value" : {
+                                      "type" : "org.sireum.lang.ast.Exp.Ident",
+                                      "id" : {
+                                        "type" : "org.sireum.lang.ast.Id",
+                                        "value" : "currentTemp",
+                                        "attr" : {
+                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "posOpt" : {
+                                            "type" : "Some",
+                                            "value" : {
+                                              "type" : "Position",
+                                              "uriOpt" : {
+                                                "type" : "Some",
+                                                "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                              },
+                                              "beginLine" : 184,
+                                              "beginColumn" : 20,
+                                              "endLine" : 184,
+                                              "endColumn" : 31,
+                                              "offset" : 10053,
+                                              "length" : 11
+                                            }
+                                          }
+                                        }
+                                      },
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.Attr",
+                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -7239,11 +7266,21 @@
                                             "offset" : 10053,
                                             "length" : 11
                                           }
+                                        },
+                                        "resOpt" : {
+                                          "type" : "None"
+                                        },
+                                        "typedOpt" : {
+                                          "type" : "None"
                                         }
                                       }
-                                    },
+                                    }
+                                  },
+                                  "id" : {
+                                    "type" : "org.sireum.lang.ast.Id",
+                                    "value" : "degrees",
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                      "type" : "org.sireum.lang.ast.Attr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -7253,27 +7290,19 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 184,
-                                          "beginColumn" : 20,
+                                          "beginColumn" : 31,
                                           "endLine" : 184,
-                                          "endColumn" : 31,
-                                          "offset" : 10053,
-                                          "length" : 11
+                                          "endColumn" : 39,
+                                          "offset" : 10064,
+                                          "length" : 8
                                         }
-                                      },
-                                      "resOpt" : {
-                                        "type" : "None"
-                                      },
-                                      "typedOpt" : {
-                                        "type" : "None"
                                       }
                                     }
-                                  }
-                                },
-                                "id" : {
-                                  "type" : "org.sireum.lang.ast.Id",
-                                  "value" : "degrees",
+                                  },
+                                  "targs" : [
+                                  ],
                                   "attr" : {
-                                    "type" : "org.sireum.lang.ast.Attr",
+                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
                                       "type" : "Some",
                                       "value" : {
@@ -7283,59 +7312,57 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 184,
-                                        "beginColumn" : 32,
+                                        "beginColumn" : 20,
                                         "endLine" : 184,
                                         "endColumn" : 39,
-                                        "offset" : 10065,
-                                        "length" : 7
+                                        "offset" : 10053,
+                                        "length" : 19
                                       }
+                                    },
+                                    "resOpt" : {
+                                      "type" : "None"
+                                    },
+                                    "typedOpt" : {
+                                      "type" : "None"
                                     }
                                   }
                                 },
-                                "targs" : [
-                                ],
-                                "attr" : {
-                                  "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                  "posOpt" : {
+                                "op" : ">",
+                                "right" : {
+                                  "type" : "org.sireum.lang.ast.Exp.Select",
+                                  "receiverOpt" : {
                                     "type" : "Some",
                                     "value" : {
-                                      "type" : "Position",
-                                      "uriOpt" : {
+                                      "type" : "org.sireum.lang.ast.Exp.Select",
+                                      "receiverOpt" : {
                                         "type" : "Some",
-                                        "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                      },
-                                      "beginLine" : 184,
-                                      "beginColumn" : 20,
-                                      "endLine" : 184,
-                                      "endColumn" : 39,
-                                      "offset" : 10053,
-                                      "length" : 19
-                                    }
-                                  },
-                                  "resOpt" : {
-                                    "type" : "None"
-                                  },
-                                  "typedOpt" : {
-                                    "type" : "None"
-                                  }
-                                }
-                              },
-                              "op" : ">",
-                              "right" : {
-                                "type" : "org.sireum.lang.ast.Exp.Select",
-                                "receiverOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "org.sireum.lang.ast.Exp.Select",
-                                    "receiverOpt" : {
-                                      "type" : "Some",
-                                      "value" : {
-                                        "type" : "org.sireum.lang.ast.Exp.Ident",
-                                        "id" : {
-                                          "type" : "org.sireum.lang.ast.Id",
-                                          "value" : "setPoint",
+                                        "value" : {
+                                          "type" : "org.sireum.lang.ast.Exp.Ident",
+                                          "id" : {
+                                            "type" : "org.sireum.lang.ast.Id",
+                                            "value" : "setPoint",
+                                            "attr" : {
+                                              "type" : "org.sireum.lang.ast.Attr",
+                                              "posOpt" : {
+                                                "type" : "Some",
+                                                "value" : {
+                                                  "type" : "Position",
+                                                  "uriOpt" : {
+                                                    "type" : "Some",
+                                                    "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                  },
+                                                  "beginLine" : 184,
+                                                  "beginColumn" : 42,
+                                                  "endLine" : 184,
+                                                  "endColumn" : 50,
+                                                  "offset" : 10075,
+                                                  "length" : 8
+                                                }
+                                              }
+                                            }
+                                          },
                                           "attr" : {
-                                            "type" : "org.sireum.lang.ast.Attr",
+                                            "type" : "org.sireum.lang.ast.ResolvedAttr",
                                             "posOpt" : {
                                               "type" : "Some",
                                               "value" : {
@@ -7351,11 +7378,21 @@
                                                 "offset" : 10075,
                                                 "length" : 8
                                               }
+                                            },
+                                            "resOpt" : {
+                                              "type" : "None"
+                                            },
+                                            "typedOpt" : {
+                                              "type" : "None"
                                             }
                                           }
-                                        },
+                                        }
+                                      },
+                                      "id" : {
+                                        "type" : "org.sireum.lang.ast.Id",
+                                        "value" : "high",
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                          "type" : "org.sireum.lang.ast.Attr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -7365,27 +7402,19 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 184,
-                                              "beginColumn" : 42,
+                                              "beginColumn" : 50,
                                               "endLine" : 184,
-                                              "endColumn" : 50,
-                                              "offset" : 10075,
-                                              "length" : 8
+                                              "endColumn" : 55,
+                                              "offset" : 10083,
+                                              "length" : 5
                                             }
-                                          },
-                                          "resOpt" : {
-                                            "type" : "None"
-                                          },
-                                          "typedOpt" : {
-                                            "type" : "None"
                                           }
                                         }
-                                      }
-                                    },
-                                    "id" : {
-                                      "type" : "org.sireum.lang.ast.Id",
-                                      "value" : "high",
+                                      },
+                                      "targs" : [
+                                      ],
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.Attr",
+                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -7395,19 +7424,27 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 184,
-                                            "beginColumn" : 51,
+                                            "beginColumn" : 42,
                                             "endLine" : 184,
-                                            "endColumn" : 63,
-                                            "offset" : 10084,
-                                            "length" : 12
+                                            "endColumn" : 55,
+                                            "offset" : 10075,
+                                            "length" : 13
                                           }
+                                        },
+                                        "resOpt" : {
+                                          "type" : "None"
+                                        },
+                                        "typedOpt" : {
+                                          "type" : "None"
                                         }
                                       }
-                                    },
-                                    "targs" : [
-                                    ],
+                                    }
+                                  },
+                                  "id" : {
+                                    "type" : "org.sireum.lang.ast.Id",
+                                    "value" : "degrees",
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                      "type" : "org.sireum.lang.ast.Attr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -7417,27 +7454,19 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 184,
-                                          "beginColumn" : 42,
+                                          "beginColumn" : 55,
                                           "endLine" : 184,
                                           "endColumn" : 63,
-                                          "offset" : 10075,
-                                          "length" : 21
+                                          "offset" : 10088,
+                                          "length" : 8
                                         }
-                                      },
-                                      "resOpt" : {
-                                        "type" : "None"
-                                      },
-                                      "typedOpt" : {
-                                        "type" : "None"
                                       }
                                     }
-                                  }
-                                },
-                                "id" : {
-                                  "type" : "org.sireum.lang.ast.Id",
-                                  "value" : "degrees",
+                                  },
+                                  "targs" : [
+                                  ],
                                   "attr" : {
-                                    "type" : "org.sireum.lang.ast.Attr",
+                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
                                       "type" : "Some",
                                       "value" : {
@@ -7447,17 +7476,21 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 184,
-                                        "beginColumn" : 56,
+                                        "beginColumn" : 42,
                                         "endLine" : 184,
                                         "endColumn" : 63,
-                                        "offset" : 10089,
-                                        "length" : 7
+                                        "offset" : 10075,
+                                        "length" : 21
                                       }
+                                    },
+                                    "resOpt" : {
+                                      "type" : "None"
+                                    },
+                                    "typedOpt" : {
+                                      "type" : "None"
                                     }
                                   }
                                 },
-                                "targs" : [
-                                ],
                                 "attr" : {
                                   "type" : "org.sireum.lang.ast.ResolvedAttr",
                                   "posOpt" : {
@@ -7469,11 +7502,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 184,
-                                      "beginColumn" : 42,
+                                      "beginColumn" : 20,
                                       "endLine" : 184,
                                       "endColumn" : 63,
-                                      "offset" : 10075,
-                                      "length" : 21
+                                      "offset" : 10053,
+                                      "length" : 43
                                     }
                                   },
                                   "resOpt" : {
@@ -7482,11 +7515,8 @@
                                   "typedOpt" : {
                                     "type" : "None"
                                   }
-                                }
-                              },
-                              "attr" : {
-                                "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                "posOpt" : {
+                                },
+                                "opPosOpt" : {
                                   "type" : "Some",
                                   "value" : {
                                     "type" : "Position",
@@ -7495,34 +7525,12 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 184,
-                                    "beginColumn" : 20,
+                                    "beginColumn" : 40,
                                     "endLine" : 184,
-                                    "endColumn" : 63,
-                                    "offset" : 10053,
-                                    "length" : 43
+                                    "endColumn" : 41,
+                                    "offset" : 10073,
+                                    "length" : 1
                                   }
-                                },
-                                "resOpt" : {
-                                  "type" : "None"
-                                },
-                                "typedOpt" : {
-                                  "type" : "None"
-                                }
-                              },
-                              "opPosOpt" : {
-                                "type" : "Some",
-                                "value" : {
-                                  "type" : "Position",
-                                  "uriOpt" : {
-                                    "type" : "Some",
-                                    "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                  },
-                                  "beginLine" : 184,
-                                  "beginColumn" : 59,
-                                  "endLine" : 184,
-                                  "endColumn" : 41,
-                                  "offset" : 10073,
-                                  "length" : 1
                                 }
                               }
                             },
@@ -7779,7 +7787,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 185,
-                                    "beginColumn" : 49,
+                                    "beginColumn" : 37,
                                     "endLine" : 185,
                                     "endColumn" : 39,
                                     "offset" : 10135,
@@ -8039,7 +8047,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 185,
-                                    "beginColumn" : 79,
+                                    "beginColumn" : 73,
                                     "endLine" : 185,
                                     "endColumn" : 75,
                                     "offset" : 10171,
@@ -8058,11 +8066,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 185,
-                                    "beginColumn" : 24,
+                                    "beginColumn" : 37,
                                     "endLine" : 185,
-                                    "endColumn" : 97,
-                                    "offset" : 10122,
-                                    "length" : 73
+                                    "endColumn" : 75,
+                                    "offset" : 10135,
+                                    "length" : 38
                                   }
                                 },
                                 "resOpt" : {
@@ -8081,11 +8089,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 185,
-                                  "beginColumn" : 42,
+                                  "beginColumn" : 63,
                                   "endLine" : 185,
-                                  "endColumn" : 78,
-                                  "offset" : 10138,
-                                  "length" : 32
+                                  "endColumn" : 64,
+                                  "offset" : 10161,
+                                  "length" : 1
                                 }
                               }
                             },
@@ -8117,20 +8125,42 @@
                               "value" : "If current temperature is greater than or equal to the \n                                  |current low set point and less than or equal to the current high set point, \n                                  |then the current fan state is maintained."
                             },
                             "assumes" : {
-                              "type" : "org.sireum.lang.ast.Exp.Binary",
-                              "left" : {
+                              "type" : "Some",
+                              "value" : {
                                 "type" : "org.sireum.lang.ast.Exp.Binary",
                                 "left" : {
-                                  "type" : "org.sireum.lang.ast.Exp.Select",
-                                  "receiverOpt" : {
-                                    "type" : "Some",
-                                    "value" : {
-                                      "type" : "org.sireum.lang.ast.Exp.Ident",
-                                      "id" : {
-                                        "type" : "org.sireum.lang.ast.Id",
-                                        "value" : "currentTemp",
+                                  "type" : "org.sireum.lang.ast.Exp.Binary",
+                                  "left" : {
+                                    "type" : "org.sireum.lang.ast.Exp.Select",
+                                    "receiverOpt" : {
+                                      "type" : "Some",
+                                      "value" : {
+                                        "type" : "org.sireum.lang.ast.Exp.Ident",
+                                        "id" : {
+                                          "type" : "org.sireum.lang.ast.Id",
+                                          "value" : "currentTemp",
+                                          "attr" : {
+                                            "type" : "org.sireum.lang.ast.Attr",
+                                            "posOpt" : {
+                                              "type" : "Some",
+                                              "value" : {
+                                                "type" : "Position",
+                                                "uriOpt" : {
+                                                  "type" : "Some",
+                                                  "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                },
+                                                "beginLine" : 190,
+                                                "beginColumn" : 21,
+                                                "endLine" : 190,
+                                                "endColumn" : 32,
+                                                "offset" : 10501,
+                                                "length" : 11
+                                              }
+                                            }
+                                          }
+                                        },
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -8146,11 +8176,21 @@
                                               "offset" : 10501,
                                               "length" : 11
                                             }
+                                          },
+                                          "resOpt" : {
+                                            "type" : "None"
+                                          },
+                                          "typedOpt" : {
+                                            "type" : "None"
                                           }
                                         }
-                                      },
+                                      }
+                                    },
+                                    "id" : {
+                                      "type" : "org.sireum.lang.ast.Id",
+                                      "value" : "degrees",
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                        "type" : "org.sireum.lang.ast.Attr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -8160,27 +8200,19 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 190,
-                                            "beginColumn" : 21,
+                                            "beginColumn" : 32,
                                             "endLine" : 190,
-                                            "endColumn" : 32,
-                                            "offset" : 10501,
-                                            "length" : 11
+                                            "endColumn" : 40,
+                                            "offset" : 10512,
+                                            "length" : 8
                                           }
-                                        },
-                                        "resOpt" : {
-                                          "type" : "None"
-                                        },
-                                        "typedOpt" : {
-                                          "type" : "None"
                                         }
                                       }
-                                    }
-                                  },
-                                  "id" : {
-                                    "type" : "org.sireum.lang.ast.Id",
-                                    "value" : "degrees",
+                                    },
+                                    "targs" : [
+                                    ],
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.Attr",
+                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -8190,59 +8222,57 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 190,
-                                          "beginColumn" : 33,
+                                          "beginColumn" : 21,
                                           "endLine" : 190,
                                           "endColumn" : 40,
-                                          "offset" : 10513,
-                                          "length" : 7
+                                          "offset" : 10501,
+                                          "length" : 19
                                         }
+                                      },
+                                      "resOpt" : {
+                                        "type" : "None"
+                                      },
+                                      "typedOpt" : {
+                                        "type" : "None"
                                       }
                                     }
                                   },
-                                  "targs" : [
-                                  ],
-                                  "attr" : {
-                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                    "posOpt" : {
+                                  "op" : ">=",
+                                  "right" : {
+                                    "type" : "org.sireum.lang.ast.Exp.Select",
+                                    "receiverOpt" : {
                                       "type" : "Some",
                                       "value" : {
-                                        "type" : "Position",
-                                        "uriOpt" : {
+                                        "type" : "org.sireum.lang.ast.Exp.Select",
+                                        "receiverOpt" : {
                                           "type" : "Some",
-                                          "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                        },
-                                        "beginLine" : 190,
-                                        "beginColumn" : 21,
-                                        "endLine" : 190,
-                                        "endColumn" : 40,
-                                        "offset" : 10501,
-                                        "length" : 19
-                                      }
-                                    },
-                                    "resOpt" : {
-                                      "type" : "None"
-                                    },
-                                    "typedOpt" : {
-                                      "type" : "None"
-                                    }
-                                  }
-                                },
-                                "op" : ">=",
-                                "right" : {
-                                  "type" : "org.sireum.lang.ast.Exp.Select",
-                                  "receiverOpt" : {
-                                    "type" : "Some",
-                                    "value" : {
-                                      "type" : "org.sireum.lang.ast.Exp.Select",
-                                      "receiverOpt" : {
-                                        "type" : "Some",
-                                        "value" : {
-                                          "type" : "org.sireum.lang.ast.Exp.Ident",
-                                          "id" : {
-                                            "type" : "org.sireum.lang.ast.Id",
-                                            "value" : "setPoint",
+                                          "value" : {
+                                            "type" : "org.sireum.lang.ast.Exp.Ident",
+                                            "id" : {
+                                              "type" : "org.sireum.lang.ast.Id",
+                                              "value" : "setPoint",
+                                              "attr" : {
+                                                "type" : "org.sireum.lang.ast.Attr",
+                                                "posOpt" : {
+                                                  "type" : "Some",
+                                                  "value" : {
+                                                    "type" : "Position",
+                                                    "uriOpt" : {
+                                                      "type" : "Some",
+                                                      "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                    },
+                                                    "beginLine" : 190,
+                                                    "beginColumn" : 44,
+                                                    "endLine" : 190,
+                                                    "endColumn" : 52,
+                                                    "offset" : 10524,
+                                                    "length" : 8
+                                                  }
+                                                }
+                                              }
+                                            },
                                             "attr" : {
-                                              "type" : "org.sireum.lang.ast.Attr",
+                                              "type" : "org.sireum.lang.ast.ResolvedAttr",
                                               "posOpt" : {
                                                 "type" : "Some",
                                                 "value" : {
@@ -8258,11 +8288,21 @@
                                                   "offset" : 10524,
                                                   "length" : 8
                                                 }
+                                              },
+                                              "resOpt" : {
+                                                "type" : "None"
+                                              },
+                                              "typedOpt" : {
+                                                "type" : "None"
                                               }
                                             }
-                                          },
+                                          }
+                                        },
+                                        "id" : {
+                                          "type" : "org.sireum.lang.ast.Id",
+                                          "value" : "low",
                                           "attr" : {
-                                            "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                            "type" : "org.sireum.lang.ast.Attr",
                                             "posOpt" : {
                                               "type" : "Some",
                                               "value" : {
@@ -8272,27 +8312,19 @@
                                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                                 },
                                                 "beginLine" : 190,
-                                                "beginColumn" : 44,
+                                                "beginColumn" : 52,
                                                 "endLine" : 190,
-                                                "endColumn" : 52,
-                                                "offset" : 10524,
-                                                "length" : 8
+                                                "endColumn" : 56,
+                                                "offset" : 10532,
+                                                "length" : 4
                                               }
-                                            },
-                                            "resOpt" : {
-                                              "type" : "None"
-                                            },
-                                            "typedOpt" : {
-                                              "type" : "None"
                                             }
                                           }
-                                        }
-                                      },
-                                      "id" : {
-                                        "type" : "org.sireum.lang.ast.Id",
-                                        "value" : "low",
+                                        },
+                                        "targs" : [
+                                        ],
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -8302,19 +8334,27 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 190,
-                                              "beginColumn" : 53,
+                                              "beginColumn" : 44,
                                               "endLine" : 190,
-                                              "endColumn" : 64,
-                                              "offset" : 10533,
-                                              "length" : 11
+                                              "endColumn" : 56,
+                                              "offset" : 10524,
+                                              "length" : 12
                                             }
+                                          },
+                                          "resOpt" : {
+                                            "type" : "None"
+                                          },
+                                          "typedOpt" : {
+                                            "type" : "None"
                                           }
                                         }
-                                      },
-                                      "targs" : [
-                                      ],
+                                      }
+                                    },
+                                    "id" : {
+                                      "type" : "org.sireum.lang.ast.Id",
+                                      "value" : "degrees",
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                        "type" : "org.sireum.lang.ast.Attr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -8324,27 +8364,19 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 190,
-                                            "beginColumn" : 44,
+                                            "beginColumn" : 56,
                                             "endLine" : 190,
                                             "endColumn" : 64,
-                                            "offset" : 10524,
-                                            "length" : 20
+                                            "offset" : 10536,
+                                            "length" : 8
                                           }
-                                        },
-                                        "resOpt" : {
-                                          "type" : "None"
-                                        },
-                                        "typedOpt" : {
-                                          "type" : "None"
                                         }
                                       }
-                                    }
-                                  },
-                                  "id" : {
-                                    "type" : "org.sireum.lang.ast.Id",
-                                    "value" : "degrees",
+                                    },
+                                    "targs" : [
+                                    ],
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.Attr",
+                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -8354,17 +8386,21 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 190,
-                                          "beginColumn" : 57,
+                                          "beginColumn" : 44,
                                           "endLine" : 190,
                                           "endColumn" : 64,
-                                          "offset" : 10537,
-                                          "length" : 7
+                                          "offset" : 10524,
+                                          "length" : 20
                                         }
+                                      },
+                                      "resOpt" : {
+                                        "type" : "None"
+                                      },
+                                      "typedOpt" : {
+                                        "type" : "None"
                                       }
                                     }
                                   },
-                                  "targs" : [
-                                  ],
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
@@ -8376,11 +8412,11 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 190,
-                                        "beginColumn" : 44,
+                                        "beginColumn" : 21,
                                         "endLine" : 190,
                                         "endColumn" : 64,
-                                        "offset" : 10524,
-                                        "length" : 20
+                                        "offset" : 10501,
+                                        "length" : 43
                                       }
                                     },
                                     "resOpt" : {
@@ -8389,11 +8425,8 @@
                                     "typedOpt" : {
                                       "type" : "None"
                                     }
-                                  }
-                                },
-                                "attr" : {
-                                  "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                  "posOpt" : {
+                                  },
+                                  "opPosOpt" : {
                                     "type" : "Some",
                                     "value" : {
                                       "type" : "Position",
@@ -8402,51 +8435,48 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 190,
-                                      "beginColumn" : 21,
+                                      "beginColumn" : 41,
                                       "endLine" : 190,
-                                      "endColumn" : 64,
-                                      "offset" : 10501,
-                                      "length" : 43
+                                      "endColumn" : 43,
+                                      "offset" : 10521,
+                                      "length" : 2
                                     }
-                                  },
-                                  "resOpt" : {
-                                    "type" : "None"
-                                  },
-                                  "typedOpt" : {
-                                    "type" : "None"
                                   }
                                 },
-                                "opPosOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "Position",
-                                    "uriOpt" : {
+                                "op" : "&",
+                                "right" : {
+                                  "type" : "org.sireum.lang.ast.Exp.Binary",
+                                  "left" : {
+                                    "type" : "org.sireum.lang.ast.Exp.Select",
+                                    "receiverOpt" : {
                                       "type" : "Some",
-                                      "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                    },
-                                    "beginLine" : 190,
-                                    "beginColumn" : 60,
-                                    "endLine" : 190,
-                                    "endColumn" : 43,
-                                    "offset" : 10521,
-                                    "length" : 2
-                                  }
-                                }
-                              },
-                              "op" : "&",
-                              "right" : {
-                                "type" : "org.sireum.lang.ast.Exp.Binary",
-                                "left" : {
-                                  "type" : "org.sireum.lang.ast.Exp.Select",
-                                  "receiverOpt" : {
-                                    "type" : "Some",
-                                    "value" : {
-                                      "type" : "org.sireum.lang.ast.Exp.Ident",
-                                      "id" : {
-                                        "type" : "org.sireum.lang.ast.Id",
-                                        "value" : "currentTemp",
+                                      "value" : {
+                                        "type" : "org.sireum.lang.ast.Exp.Ident",
+                                        "id" : {
+                                          "type" : "org.sireum.lang.ast.Id",
+                                          "value" : "currentTemp",
+                                          "attr" : {
+                                            "type" : "org.sireum.lang.ast.Attr",
+                                            "posOpt" : {
+                                              "type" : "Some",
+                                              "value" : {
+                                                "type" : "Position",
+                                                "uriOpt" : {
+                                                  "type" : "Some",
+                                                  "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                },
+                                                "beginLine" : 190,
+                                                "beginColumn" : 69,
+                                                "endLine" : 190,
+                                                "endColumn" : 80,
+                                                "offset" : 10549,
+                                                "length" : 11
+                                              }
+                                            }
+                                          }
+                                        },
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -8462,11 +8492,21 @@
                                               "offset" : 10549,
                                               "length" : 11
                                             }
+                                          },
+                                          "resOpt" : {
+                                            "type" : "None"
+                                          },
+                                          "typedOpt" : {
+                                            "type" : "None"
                                           }
                                         }
-                                      },
+                                      }
+                                    },
+                                    "id" : {
+                                      "type" : "org.sireum.lang.ast.Id",
+                                      "value" : "degrees",
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                        "type" : "org.sireum.lang.ast.Attr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -8476,27 +8516,19 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 190,
-                                            "beginColumn" : 69,
+                                            "beginColumn" : 80,
                                             "endLine" : 190,
-                                            "endColumn" : 80,
-                                            "offset" : 10549,
-                                            "length" : 11
+                                            "endColumn" : 88,
+                                            "offset" : 10560,
+                                            "length" : 8
                                           }
-                                        },
-                                        "resOpt" : {
-                                          "type" : "None"
-                                        },
-                                        "typedOpt" : {
-                                          "type" : "None"
                                         }
                                       }
-                                    }
-                                  },
-                                  "id" : {
-                                    "type" : "org.sireum.lang.ast.Id",
-                                    "value" : "degrees",
+                                    },
+                                    "targs" : [
+                                    ],
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.Attr",
+                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -8506,59 +8538,57 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 190,
-                                          "beginColumn" : 81,
+                                          "beginColumn" : 69,
                                           "endLine" : 190,
                                           "endColumn" : 88,
-                                          "offset" : 10561,
-                                          "length" : 7
+                                          "offset" : 10549,
+                                          "length" : 19
                                         }
+                                      },
+                                      "resOpt" : {
+                                        "type" : "None"
+                                      },
+                                      "typedOpt" : {
+                                        "type" : "None"
                                       }
                                     }
                                   },
-                                  "targs" : [
-                                  ],
-                                  "attr" : {
-                                    "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                    "posOpt" : {
+                                  "op" : "<=",
+                                  "right" : {
+                                    "type" : "org.sireum.lang.ast.Exp.Select",
+                                    "receiverOpt" : {
                                       "type" : "Some",
                                       "value" : {
-                                        "type" : "Position",
-                                        "uriOpt" : {
+                                        "type" : "org.sireum.lang.ast.Exp.Select",
+                                        "receiverOpt" : {
                                           "type" : "Some",
-                                          "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                        },
-                                        "beginLine" : 190,
-                                        "beginColumn" : 69,
-                                        "endLine" : 190,
-                                        "endColumn" : 88,
-                                        "offset" : 10549,
-                                        "length" : 19
-                                      }
-                                    },
-                                    "resOpt" : {
-                                      "type" : "None"
-                                    },
-                                    "typedOpt" : {
-                                      "type" : "None"
-                                    }
-                                  }
-                                },
-                                "op" : "<=",
-                                "right" : {
-                                  "type" : "org.sireum.lang.ast.Exp.Select",
-                                  "receiverOpt" : {
-                                    "type" : "Some",
-                                    "value" : {
-                                      "type" : "org.sireum.lang.ast.Exp.Select",
-                                      "receiverOpt" : {
-                                        "type" : "Some",
-                                        "value" : {
-                                          "type" : "org.sireum.lang.ast.Exp.Ident",
-                                          "id" : {
-                                            "type" : "org.sireum.lang.ast.Id",
-                                            "value" : "setPoint",
+                                          "value" : {
+                                            "type" : "org.sireum.lang.ast.Exp.Ident",
+                                            "id" : {
+                                              "type" : "org.sireum.lang.ast.Id",
+                                              "value" : "setPoint",
+                                              "attr" : {
+                                                "type" : "org.sireum.lang.ast.Attr",
+                                                "posOpt" : {
+                                                  "type" : "Some",
+                                                  "value" : {
+                                                    "type" : "Position",
+                                                    "uriOpt" : {
+                                                      "type" : "Some",
+                                                      "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                                    },
+                                                    "beginLine" : 190,
+                                                    "beginColumn" : 92,
+                                                    "endLine" : 190,
+                                                    "endColumn" : 100,
+                                                    "offset" : 10572,
+                                                    "length" : 8
+                                                  }
+                                                }
+                                              }
+                                            },
                                             "attr" : {
-                                              "type" : "org.sireum.lang.ast.Attr",
+                                              "type" : "org.sireum.lang.ast.ResolvedAttr",
                                               "posOpt" : {
                                                 "type" : "Some",
                                                 "value" : {
@@ -8574,11 +8604,21 @@
                                                   "offset" : 10572,
                                                   "length" : 8
                                                 }
+                                              },
+                                              "resOpt" : {
+                                                "type" : "None"
+                                              },
+                                              "typedOpt" : {
+                                                "type" : "None"
                                               }
                                             }
-                                          },
+                                          }
+                                        },
+                                        "id" : {
+                                          "type" : "org.sireum.lang.ast.Id",
+                                          "value" : "high",
                                           "attr" : {
-                                            "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                            "type" : "org.sireum.lang.ast.Attr",
                                             "posOpt" : {
                                               "type" : "Some",
                                               "value" : {
@@ -8588,27 +8628,19 @@
                                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                                 },
                                                 "beginLine" : 190,
-                                                "beginColumn" : 92,
+                                                "beginColumn" : 100,
                                                 "endLine" : 190,
-                                                "endColumn" : 100,
-                                                "offset" : 10572,
-                                                "length" : 8
+                                                "endColumn" : 105,
+                                                "offset" : 10580,
+                                                "length" : 5
                                               }
-                                            },
-                                            "resOpt" : {
-                                              "type" : "None"
-                                            },
-                                            "typedOpt" : {
-                                              "type" : "None"
                                             }
                                           }
-                                        }
-                                      },
-                                      "id" : {
-                                        "type" : "org.sireum.lang.ast.Id",
-                                        "value" : "high",
+                                        },
+                                        "targs" : [
+                                        ],
                                         "attr" : {
-                                          "type" : "org.sireum.lang.ast.Attr",
+                                          "type" : "org.sireum.lang.ast.ResolvedAttr",
                                           "posOpt" : {
                                             "type" : "Some",
                                             "value" : {
@@ -8618,19 +8650,27 @@
                                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                               },
                                               "beginLine" : 190,
-                                              "beginColumn" : 101,
+                                              "beginColumn" : 92,
                                               "endLine" : 190,
-                                              "endColumn" : 113,
-                                              "offset" : 10581,
-                                              "length" : 12
+                                              "endColumn" : 105,
+                                              "offset" : 10572,
+                                              "length" : 13
                                             }
+                                          },
+                                          "resOpt" : {
+                                            "type" : "None"
+                                          },
+                                          "typedOpt" : {
+                                            "type" : "None"
                                           }
                                         }
-                                      },
-                                      "targs" : [
-                                      ],
+                                      }
+                                    },
+                                    "id" : {
+                                      "type" : "org.sireum.lang.ast.Id",
+                                      "value" : "degrees",
                                       "attr" : {
-                                        "type" : "org.sireum.lang.ast.ResolvedAttr",
+                                        "type" : "org.sireum.lang.ast.Attr",
                                         "posOpt" : {
                                           "type" : "Some",
                                           "value" : {
@@ -8640,27 +8680,19 @@
                                               "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                             },
                                             "beginLine" : 190,
-                                            "beginColumn" : 92,
+                                            "beginColumn" : 105,
                                             "endLine" : 190,
                                             "endColumn" : 113,
-                                            "offset" : 10572,
-                                            "length" : 21
+                                            "offset" : 10585,
+                                            "length" : 8
                                           }
-                                        },
-                                        "resOpt" : {
-                                          "type" : "None"
-                                        },
-                                        "typedOpt" : {
-                                          "type" : "None"
                                         }
                                       }
-                                    }
-                                  },
-                                  "id" : {
-                                    "type" : "org.sireum.lang.ast.Id",
-                                    "value" : "degrees",
+                                    },
+                                    "targs" : [
+                                    ],
                                     "attr" : {
-                                      "type" : "org.sireum.lang.ast.Attr",
+                                      "type" : "org.sireum.lang.ast.ResolvedAttr",
                                       "posOpt" : {
                                         "type" : "Some",
                                         "value" : {
@@ -8670,17 +8702,21 @@
                                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                           },
                                           "beginLine" : 190,
-                                          "beginColumn" : 106,
+                                          "beginColumn" : 92,
                                           "endLine" : 190,
                                           "endColumn" : 113,
-                                          "offset" : 10586,
-                                          "length" : 7
+                                          "offset" : 10572,
+                                          "length" : 21
                                         }
+                                      },
+                                      "resOpt" : {
+                                        "type" : "None"
+                                      },
+                                      "typedOpt" : {
+                                        "type" : "None"
                                       }
                                     }
                                   },
-                                  "targs" : [
-                                  ],
                                   "attr" : {
                                     "type" : "org.sireum.lang.ast.ResolvedAttr",
                                     "posOpt" : {
@@ -8692,11 +8728,11 @@
                                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                         },
                                         "beginLine" : 190,
-                                        "beginColumn" : 92,
+                                        "beginColumn" : 69,
                                         "endLine" : 190,
                                         "endColumn" : 113,
-                                        "offset" : 10572,
-                                        "length" : 21
+                                        "offset" : 10549,
+                                        "length" : 44
                                       }
                                     },
                                     "resOpt" : {
@@ -8704,6 +8740,22 @@
                                     },
                                     "typedOpt" : {
                                       "type" : "None"
+                                    }
+                                  },
+                                  "opPosOpt" : {
+                                    "type" : "Some",
+                                    "value" : {
+                                      "type" : "Position",
+                                      "uriOpt" : {
+                                        "type" : "Some",
+                                        "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
+                                      },
+                                      "beginLine" : 190,
+                                      "beginColumn" : 89,
+                                      "endLine" : 190,
+                                      "endColumn" : 91,
+                                      "offset" : 10569,
+                                      "length" : 2
                                     }
                                   }
                                 },
@@ -8718,11 +8770,11 @@
                                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                       },
                                       "beginLine" : 190,
-                                      "beginColumn" : 69,
+                                      "beginColumn" : 41,
                                       "endLine" : 190,
-                                      "endColumn" : 113,
-                                      "offset" : 10549,
-                                      "length" : 44
+                                      "endColumn" : 91,
+                                      "offset" : 10521,
+                                      "length" : 50
                                     }
                                   },
                                   "resOpt" : {
@@ -8741,53 +8793,12 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 190,
-                                    "beginColumn" : 108,
+                                    "beginColumn" : 66,
                                     "endLine" : 190,
-                                    "endColumn" : 91,
-                                    "offset" : 10569,
-                                    "length" : 2
+                                    "endColumn" : 67,
+                                    "offset" : 10546,
+                                    "length" : 1
                                   }
-                                }
-                              },
-                              "attr" : {
-                                "type" : "org.sireum.lang.ast.ResolvedAttr",
-                                "posOpt" : {
-                                  "type" : "Some",
-                                  "value" : {
-                                    "type" : "Position",
-                                    "uriOpt" : {
-                                      "type" : "Some",
-                                      "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                    },
-                                    "beginLine" : 190,
-                                    "beginColumn" : 21,
-                                    "endLine" : 190,
-                                    "endColumn" : 113,
-                                    "offset" : 10501,
-                                    "length" : 92
-                                  }
-                                },
-                                "resOpt" : {
-                                  "type" : "None"
-                                },
-                                "typedOpt" : {
-                                  "type" : "None"
-                                }
-                              },
-                              "opPosOpt" : {
-                                "type" : "Some",
-                                "value" : {
-                                  "type" : "Position",
-                                  "uriOpt" : {
-                                    "type" : "Some",
-                                    "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
-                                  },
-                                  "beginLine" : 190,
-                                  "beginColumn" : 46,
-                                  "endLine" : 190,
-                                  "endColumn" : 107,
-                                  "offset" : 10524,
-                                  "length" : 44
                                 }
                               }
                             },
@@ -8954,7 +8965,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 192,
-                                    "beginColumn" : 41,
+                                    "beginColumn" : 29,
                                     "endLine" : 192,
                                     "endColumn" : 31,
                                     "offset" : 10647,
@@ -9102,7 +9113,7 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 193,
-                                    "beginColumn" : 29,
+                                    "beginColumn" : 23,
                                     "endLine" : 193,
                                     "endColumn" : 25,
                                     "offset" : 10693,
@@ -9121,11 +9132,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                     },
                                     "beginLine" : 192,
-                                    "beginColumn" : 16,
+                                    "beginColumn" : 29,
                                     "endLine" : 193,
-                                    "endColumn" : 38,
-                                    "offset" : 10634,
-                                    "length" : 74
+                                    "endColumn" : 25,
+                                    "offset" : 10647,
+                                    "length" : 48
                                   }
                                 },
                                 "resOpt" : {
@@ -9144,11 +9155,11 @@
                                     "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                   },
                                   "beginLine" : 192,
-                                  "beginColumn" : 34,
-                                  "endLine" : 193,
-                                  "endColumn" : 28,
-                                  "offset" : 10650,
-                                  "length" : 42
+                                  "beginColumn" : 50,
+                                  "endLine" : 192,
+                                  "endColumn" : 51,
+                                  "offset" : 10668,
+                                  "length" : 1
                                 }
                               }
                             },
@@ -12135,11 +12146,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                                     },
                                     "beginLine" : 33,
-                                    "beginColumn" : 14,
+                                    "beginColumn" : 13,
                                     "endLine" : 33,
                                     "endColumn" : 21,
-                                    "offset" : 1306,
-                                    "length" : 7
+                                    "offset" : 1305,
+                                    "length" : 8
                                   }
                                 }
                               }
@@ -12230,7 +12241,7 @@
                                 "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                               },
                               "beginLine" : 33,
-                              "beginColumn" : 34,
+                              "beginColumn" : 22,
                               "endLine" : 33,
                               "endColumn" : 24,
                               "offset" : 1314,
@@ -12311,11 +12322,11 @@
                                       "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                                     },
                                     "beginLine" : 33,
-                                    "beginColumn" : 44,
+                                    "beginColumn" : 43,
                                     "endLine" : 33,
                                     "endColumn" : 51,
-                                    "offset" : 1336,
-                                    "length" : 7
+                                    "offset" : 1335,
+                                    "length" : 8
                                   }
                                 }
                               }
@@ -12406,7 +12417,7 @@
                                 "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                               },
                               "beginLine" : 33,
-                              "beginColumn" : 64,
+                              "beginColumn" : 52,
                               "endLine" : 33,
                               "endColumn" : 54,
                               "offset" : 1344,
@@ -12425,11 +12436,11 @@
                                 "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                               },
                               "beginLine" : 33,
-                              "beginColumn" : 9,
+                              "beginColumn" : 22,
                               "endLine" : 33,
-                              "endColumn" : 65,
-                              "offset" : 1301,
-                              "length" : 56
+                              "endColumn" : 54,
+                              "offset" : 1314,
+                              "length" : 32
                             }
                           },
                           "resOpt" : {
@@ -12448,11 +12459,11 @@
                               "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                             },
                             "beginLine" : 33,
-                            "beginColumn" : 27,
+                            "beginColumn" : 36,
                             "endLine" : 33,
-                            "endColumn" : 63,
-                            "offset" : 1317,
-                            "length" : 26
+                            "endColumn" : 38,
+                            "offset" : 1328,
+                            "length" : 2
                           }
                         }
                       }
@@ -14747,7 +14758,7 @@
                         "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                       },
                       "beginLine" : 115,
-                      "beginColumn" : 26,
+                      "beginColumn" : 19,
                       "endLine" : 115,
                       "endColumn" : 21,
                       "offset" : 5217,
@@ -15564,7 +15575,7 @@
                             "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                           },
                           "beginLine" : 115,
-                          "beginColumn" : 26,
+                          "beginColumn" : 19,
                           "endLine" : 115,
                           "endColumn" : 21,
                           "offset" : 5217,
@@ -16150,7 +16161,7 @@
                             "value" : "\/temp-control-periodic-tools\/packages\/TempSensor.aadl"
                           },
                           "beginLine" : 115,
-                          "beginColumn" : 26,
+                          "beginColumn" : 19,
                           "endLine" : 115,
                           "endColumn" : 21,
                           "offset" : 5217,
@@ -16347,11 +16358,11 @@
                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                 },
                                 "beginLine" : 273,
-                                "beginColumn" : 16,
+                                "beginColumn" : 15,
                                 "endLine" : 273,
                                 "endColumn" : 23,
-                                "offset" : 14322,
-                                "length" : 7
+                                "offset" : 14321,
+                                "length" : 8
                               }
                             }
                           }
@@ -16442,7 +16453,7 @@
                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                           },
                           "beginLine" : 273,
-                          "beginColumn" : 35,
+                          "beginColumn" : 24,
                           "endLine" : 273,
                           "endColumn" : 26,
                           "offset" : 14330,
@@ -16523,11 +16534,11 @@
                                   "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                                 },
                                 "beginLine" : 274,
-                                "beginColumn" : 17,
+                                "beginColumn" : 16,
                                 "endLine" : 274,
                                 "endColumn" : 24,
-                                "offset" : 14362,
-                                "length" : 7
+                                "offset" : 14361,
+                                "length" : 8
                               }
                             }
                           }
@@ -16618,7 +16629,7 @@
                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                           },
                           "beginLine" : 274,
-                          "beginColumn" : 37,
+                          "beginColumn" : 25,
                           "endLine" : 274,
                           "endColumn" : 27,
                           "offset" : 14370,
@@ -16637,11 +16648,11 @@
                             "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                           },
                           "beginLine" : 273,
-                          "beginColumn" : 12,
+                          "beginColumn" : 24,
                           "endLine" : 274,
-                          "endColumn" : 38,
-                          "offset" : 14318,
-                          "length" : 65
+                          "endColumn" : 27,
+                          "offset" : 14330,
+                          "length" : 42
                         }
                       },
                       "resOpt" : {
@@ -16660,11 +16671,11 @@
                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                         },
                         "beginLine" : 273,
-                        "beginColumn" : 29,
-                        "endLine" : 274,
-                        "endColumn" : 36,
-                        "offset" : 14333,
-                        "length" : 36
+                        "beginColumn" : 38,
+                        "endLine" : 273,
+                        "endColumn" : 39,
+                        "offset" : 14344,
+                        "length" : 1
                       }
                     }
                   },
@@ -16741,11 +16752,11 @@
                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                               },
                               "beginLine" : 275,
-                              "beginColumn" : 16,
+                              "beginColumn" : 15,
                               "endLine" : 275,
                               "endColumn" : 23,
-                              "offset" : 14402,
-                              "length" : 7
+                              "offset" : 14401,
+                              "length" : 8
                             }
                           }
                         }
@@ -16849,11 +16860,11 @@
                                 "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                               },
                               "beginLine" : 275,
-                              "beginColumn" : 32,
+                              "beginColumn" : 31,
                               "endLine" : 275,
                               "endColumn" : 39,
-                              "offset" : 14418,
-                              "length" : 7
+                              "offset" : 14417,
+                              "length" : 8
                             }
                           }
                         }
@@ -16920,7 +16931,7 @@
                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                         },
                         "beginLine" : 275,
-                        "beginColumn" : 35,
+                        "beginColumn" : 24,
                         "endLine" : 275,
                         "endColumn" : 26,
                         "offset" : 14410,
@@ -16939,11 +16950,11 @@
                           "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                         },
                         "beginLine" : 273,
-                        "beginColumn" : 12,
+                        "beginColumn" : 38,
                         "endLine" : 275,
-                        "endColumn" : 39,
-                        "offset" : 14318,
-                        "length" : 107
+                        "endColumn" : 26,
+                        "offset" : 14344,
+                        "length" : 68
                       }
                     },
                     "resOpt" : {
@@ -16962,11 +16973,11 @@
                         "value" : "\/temp-control-periodic-tools\/packages\/TempControlSoftwareSystem.aadl"
                       },
                       "beginLine" : 274,
-                      "beginColumn" : 73,
-                      "endLine" : 275,
-                      "endColumn" : 34,
-                      "offset" : 14370,
-                      "length" : 39
+                      "beginColumn" : 40,
+                      "endLine" : 274,
+                      "endColumn" : 41,
+                      "offset" : 14385,
+                      "length" : 1
                     }
                   }
                 },
