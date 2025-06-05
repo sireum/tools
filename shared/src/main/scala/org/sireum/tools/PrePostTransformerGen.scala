@@ -404,8 +404,8 @@ object PrePostTransformerGen {
       }
     }
     ti.scope.resolveType(globalTypeMap, ids) match {
-      case Some(ti: TypeInfo.Adt) => return Some(ti.name)
-      case Some(ti: TypeInfo.Sig) => return Some(ti.name)
+      case Some(info: TypeInfo.Adt) => return Some(info.name)
+      case Some(info: TypeInfo.Sig) => return Some(info.name)
       case Some(_) => return None()
       case _ =>
         reporter.error(posOpt, transformerGenKind, s"Could not find ${typeNameString(packageName, ids).render}.")

@@ -50,7 +50,7 @@ object SlangCheck {
     for (v <- typeHierarchy.typeMap.values) {
       val temp = v
       v.posOpt match {
-        case Some(v) if ops.ISZOps(fileUris).contains(v.uriOpt.get) =>
+        case Some(v2) if ops.ISZOps(fileUris).contains(v2.uriOpt.get) =>
           cleanedTypeMapValues = cleanedTypeMapValues :+ temp
         case _ =>
       }
@@ -105,8 +105,8 @@ object SlangCheck {
     t match {
       case atn: AST.Type.Named =>
         atn.typedOpt match {
-          case Some(t) if builtIn(t) => return Resolver.typeName(packageName, for (i <- atn.name.ids) yield i.value)
-          case Some(t) => return astTypedName(packageName, t)
+          case Some(t2) if builtIn(t2) => return Resolver.typeName(packageName, for (i <- atn.name.ids) yield i.value)
+          case Some(t2) => return astTypedName(packageName, t2)
           case _ => halt("infeasible")
         }
       case _ => halt(s"Need to handle $t")
@@ -1716,7 +1716,7 @@ object SlangCheckTest {
     for (v <- th.typeMap.values) {
       val temp = v
       v.posOpt match {
-        case Some(v) if ops.ISZOps(fileNames).contains(v.uriOpt.get) =>
+        case Some(pos) if ops.ISZOps(fileNames).contains(pos.uriOpt.get) =>
           cleanedTypeMapValues = cleanedTypeMapValues + temp
         case _ =>
       }
