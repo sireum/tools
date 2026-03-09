@@ -3031,7 +3031,7 @@
                         ],
                         "methods" : [
                           {
-                            "type" : "GclMethod",
+                            "type" : "GclBodyMethod",
                             "method" : {
                               "type" : "org.sireum.lang.ast.Stmt.Method",
                               "typeChecked" : false,
@@ -6160,9 +6160,9 @@
                                               "beginLine" : 213,
                                               "beginColumn" : 41,
                                               "endLine" : 213,
-                                              "endColumn" : 73,
+                                              "endColumn" : 46,
                                               "offset" : 11792,
-                                              "length" : 32
+                                              "length" : 5
                                             }
                                           }
                                         }
@@ -6180,9 +6180,9 @@
                                             "beginLine" : 213,
                                             "beginColumn" : 41,
                                             "endLine" : 213,
-                                            "endColumn" : 73,
+                                            "endColumn" : 46,
                                             "offset" : 11792,
-                                            "length" : 32
+                                            "length" : 5
                                           }
                                         },
                                         "resOpt" : {
@@ -27551,7 +27551,7 @@
                         ],
                         "methods" : [
                           {
-                            "type" : "GclMethod",
+                            "type" : "GclBodyMethod",
                             "method" : {
                               "type" : "org.sireum.lang.ast.Stmt.Method",
                               "typeChecked" : false,
@@ -33151,7 +33151,7 @@
                         ],
                         "methods" : [
                           {
-                            "type" : "GclMethod",
+                            "type" : "GclBodyMethod",
                             "method" : {
                               "type" : "org.sireum.lang.ast.Stmt.Method",
                               "typeChecked" : false,
@@ -42571,7 +42571,7 @@
                         ],
                         "methods" : [
                           {
-                            "type" : "GclMethod",
+                            "type" : "GclBodyMethod",
                             "method" : {
                               "type" : "org.sireum.lang.ast.Stmt.Method",
                               "typeChecked" : false,
@@ -45978,9 +45978,9 @@
                                               "beginLine" : 284,
                                               "beginColumn" : 18,
                                               "endLine" : 284,
-                                              "endColumn" : 47,
+                                              "endColumn" : 45,
                                               "offset" : 15325,
-                                              "length" : 29
+                                              "length" : 27
                                             }
                                           }
                                         }
@@ -45998,9 +45998,9 @@
                                             "beginLine" : 284,
                                             "beginColumn" : 18,
                                             "endLine" : 284,
-                                            "endColumn" : 47,
+                                            "endColumn" : 45,
                                             "offset" : 15325,
-                                            "length" : 29
+                                            "length" : 27
                                           }
                                         },
                                         "resOpt" : {
