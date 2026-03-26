@@ -130,7 +130,7 @@ object SlangCheck {
 
   def builtIn(typed: AST.Typed): B = {
     typed match {
-      case AST.Typed.Name(ISZ("org", "sireum", _), _) => return T
+      case AST.Typed.Name(ISZ("org", "sireum", _), _, _) => return T
       case _ => return F
     }
   }

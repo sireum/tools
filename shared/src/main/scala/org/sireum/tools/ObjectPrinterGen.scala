@@ -136,8 +136,8 @@ import ObjectPrinterGen._
   }
 
   def gen(reporter: Reporter): ST = {
-    val className = AST.Typed.Name(topClassName, ISZ())
-    val top = genType(AST.Typed.Name(topClassName, ISZ()), None(), reporter)
+    val className = AST.Typed.Name(topClassName, AST.Typed.noRType, ISZ())
+    val top = genType(AST.Typed.Name(topClassName, AST.Typed.noRType, ISZ()), None(), reporter)
     val pOpt: Option[ST] = packageOpt match {
       case Some(v) => Some(st"package ${(v, ".")}")
       case _ => None()
@@ -266,11 +266,11 @@ import ObjectPrinterGen._
   def genRoot(name: ISZ[String], reporter: Reporter): Unit = {
     var cases = ISZ[ST]()
     for (child <- th.poset.childrenOf(name).elements) {
-      val t = AST.Typed.Name(child, ISZ())
+      val t = AST.Typed.Name(child, AST.Typed.noRType, ISZ())
       val c = genType(t, None(), reporter)
       cases = cases :+ st"case o: $t => return $c(o)"
     }
-    val t = AST.Typed.Name(name, ISZ())
+    val t = AST.Typed.Name(name, AST.Typed.noRType, ISZ())
     val r = printType(t)
     addPrint(
       st"""def $r(o: $t): ST = {
@@ -281,7 +281,7 @@ import ObjectPrinterGen._
   }
 
   def genClass(info: TypeInfo.Adt, reporter: Reporter): Unit = {
-    val t = AST.Typed.Name(info.name, ISZ())
+    val t = AST.Typed.Name(info.name, AST.Typed.noRType, ISZ())
     val r = printType(t)
     var args = ISZ[ST]()
     for (param <- info.ast.params) {
@@ -299,11 +299,11 @@ import ObjectPrinterGen._
   }
 
   def genEnum(info: TypeInfo.Enum): Unit = {
-    val t = AST.Typed.Name(info.owner :+ "Type", ISZ())
+    val t = AST.Typed.Name(info.owner :+ "Type", AST.Typed.noRType, ISZ())
     val r = printType(t)
     var cases = ISZ[ST]()
     for (k <- info.elements.keys) {
-      val element = AST.Typed.Name(info.owner :+ k, ISZ())
+      val element = AST.Typed.Name(info.owner :+ k, AST.Typed.noRType, ISZ())
       cases = cases :+ st"""case $element => return st"$element""""
     }
     addPrint(
