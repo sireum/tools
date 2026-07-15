@@ -152,6 +152,12 @@ import org.sireum.cli.CliOpt._
           |    return Some(tokenizeH(arg, sep, removeWhitespace))
           |  }
           |
+          |  // Separator handling: a doubled separator (two adjacent `sep`) decodes to one
+          |  // literal `sep`; a lone `sep` is an element boundary. This lets a value embed a
+          |  // literal separator, but the mapping is NOT an injective list codec -- a boundary
+          |  // adjacent to a leading/trailing literal separator is ambiguous (left-greedy decode
+          |  // wins) and a trailing empty element is suppressed. Callers that must embed literal
+          |  // separators should keep each value one self-delimiting token (as a `-D...=` option does).
           |  def tokenizeH(arg: String, sep: C, removeWhitespace: B): ISZ[String] = {
           |    val argCis = conversions.String.toCis(arg)
           |    var r = ISZ[String]()
@@ -160,8 +166,14 @@ import org.sireum.cli.CliOpt._
           |    while (j < argCis.size) {
           |      val c = argCis(j)
           |      if (c == sep) {
-          |        r = r :+ conversions.String.fromCis(cis)
-          |        cis = ISZ[C]()
+          |        if (j + 1 < argCis.size && argCis(j + 1) == sep) {
+          |          cis = cis :+ sep
+          |          j = j + 2
+          |        } else {
+          |          r = r :+ conversions.String.fromCis(cis)
+          |          cis = ISZ[C]()
+          |          j = j + 1
+          |        }
           |      } else {
           |        val allowed: B = c match {
           |          case c"\n" => !removeWhitespace
@@ -173,8 +185,8 @@ import org.sireum.cli.CliOpt._
           |        if (allowed) {
           |          cis = cis :+ c
           |        }
+          |        j = j + 1
           |      }
-          |      j = j + 1
           |    }
           |    if (cis.size > 0) {
           |      r = r :+ conversions.String.fromCis(cis)
@@ -472,18 +484,47 @@ import org.sireum.cli.CliOpt._
       |}"""
   }
 
+  @pure def choiceElementId(element: String): String = {
+    if (element.size == 0) {
+      halt("CliGen: choice elements must not be empty.")
+    }
+    val normalized: String = ops.StringOps(element).replaceAllChars('-', '_')
+    if (normalized == "_") {
+      halt(s"CliGen: choice element '$element' maps to '_', which is not a valid Scala identifier.")
+    }
+    val chars: ISZ[C] = conversions.String.toCis(normalized)
+    for (c <- chars) {
+      if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9') || c == '_')) {
+        halt(s"CliGen: choice element '$element' contains unsupported character '$c'; expected an ASCII letter, digit, underscore, or hyphen.")
+      }
+    }
+    val id: String = if ('0' <= chars(0) && chars(0) <= '9') st"N_$normalized".render else normalized
+    return ops.StringOps(id).firstToUpper
+  }
+
   def choiceEnum(name: String, c: Type.Choice): Unit = {
     if (enumNames.contains(name)) {
       return
     }
     enumNames = enumNames + name
-    val elements: ISZ[String] = for (e <- c.elements) yield ops.StringOps(e).firstToUpper
+    var elements: ISZ[String] = ISZ()
+    var elementIds: HashSMap[String, String] = HashSMap.empty
+    for (e <- c.elements) {
+      val id = choiceElementId(e)
+      elementIds.get(id) match {
+        case Some(previous) =>
+          halt(s"CliGen: choice '$name' elements '$previous' and '$e' both map to Scala identifier '$id'.")
+        case _ =>
+          elements = elements :+ id
+          elementIds = elementIds + id ~> e
+      }
+    }
     decls = decls :+
       st"""@enum object $name {
       |  ${(elements.map((e: String) => s"\"$e\""), "\n")}
       |}"""
     val cases: ISZ[String] = for (e <- c.elements)
-      yield s"""case "$e" => return Some($name.${ops.StringOps(e).firstToUpper})"""
+      yield s"""case "$e" => return Some($name.${choiceElementId(e)})"""
     parser = parser :+
       st"""def parse${name}H(arg: String): Option[$name.Type] = {
       |  arg.native match {
@@ -584,8 +625,8 @@ import org.sireum.cli.CliOpt._
       case c: Type.Choice =>
         val name = parseName(path, c.name).render
         choiceEnum(name, c)
-        return if (c.sep.nonEmpty) (s"ISZ[$name.Type]", s"ISZ($name.${ops.StringOps(c.elements(0)).firstToUpper})")
-        else (s"$name.Type", s"$name.${ops.StringOps(c.elements(0)).firstToUpper}")
+        return if (c.sep.nonEmpty) (s"ISZ[$name.Type]", s"ISZ($name.${choiceElementId(c.elements(0))})")
+        else (s"$name.Type", s"$name.${choiceElementId(c.elements(0))}")
       case c: Type.Path =>
         return if (c.multiple)
           ("ISZ[String]", if (c.default.isEmpty) "ISZ[String]()" else s"""ISZ("${c.default.get}")""")
