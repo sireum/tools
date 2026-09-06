@@ -79,6 +79,8 @@ object TransformerGen {
 
     @pure def transformMethodCaseMember(i: Z, j: Z, typeName: ST, tpe: ST, fieldName: String): ST
 
+    @pure def transformMethodCaseMemberExpr(i: Z, tpe: ST, exp: ST): ST
+
     @pure def transformMethodCaseMemberIS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST
 
     @pure def transformMethodCaseMemberMS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST
@@ -329,6 +331,10 @@ object TransformerGen {
         return st"val r$i: TPostResult[Context, $tpe] = transform$typeName($ctx, o2.$fieldName)"
       }
 
+      @pure def transformMethodCaseMemberExpr(i: Z, tpe: ST, exp: ST): ST = {
+        return st"val r$i: TPostResult[Context, $tpe] = $exp"
+      }
+
       @pure def transformMethodCaseMemberIS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
         val ctx: ST = if (j < z"0") st"preR.ctx" else st"r$j.ctx"
         return st"val r$i: TPostResult[Context, IS[$indexType, $tpe]] = transformIS$indexType($ctx, o2.$fieldName, transform$typeName _)"
@@ -375,17 +381,17 @@ object TransformerGen {
       }
 
       @pure def transformIS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
+        val range: ST = if (isReversed) st"s.size - 1 to 0 by -1" else st"0 until s.size"
         return st"""@pure def transformIS$indexType[Context, T](ctx: Context, s: IS[$indexType, T], f: (Context, T) => TPostResult[Context, T] @pure): TPostResult[Context, IS[$indexType, T]] = {
         |  val s2: MS[$indexType, T] = s.toMS
         |  var changed: B = F
         |  var ctxi = ctx
         |  for (i <- $range) {
-        |    val e: T = s(i)
+        |    val e: T = s.atZ(i)
         |    val r: TPostResult[Context, T] = f(ctxi, e)
         |    ctxi = r.ctx
         |    changed = changed || r.resultOpt.nonEmpty
-        |    s2(i) = r.resultOpt.getOrElse(e)
+        |    s2.updateZ(i, r.resultOpt.getOrElse(e))
         |  }
         |  if (changed) {
         |    return TPostResult(ctxi, Some(s2.toIS))
@@ -553,16 +559,22 @@ object TransformerGen {
 
       @pure def preAdapt(tpe: ST): ST = {
         return st""" match {
-        |   case PreResult(continu, MSome(r: $tpe)) => PreResult(continu, MSome[$tpe](r))
-        |   case PreResult(_, MSome(_)) => halt("Can only produce object of type $tpe")
+        |   case PreResult(continu, MSome(r)) =>
+        |     r match {
+        |       case r: $tpe => PreResult(continu, MSome[$tpe](r))
+        |       case _ => halt("Can only produce object of type $tpe")
+        |     }
         |   case PreResult(continu, _) => PreResult(continu, MNone[$tpe]())
         |  }"""
       }
 
       @pure def postAdapt(tpe: ST): ST = {
         return st""" match {
-        |   case MSome(result: $tpe) => MSome[$tpe](result)
-        |   case MSome(_) => halt("Can only produce object of type $tpe")
+        |   case MSome(result) =>
+        |     result match {
+        |       case result: $tpe => MSome[$tpe](result)
+        |       case _ => halt("Can only produce object of type $tpe")
+        |     }
         |   case _ => MNone[$tpe]()
         |  }"""
       }
@@ -606,6 +618,10 @@ object TransformerGen {
         return st"val r$i: MOption[$tpe] = transform$typeName(o2.$fieldName)"
       }
 
+      @pure def transformMethodCaseMemberExpr(i: Z, tpe: ST, exp: ST): ST = {
+        return st"val r$i: MOption[$tpe] = $exp"
+      }
+
       @pure def transformMethodCaseMemberIS(i: Z, j: Z, indexType: ST, typeName: ST, tpe: ST, fieldName: String): ST = {
         return st"val r$i: MOption[IS[$indexType, $tpe]] = transformIS$indexType(o2.$fieldName, transform$typeName _)"
       }
@@ -619,7 +635,7 @@ object TransformerGen {
       }
 
       @pure def transformMethodCaseMemberMOption(i: Z, typeName: ST, tpe: ST, fieldName: String): ST = {
-        return st"val r$i: MOption[MOption[$tpe]] = transformOption(o2.$fieldName, transform$typeName _)"
+        return st"val r$i: MOption[MOption[$tpe]] = transformMOption(o2.$fieldName, transform$typeName _)"
       }
 
       @pure def transformMethodCaseChanged(i: Z): ST = {
@@ -645,7 +661,7 @@ object TransformerGen {
       }
 
       @pure def transformMOption: ST = {
-        return st"""def transformMOption[T](option: MOption[T], f: T => MOption[T]): MOption[MOption[T]] = {
+        return st"""def transformMOption[@mut T](option: MOption[T], f: T => MOption[T]): MOption[MOption[T]] = {
         |  option match {
         |    case MSome(v) =>
         |      val r = f(v)
@@ -659,15 +675,15 @@ object TransformerGen {
       }
 
       @pure def transformIS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
+        val range: ST = if (isReversed) st"s.size - 1 to 0 by -1" else st"0 until s.size"
         return st"""def transformIS$indexType[T](s: IS[$indexType, T], f: T => MOption[T]): MOption[IS[$indexType, T]] = {
         |  val s2: MS[$indexType, T] = s.toMS
         |  var changed: B = F
         |  for (i <- $range) {
-        |    val e: T = s(i)
+        |    val e: T = s.atZ(i)
         |    val r: MOption[T] = f(e)
         |    changed = changed || r.nonEmpty
-        |    s2(i) = r.getOrElse(e)
+        |    s2.updateZ(i, r.getOrElse(e))
         |  }
         |  if (changed) {
         |    return MSome(s2.toIS)
@@ -678,15 +694,15 @@ object TransformerGen {
       }
 
       @pure def transformMS(indexType: ST, isReversed: B): ST = {
-        val range: ST = if (isReversed) st"s2.size - 1 to 0 by -1" else st"s2.indices"
-        return st"""def transformIS$indexType[T](s: IS[$indexType, T], f: T => MOption[T]): MOption[IS[$indexType, T]] = {
-        |  var s2: MS[$indexType, T] = MS[Z, T]()
+        val range: ST = if (isReversed) st"s.size - 1 to 0 by -1" else st"0 until s.size"
+        return st"""def transformMS$indexType[@mut T](s: MS[$indexType, T], f: T => MOption[T]): MOption[MS[$indexType, T]] = {
+        |  val s2: MS[$indexType, T] = s
         |  var changed: B = F
         |  for (i <- $range) {
-        |    val e: T = s(i)
+        |    val e: T = s.atZ(i)
         |    val r: MOption[T] = f(e)
         |    changed = changed || r.nonEmpty
-        |    s2 = s2 :+ r.getOrElse(e)
+        |    s2.updateZ(i, r.getOrElse(e))
         |  }
         |  if (changed) {
         |    return MSome(s2)
