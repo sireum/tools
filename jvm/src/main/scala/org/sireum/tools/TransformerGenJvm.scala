@@ -42,17 +42,34 @@ object TransformerGenJvm {
     exclude: ISZ[String],
     reporter: Reporter
   ): Option[String] = {
+    return runWithDialect(isImmutable, isReversed, licenseOpt, sources, nameOpt, exclude, reporter, F, ISZ())
+  }
+
+  def runWithDialect(
+    isImmutable: B,
+    isReversed: B,
+    licenseOpt: Option[Os.Path],
+    sources: ISZ[Os.Path],
+    nameOpt: Option[String],
+    exclude: ISZ[String],
+    reporter: Reporter,
+    isLl2: B,
+    opaqueTypes: ISZ[String]
+  ): Option[String] = {
     if (sources.isEmpty) {
       reporter.error(None(), "TransformerGen", "Expecting a program input")
       return None()
     }
-    var programs = ISZ[AST.TopUnit.Program]()
+    val programs = Buffer.create[AST.TopUnit.Program]()
     for (src <- sources) {
       val srcText = src.read
       val r = lang.parser.Parser.parseTopUnit[AST.TopUnit](srcText, F, F, Some(src.toUri), reporter)
+      if (reporter.hasIssue) {
+        return None()
+      }
       r match {
         case Some(p: AST.TopUnit.Program) =>
-          programs = programs :+ p
+          programs.append(p)
         case _ =>
           reporter.error(None(), "TransformerGen", s"$src is not a Slang program")
           return None()
@@ -62,7 +79,26 @@ object TransformerGenJvm {
       case Some(f) => Some(ops.StringOps(f.read).trim)
       case _ => None[String]()
     }
-    return Some(PrePostTransformerGen.gen(isImmutable, isReversed, lOpt, nameOpt,
-      for (source <- sources) yield source.name, programs, exclude, reporter).render)
+    val content = PrePostTransformerGen.genWithOpaqueTypes(isImmutable, isReversed, lOpt, nameOpt,
+      for (source <- sources) yield source.name, programs.toIS, exclude, reporter, opaqueTypes).render
+    if (reporter.hasIssue) {
+      return None()
+    }
+    if (!isLl2) {
+      return Some(content)
+    }
+    lang.parser.Parser.parseTopUnit[AST.TopUnit.Program](content, F, F, None(), reporter) match {
+      case Some(program) if !reporter.hasIssue =>
+        val license = lOpt.map((text: String) => st"""/*
+          | $text
+          | */
+          |""")
+        val provenance: ISZ[ST] = for (source <- sources) yield st"// This file is auto-generated from ${source.name}"
+        return Some(st"""$license
+          |${(provenance, "\n")}
+          |
+          |${AST.SlangLl2PrettyPrinter.prettyPrint(program)}""".render)
+      case _ => return None()
+    }
   }
 }

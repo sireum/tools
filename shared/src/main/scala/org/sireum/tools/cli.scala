@@ -73,6 +73,9 @@ object cli {
       Opt(name = "exclude", longKey = "exclude", shortKey = Some('e'),
         tpe = Type.Str(sep = Some(','), default = None()),
         description = "Exclude generating top-level transform for the specified type identifiers"),
+      Opt(name = "opaqueTypes", longKey = "opaque", shortKey = None(),
+        tpe = Type.Str(sep = Some(','), default = None()),
+        description = "Preserve unresolved field types with these exact source names without traversing them"),
       Opt(name = "license", longKey = "license", shortKey = Some('l'),
         tpe = Type.Path(multiple = F, default = None()), description = "License file to be inserted in the file header"),
       Opt(name = "modes", longKey = "modes", shortKey = Some('m'),
@@ -82,7 +85,9 @@ object cli {
         tpe = Type.Str(sep = None(), default = None()),
         description = "Type simple name for the transformers (default: \"Transformer\" or \"MTransformer\")"),
       Opt(name = "outputDir", longKey = "output-dir", shortKey = Some('o'),
-        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files")
+        tpe = Type.Path(multiple = F, default = Some(".")), description = "Output directory for the generated transformer Slang files"),
+      Opt(name = "ll2", longKey = "ll2", shortKey = None(),
+        tpe = Type.Flag(default = F), description = "Generate LL(2) Slang output")
     ),
     groups = ISZ()
   )
